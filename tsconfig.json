@@ -1,0 +1,64 @@
+{
+  "compilerOptions": {
+    "target": "es2017",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "noEmit": true,
+    "incremental": true,
+    "module": "esnext",
+    "esModuleInterop": true,
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ],
+      "@shared/saas-core": [
+        "./shared-saas-core"
+      ],
+      "@shared/saas-core/*": [
+        "./shared-saas-core/*"
+      ],
+      "@local/shared-ui": [
+        "./packages/shared-ui/src"
+      ],
+      "@local/shared-ui/*": [
+        "./packages/shared-ui/src/*"
+      ]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    ".next/types/**/*.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/dev/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "shared-saas-core",
+    "saas-starter",
+    "**/*.template.ts",
+    "**/*.template.tsx"
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "name": "@school/web",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev --port 3001",
+    "build": "vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test",
+    "test:unit": "bun test --filter unit",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:install": "playwright install"
+  },
+  "dependencies": {
+    "@orpc/client": "^1.13.4",
+    "@orpc/tanstack-query": "^1.13.4",
+    "@tanstack/react-query": "^5.90.17",
+    "@tanstack/react-router": "^1.147.3",
+    "@tanstack/react-router-devtools": "^1.147.3",
+    "@tanstack/react-start": "^1.147.3",
+    "@tanstack/router-plugin": "^1.147.3",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "sonner": "^1.7.4"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.0",
+    "@types/node": "^22.19.2",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "@tanstack/devtools-vite": "^0.4.1",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1",
+    "vite-tsconfig-paths": "^5.1.4"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "name": "@school/api",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun run --hot src/index.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test",
+    "test:unit": "bun test --filter unit",
+    "test:integration": "bun test --filter integration",
+    "test:e2e": "playwright test",
+    "test:coverage": "bun test --coverage"
+  },
+  "dependencies": {
+    "@orpc/openapi": "^1.11.2",
+    "@orpc/server": "^1.11.2",
+    "@orpc/zod": "^1.11.2",
+    "@school/storage": "workspace:*",
+    "better-auth": "^1.3.5",
+    "drizzle-orm": "^0.45.0",
+    "hono": "^4.7.10",
+    "nanoid": "^5.0.9",
+    "pg": "^8.11.3",
+    "zod": "^4.1.13"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250109.0",
+    "@playwright/test": "^1.40.0",
+    "@types/node": "^22.19.2",
+    "@types/pg": "^8.10.9",
+    "bun-types": "^1.3.6",
+    "typescript": "^5.9.3"
+  }
+}

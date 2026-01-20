@@ -1,0 +1,25 @@
+{
+  "name": "@company/school-mis",
+  "version": "1.0.0",
+  "description": "School Management Information System",
+  "private": true,
+  "type": "module",
+  "packageManager": "bun@1.3.5",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "bun run --filter '*web' dev",
+    "dev:api": "bun run --filter '*api' dev",
+    "dev:all": "bun run --filter '*' dev",
+    "build": "bun run --filter '*api' build && bun run --filter '*web' build",
+    "test": "bun run --filter '*api' test",
+    "test:unit": "bun run --filter '*api' test:unit",
+    "test:integration": "bun run --filter '*api' test:integration",
+    "test:e2e": "bun run --filter '*web' test:e2e",
+    "test:e2e:ui": "bun run --filter '*web' test:e2e:ui",
+    "test:e2e:install": "bun run --filter '*web' test:e2e:install",
+    "typecheck": "bun run --filter '*api' typecheck"
+  }
+}
