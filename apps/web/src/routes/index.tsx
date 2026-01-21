@@ -1,23 +1,72 @@
-import { MarketingHeader } from "@/components/marketing/header";
-import { LandingHero } from "@/components/marketing/hero";
-import { FeaturesSection } from "@/components/marketing/features";
-import { PricingSection } from "@/components/marketing/pricing";
-import { FAQSection } from "@/components/marketing/faq";
-import { CTASection } from "@/components/marketing/cta";
-import { MarketingFooter } from "@/components/marketing/footer";
+import { createFileRoute } from "@tanstack/react-router";
 
-export default function Index() {
+export const Route = createFileRoute("/")({
+  component: HomePage,
+});
+
+function HomePage() {
   return (
-    <>
-      <MarketingHeader />
-      <main>
-        <LandingHero />
-        <FeaturesSection />
-        <PricingSection />
-        <FAQSection />
-        <CTASection />
+    <div className="min-h-screen">
+      <header className="bg-white shadow-sm fixed top-0 left-0 right-0 z-50">
+        <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+          <a href="/" className="text-xl font-bold text-blue-600">
+            School MIS
+          </a>
+          <div className="flex gap-4">
+            <a href="/features" className="text-gray-600 hover:text-blue-600">
+              Features
+            </a>
+            <a href="/pricing" className="text-gray-600 hover:text-blue-600">
+              Pricing
+            </a>
+            <a href="/login" className="text-gray-600 hover:text-blue-600">
+              Login
+            </a>
+          </div>
+        </nav>
+      </header>
+      <main className="pt-16">
+        <section className="max-w-7xl mx-auto px-4 py-16 text-center">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            School Management System
+          </h1>
+          <p className="text-xl text-gray-600 mb-8">
+            Complete school administration solution
+          </p>
+          <a
+            href="/signup"
+            className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700"
+          >
+            Get Started
+          </a>
+        </section>
+        <section className="max-w-7xl mx-auto px-4 py-16">
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="bg-white p-6 rounded-lg shadow">
+              <div className="text-4xl mb-4">📊</div>
+              <h3 className="text-xl font-semibold mb-2">Student Management</h3>
+              <p className="text-gray-600">
+                Complete student lifecycle management
+              </p>
+            </div>
+            <div className="bg-white p-6 rounded-lg shadow">
+              <div className="text-4xl mb-4">📅</div>
+              <h3 className="text-xl font-semibold mb-2">Attendance</h3>
+              <p className="text-gray-600">
+                Automated tracking with notifications
+              </p>
+            </div>
+            <div className="bg-white p-6 rounded-lg shadow">
+              <div className="text-4xl mb-4">💰</div>
+              <h3 className="text-xl font-semibold mb-2">Fees</h3>
+              <p className="text-gray-600">Online payments and invoicing</p>
+            </div>
+          </div>
+        </section>
       </main>
-      <MarketingFooter />
-    </>
+      <footer className="bg-gray-50 border-t py-8 text-center text-gray-600">
+        <p>&copy; 2026 School MIS. All rights reserved.</p>
+      </footer>
+    </div>
   );
 }

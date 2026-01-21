@@ -4,6 +4,7 @@ import {
   createRootRoute,
   Outlet,
 } from "@tanstack/react-router";
+import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { Toaster } from "sonner";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
@@ -14,28 +15,23 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "School MIS - Modern School Management System" },
-      {
-        name: "description",
-        content:
-          "Comprehensive school management system for educational institutions. Manage students, staff, finances, and communications from a single platform.",
-      },
+      { title: "School MIS - Modern School Management" },
     ],
-    links: [{ rel: "icon", href: "/favicon.ico" }],
   }),
   component: RootDocument,
 });
 
 function RootDocument() {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en">
       <head>
         <HeadContent />
       </head>
-      <body className="min-h-screen bg-background text-foreground antialiased">
+      <body>
         <QueryClientProvider client={queryClient}>
           <Outlet />
           <Toaster position="top-right" richColors />
+          <TanStackRouterDevtools />
           <Scripts />
         </QueryClientProvider>
       </body>

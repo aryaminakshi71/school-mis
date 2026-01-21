@@ -9,27 +9,148 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SignupRouteImport } from './routes/signup'
+import { Route as PricingRouteImport } from './routes/pricing'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as FeaturesRouteImport } from './routes/features'
+import { Route as AppRouteImport } from './routes/app'
+import { Route as IndexRouteImport } from './routes/index'
 
-export interface FileRoutesByFullPath {}
-export interface FileRoutesByTo {}
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FeaturesRoute = FeaturesRouteImport.update({
+  id: '/features',
+  path: '/features',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppRoute = AppRouteImport.update({
+  id: '/app',
+  path: '/app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+
+export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
+  '/app': typeof AppRoute
+  '/features': typeof FeaturesRoute
+  '/login': typeof LoginRoute
+  '/pricing': typeof PricingRoute
+  '/signup': typeof SignupRoute
+}
+export interface FileRoutesByTo {
+  '/': typeof IndexRoute
+  '/app': typeof AppRoute
+  '/features': typeof FeaturesRoute
+  '/login': typeof LoginRoute
+  '/pricing': typeof PricingRoute
+  '/signup': typeof SignupRoute
+}
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/app': typeof AppRoute
+  '/features': typeof FeaturesRoute
+  '/login': typeof LoginRoute
+  '/pricing': typeof PricingRoute
+  '/signup': typeof SignupRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: never
+  fullPaths: '/' | '/app' | '/features' | '/login' | '/pricing' | '/signup'
   fileRoutesByTo: FileRoutesByTo
-  to: never
-  id: '__root__'
+  to: '/' | '/app' | '/features' | '/login' | '/pricing' | '/signup'
+  id:
+    | '__root__'
+    | '/'
+    | '/app'
+    | '/features'
+    | '/login'
+    | '/pricing'
+    | '/signup'
   fileRoutesById: FileRoutesById
 }
-export interface RootRouteChildren {}
-
-declare module '@tanstack/react-router' {
-  interface FileRoutesByPath {}
+export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
+  AppRoute: typeof AppRoute
+  FeaturesRoute: typeof FeaturesRoute
+  LoginRoute: typeof LoginRoute
+  PricingRoute: typeof PricingRoute
+  SignupRoute: typeof SignupRoute
 }
 
-const rootRouteChildren: RootRouteChildren = {}
+declare module '@tanstack/react-router' {
+  interface FileRoutesByPath {
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/features': {
+      id: '/features'
+      path: '/features'
+      fullPath: '/features'
+      preLoaderRoute: typeof FeaturesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app': {
+      id: '/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+  }
+}
+
+const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
+  AppRoute: AppRoute,
+  FeaturesRoute: FeaturesRoute,
+  LoginRoute: LoginRoute,
+  PricingRoute: PricingRoute,
+  SignupRoute: SignupRoute,
+}
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
