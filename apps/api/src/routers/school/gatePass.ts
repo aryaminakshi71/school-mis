@@ -70,7 +70,7 @@ export const gatePassRouter = {
             firstName: schema.students.firstName,
             lastName: schema.students.lastName,
             admissionNumber: schema.students.admissionNumber,
-            class: schema.classes,
+            classId: schema.students.classId,
           },
         })
         .from(schema.gatePasses)
@@ -256,9 +256,8 @@ export const gatePassRouter = {
         .update(schema.gatePasses)
         .set({
           status: "returned",
-          actualReturnDate: input.actualReturnDate
-            ? new Date(input.actualReturnDate)
-            : new Date(),
+          actualReturnDate:
+            input.actualReturnDate || new Date().toISOString().split("T")[0],
           actualReturnTime:
             input.actualReturnTime || new Date().toTimeString().slice(0, 5),
           updatedAt: new Date(),

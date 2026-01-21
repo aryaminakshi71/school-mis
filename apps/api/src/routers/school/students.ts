@@ -120,7 +120,7 @@ export const studentsRouter = {
     .output(z.any())
     .handler(async ({ input }) => {
       // Placeholder - would update database
-      return { id: input.id, ...input };
+      return { ...input, id: input.id };
     }),
 
   delete: orgAuthed

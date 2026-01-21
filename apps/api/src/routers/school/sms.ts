@@ -153,19 +153,19 @@ export const smsRouter = {
             })
             .from(schema.students)
             .where(eq(schema.students.id, input.recipientId));
-          phoneNumber = student?.fatherPhone || student?.phone;
+          phoneNumber = student?.fatherPhone ?? student?.phone ?? undefined;
         } else if (input.recipientType === "teacher") {
           const [teacher] = await db
             .select({ phone: schema.teachers.phone })
             .from(schema.teachers)
             .where(eq(schema.teachers.id, input.recipientId));
-          phoneNumber = teacher?.phone;
+          phoneNumber = teacher?.phone ?? undefined;
         } else if (input.recipientType === "staff") {
           const [staff] = await db
             .select({ phone: schema.staff.phone })
             .from(schema.staff)
             .where(eq(schema.staff.id, input.recipientId));
-          phoneNumber = staff?.phone;
+          phoneNumber = staff?.phone ?? undefined;
         }
       }
 

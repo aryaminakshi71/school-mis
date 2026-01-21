@@ -108,7 +108,21 @@ export const healthRouter = {
 
       const [record] = await db
         .insert(schema.healthRecords)
-        .values(input)
+        .values({
+          studentId: input.studentId,
+          visitDate: input.visitDate,
+          visitType: input.visitType,
+          symptoms: input.symptoms,
+          diagnosis: input.diagnosis,
+          treatment: input.treatment,
+          medication: input.medication,
+          doctorName: input.doctorName,
+          temperature: input.temperature?.toString(),
+          bloodPressure: input.bloodPressure,
+          weight: input.weight?.toString(),
+          height: input.height?.toString(),
+          notes: input.notes,
+        })
         .returning();
 
       return { record };

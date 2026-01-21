@@ -4,7 +4,7 @@
  * Re-exports all database schemas and utilities.
  */
 
-export * from "./db/schema/school/school.schema.js";
+export * from "./db/schema/school/school.schema.ts";
 
 // Re-export drizzle-orm query builders for convenience
 export {
