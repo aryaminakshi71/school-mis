@@ -32,7 +32,7 @@ export const healthRouter = {
     )
     .output(z.any())
     .handler(async ({ context, input }) => {
-      const db = getDb(context);
+      const db = getDb();
       const orgId = context.organization.id;
 
       const conditions = [];
@@ -103,7 +103,7 @@ export const healthRouter = {
     )
     .output(z.any())
     .handler(async ({ context, input }) => {
-      const db = getDb(context);
+      const db = getDb();
       const orgId = context.organization.id;
 
       const [record] = await db
@@ -127,7 +127,7 @@ export const healthRouter = {
     .input(z.object({ studentId: z.string().uuid() }))
     .output(z.any())
     .handler(async ({ context, input }) => {
-      const db = getDb(context);
+      const db = getDb();
       const orgId = context.organization.id;
 
       const [summary] = await db
@@ -164,7 +164,7 @@ export const healthRouter = {
     })
     .output(z.any())
     .handler(async ({ context }) => {
-      const db = getDb(context);
+      const db = getDb();
       const orgId = context.organization.id;
 
       const [stats] = await db

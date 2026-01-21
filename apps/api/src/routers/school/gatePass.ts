@@ -5,7 +5,7 @@
  */
 
 import { z } from "zod";
-import { eq, and, desc, asc } from "drizzle-orm";
+import { eq, and, desc, asc, sql } from "drizzle-orm";
 import { orgAuthed } from "../../procedures";
 import { getDb, schema } from "../../lib/db";
 
@@ -34,7 +34,7 @@ export const gatePassRouter = {
     )
     .output(z.any())
     .handler(async ({ context, input }) => {
-      const db = getDb(context);
+      const db = getDb();
       const orgId = context.organization.id;
       const page = input?.page || 1;
       const limit = input?.limit || 20;
@@ -115,7 +115,7 @@ export const gatePassRouter = {
     )
     .output(z.any())
     .handler(async ({ context, input }) => {
-      const db = getDb(context);
+      const db = getDb();
       const orgId = context.organization.id;
       const passNumber = `GP-${Date.now()}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
 
@@ -150,7 +150,7 @@ export const gatePassRouter = {
     )
     .output(z.any())
     .handler(async ({ context, input }) => {
-      const db = getDb(context);
+      const db = getDb();
       const orgId = context.organization.id;
 
       const [gatePass] = await db
@@ -186,7 +186,7 @@ export const gatePassRouter = {
     )
     .output(z.any())
     .handler(async ({ context, input }) => {
-      const db = getDb(context);
+      const db = getDb();
       const orgId = context.organization.id;
 
       const [gatePass] = await db
@@ -215,7 +215,7 @@ export const gatePassRouter = {
     .input(z.object({ id: z.string().uuid() }))
     .output(z.any())
     .handler(async ({ context, input }) => {
-      const db = getDb(context);
+      const db = getDb();
       const orgId = context.organization.id;
 
       const [gatePass] = await db
@@ -249,7 +249,7 @@ export const gatePassRouter = {
     )
     .output(z.any())
     .handler(async ({ context, input }) => {
-      const db = getDb(context);
+      const db = getDb();
       const orgId = context.organization.id;
 
       const [gatePass] = await db
@@ -281,7 +281,7 @@ export const gatePassRouter = {
     })
     .output(z.any())
     .handler(async ({ context }) => {
-      const db = getDb(context);
+      const db = getDb();
       const orgId = context.organization.id;
 
       const [stats] = await db

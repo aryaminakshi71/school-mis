@@ -4,25 +4,18 @@
  * Defines the context structure for API requests.
  */
 
-import type { Database } from '@school-mis/storage';
+import type { Pool } from "pg";
+import type { ProcessEnv } from "@school/env";
 
-export interface AppEnv {
-  DATABASE: Database;
-  NODE_ENV: string;
-  VITE_PUBLIC_SITE_URL: string;
-  BETTER_AUTH_SECRET: string;
-  CACHE: KVNamespace;
-  BUCKET: R2Bucket;
-}
-
-export interface InitialContext {
-  env: AppEnv;
+export interface AppContext {
+  env: ProcessEnv;
   headers: Headers;
   requestId: string;
   logger?: Console;
+  db: Pool;
 }
 
-export interface AuthContext extends InitialContext {
+export interface AuthContext extends AppContext {
   user: {
     id: string;
     email: string;
@@ -44,6 +37,6 @@ export interface OrgContext extends AuthContext {
   };
   member: {
     id: string;
-    role: 'owner' | 'admin' | 'member';
+    role: "owner" | "admin" | "member";
   };
 }

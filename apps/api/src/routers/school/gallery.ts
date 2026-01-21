@@ -5,7 +5,7 @@
  */
 
 import { z } from "zod";
-import { eq, and, desc, asc } from "drizzle-orm";
+import { eq, and, desc, asc, sql } from "drizzle-orm";
 import { orgAuthed } from "../../procedures";
 import { getDb, schema } from "../../lib/db";
 
@@ -32,7 +32,7 @@ export const galleryRouter = {
     )
     .output(z.any())
     .handler(async ({ context, input }) => {
-      const db = getDb(context);
+      const db = getDb();
       const orgId = context.organization.id;
       const page = input?.page || 1;
       const limit = input?.limit || 20;
@@ -68,7 +68,7 @@ export const galleryRouter = {
     .input(z.object({ id: z.string().uuid() }))
     .output(z.any())
     .handler(async ({ context, input }) => {
-      const db = getDb(context);
+      const db = getDb();
       const orgId = context.organization.id;
 
       const [gallery] = await db
@@ -107,7 +107,7 @@ export const galleryRouter = {
     )
     .output(z.any())
     .handler(async ({ context, input }) => {
-      const db = getDb(context);
+      const db = getDb();
       const orgId = context.organization.id;
 
       const [gallery] = await db
@@ -144,7 +144,7 @@ export const galleryRouter = {
     )
     .output(z.any())
     .handler(async ({ context, input }) => {
-      const db = getDb(context);
+      const db = getDb();
       const orgId = context.organization.id;
 
       const images = input.images.map((img, index) => ({
@@ -188,7 +188,7 @@ export const galleryRouter = {
     )
     .output(z.any())
     .handler(async ({ context, input }) => {
-      const db = getDb(context);
+      const db = getDb();
       const orgId = context.organization.id;
 
       const [gallery] = await db
@@ -216,7 +216,7 @@ export const galleryRouter = {
     .input(z.object({ id: z.string().uuid() }))
     .output(z.any())
     .handler(async ({ context, input }) => {
-      const db = getDb(context);
+      const db = getDb();
       const orgId = context.organization.id;
 
       await db
@@ -239,7 +239,7 @@ export const galleryRouter = {
     })
     .output(z.any())
     .handler(async ({ context }) => {
-      const db = getDb(context);
+      const db = getDb();
       const orgId = context.organization.id;
 
       const categories = await db

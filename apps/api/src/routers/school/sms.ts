@@ -5,7 +5,7 @@
  */
 
 import { z } from "zod";
-import { eq, and, desc, asc } from "drizzle-orm";
+import { eq, and, desc, asc, sql } from "drizzle-orm";
 import { orgAuthed } from "../../procedures";
 import { getDb, schema } from "../../lib/db";
 
@@ -34,7 +34,7 @@ export const smsRouter = {
     )
     .output(z.any())
     .handler(async ({ context, input }) => {
-      const db = getDb(context);
+      const db = getDb();
       const orgId = context.organization.id;
       const page = input?.page || 1;
       const limit = input?.limit || 20;
@@ -70,7 +70,7 @@ export const smsRouter = {
     .input(z.object({ type: z.string().optional() }).optional())
     .output(z.any())
     .handler(async ({ context, input }) => {
-      const db = getDb(context);
+      const db = getDb();
       const orgId = context.organization.id;
 
       const conditions = [eq(schema.smsTemplates.isActive, true)];
@@ -106,7 +106,7 @@ export const smsRouter = {
     )
     .output(z.any())
     .handler(async ({ context, input }) => {
-      const db = getDb(context);
+      const db = getDb();
       const orgId = context.organization.id;
 
       const [template] = await db
@@ -138,7 +138,7 @@ export const smsRouter = {
     )
     .output(z.any())
     .handler(async ({ context, input }) => {
-      const db = getDb(context);
+      const db = getDb();
       const orgId = context.organization.id;
 
       let phoneNumber = input.phoneNumber;
@@ -209,7 +209,7 @@ export const smsRouter = {
     )
     .output(z.any())
     .handler(async ({ context, input }) => {
-      const db = getDb(context);
+      const db = getDb();
       const orgId = context.organization.id;
 
       let students;
@@ -268,7 +268,7 @@ export const smsRouter = {
     })
     .output(z.any())
     .handler(async ({ context }) => {
-      const db = getDb(context);
+      const db = getDb();
       const orgId = context.organization.id;
 
       const [stats] = await db

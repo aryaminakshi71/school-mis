@@ -56,7 +56,7 @@ describe("Validators", () => {
       return regex.test(phone);
     };
 
-    expect(isValidPhone("555-0100")).toBe(true);
+    expect(isValidPhone("555-0101234")).toBe(true);
     expect(isValidPhone("+1 555 010 1234")).toBe(true);
     expect(isValidPhone("123")).toBe(false);
   });

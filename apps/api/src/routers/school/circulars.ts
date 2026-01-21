@@ -33,7 +33,7 @@ export const circularsRouter = {
     )
     .output(z.any())
     .handler(async ({ context, input }) => {
-      const db = getDb(context);
+      const db = getDb();
       const orgId = context.organization.id;
       const page = input?.page || 1;
       const limit = input?.limit || 20;
@@ -88,7 +88,7 @@ export const circularsRouter = {
     )
     .output(z.any())
     .handler(async ({ context, input }) => {
-      const db = getDb(context);
+      const db = getDb();
       const orgId = context.organization.id;
 
       const [circular] = await db
@@ -116,7 +116,7 @@ export const circularsRouter = {
     .input(z.object({ id: z.string().uuid() }))
     .output(z.any())
     .handler(async ({ context, input }) => {
-      const db = getDb(context);
+      const db = getDb();
       const orgId = context.organization.id;
 
       const [circular] = await db
@@ -145,7 +145,7 @@ export const circularsRouter = {
     .input(z.object({ id: z.string().uuid() }))
     .output(z.any())
     .handler(async ({ context, input }) => {
-      const db = getDb(context);
+      const db = getDb();
       const orgId = context.organization.id;
 
       await db

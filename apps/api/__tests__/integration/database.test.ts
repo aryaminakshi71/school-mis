@@ -50,6 +50,9 @@ describe("API Integration Tests", () => {
       );
       c.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
     });
+    app.options("*", (c) => {
+      return c.text("", 200);
+    });
 
     const res = await app.request("http://localhost/test", {
       method: "OPTIONS",

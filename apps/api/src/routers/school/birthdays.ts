@@ -28,7 +28,7 @@ export const birthdaysRouter = {
     )
     .output(z.any())
     .handler(async ({ context, input }) => {
-      const db = getDb(context);
+      const db = getDb();
       const orgId = context.organization.id;
 
       const today = new Date();
@@ -76,7 +76,7 @@ export const birthdaysRouter = {
     .input(z.object({ month: z.number().min(1).max(12) }))
     .output(z.any())
     .handler(async ({ context, input }) => {
-      const db = getDb(context);
+      const db = getDb();
       const orgId = context.organization.id;
 
       const students = await db
@@ -135,7 +135,7 @@ export const birthdaysRouter = {
     })
     .output(z.any())
     .handler(async ({ context }) => {
-      const db = getDb(context);
+      const db = getDb();
       const orgId = context.organization.id;
 
       const today = new Date();

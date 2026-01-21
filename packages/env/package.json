@@ -1,0 +1,15 @@
+{
+  "name": "@school/env",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "types": "wrangler types src/cloudflare.d.ts --env-interface Env"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250109.0"
+  }
+}

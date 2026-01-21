@@ -32,7 +32,7 @@ export const directoryRouter = {
     )
     .output(z.any())
     .handler(async ({ context, input }) => {
-      const db = getDb(context);
+      const db = getDb();
       const orgId = context.organization.id;
 
       const conditions = [];
@@ -67,7 +67,7 @@ export const directoryRouter = {
     .input(z.object({ id: z.string().uuid() }))
     .output(z.any())
     .handler(async ({ context, input }) => {
-      const db = getDb(context);
+      const db = getDb();
       const orgId = context.organization.id;
 
       const [entry] = await db
@@ -102,7 +102,7 @@ export const directoryRouter = {
     )
     .output(z.any())
     .handler(async ({ context, input }) => {
-      const db = getDb(context);
+      const db = getDb();
       const orgId = context.organization.id;
 
       const [entry] = await db
@@ -141,7 +141,7 @@ export const directoryRouter = {
     )
     .output(z.any())
     .handler(async ({ context, input }) => {
-      const db = getDb(context);
+      const db = getDb();
       const orgId = context.organization.id;
 
       const [entry] = await db
@@ -168,7 +168,7 @@ export const directoryRouter = {
     })
     .output(z.any())
     .handler(async ({ context }) => {
-      const db = getDb(context);
+      const db = getDb();
       const orgId = context.organization.id;
 
       const teachers = await db
@@ -202,7 +202,7 @@ export const directoryRouter = {
     })
     .output(z.any())
     .handler(async ({ context }) => {
-      const db = getDb(context);
+      const db = getDb();
       const orgId = context.organization.id;
 
       const staff = await db

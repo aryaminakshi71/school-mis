@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "es2017",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -30,21 +26,15 @@
       }
     ],
     "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-      "@shared/saas-core": [
-        "./shared-saas-core"
-      ],
-      "@shared/saas-core/*": [
-        "./shared-saas-core/*"
-      ],
-      "@local/shared-ui": [
-        "./packages/shared-ui/src"
-      ],
-      "@local/shared-ui/*": [
-        "./packages/shared-ui/src/*"
-      ]
+      "@/*": ["./src/*"],
+      "@school/env": ["./packages/env/src"],
+      "@school/env/*": ["./packages/env/src/*"],
+      "@school/storage": ["./packages/storage/src"],
+      "@school/storage/*": ["./packages/storage/src/*"],
+      "@shared/saas-core": ["./shared-saas-core"],
+      "@shared/saas-core/*": ["./shared-saas-core/*"],
+      "@local/shared-ui": ["./packages/shared-ui/src"],
+      "@local/shared-ui/*": ["./packages/shared-ui/src/*"]
     }
   },
   "include": [

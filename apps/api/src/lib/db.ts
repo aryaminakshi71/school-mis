@@ -9,10 +9,10 @@ import { Pool } from "pg";
 import * as schema from "@school/storage";
 
 let pool: Pool | null = null;
+let dbInstance: ReturnType<typeof drizzle> | null = null;
 
-export function getDb(context: { env?: Record<string, any> }): typeof schema {
+function getPool(): Pool {
   const connectionString =
-    context?.env?.DATABASE_URL ||
     process.env.DATABASE_URL ||
     "postgresql://postgres@localhost:5432/school_mis";
 
@@ -20,7 +20,19 @@ export function getDb(context: { env?: Record<string, any> }): typeof schema {
     pool = new Pool({ connectionString });
   }
 
-  return drizzle(pool, { schema }) as unknown as typeof schema;
+  return pool;
+}
+
+export function getDb(): ReturnType<typeof drizzle> {
+  if (!dbInstance) {
+    const pool = getPool();
+    dbInstance = drizzle(pool, { schema });
+  }
+  return dbInstance;
+}
+
+export function getPoolClient(): Pool {
+  return getPool();
 }
 
 export { schema };
