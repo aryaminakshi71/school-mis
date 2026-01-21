@@ -10,16 +10,20 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "bun run --filter '*web' dev",
-    "dev:api": "bun run --filter '*api' dev",
-    "dev:all": "bun run --filter '*' dev",
-    "build": "bun run --filter '*api' build && bun run --filter '*web' build",
-    "test": "bun run --filter '*api' test",
-    "test:unit": "bun run --filter '*api' test:unit",
-    "test:integration": "bun run --filter '*api' test:integration",
-    "test:e2e": "bun run --filter '*web' test:e2e",
-    "test:e2e:ui": "bun run --filter '*web' test:e2e:ui",
-    "test:e2e:install": "bun run --filter '*web' test:e2e:install",
-    "typecheck": "bun run --filter '*api' typecheck"
+    "dev": "bun run --filter '@school/web' dev",
+    "build": "bun run --filter '@school/api' build && bun run --filter '@school/web' build",
+    "test": "bun run --filter '@school/api' test",
+    "test:unit": "bun run --filter '@school/api' test:unit",
+    "test:integration": "bun run --filter '@school/api' test:integration",
+    "test:e2e": "bun run --filter '@school/web' test:e2e",
+    "test:e2e:ui": "bun run --filter '@school/web' test:e2e:ui",
+    "test:e2e:install": "bun run --filter '@school/web' test:e2e:install",
+    "typecheck": "bun run --filter '@school/api' typecheck && bun run --filter '@school/web' typecheck"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.562.0",
+    "recharts": "^3.6.0",
+    "tailwind-merge": "^3.4.0"
   }
 }

@@ -20,8 +20,20 @@ declare module "@tanstack/react-start" {
   }
 }
 
+let apiApp: any;
+
 export default {
   async fetch(request: Request): Promise<Response> {
+    const url = new URL(request.url);
+
+    if (url.pathname.startsWith("/api/")) {
+      if (!apiApp) {
+        const api = await import("@school/api");
+        apiApp = api.default as any;
+      }
+      return apiApp.fetch(request);
+    }
+
     return handler.fetch(request, {
       context: {},
     } as Parameters<typeof handler.fetch>[1]);

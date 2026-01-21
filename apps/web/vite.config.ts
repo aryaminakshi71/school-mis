@@ -3,6 +3,7 @@ import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import { devtools } from "@tanstack/devtools-vite";
 import viteReact from "@vitejs/plugin-react";
 import viteTsConfigPaths from "vite-tsconfig-paths";
+import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
   resolve: {
@@ -17,6 +18,7 @@ export default defineConfig({
       ],
     }),
     devtools(),
+    tailwindcss(),
     tanstackStart({
       srcDirectory: "src",
       start: { entry: "./start.tsx" },
@@ -26,11 +28,8 @@ export default defineConfig({
   ],
   server: {
     port: 3007,
-    proxy: {
-      "/api": {
-        target: "http://localhost:3000",
-        changeOrigin: true,
-      },
-    },
+  },
+  ssr: {
+    noExternal: ["@school/api", "@school/storage", "drizzle-orm"],
   },
 });

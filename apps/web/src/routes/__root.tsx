@@ -7,6 +7,10 @@ import {
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { Toaster } from "sonner";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ThemeProvider } from "../lib/theme-context";
+import { AuthProvider } from "../lib/auth-context";
+
+import "../styles/globals.css";
 
 const queryClient = new QueryClient();
 
@@ -16,6 +20,10 @@ export const Route = createRootRoute({
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "School MIS - Modern School Management" },
+      {
+        name: "description",
+        content: "Complete school administration solution",
+      },
     ],
   }),
   component: RootDocument,
@@ -23,16 +31,20 @@ export const Route = createRootRoute({
 
 function RootDocument() {
   return (
-    <html lang="en">
+    <html lang="en" className="light">
       <head>
         <HeadContent />
       </head>
       <body>
         <QueryClientProvider client={queryClient}>
-          <Outlet />
-          <Toaster position="top-right" richColors />
-          <TanStackRouterDevtools />
-          <Scripts />
+          <ThemeProvider>
+            <AuthProvider>
+              <Outlet />
+              <Toaster position="top-right" richColors />
+              <TanStackRouterDevtools />
+              <Scripts />
+            </AuthProvider>
+          </ThemeProvider>
         </QueryClientProvider>
       </body>
     </html>

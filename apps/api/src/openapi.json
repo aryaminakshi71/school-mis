@@ -1,0 +1,365 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "School MIS API",
+    "description": "Complete School Management Information System API",
+    "version": "1.0.0",
+    "contact": {
+      "name": "School MIS Support",
+      "email": "support@schoolmis.edu"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3007/api",
+      "description": "Development server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Authentication",
+      "description": "User authentication endpoints"
+    },
+    { "name": "Students", "description": "Student management" },
+    { "name": "Teachers", "description": "Teacher management" },
+    { "name": "Classes", "description": "Class management" },
+    { "name": "Attendance", "description": "Attendance tracking" },
+    { "name": "Fees", "description": "Fee management" },
+    { "name": "Library", "description": "Library management" },
+    { "name": "Transport", "description": "Transport management" },
+    { "name": "Exams", "description": "Exam and marks management" },
+    {
+      "name": "Notifications",
+      "description": "SMS and WhatsApp notifications"
+    },
+    { "name": "Reports", "description": "School reports" }
+  ],
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "User login",
+        "description": "Authenticate user and get access token",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                  "email": { "type": "string", "format": "email" },
+                  "password": { "type": "string", "format": "password" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": { "type": "string" },
+                    "user": { "$ref": "#/components/schemas/User" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Invalid credentials" }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "User logout",
+        "description": "End user session",
+        "responses": {
+          "200": { "description": "Logout successful" }
+        }
+      }
+    },
+    "/students": {
+      "get": {
+        "tags": ["Students"],
+        "summary": "List students",
+        "description": "Get paginated list of students",
+        "parameters": [
+          { "name": "page", "in": "query", "schema": { "type": "integer" } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer" } },
+          { "name": "search", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "List of students" }
+        }
+      },
+      "post": {
+        "tags": ["Students"],
+        "summary": "Create student",
+        "description": "Add new student to system",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/StudentInput" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Student created" }
+        }
+      }
+    },
+    "/students/{id}": {
+      "get": {
+        "tags": ["Students"],
+        "summary": "Get student details",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Student details" },
+          "404": { "description": "Student not found" }
+        }
+      },
+      "put": {
+        "tags": ["Students"],
+        "summary": "Update student",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Student updated" }
+        }
+      },
+      "delete": {
+        "tags": ["Students"],
+        "summary": "Delete student",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Student deleted" }
+        }
+      }
+    },
+    "/teachers": {
+      "get": {
+        "tags": ["Teachers"],
+        "summary": "List teachers",
+        "responses": {
+          "200": { "description": "List of teachers" }
+        }
+      },
+      "post": {
+        "tags": ["Teachers"],
+        "summary": "Create teacher",
+        "responses": {
+          "201": { "description": "Teacher created" }
+        }
+      }
+    },
+    "/classes": {
+      "get": {
+        "tags": ["Classes"],
+        "summary": "List classes",
+        "responses": {
+          "200": { "description": "List of classes" }
+        }
+      },
+      "post": {
+        "tags": ["Classes"],
+        "summary": "Create class",
+        "responses": {
+          "201": { "description": "Class created" }
+        }
+      }
+    },
+    "/attendance": {
+      "get": {
+        "tags": ["Attendance"],
+        "summary": "Get attendance records",
+        "parameters": [
+          { "name": "date", "in": "query", "schema": { "type": "string" } },
+          { "name": "classId", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Attendance records" }
+        }
+      },
+      "post": {
+        "tags": ["Attendance"],
+        "summary": "Save attendance",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "date": { "type": "string" },
+                  "classId": { "type": "string" },
+                  "records": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "studentId": { "type": "string" },
+                        "status": {
+                          "type": "string",
+                          "enum": ["present", "absent", "late", "excused"]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Attendance saved" }
+        }
+      }
+    },
+    "/fees": {
+      "get": {
+        "tags": ["Fees"],
+        "summary": "List fee records",
+        "parameters": [
+          { "name": "status", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Fee records" }
+        }
+      },
+      "post": {
+        "tags": ["Fees"],
+        "summary": "Create invoice",
+        "responses": {
+          "201": { "description": "Invoice created" }
+        }
+      }
+    },
+    "/fees/{id}/pay": {
+      "post": {
+        "tags": ["Fees"],
+        "summary": "Process payment",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Payment processed" }
+        }
+      }
+    },
+    "/notifications/send": {
+      "post": {
+        "tags": ["Notifications"],
+        "summary": "Send notification",
+        "description": "Send SMS, WhatsApp, or email notification",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": ["sms", "whatsapp", "email", "push"]
+                  },
+                  "recipients": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": { "type": "string" },
+                        "phone": { "type": "string" },
+                        "email": { "type": "string" },
+                        "whatsapp": { "type": "string" }
+                      }
+                    }
+                  },
+                  "template": { "type": "string" },
+                  "message": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Notification sent" }
+        }
+      }
+    },
+    "/notifications/templates": {
+      "get": {
+        "tags": ["Notifications"],
+        "summary": "Get notification templates",
+        "responses": {
+          "200": { "description": "List of templates" }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "email": { "type": "string" },
+          "role": {
+            "type": "string",
+            "enum": ["admin", "teacher", "parent", "student"]
+          }
+        }
+      },
+      "StudentInput": {
+        "type": "object",
+        "required": ["firstName", "lastName"],
+        "properties": {
+          "firstName": { "type": "string" },
+          "lastName": { "type": "string" },
+          "email": { "type": "string" },
+          "phone": { "type": "string" },
+          "gender": { "type": "string" },
+          "className": { "type": "string" },
+          "fatherName": { "type": "string" },
+          "fatherPhone": { "type": "string" }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "security": [{ "bearerAuth": [] }]
+}

@@ -4,7 +4,6 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev --port 3007",
-    "dev:all": "concurrently \"bun run dev --filter @school/api\" \"bun run dev\"",
     "build": "vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
@@ -15,19 +14,31 @@
     "test:e2e:install": "playwright install"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
     "@orpc/client": "^1.13.4",
     "@orpc/tanstack-query": "^1.13.4",
+    "@school/api": "workspace:*",
     "@tanstack/react-query": "^5.90.17",
     "@tanstack/react-router": "^1.147.3",
     "@tanstack/react-router-devtools": "^1.147.3",
     "@tanstack/react-start": "^1.147.3",
+    "@tanstack/react-table": "^8.21.3",
     "@tanstack/router-plugin": "^1.147.3",
+    "better-auth": "^1.3.5",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.562.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "sonner": "^1.7.4"
+    "react-hook-form": "^7.71.1",
+    "sonner": "^1.7.4",
+    "tailwind-merge": "^3.4.0",
+    "tailwindcss": "^4.1.18",
+    "zod": "^4.3.5"
   },
   "devDependencies": {
     "@playwright/test": "^1.40.0",
+    "@tailwindcss/vite": "^4.0.6",
     "@types/node": "^22.19.2",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",

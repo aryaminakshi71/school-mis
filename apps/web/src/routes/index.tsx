@@ -41,26 +41,44 @@ function HomePage() {
           </a>
         </section>
         <section className="max-w-7xl mx-auto px-4 py-16">
+          <h2 className="text-2xl font-bold text-center mb-8">Key Features</h2>
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-white p-6 rounded-lg shadow">
-              <div className="text-4xl mb-4">📊</div>
+            <a
+              href="/features"
+              className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-all block"
+            >
+              <div className="text-4xl mb-4">👥</div>
               <h3 className="text-xl font-semibold mb-2">Student Management</h3>
               <p className="text-gray-600">
                 Complete student lifecycle management
               </p>
-            </div>
-            <div className="bg-white p-6 rounded-lg shadow">
+            </a>
+            <a
+              href="/features"
+              className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-all block"
+            >
               <div className="text-4xl mb-4">📅</div>
               <h3 className="text-xl font-semibold mb-2">Attendance</h3>
               <p className="text-gray-600">
                 Automated tracking with notifications
               </p>
-            </div>
-            <div className="bg-white p-6 rounded-lg shadow">
+            </a>
+            <a
+              href="/features"
+              className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-all block"
+            >
               <div className="text-4xl mb-4">💰</div>
               <h3 className="text-xl font-semibold mb-2">Fees</h3>
               <p className="text-gray-600">Online payments and invoicing</p>
-            </div>
+            </a>
+          </div>
+          <div className="text-center mt-8">
+            <a
+              href="/features"
+              className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700"
+            >
+              View All Features →
+            </a>
           </div>
         </section>
       </main>

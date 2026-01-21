@@ -27,6 +27,8 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
+      "@school/api": ["./apps/api/src"],
+      "@school/api/*": ["./apps/api/src/*"],
       "@school/env": ["./packages/env/src"],
       "@school/env/*": ["./packages/env/src/*"],
       "@school/storage": ["./packages/storage/src"],
