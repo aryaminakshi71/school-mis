@@ -3,7 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite dev --port 3001",
+    "dev": "vite dev --port 3007",
+    "dev:all": "concurrently \"bun run dev --filter @school/api\" \"bun run dev\"",
     "build": "vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",

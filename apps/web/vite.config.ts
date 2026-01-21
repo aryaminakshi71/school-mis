@@ -24,4 +24,13 @@ export default defineConfig({
     }),
     viteReact(),
   ],
+  server: {
+    port: 3007,
+    proxy: {
+      "/api": {
+        target: "http://localhost:3000",
+        changeOrigin: true,
+      },
+    },
+  },
 });
