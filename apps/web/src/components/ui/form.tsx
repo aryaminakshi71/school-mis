@@ -2,7 +2,7 @@ import * as React from "react";
 import { useForm, Controller, FieldError } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { cn } from "../lib/utils";
+import { cn } from "../../lib/utils";
 import { AlertCircle } from "lucide-react";
 
 interface FormFieldProps {

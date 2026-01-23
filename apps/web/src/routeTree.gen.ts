@@ -12,21 +12,26 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as LoginRouteImport } from './routes/login'
-import { Route as FeaturesRouteImport } from './routes/features'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AppIndexRouteImport } from './routes/app.index'
+import { Route as AppIndexRouteImport } from './routes/app/index'
 import { Route as AppTransportRouteImport } from './routes/app.transport'
 import { Route as AppTeachersRouteImport } from './routes/app.teachers'
+import { Route as AppTeacherPortalRouteImport } from './routes/app.teacher-portal'
 import { Route as AppStudentsRouteImport } from './routes/app.students'
+import { Route as AppStudentPortalRouteImport } from './routes/app.student-portal'
+import { Route as AppStaffPortalRouteImport } from './routes/app.staff-portal'
 import { Route as AppSettingsRouteImport } from './routes/app.settings'
+import { Route as AppReportsRouteImport } from './routes/app.reports'
 import { Route as AppProfileRouteImport } from './routes/app.profile'
 import { Route as AppParentPortalRouteImport } from './routes/app.parent-portal'
 import { Route as AppNotificationsRouteImport } from './routes/app.notifications'
 import { Route as AppLibraryRouteImport } from './routes/app.library'
+import { Route as AppInventoryRouteImport } from './routes/app.inventory'
 import { Route as AppFeesRouteImport } from './routes/app.fees'
 import { Route as AppExamsRouteImport } from './routes/app.exams'
 import { Route as AppClassesRouteImport } from './routes/app.classes'
 import { Route as AppAttendanceRouteImport } from './routes/app.attendance'
+import { Route as ApiStudentsIndexRouteImport } from './routes/api/students/index'
 import { Route as AppTransportTrackingRouteImport } from './routes/app.transport.tracking'
 import { Route as AppStudentsIdRouteImport } from './routes/app.students.$id'
 import { Route as AppFeesReceiptIdRouteImport } from './routes/app.fees.receipt.$id'
@@ -44,11 +49,6 @@ const PricingRoute = PricingRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FeaturesRoute = FeaturesRouteImport.update({
-  id: '/features',
-  path: '/features',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -71,14 +71,34 @@ const AppTeachersRoute = AppTeachersRouteImport.update({
   path: '/app/teachers',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppTeacherPortalRoute = AppTeacherPortalRouteImport.update({
+  id: '/app/teacher-portal',
+  path: '/app/teacher-portal',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppStudentsRoute = AppStudentsRouteImport.update({
   id: '/app/students',
   path: '/app/students',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppStudentPortalRoute = AppStudentPortalRouteImport.update({
+  id: '/app/student-portal',
+  path: '/app/student-portal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppStaffPortalRoute = AppStaffPortalRouteImport.update({
+  id: '/app/staff-portal',
+  path: '/app/staff-portal',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppSettingsRoute = AppSettingsRouteImport.update({
   id: '/app/settings',
   path: '/app/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppReportsRoute = AppReportsRouteImport.update({
+  id: '/app/reports',
+  path: '/app/reports',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppProfileRoute = AppProfileRouteImport.update({
@@ -101,6 +121,11 @@ const AppLibraryRoute = AppLibraryRouteImport.update({
   path: '/app/library',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppInventoryRoute = AppInventoryRouteImport.update({
+  id: '/app/inventory',
+  path: '/app/inventory',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppFeesRoute = AppFeesRouteImport.update({
   id: '/app/fees',
   path: '/app/fees',
@@ -121,6 +146,11 @@ const AppAttendanceRoute = AppAttendanceRouteImport.update({
   path: '/app/attendance',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiStudentsIndexRoute = ApiStudentsIndexRouteImport.update({
+  id: '/api/students/',
+  path: '/api/students/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppTransportTrackingRoute = AppTransportTrackingRouteImport.update({
   id: '/tracking',
   path: '/tracking',
@@ -139,7 +169,6 @@ const AppFeesReceiptIdRoute = AppFeesReceiptIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/features': typeof FeaturesRoute
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
   '/signup': typeof SignupRoute
@@ -147,22 +176,27 @@ export interface FileRoutesByFullPath {
   '/app/classes': typeof AppClassesRoute
   '/app/exams': typeof AppExamsRoute
   '/app/fees': typeof AppFeesRouteWithChildren
+  '/app/inventory': typeof AppInventoryRoute
   '/app/library': typeof AppLibraryRoute
   '/app/notifications': typeof AppNotificationsRoute
   '/app/parent-portal': typeof AppParentPortalRoute
   '/app/profile': typeof AppProfileRoute
+  '/app/reports': typeof AppReportsRoute
   '/app/settings': typeof AppSettingsRoute
+  '/app/staff-portal': typeof AppStaffPortalRoute
+  '/app/student-portal': typeof AppStudentPortalRoute
   '/app/students': typeof AppStudentsRouteWithChildren
+  '/app/teacher-portal': typeof AppTeacherPortalRoute
   '/app/teachers': typeof AppTeachersRoute
   '/app/transport': typeof AppTransportRouteWithChildren
   '/app/': typeof AppIndexRoute
   '/app/students/$id': typeof AppStudentsIdRoute
   '/app/transport/tracking': typeof AppTransportTrackingRoute
+  '/api/students/': typeof ApiStudentsIndexRoute
   '/app/fees/receipt/$id': typeof AppFeesReceiptIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/features': typeof FeaturesRoute
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
   '/signup': typeof SignupRoute
@@ -170,23 +204,28 @@ export interface FileRoutesByTo {
   '/app/classes': typeof AppClassesRoute
   '/app/exams': typeof AppExamsRoute
   '/app/fees': typeof AppFeesRouteWithChildren
+  '/app/inventory': typeof AppInventoryRoute
   '/app/library': typeof AppLibraryRoute
   '/app/notifications': typeof AppNotificationsRoute
   '/app/parent-portal': typeof AppParentPortalRoute
   '/app/profile': typeof AppProfileRoute
+  '/app/reports': typeof AppReportsRoute
   '/app/settings': typeof AppSettingsRoute
+  '/app/staff-portal': typeof AppStaffPortalRoute
+  '/app/student-portal': typeof AppStudentPortalRoute
   '/app/students': typeof AppStudentsRouteWithChildren
+  '/app/teacher-portal': typeof AppTeacherPortalRoute
   '/app/teachers': typeof AppTeachersRoute
   '/app/transport': typeof AppTransportRouteWithChildren
   '/app': typeof AppIndexRoute
   '/app/students/$id': typeof AppStudentsIdRoute
   '/app/transport/tracking': typeof AppTransportTrackingRoute
+  '/api/students': typeof ApiStudentsIndexRoute
   '/app/fees/receipt/$id': typeof AppFeesReceiptIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/features': typeof FeaturesRoute
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
   '/signup': typeof SignupRoute
@@ -194,24 +233,29 @@ export interface FileRoutesById {
   '/app/classes': typeof AppClassesRoute
   '/app/exams': typeof AppExamsRoute
   '/app/fees': typeof AppFeesRouteWithChildren
+  '/app/inventory': typeof AppInventoryRoute
   '/app/library': typeof AppLibraryRoute
   '/app/notifications': typeof AppNotificationsRoute
   '/app/parent-portal': typeof AppParentPortalRoute
   '/app/profile': typeof AppProfileRoute
+  '/app/reports': typeof AppReportsRoute
   '/app/settings': typeof AppSettingsRoute
+  '/app/staff-portal': typeof AppStaffPortalRoute
+  '/app/student-portal': typeof AppStudentPortalRoute
   '/app/students': typeof AppStudentsRouteWithChildren
+  '/app/teacher-portal': typeof AppTeacherPortalRoute
   '/app/teachers': typeof AppTeachersRoute
   '/app/transport': typeof AppTransportRouteWithChildren
   '/app/': typeof AppIndexRoute
   '/app/students/$id': typeof AppStudentsIdRoute
   '/app/transport/tracking': typeof AppTransportTrackingRoute
+  '/api/students/': typeof ApiStudentsIndexRoute
   '/app/fees/receipt/$id': typeof AppFeesReceiptIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/features'
     | '/login'
     | '/pricing'
     | '/signup'
@@ -219,22 +263,27 @@ export interface FileRouteTypes {
     | '/app/classes'
     | '/app/exams'
     | '/app/fees'
+    | '/app/inventory'
     | '/app/library'
     | '/app/notifications'
     | '/app/parent-portal'
     | '/app/profile'
+    | '/app/reports'
     | '/app/settings'
+    | '/app/staff-portal'
+    | '/app/student-portal'
     | '/app/students'
+    | '/app/teacher-portal'
     | '/app/teachers'
     | '/app/transport'
     | '/app/'
     | '/app/students/$id'
     | '/app/transport/tracking'
+    | '/api/students/'
     | '/app/fees/receipt/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/features'
     | '/login'
     | '/pricing'
     | '/signup'
@@ -242,22 +291,27 @@ export interface FileRouteTypes {
     | '/app/classes'
     | '/app/exams'
     | '/app/fees'
+    | '/app/inventory'
     | '/app/library'
     | '/app/notifications'
     | '/app/parent-portal'
     | '/app/profile'
+    | '/app/reports'
     | '/app/settings'
+    | '/app/staff-portal'
+    | '/app/student-portal'
     | '/app/students'
+    | '/app/teacher-portal'
     | '/app/teachers'
     | '/app/transport'
     | '/app'
     | '/app/students/$id'
     | '/app/transport/tracking'
+    | '/api/students'
     | '/app/fees/receipt/$id'
   id:
     | '__root__'
     | '/'
-    | '/features'
     | '/login'
     | '/pricing'
     | '/signup'
@@ -265,23 +319,28 @@ export interface FileRouteTypes {
     | '/app/classes'
     | '/app/exams'
     | '/app/fees'
+    | '/app/inventory'
     | '/app/library'
     | '/app/notifications'
     | '/app/parent-portal'
     | '/app/profile'
+    | '/app/reports'
     | '/app/settings'
+    | '/app/staff-portal'
+    | '/app/student-portal'
     | '/app/students'
+    | '/app/teacher-portal'
     | '/app/teachers'
     | '/app/transport'
     | '/app/'
     | '/app/students/$id'
     | '/app/transport/tracking'
+    | '/api/students/'
     | '/app/fees/receipt/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  FeaturesRoute: typeof FeaturesRoute
   LoginRoute: typeof LoginRoute
   PricingRoute: typeof PricingRoute
   SignupRoute: typeof SignupRoute
@@ -289,15 +348,21 @@ export interface RootRouteChildren {
   AppClassesRoute: typeof AppClassesRoute
   AppExamsRoute: typeof AppExamsRoute
   AppFeesRoute: typeof AppFeesRouteWithChildren
+  AppInventoryRoute: typeof AppInventoryRoute
   AppLibraryRoute: typeof AppLibraryRoute
   AppNotificationsRoute: typeof AppNotificationsRoute
   AppParentPortalRoute: typeof AppParentPortalRoute
   AppProfileRoute: typeof AppProfileRoute
+  AppReportsRoute: typeof AppReportsRoute
   AppSettingsRoute: typeof AppSettingsRoute
+  AppStaffPortalRoute: typeof AppStaffPortalRoute
+  AppStudentPortalRoute: typeof AppStudentPortalRoute
   AppStudentsRoute: typeof AppStudentsRouteWithChildren
+  AppTeacherPortalRoute: typeof AppTeacherPortalRoute
   AppTeachersRoute: typeof AppTeachersRoute
   AppTransportRoute: typeof AppTransportRouteWithChildren
   AppIndexRoute: typeof AppIndexRoute
+  ApiStudentsIndexRoute: typeof ApiStudentsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -321,13 +386,6 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/features': {
-      id: '/features'
-      path: '/features'
-      fullPath: '/features'
-      preLoaderRoute: typeof FeaturesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -358,6 +416,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppTeachersRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app/teacher-portal': {
+      id: '/app/teacher-portal'
+      path: '/app/teacher-portal'
+      fullPath: '/app/teacher-portal'
+      preLoaderRoute: typeof AppTeacherPortalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/app/students': {
       id: '/app/students'
       path: '/app/students'
@@ -365,11 +430,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppStudentsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app/student-portal': {
+      id: '/app/student-portal'
+      path: '/app/student-portal'
+      fullPath: '/app/student-portal'
+      preLoaderRoute: typeof AppStudentPortalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app/staff-portal': {
+      id: '/app/staff-portal'
+      path: '/app/staff-portal'
+      fullPath: '/app/staff-portal'
+      preLoaderRoute: typeof AppStaffPortalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/app/settings': {
       id: '/app/settings'
       path: '/app/settings'
       fullPath: '/app/settings'
       preLoaderRoute: typeof AppSettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app/reports': {
+      id: '/app/reports'
+      path: '/app/reports'
+      fullPath: '/app/reports'
+      preLoaderRoute: typeof AppReportsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/app/profile': {
@@ -400,6 +486,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppLibraryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app/inventory': {
+      id: '/app/inventory'
+      path: '/app/inventory'
+      fullPath: '/app/inventory'
+      preLoaderRoute: typeof AppInventoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/app/fees': {
       id: '/app/fees'
       path: '/app/fees'
@@ -426,6 +519,13 @@ declare module '@tanstack/react-router' {
       path: '/app/attendance'
       fullPath: '/app/attendance'
       preLoaderRoute: typeof AppAttendanceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/students/': {
+      id: '/api/students/'
+      path: '/api/students'
+      fullPath: '/api/students/'
+      preLoaderRoute: typeof ApiStudentsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/app/transport/tracking': {
@@ -489,7 +589,6 @@ const AppTransportRouteWithChildren = AppTransportRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  FeaturesRoute: FeaturesRoute,
   LoginRoute: LoginRoute,
   PricingRoute: PricingRoute,
   SignupRoute: SignupRoute,
@@ -497,15 +596,21 @@ const rootRouteChildren: RootRouteChildren = {
   AppClassesRoute: AppClassesRoute,
   AppExamsRoute: AppExamsRoute,
   AppFeesRoute: AppFeesRouteWithChildren,
+  AppInventoryRoute: AppInventoryRoute,
   AppLibraryRoute: AppLibraryRoute,
   AppNotificationsRoute: AppNotificationsRoute,
   AppParentPortalRoute: AppParentPortalRoute,
   AppProfileRoute: AppProfileRoute,
+  AppReportsRoute: AppReportsRoute,
   AppSettingsRoute: AppSettingsRoute,
+  AppStaffPortalRoute: AppStaffPortalRoute,
+  AppStudentPortalRoute: AppStudentPortalRoute,
   AppStudentsRoute: AppStudentsRouteWithChildren,
+  AppTeacherPortalRoute: AppTeacherPortalRoute,
   AppTeachersRoute: AppTeachersRoute,
   AppTransportRoute: AppTransportRouteWithChildren,
   AppIndexRoute: AppIndexRoute,
+  ApiStudentsIndexRoute: ApiStudentsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

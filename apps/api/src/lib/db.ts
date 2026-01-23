@@ -17,7 +17,12 @@ function getPool(): Pool {
     "postgresql://postgres@localhost:5432/school_mis";
 
   if (!pool) {
-    pool = new Pool({ connectionString });
+    pool = new Pool({
+      connectionString,
+      max: 20,                    // Max connections
+      idleTimeoutMillis: 30000,   // 30 seconds
+      connectionTimeoutMillis: 2000, // 2 seconds
+    });
   }
 
   return pool;

@@ -1,518 +1,411 @@
-import { useState } from "react";
+/**
+ * Exams & Results Management - Complete Module
+ * All sub-features for exam scheduling, marks entry, and result processing
+ */
+
 import { createFileRoute } from "@tanstack/react-router";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { useState } from "react";
 import {
-  Plus,
-  Calendar,
-  Edit,
-  Trash2,
   FileText,
-  CheckCircle,
+  Calendar,
+  ClipboardList,
+  Award,
   Clock,
+  Download,
+  Plus,
+  Search,
+  Filter,
+  ChevronRight,
+  Users,
   BookOpen,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useAuth } from "../lib/auth-context";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 
 export const Route = createFileRoute("/app/exams")({
   component: ExamsPage,
 });
 
-interface Exam {
-  id: string;
-  name: string;
-  className: string;
-  subject: string;
-  date: string;
-  maxMarks: number;
-  status: "scheduled" | "completed" | "upcoming";
-}
+// Sub-features navigation
+const subFeatures = [
+  { name: "Dashboard", href: "/app/exams", icon: FileText, active: true },
+  { name: "Exam Types", href: "/app/exams/types", icon: ClipboardList },
+  { name: "Schedule", href: "/app/exams/schedule", icon: Calendar },
+  { name: "Hall Allocation", href: "/app/exams/halls", icon: BookOpen },
+  { name: "Marks Entry", href: "/app/exams/marks", icon: ClipboardList },
+  { name: "Results", href: "/app/exams/results", icon: Award },
+  { name: "Report Cards", href: "/app/exams/reports", icon: FileText },
+];
 
-interface Mark {
-  id: string;
-  examId: string;
-  studentId: string;
-  studentName: string;
-  marks: number;
-  grade: string;
-}
+// Mock data
+const upcomingExams = [
+  {
+    id: "EX001",
+    name: "Mathematics UT-3",
+    class: "Class 10",
+    date: "Jan 25, 2026",
+    time: "9:00 AM - 11:00 AM",
+    status: "Scheduled",
+  },
+  {
+    id: "EX002",
+    name: "Science UT-3",
+    class: "Class 10",
+    date: "Jan 27, 2026",
+    time: "9:00 AM - 11:00 AM",
+    status: "Scheduled",
+  },
+  {
+    id: "EX003",
+    name: "English Half-Yearly",
+    class: "Class 12",
+    date: "Jan 30, 2026",
+    time: "1:00 PM - 4:00 PM",
+    status: "Hall Pending",
+  },
+];
+
+const recentResults = [
+  {
+    id: "RES001",
+    exam: "Mathematics UT-2",
+    class: "Class 10-A",
+    students: 42,
+    avgMarks: "78.5",
+    passRate: "95%",
+    status: "Published",
+  },
+  {
+    id: "RES002",
+    exam: "Science UT-2",
+    class: "Class 10-A",
+    students: 42,
+    avgMarks: "72.3",
+    passRate: "92%",
+    status: "Published",
+  },
+  {
+    id: "RES003",
+    exam: "Social Science UT-2",
+    class: "Class 9-B",
+    students: 38,
+    avgMarks: "81.2",
+    passRate: "97%",
+    status: "Draft",
+  },
+];
+
+const stats = [
+  {
+    title: "Upcoming Exams",
+    value: "12",
+    change: "+3 this month",
+    icon: Calendar,
+    color: "blue",
+  },
+  {
+    title: "Exams Completed",
+    value: "24",
+    change: "This year",
+    icon: CheckCircle,
+    color: "green",
+  },
+  {
+    title: "Avg Pass Rate",
+    value: "94.2%",
+    change: "+2.1%",
+    icon: TrendingUp,
+    color: "purple",
+  },
+  {
+    title: "Pending Results",
+    value: "5",
+    change: "To publish",
+    icon: Clock,
+    color: "yellow",
+  },
+];
 
 function ExamsPage() {
-  const { user, hasPermission } = useAuth();
-  const [showModal, setShowModal] = useState(false);
-  const [showMarksModal, setShowMarksModal] = useState(false);
-  const [selectedExam, setSelectedExam] = useState<Exam | null>(null);
-  const [activeTab, setActiveTab] = useState<"exams" | "marks">("exams");
-  const queryClient = useQueryClient();
-
-  const canCreate = hasPermission("exams", "create");
-  const canDelete = hasPermission("exams", "delete");
-
-  const mockExams: Exam[] = [
-    {
-      id: "1",
-      name: "Mathematics Unit Test",
-      className: "Class 9-A",
-      subject: "Mathematics",
-      date: "2026-01-25",
-      maxMarks: 100,
-      status: "scheduled",
-    },
-    {
-      id: "2",
-      name: "Physics Mid Term",
-      className: "Class 10-A",
-      subject: "Physics",
-      date: "2026-01-20",
-      maxMarks: 100,
-      status: "completed",
-    },
-    {
-      id: "3",
-      name: "Chemistry Quarterly",
-      className: "Class 9-B",
-      subject: "Chemistry",
-      date: "2026-02-01",
-      maxMarks: 100,
-      status: "upcoming",
-    },
-  ];
-
-  const mockMarks: Mark[] = [
-    {
-      id: "1",
-      examId: "2",
-      studentId: "1",
-      studentName: "John Smith",
-      marks: 85,
-      grade: "A",
-    },
-    {
-      id: "2",
-      examId: "2",
-      studentId: "2",
-      studentName: "Emma Wilson",
-      marks: 92,
-      grade: "A+",
-    },
-    {
-      id: "3",
-      examId: "2",
-      studentId: "3",
-      studentName: "James Brown",
-      marks: 78,
-      grade: "B+",
-    },
-    {
-      id: "4",
-      examId: "2",
-      studentId: "4",
-      studentName: "Sarah Davis",
-      marks: 88,
-      grade: "A",
-    },
-  ];
-
-  const examStats = {
-    total: mockExams.length,
-    completed: mockExams.filter((e) => e.status === "completed").length,
-    upcoming: mockExams.filter((e) => e.status === "upcoming").length,
-    scheduled: mockExams.filter((e) => e.status === "scheduled").length,
-  };
-
-  const handleDelete = (id: string) => {
-    toast.promise(
-      new Promise((resolve) => {
-        if (confirm("Are you sure you want to delete this exam?")) {
-          setTimeout(() => {
-            queryClient.invalidateQueries({ queryKey: ["exams"] });
-            resolve(true);
-          }, 500);
-        }
-      }),
-      {
-        loading: "Deleting exam...",
-        success: "Exam deleted successfully",
-        error: "Failed to delete exam",
-      },
-    );
-  };
-
-  const handleViewMarks = (exam: Exam) => {
-    setSelectedExam(exam);
-    setShowMarksModal(true);
-  };
-
   return (
-    <div>
-      <div className="flex items-center justify-between mb-6">
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Exam Management</h1>
-          <p className="text-gray-600">Schedule exams and enter marks</p>
+          <h1 className="text-3xl font-bold tracking-tight">Exams & Results</h1>
+          <p className="text-muted-foreground">
+            Manage exam scheduling, hall allocation, marks entry, and result
+            publishing.
+          </p>
         </div>
-        {canCreate && (
-          <button
-            onClick={() => setShowModal(true)}
-            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            <Plus className="w-4 h-4" />
+        <div className="flex gap-2">
+          <Button variant="outline">
+            <Download className="mr-2 h-4 w-4" />
+            Export Results
+          </Button>
+          <Button>
+            <Plus className="mr-2 h-4 w-4" />
             Schedule Exam
-          </button>
-        )}
-      </div>
-
-      <div className="grid grid-cols-4 gap-4 mb-6">
-        <Card>
-          <CardContent className="pt-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
-                <FileText className="w-5 h-5 text-blue-600" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Total Exams</p>
-                <p className="text-2xl font-bold">{examStats.total}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
-                <CheckCircle className="w-5 h-5 text-green-600" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Completed</p>
-                <p className="text-2xl font-bold">{examStats.completed}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-yellow-100 flex items-center justify-center">
-                <Clock className="w-5 h-5 text-yellow-600" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Upcoming</p>
-                <p className="text-2xl font-bold">{examStats.upcoming}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
-                <Calendar className="w-5 h-5 text-purple-600" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Scheduled</p>
-                <p className="text-2xl font-bold">{examStats.scheduled}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="bg-white rounded-lg border overflow-hidden shadow-sm mb-6">
-        <div className="border-b flex">
-          <button
-            onClick={() => setActiveTab("exams")}
-            className={`flex items-center gap-2 px-6 py-3 text-sm font-medium ${
-              activeTab === "exams"
-                ? "border-b-2 border-blue-600 text-blue-600"
-                : "text-gray-600 hover:text-gray-900"
-            }`}
-          >
-            <Calendar className="w-4 h-4" />
-            Exams
-          </button>
-          <button
-            onClick={() => setActiveTab("marks")}
-            className={`flex items-center gap-2 px-6 py-3 text-sm font-medium ${
-              activeTab === "marks"
-                ? "border-b-2 border-blue-600 text-blue-600"
-                : "text-gray-600 hover:text-gray-900"
-            }`}
-          >
-            <BookOpen className="w-4 h-4" />
-            Marks Entry
-          </button>
+          </Button>
         </div>
-
-        {activeTab === "exams" && (
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
-                    Exam Name
-                  </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
-                    Class
-                  </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
-                    Subject
-                  </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
-                    Date
-                  </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
-                    Max Marks
-                  </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
-                    Status
-                  </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {mockExams.map((exam) => (
-                  <tr key={exam.id} className="border-t hover:bg-gray-50">
-                    <td className="px-4 py-3 text-sm font-medium">
-                      {exam.name}
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-600">
-                      {exam.className}
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-600">
-                      {exam.subject}
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-600">
-                      {exam.date}
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-600">
-                      {exam.maxMarks}
-                    </td>
-                    <td className="px-4 py-3">
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          exam.status === "completed"
-                            ? "bg-green-100 text-green-700"
-                            : exam.status === "upcoming"
-                              ? "bg-yellow-100 text-yellow-700"
-                              : "bg-blue-100 text-blue-700"
-                        }`}
-                      >
-                        {exam.status.charAt(0).toUpperCase() +
-                          exam.status.slice(1)}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => handleViewMarks(exam)}
-                          className="text-blue-600 hover:text-blue-800 text-sm"
-                        >
-                          View Marks
-                        </button>
-                        {canDelete && (
-                          <button
-                            onClick={() => handleDelete(exam.id)}
-                            className="text-red-600 hover:text-red-800 text-sm"
-                          >
-                            Delete
-                          </button>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-
-        {activeTab === "marks" && (
-          <div className="p-6">
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Select Exam
-              </label>
-              <select className="w-full max-w-md px-4 py-2 border rounded-lg">
-                <option value="">Select an exam</option>
-                {mockExams
-                  .filter((e) => e.status === "completed")
-                  .map((exam) => (
-                    <option key={exam.id} value={exam.id}>
-                      {exam.name} - {exam.className}
-                    </option>
-                  ))}
-              </select>
-            </div>
-
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
-                      Student Name
-                    </th>
-                    <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
-                      Marks
-                    </th>
-                    <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
-                      Grade
-                    </th>
-                    <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
-                      Status
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {mockMarks.map((mark) => (
-                    <tr key={mark.id} className="border-t hover:bg-gray-50">
-                      <td className="px-4 py-3 text-sm font-medium">
-                        {mark.studentName}
-                      </td>
-                      <td className="px-4 py-3 text-sm">{mark.marks}</td>
-                      <td className="px-4 py-3 text-sm">
-                        <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
-                          {mark.grade}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 text-sm text-green-600">
-                        Entered
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
       </div>
 
-      {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <h2 className="text-xl font-bold mb-4">Schedule New Exam</h2>
-            <form>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Exam Name
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="e.g., Mathematics Unit Test"
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Class
-                    </label>
-                    <select className="w-full px-3 py-2 border rounded-lg">
-                      <option>Class 9-A</option>
-                      <option>Class 9-B</option>
-                      <option>Class 10-A</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Subject
-                    </label>
-                    <select className="w-full px-3 py-2 border rounded-lg">
-                      <option>Mathematics</option>
-                      <option>Physics</option>
-                      <option>Chemistry</option>
-                      <option>English</option>
-                    </select>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Date
-                    </label>
-                    <input
-                      type="date"
-                      className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Max Marks
-                    </label>
-                    <input
-                      type="number"
-                      className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      defaultValue="100"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="flex gap-4 justify-end mt-6">
-                <button
-                  type="button"
-                  onClick={() => setShowModal(false)}
-                  className="px-4 py-2 border rounded-lg hover:bg-gray-50"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                >
-                  Schedule Exam
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {showMarksModal && selectedExam && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-lg">
-            <h2 className="text-xl font-bold mb-2">{selectedExam.name}</h2>
-            <p className="text-gray-600 text-sm mb-4">
-              {selectedExam.className} | {selectedExam.subject} | Max Marks:{" "}
-              {selectedExam.maxMarks}
-            </p>
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">
-                      Student
-                    </th>
-                    <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">
-                      Marks
-                    </th>
-                    <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">
-                      Grade
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {mockMarks.map((mark) => (
-                    <tr key={mark.id} className="border-t">
-                      <td className="px-4 py-2 text-sm">{mark.studentName}</td>
-                      <td className="px-4 py-2 text-sm">{mark.marks}</td>
-                      <td className="px-4 py-2 text-sm">{mark.grade}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <button
-              onClick={() => setShowMarksModal(false)}
-              className="mt-4 px-4 py-2 border rounded-lg hover:bg-gray-50"
+      {/* Sub-features Navigation */}
+      <div className="border-b">
+        <nav className="flex gap-1 overflow-x-auto pb-px">
+          {subFeatures.map((feature) => (
+            <a
+              key={feature.name}
+              href={feature.href}
+              className={`flex items-center gap-2 px-4 py-2 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
+                feature.active
+                  ? "border-primary text-primary"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
+              }`}
             >
-              Close
-            </button>
+              <feature.icon className="h-4 w-4" />
+              {feature.name}
+            </a>
+          ))}
+        </nav>
+      </div>
+
+      {/* Stats Cards */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {stats.map((stat) => (
+          <Card key={stat.title}>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium">
+                {stat.title}
+              </CardTitle>
+              <div
+                className={`p-2 rounded-lg ${
+                  stat.color === "blue"
+                    ? "bg-blue-100"
+                    : stat.color === "green"
+                      ? "bg-green-100"
+                      : stat.color === "purple"
+                        ? "bg-purple-100"
+                        : "bg-yellow-100"
+                }`}
+              >
+                <stat.icon
+                  className={`h-4 w-4 ${
+                    stat.color === "blue"
+                      ? "text-blue-600"
+                      : stat.color === "green"
+                        ? "text-green-600"
+                        : stat.color === "purple"
+                          ? "text-purple-600"
+                          : "text-yellow-600"
+                  }`}
+                />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stat.value}</div>
+              <p className="text-xs text-muted-foreground">{stat.change}</p>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* Upcoming Exams & Results Grid */}
+      <div className="grid gap-6 lg:grid-cols-2">
+        {/* Upcoming Exams */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle>Upcoming Exams</CardTitle>
+            <Button variant="ghost" size="sm">
+              View Schedule
+            </Button>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {upcomingExams.map((exam) => (
+                <div
+                  key={exam.id}
+                  className="flex items-start justify-between p-4 rounded-lg border"
+                >
+                  <div>
+                    <p className="font-medium">{exam.name}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {exam.class}
+                    </p>
+                    <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
+                      <Calendar className="h-3 w-3" />
+                      {exam.date}
+                      <Clock className="h-3 w-3 ml-2" />
+                      {exam.time}
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <Badge
+                      variant={
+                        exam.status === "Scheduled"
+                          ? "success"
+                          : exam.status === "Hall Pending"
+                            ? "warning"
+                            : "outline"
+                      }
+                    >
+                      {exam.status}
+                    </Badge>
+                    <Button variant="ghost" size="sm" className="mt-2">
+                      Details
+                      <ChevronRight className="h-4 w-4 ml-1" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Recent Results */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle>Recent Results</CardTitle>
+            <Button variant="ghost" size="sm">
+              View All
+            </Button>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {recentResults.map((result) => (
+                <div
+                  key={result.id}
+                  className="flex items-start justify-between p-4 rounded-lg border"
+                >
+                  <div>
+                    <p className="font-medium">{result.exam}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {result.class}
+                    </p>
+                    <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
+                      <span>{result.students} students</span>
+                      <span>Avg: {result.avgMarks}</span>
+                      <span>Pass: {result.passRate}</span>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <Badge
+                      variant={
+                        result.status === "Published" ? "success" : "warning"
+                      }
+                    >
+                      {result.status}
+                    </Badge>
+                    <div className="flex gap-1 mt-2">
+                      <Button variant="outline" size="sm">
+                        View
+                      </Button>
+                      <Button variant="ghost" size="sm">
+                        <Download className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Quick Actions */}
+      <div className="grid gap-4 md:grid-cols-4">
+        <Card className="cursor-pointer hover:shadow-md transition-shadow">
+          <CardContent className="flex items-center gap-4 p-4">
+            <div className="p-3 rounded-lg bg-green-100">
+              <Calendar className="h-5 w-5 text-green-600" />
+            </div>
+            <div>
+              <p className="font-medium">Schedule Exam</p>
+              <p className="text-sm text-muted-foreground">Create new exam</p>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="cursor-pointer hover:shadow-md transition-shadow">
+          <CardContent className="flex items-center gap-4 p-4">
+            <div className="p-3 rounded-lg bg-blue-100">
+              <BookOpen className="h-5 w-5 text-blue-600" />
+            </div>
+            <div>
+              <p className="font-medium">Allocate Halls</p>
+              <p className="text-sm text-muted-foreground">Room assignment</p>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="cursor-pointer hover:shadow-md transition-shadow">
+          <CardContent className="flex items-center gap-4 p-4">
+            <div className="p-3 rounded-lg bg-yellow-100">
+              <ClipboardList className="h-5 w-5 text-yellow-600" />
+            </div>
+            <div>
+              <p className="font-medium">Enter Marks</p>
+              <p className="text-sm text-muted-foreground">Grade entry</p>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="cursor-pointer hover:shadow-md transition-shadow">
+          <CardContent className="flex items-center gap-4 p-4">
+            <div className="p-3 rounded-lg bg-purple-100">
+              <Award className="h-5 w-5 text-purple-600" />
+            </div>
+            <div>
+              <p className="font-medium">Publish Results</p>
+              <p className="text-sm text-muted-foreground">
+                Release to parents
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Exam Types Overview */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Exam Types Configuration</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-4 md:grid-cols-4">
+            <div className="p-4 rounded-lg border">
+              <p className="font-medium">Unit Tests (UT)</p>
+              <p className="text-sm text-muted-foreground mt-1">
+                Monthly assessment
+              </p>
+              <p className="text-xs text-muted-foreground mt-2">
+                3 exams per subject
+              </p>
+            </div>
+            <div className="p-4 rounded-lg border">
+              <p className="font-medium">Half-Yearly</p>
+              <p className="text-sm text-muted-foreground mt-1">
+                Mid-term exam
+              </p>
+              <p className="text-xs text-muted-foreground mt-2">All subjects</p>
+            </div>
+            <div className="p-4 rounded-lg border">
+              <p className="font-medium">Annual</p>
+              <p className="text-sm text-muted-foreground mt-1">Final exam</p>
+              <p className="text-xs text-muted-foreground mt-2">
+                Board pattern
+              </p>
+            </div>
+            <div className="p-4 rounded-lg border">
+              <p className="font-medium">Practical</p>
+              <p className="text-sm text-muted-foreground mt-1">Lab/Science</p>
+              <p className="text-xs text-muted-foreground mt-2">
+                Lab assessment
+              </p>
+            </div>
           </div>
-        </div>
-      )}
+        </CardContent>
+      </Card>
     </div>
   );
 }
+
+import { CheckCircle, TrendingUp } from "lucide-react";

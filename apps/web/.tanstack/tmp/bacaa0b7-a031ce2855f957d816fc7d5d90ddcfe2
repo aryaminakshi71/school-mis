@@ -1,0 +1,85 @@
+/**
+ * App Layout (Dashboard)
+ *
+ * Protected layout for authenticated users.
+ * Includes sidebar navigation and error boundary.
+ */
+
+import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
+import {
+  SidebarProvider,
+  SidebarInset,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
+import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
+import { AppSidebar } from "@/components/dashboard/app-sidebar";
+import { ErrorBoundary } from "@/components/ui/error-boundary";
+import { useAuth } from "@/lib/auth-context";
+import { Search, MagnifyingGlass } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+export const Route = createFileRoute("/_app")({
+  component: AppLayout,
+});
+
+function AppLayout() {
+  const { user, isLoading } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isLoading && !user) {
+      navigate({ to: "/login" });
+    }
+  }, [user, isLoading, navigate]);
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return null;
+  }
+
+  return (
+    <ErrorBoundary>
+      <SidebarProvider>
+        <AppSidebar />
+        <SidebarInset>
+          <header className="flex h-14 shrink-0 items-center gap-2 border-b bg-background px-4">
+            <SidebarTrigger className="-ml-1" />
+            <Separator orientation="vertical" className="mr-2 h-4" />
+            <div className="flex-1" />
+            <Button
+              variant="outline"
+              size="sm"
+              className={cn(
+                "hidden md:flex items-center gap-2 text-muted-foreground",
+                "hover:text-foreground"
+              )}
+              onClick={() => {
+                window.dispatchEvent(
+                  new KeyboardEvent("keydown", { key: "k", metaKey: true })
+                );
+              }}
+            >
+              <MagnifyingGlass className="h-4 w-4" />
+              <span>Search...</span>
+              <kbd className="pointer-events-none ml-1 hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
+                <span className="text-xs">⌘</span>K
+              </kbd>
+            </Button>
+          </header>
+          <main className="flex-1 p-6 bg-background">
+            <Outlet />
+          </main>
+        </SidebarInset>
+      </SidebarProvider>
+    </ErrorBoundary>
+  );
+}

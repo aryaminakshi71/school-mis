@@ -11,6 +11,9 @@ import { cors } from "hono/cors";
 import { requestId } from "hono/request-id";
 import type { AppContext } from "./context.js";
 import { loggerMiddleware } from "./middleware/logger.js";
+import { initSentry } from "./lib/sentry.js";
+import { initDatadog } from "./lib/datadog.js";
+import { rateLimitRedis } from "./middleware/rate-limit-redis.js";
 import { appRouter } from "./routers/index.js";
 import { getDb } from "./lib/db.js";
 import {
@@ -48,6 +51,10 @@ function getNotificationMessage(data: Record<string, unknown>): string {
 export function createApp() {
   const app = new Hono();
 
+  // Initialize monitoring
+  initSentry();
+  initDatadog();
+
   // Global middleware
   app.use(
     "*",
@@ -55,6 +62,10 @@ export function createApp() {
   );
   app.use("*", requestId());
   app.use("*", loggerMiddleware);
+
+  // Rate limiting middleware
+  app.use("/api/*", rateLimitRedis({ limiterType: "api" }));
+  app.use("/api/auth/*", rateLimitRedis({ limiterType: "auth" }));
 
   // Health check (non-RPC)
   app.get("/api/health", (c: any) => {

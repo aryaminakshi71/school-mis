@@ -3,13 +3,27 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./redis": "./src/redis/index.ts"
+  },
+  "scripts": {
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio",
+    "db:seed": "bun seed.ts"
   },
   "dependencies": {
-    "drizzle-orm": "^0.45.0"
+    "@school/env": "workspace:*",
+    "@upstash/redis": "^1.36.1",
+    "drizzle-kit": "^0.31.8",
+    "drizzle-orm": "^0.45.1",
+    "postgres": "^3.4.8"
   },
   "devDependencies": {
+    "@types/node": "^22.19.2",
     "@types/pg": "^8.10.9",
+    "jose": "^5.9.0",
     "typescript": "^5.9.3"
   }
 }

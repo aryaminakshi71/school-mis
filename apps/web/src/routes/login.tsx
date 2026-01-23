@@ -1,7 +1,10 @@
 import { useState } from "react";
-import { createFileRoute, useRouter } from "@tanstack/react-router";
-import { useAuth } from "../lib/auth-context";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { useAuth } from "@/lib/auth-context";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export const Route = createFileRoute("/login")({
   component: LoginPage,
@@ -12,7 +15,7 @@ function LoginPage() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
-  const router = useRouter();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,7 +29,7 @@ function LoginPage() {
     try {
       await login(email, password);
       toast.success("Login successful!");
-      router.navigate({ to: "/app" });
+      navigate({ to: "/app" });
     } catch {
       toast.error("Login failed. Please try again.");
     } finally {
@@ -35,49 +38,95 @@ function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full bg-white p-8 rounded-lg shadow">
-        <h1 className="text-2xl font-bold text-center mb-8">Welcome Back</h1>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Email
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="you@school.edu"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Password
-            </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="••••••••"
-            />
-          </div>
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="block w-full bg-blue-600 text-white text-center py-3 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+    <div className="grid min-h-screen lg:grid-cols-2">
+      {/* Left column - Branding */}
+      <div className="relative hidden bg-primary lg:block">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/90 to-primary" />
+        <div className="relative flex h-full flex-col justify-between p-10 text-primary-foreground">
+          <Link
+            to="/"
+            className="flex items-center gap-2 text-lg font-semibold"
           >
-            {isLoading ? "Logging in..." : "Login"}
-          </button>
-        </form>
-        <p className="text-center mt-6 text-gray-600">
-          Don't have an account?{" "}
-          <a href="/signup" className="text-blue-600 hover:underline">
-            Sign up
-          </a>
-        </p>
+            <div className="flex size-8 items-center justify-center rounded-lg bg-primary-foreground/20">
+              <span className="text-sm font-bold">SM</span>
+            </div>
+            {"School MIS"}
+          </Link>
+          <div className="space-y-4">
+            <blockquote className="text-xl font-medium">
+              "Complete school management solution with all features you need."
+            </blockquote>
+            <footer className="text-sm opacity-80">
+              — School Administrator
+            </footer>
+          </div>
+        </div>
+      </div>
+
+      {/* Right column - Form */}
+      <div className="flex flex-col">
+        {/* Mobile header */}
+        <div className="flex h-14 items-center border-b px-6 lg:hidden">
+          <Link to="/" className="flex items-center gap-2 font-semibold">
+            <div className="flex size-6 items-center justify-center rounded bg-primary">
+              <span className="text-xs font-bold text-primary-foreground">
+                SM
+              </span>
+            </div>
+            {"School MIS"}
+          </Link>
+        </div>
+
+        {/* Form container */}
+        <div className="flex flex-1 items-center justify-center p-6 lg:p-10">
+          <div className="w-full max-w-sm">
+            <div className="text-center mb-8">
+              <h1 className="text-2xl font-bold">Welcome Back</h1>
+              <p className="text-muted-foreground mt-2">
+                Enter your credentials to access the dashboard
+              </p>
+            </div>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="you@school.edu"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading ? "Logging in..." : "Login"}
+              </Button>
+            </form>
+            <p className="text-center mt-6 text-sm text-muted-foreground">
+              Don't have an account?{" "}
+              <Link
+                to="/signup"
+                className="text-primary font-medium hover:underline"
+              >
+                Sign up
+              </Link>
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );
 }
+
+import { createFileRoute } from "@tanstack/react-router";

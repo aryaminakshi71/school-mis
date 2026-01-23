@@ -1,32 +1,24 @@
 /**
  * Storage Package Index
  *
- * Re-exports all database schemas and utilities.
+ * Re-exports all database schemas, utilities, and database connection.
  */
 
-export * from "./db/schema/school/school.schema.ts";
-
-// Re-export drizzle-orm query builders for convenience
+export * from "./db/schema/school/school.schema";
+export { db, type Database } from "./db";
 export {
-  // Query builders
-  select,
-  insert,
-  update,
-  delete as deleteQuery,
-  // Conditions
   eq,
-  and,
-  or,
-  not,
-  // Ordering
   desc,
   asc,
-  // SQL
-  sql,
-  // Aggregates
   count,
-  sum,
-  avg,
-  min,
-  max,
+  or,
+  like,
+  sql,
+  and,
+  gte,
+  ne,
+  lt,
+  lte,
+  gt,
+  inArray,
 } from "drizzle-orm";

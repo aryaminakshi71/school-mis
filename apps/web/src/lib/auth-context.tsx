@@ -10,6 +10,7 @@ import {
 export type UserRole =
   | "admin"
   | "teacher"
+  | "staff"
   | "accountant"
   | "librarian"
   | "parent"
@@ -68,6 +69,16 @@ export const ROLE_PERMISSIONS: RolePermissions[] = [
       { resource: "transport", actions: ["read"] },
       { resource: "exams", actions: ["create", "read", "update"] },
       { resource: "reports", actions: ["read"] },
+    ],
+  },
+  {
+    role: "staff",
+    description: "Non-teaching staff access",
+    permissions: [
+      { resource: "dashboard", actions: ["read"] },
+      { resource: "attendance", actions: ["read"] },
+      { resource: "payroll", actions: ["read"] },
+      { resource: "leave", actions: ["create", "read"] },
     ],
   },
   {
@@ -190,7 +201,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ action: "login", email, password }),
       });
 
       if (!res.ok) {

@@ -14,11 +14,10 @@ import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as FeaturesRouteImport } from './routes/features'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AppIndexRouteImport } from './routes/app.index'
+import { Route as AppIndexRouteImport } from './routes/app/index'
 import { Route as AppTransportRouteImport } from './routes/app.transport'
 import { Route as AppTeachersRouteImport } from './routes/app.teachers'
 import { Route as AppStudentsRouteImport } from './routes/app.students'
-import { Route as AppSettingsRouteImport } from './routes/app.settings'
 import { Route as AppProfileRouteImport } from './routes/app.profile'
 import { Route as AppParentPortalRouteImport } from './routes/app.parent-portal'
 import { Route as AppNotificationsRouteImport } from './routes/app.notifications'
@@ -74,11 +73,6 @@ const AppTeachersRoute = AppTeachersRouteImport.update({
 const AppStudentsRoute = AppStudentsRouteImport.update({
   id: '/app/students',
   path: '/app/students',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AppSettingsRoute = AppSettingsRouteImport.update({
-  id: '/app/settings',
-  path: '/app/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppProfileRoute = AppProfileRouteImport.update({
@@ -151,7 +145,6 @@ export interface FileRoutesByFullPath {
   '/app/notifications': typeof AppNotificationsRoute
   '/app/parent-portal': typeof AppParentPortalRoute
   '/app/profile': typeof AppProfileRoute
-  '/app/settings': typeof AppSettingsRoute
   '/app/students': typeof AppStudentsRouteWithChildren
   '/app/teachers': typeof AppTeachersRoute
   '/app/transport': typeof AppTransportRouteWithChildren
@@ -174,7 +167,6 @@ export interface FileRoutesByTo {
   '/app/notifications': typeof AppNotificationsRoute
   '/app/parent-portal': typeof AppParentPortalRoute
   '/app/profile': typeof AppProfileRoute
-  '/app/settings': typeof AppSettingsRoute
   '/app/students': typeof AppStudentsRouteWithChildren
   '/app/teachers': typeof AppTeachersRoute
   '/app/transport': typeof AppTransportRouteWithChildren
@@ -198,7 +190,6 @@ export interface FileRoutesById {
   '/app/notifications': typeof AppNotificationsRoute
   '/app/parent-portal': typeof AppParentPortalRoute
   '/app/profile': typeof AppProfileRoute
-  '/app/settings': typeof AppSettingsRoute
   '/app/students': typeof AppStudentsRouteWithChildren
   '/app/teachers': typeof AppTeachersRoute
   '/app/transport': typeof AppTransportRouteWithChildren
@@ -223,7 +214,6 @@ export interface FileRouteTypes {
     | '/app/notifications'
     | '/app/parent-portal'
     | '/app/profile'
-    | '/app/settings'
     | '/app/students'
     | '/app/teachers'
     | '/app/transport'
@@ -246,7 +236,6 @@ export interface FileRouteTypes {
     | '/app/notifications'
     | '/app/parent-portal'
     | '/app/profile'
-    | '/app/settings'
     | '/app/students'
     | '/app/teachers'
     | '/app/transport'
@@ -269,7 +258,6 @@ export interface FileRouteTypes {
     | '/app/notifications'
     | '/app/parent-portal'
     | '/app/profile'
-    | '/app/settings'
     | '/app/students'
     | '/app/teachers'
     | '/app/transport'
@@ -293,7 +281,6 @@ export interface RootRouteChildren {
   AppNotificationsRoute: typeof AppNotificationsRoute
   AppParentPortalRoute: typeof AppParentPortalRoute
   AppProfileRoute: typeof AppProfileRoute
-  AppSettingsRoute: typeof AppSettingsRoute
   AppStudentsRoute: typeof AppStudentsRouteWithChildren
   AppTeachersRoute: typeof AppTeachersRoute
   AppTransportRoute: typeof AppTransportRouteWithChildren
@@ -363,13 +350,6 @@ declare module '@tanstack/react-router' {
       path: '/app/students'
       fullPath: '/app/students'
       preLoaderRoute: typeof AppStudentsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/app/settings': {
-      id: '/app/settings'
-      path: '/app/settings'
-      fullPath: '/app/settings'
-      preLoaderRoute: typeof AppSettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/app/profile': {
@@ -501,7 +481,6 @@ const rootRouteChildren: RootRouteChildren = {
   AppNotificationsRoute: AppNotificationsRoute,
   AppParentPortalRoute: AppParentPortalRoute,
   AppProfileRoute: AppProfileRoute,
-  AppSettingsRoute: AppSettingsRoute,
   AppStudentsRoute: AppStudentsRouteWithChildren,
   AppTeachersRoute: AppTeachersRoute,
   AppTransportRoute: AppTransportRouteWithChildren,

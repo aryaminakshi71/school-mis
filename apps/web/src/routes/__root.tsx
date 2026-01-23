@@ -7,6 +7,7 @@ import {
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { Toaster } from "sonner";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { PostHogProvider } from "../components/providers/posthog-provider";
 import { ThemeProvider } from "../lib/theme-context";
 import { AuthProvider } from "../lib/auth-context";
 
@@ -36,16 +37,18 @@ function RootDocument() {
         <HeadContent />
       </head>
       <body>
-        <QueryClientProvider client={queryClient}>
-          <ThemeProvider>
-            <AuthProvider>
-              <Outlet />
-              <Toaster position="top-right" richColors />
-              <TanStackRouterDevtools />
-              <Scripts />
-            </AuthProvider>
-          </ThemeProvider>
-        </QueryClientProvider>
+        <PostHogProvider>
+          <QueryClientProvider client={queryClient}>
+            <ThemeProvider>
+              <AuthProvider>
+                <Outlet />
+                <Toaster position="top-right" richColors />
+                <TanStackRouterDevtools />
+                <Scripts />
+              </AuthProvider>
+            </ThemeProvider>
+          </QueryClientProvider>
+        </PostHogProvider>
       </body>
     </html>
   );

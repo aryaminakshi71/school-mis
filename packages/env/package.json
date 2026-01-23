@@ -3,12 +3,16 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./server": "./src/server.ts",
+    "./client": "./src/client.ts"
   },
   "scripts": {
     "types": "wrangler types src/cloudflare.d.ts --env-interface Env"
   },
-  "dependencies": {},
+  "dependencies": {
+    "zod": "^4.1.13"
+  },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250109.0"
   }

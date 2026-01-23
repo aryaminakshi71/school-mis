@@ -10,6 +10,7 @@ import { getDb } from "../../lib/db.js";
 import { students, classes } from "@school/storage";
 import { eq, like, and, desc, sql } from "drizzle-orm";
 import { randomUUID } from "crypto";
+import { getOrCache, invalidateCache } from "@school/storage/redis";
 
 export const studentsRouter = {
   list: pub
@@ -45,14 +46,21 @@ export const studentsRouter = {
       const { classId, sessionId, search, page, limit } = input;
       const offset = (page - 1) * limit;
 
-      const conditions = [];
-      if (classId) conditions.push(eq(students.classId, classId));
-      if (sessionId) conditions.push(eq(students.sessionId, sessionId));
-      if (search) {
-        conditions.push(like(students.firstName, `%${search}%`));
-      }
+      // Cache key for list queries
+      const cacheKey = `students:list:${JSON.stringify(input)}`;
 
-      const allStudents = await db
+      // Use cache for list queries (5 min TTL)
+      return getOrCache(
+        cacheKey,
+        async () => {
+          const conditions = [];
+          if (classId) conditions.push(eq(students.classId, classId));
+          if (sessionId) conditions.push(eq(students.sessionId, sessionId));
+          if (search) {
+            conditions.push(like(students.firstName, `%${search}%`));
+          }
+
+          const allStudents = await db
         .select({
           id: students.id,
           admissionNumber: students.admissionNumber,
@@ -79,15 +87,18 @@ export const studentsRouter = {
         .from(students)
         .where(and(...conditions));
 
-      return {
-        students: allStudents,
-        pagination: {
-          page,
-          limit,
-          total: Number(count) || 0,
-          totalPages: Math.ceil((Number(count) || 0) / limit),
+          return {
+            students: allStudents,
+            pagination: {
+              page,
+              limit,
+              total: Number(count) || 0,
+              totalPages: Math.ceil((Number(count) || 0) / limit),
+            },
+          };
         },
-      };
+        300 // 5 minutes
+      );
     }),
 
   get: pub
