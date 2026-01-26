@@ -4,7 +4,7 @@ import {
   users,
   userPasswords,
   userSessions,
-} from "@school/storage/src/db/schema/school/auth.schema";
+} from "@school/storage";
 import { eq, and, desc } from "drizzle-orm";
 import { createHmac, randomBytes } from "crypto";
 

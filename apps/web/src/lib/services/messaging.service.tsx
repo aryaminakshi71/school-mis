@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Send, Image, Paperclip, Smile, MoreVertical, Phone, Video } from "lucide-react";
-import { Button } from "../../ui/button";
-import { Input } from "../../ui/input";
+import { Button } from "../../components/ui/button";
+import { Input } from "../../components/ui/input";
 
 export interface Message {
   id: string;

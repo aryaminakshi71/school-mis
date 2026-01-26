@@ -45,7 +45,7 @@ export interface Class {
   name: string;
   section: string;
   capacity: number;
-  studentCount: number;
+  students: number;
   classTeacher: string;
 }
 
@@ -228,7 +228,7 @@ let classes: Class[] = [
     name: "Class 10",
     section: "A",
     capacity: 45,
-    studentCount: 42,
+    students: 42,
     classTeacher: "Dr. Rajesh Kumar",
   },
   {
@@ -236,7 +236,7 @@ let classes: Class[] = [
     name: "Class 10",
     section: "B",
     capacity: 45,
-    studentCount: 40,
+    students: 40,
     classTeacher: "Mrs. Priya Sharma",
   },
   {
@@ -244,7 +244,7 @@ let classes: Class[] = [
     name: "Class 11",
     section: "A",
     capacity: 40,
-    studentCount: 38,
+    students: 38,
     classTeacher: "Mr. Amit Singh",
   },
   {
@@ -252,7 +252,7 @@ let classes: Class[] = [
     name: "Class 8",
     section: "A",
     capacity: 45,
-    studentCount: 40,
+    students: 40,
     classTeacher: "Ms. Ananya Gupta",
   },
   {
@@ -260,7 +260,7 @@ let classes: Class[] = [
     name: "Class 12",
     section: "B",
     capacity: 40,
-    studentCount: 35,
+    students: 35,
     classTeacher: "Dr. Rajesh Kumar",
   },
 ];
@@ -461,6 +461,31 @@ export const api = {
   classes: {
     list: async () => classes,
     get: async (id: string) => classes.find((c) => c.id === id),
+    create: async (data: Omit<Class, "id" | "students">) => {
+      const newClass: Class = {
+        ...data,
+        id: uuid(),
+        students: 0,
+      };
+      classes.push(newClass);
+      return newClass;
+    },
+    update: async (id: string, data: Partial<Class>) => {
+      const index = classes.findIndex((c) => c.id === id);
+      if (index !== -1) {
+        classes[index] = { ...classes[index], ...data };
+        return classes[index];
+      }
+      return null;
+    },
+    delete: async (id: string) => {
+      const index = classes.findIndex((c) => c.id === id);
+      if (index !== -1) {
+        classes.splice(index, 1);
+        return true;
+      }
+      return false;
+    },
   },
 
   // Fees

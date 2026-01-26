@@ -1,134 +1,244 @@
+// Mock data for the School MIS
 
-import type { Asset, Folder, Tag } from "@/lib/types";
+export interface Student {
+    id: string
+    name: string
+    email: string
+    grade: string
+    section: string
+    rollNumber: string
+    phone: string
+    address: string
+    parentName: string
+    parentPhone: string
+    enrollmentDate: string
+    status: "active" | "inactive"
+}
 
-export const MOCK_FOLDERS: Folder[] = [
-    {
-        id: "f1",
-        name: "Marketing",
-        parentId: null,
-        createdAt: new Date().toISOString(),
-        organizationId: "o1",
-        color: "blue",
-        assetCount: 12
-    },
-    {
-        id: "f2",
-        name: "Product",
-        parentId: null,
-        createdAt: new Date().toISOString(),
-        organizationId: "o1",
-        color: "green",
-        assetCount: 5
-    },
-    {
-        id: "f3",
-        name: "Campaign 2024",
-        parentId: "f1",
-        createdAt: new Date().toISOString(),
-        organizationId: "o1",
-        color: "purple",
-        assetCount: 8
-    }
-];
+export interface Teacher {
+    id: string
+    name: string
+    email: string
+    subject: string
+    phone: string
+}
 
-export const MOCK_ASSETS: Asset[] = [
-    {
-        id: "a1",
-        name: "hero-banner.jpg",
-        description: "Main website hero banner",
-        type: "image",
-        mimeType: "image/jpeg",
-        size: 2450000,
-        folderId: "f3",
-        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(), // 2 hours ago
-        updatedAt: new Date().toISOString(),
-        uploadedBy: "u1",
-        organizationId: "o1",
-        r2Key: "assets/hero-banner.jpg",
-        r2Bucket: "assets",
-        thumbnailKey: "assets/hero-banner-thumb.jpg",
-        width: "1920",
-        height: "1080",
-        thumbnailUrl: "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&q=80&w=800",
-    },
-    {
-        id: "a2",
-        name: "product-demo.mp4",
-        description: "Q1 product walkthrough",
-        type: "video",
-        mimeType: "video/mp4",
-        size: 45000000,
-        folderId: "f2",
-        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(), // 1 day ago
-        updatedAt: new Date().toISOString(),
-        uploadedBy: "u1",
-        organizationId: "o1",
-        r2Key: "assets/product-demo.mp4",
-        r2Bucket: "assets",
-        thumbnailKey: null,
-        width: null,
-        height: null,
-    },
-    {
-        id: "a3",
-        name: "quarterly-report.pdf",
-        description: "Q4 Financials",
-        type: "document",
-        mimeType: "application/pdf",
-        size: 1200000,
-        folderId: "f1",
-        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 48).toISOString(), // 2 days ago
-        updatedAt: new Date().toISOString(),
-        uploadedBy: "u1",
-        organizationId: "o1",
-        r2Key: "assets/quarterly-report.pdf",
-        r2Bucket: "assets",
-        thumbnailKey: null,
-        width: null,
-        height: null,
-    },
-    {
-        id: "a4",
-        name: "logo-transparent.png",
-        description: null,
-        type: "image",
-        mimeType: "image/png",
-        size: 500000,
-        folderId: "f1",
-        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 72).toISOString(), // 3 days ago
-        updatedAt: new Date().toISOString(),
-        uploadedBy: "u1",
-        organizationId: "o1",
-        r2Key: "assets/logo.png",
-        r2Bucket: "assets",
-        thumbnailKey: "assets/logo-thumb.png",
-        width: "500",
-        height: "500",
-        thumbnailUrl: "https://images.unsplash.com/photo-1626544827763-d516dce335ca?auto=format&fit=crop&q=80&w=800",
-    },
-    {
-        id: "a5",
-        name: "meeting-recording.mp3",
-        description: null,
-        type: "audio",
-        mimeType: "audio/mpeg",
-        size: 15000000,
-        folderId: null,
-        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 96).toISOString(), // 4 days ago
-        updatedAt: new Date().toISOString(),
-        uploadedBy: "u1",
-        organizationId: "o1",
-        r2Key: "assets/meeting.mp3",
-        r2Bucket: "assets",
-        thumbnailKey: null,
-        width: null,
-        height: null,
-    }
-];
+export interface AttendanceRecord {
+    id: string
+    studentId: string
+    studentName: string
+    date: string
+    status: "present" | "absent" | "late" | "excused"
+    grade: string
+    section: string
+}
 
-export const MOCK_TAGS: Tag[] = [
-    { id: "t1", name: "urgent", color: "red", organizationId: "o1", createdAt: new Date().toISOString() },
-    { id: "t2", name: "approved", color: "green", organizationId: "o1", createdAt: new Date().toISOString() },
-    { id: "t3", name: "draft", color: "gray", organizationId: "o1", createdAt: new Date().toISOString() },
-    { id: "t4", name: "social", color: "blue", organizationId: "o1", createdAt: new Date().toISOString() }
-];
+export interface GradeRecord {
+    id: string
+    studentId: string
+    studentName: string
+    subject: string
+    examType: string
+    score: number
+    maxScore: number
+    grade: string
+    date: string
+}
+
+export interface ClassSchedule {
+    id: string
+    day: string
+    startTime: string
+    endTime: string
+    subject: string
+    teacher: string
+    room: string
+    grade: string
+    section: string
+}
+
+// Mock Students
+export const students: Student[] = [
+    {
+        id: "1",
+        name: "Emma Thompson",
+        email: "emma.thompson@school.edu",
+        grade: "10",
+        section: "A",
+        rollNumber: "10A001",
+        phone: "(555) 123-4567",
+        address: "123 Oak Street, Springfield",
+        parentName: "Robert Thompson",
+        parentPhone: "(555) 123-4568",
+        enrollmentDate: "2023-09-01",
+        status: "active",
+    },
+    {
+        id: "2",
+        name: "James Wilson",
+        email: "james.wilson@school.edu",
+        grade: "10",
+        section: "A",
+        rollNumber: "10A002",
+        phone: "(555) 234-5678",
+        address: "456 Maple Avenue, Springfield",
+        parentName: "Sarah Wilson",
+        parentPhone: "(555) 234-5679",
+        enrollmentDate: "2023-09-01",
+        status: "active",
+    },
+    {
+        id: "3",
+        name: "Sophia Martinez",
+        email: "sophia.martinez@school.edu",
+        grade: "10",
+        section: "B",
+        rollNumber: "10B001",
+        phone: "(555) 345-6789",
+        address: "789 Pine Road, Springfield",
+        parentName: "Carlos Martinez",
+        parentPhone: "(555) 345-6790",
+        enrollmentDate: "2023-09-01",
+        status: "active",
+    },
+    {
+        id: "4",
+        name: "Liam Anderson",
+        email: "liam.anderson@school.edu",
+        grade: "9",
+        section: "A",
+        rollNumber: "9A001",
+        phone: "(555) 456-7890",
+        address: "321 Elm Street, Springfield",
+        parentName: "Jennifer Anderson",
+        parentPhone: "(555) 456-7891",
+        enrollmentDate: "2023-09-01",
+        status: "active",
+    },
+    {
+        id: "5",
+        name: "Olivia Brown",
+        email: "olivia.brown@school.edu",
+        grade: "9",
+        section: "A",
+        rollNumber: "9A002",
+        phone: "(555) 567-8901",
+        address: "654 Cedar Lane, Springfield",
+        parentName: "Michael Brown",
+        parentPhone: "(555) 567-8902",
+        enrollmentDate: "2023-09-01",
+        status: "active",
+    },
+    {
+        id: "6",
+        name: "Noah Davis",
+        email: "noah.davis@school.edu",
+        grade: "9",
+        section: "B",
+        rollNumber: "9B001",
+        phone: "(555) 678-9012",
+        address: "987 Birch Drive, Springfield",
+        parentName: "Amanda Davis",
+        parentPhone: "(555) 678-9013",
+        enrollmentDate: "2023-09-01",
+        status: "active",
+    },
+    {
+        id: "7",
+        name: "Ava Johnson",
+        email: "ava.johnson@school.edu",
+        grade: "11",
+        section: "A",
+        rollNumber: "11A001",
+        phone: "(555) 789-0123",
+        address: "147 Walnut Street, Springfield",
+        parentName: "David Johnson",
+        parentPhone: "(555) 789-0124",
+        enrollmentDate: "2022-09-01",
+        status: "active",
+    },
+    {
+        id: "8",
+        name: "William Garcia",
+        email: "william.garcia@school.edu",
+        grade: "11",
+        section: "A",
+        rollNumber: "11A002",
+        phone: "(555) 890-1234",
+        address: "258 Spruce Avenue, Springfield",
+        parentName: "Maria Garcia",
+        parentPhone: "(555) 890-1235",
+        enrollmentDate: "2022-09-01",
+        status: "active",
+    },
+]
+
+// Mock Teachers
+export const teachers: Teacher[] = [
+    { id: "1", name: "Dr. Sarah Miller", email: "sarah.miller@school.edu", subject: "Mathematics", phone: "(555) 111-2222" },
+    { id: "2", name: "Mr. John Smith", email: "john.smith@school.edu", subject: "English", phone: "(555) 222-3333" },
+    { id: "3", name: "Ms. Emily Chen", email: "emily.chen@school.edu", subject: "Science", phone: "(555) 333-4444" },
+    { id: "4", name: "Mr. Robert Lee", email: "robert.lee@school.edu", subject: "History", phone: "(555) 444-5555" },
+    { id: "5", name: "Mrs. Lisa Park", email: "lisa.park@school.edu", subject: "Physics", phone: "(555) 555-6666" },
+]
+
+// Mock Attendance Records
+export const attendanceRecords: AttendanceRecord[] = [
+    { id: "1", studentId: "1", studentName: "Emma Thompson", date: "2026-01-25", status: "present", grade: "10", section: "A" },
+    { id: "2", studentId: "2", studentName: "James Wilson", date: "2026-01-25", status: "present", grade: "10", section: "A" },
+    { id: "3", studentId: "3", studentName: "Sophia Martinez", date: "2026-01-25", status: "absent", grade: "10", section: "B" },
+    { id: "4", studentId: "4", studentName: "Liam Anderson", date: "2026-01-25", status: "late", grade: "9", section: "A" },
+    { id: "5", studentId: "5", studentName: "Olivia Brown", date: "2026-01-25", status: "present", grade: "9", section: "A" },
+    { id: "6", studentId: "6", studentName: "Noah Davis", date: "2026-01-25", status: "excused", grade: "9", section: "B" },
+    { id: "7", studentId: "7", studentName: "Ava Johnson", date: "2026-01-25", status: "present", grade: "11", section: "A" },
+    { id: "8", studentId: "8", studentName: "William Garcia", date: "2026-01-25", status: "present", grade: "11", section: "A" },
+]
+
+// Mock Grade Records
+export const gradeRecords: GradeRecord[] = [
+    { id: "1", studentId: "1", studentName: "Emma Thompson", subject: "Mathematics", examType: "Midterm", score: 92, maxScore: 100, grade: "A", date: "2026-01-15" },
+    { id: "2", studentId: "1", studentName: "Emma Thompson", subject: "English", examType: "Midterm", score: 88, maxScore: 100, grade: "B+", date: "2026-01-15" },
+    { id: "3", studentId: "2", studentName: "James Wilson", subject: "Mathematics", examType: "Midterm", score: 78, maxScore: 100, grade: "C+", date: "2026-01-15" },
+    { id: "4", studentId: "2", studentName: "James Wilson", subject: "English", examType: "Midterm", score: 95, maxScore: 100, grade: "A", date: "2026-01-15" },
+    { id: "5", studentId: "3", studentName: "Sophia Martinez", subject: "Mathematics", examType: "Midterm", score: 85, maxScore: 100, grade: "B", date: "2026-01-15" },
+    { id: "6", studentId: "3", studentName: "Sophia Martinez", subject: "Science", examType: "Midterm", score: 91, maxScore: 100, grade: "A-", date: "2026-01-15" },
+    { id: "7", studentId: "4", studentName: "Liam Anderson", subject: "History", examType: "Midterm", score: 87, maxScore: 100, grade: "B+", date: "2026-01-15" },
+    { id: "8", studentId: "5", studentName: "Olivia Brown", subject: "Physics", examType: "Midterm", score: 94, maxScore: 100, grade: "A", date: "2026-01-15" },
+]
+
+// Mock Class Schedules
+export const classSchedules: ClassSchedule[] = [
+    { id: "1", day: "Monday", startTime: "08:00", endTime: "08:45", subject: "Mathematics", teacher: "Dr. Sarah Miller", room: "Room 101", grade: "10", section: "A" },
+    { id: "2", day: "Monday", startTime: "08:50", endTime: "09:35", subject: "English", teacher: "Mr. John Smith", room: "Room 102", grade: "10", section: "A" },
+    { id: "3", day: "Monday", startTime: "09:40", endTime: "10:25", subject: "Science", teacher: "Ms. Emily Chen", room: "Lab 1", grade: "10", section: "A" },
+    { id: "4", day: "Monday", startTime: "10:40", endTime: "11:25", subject: "History", teacher: "Mr. Robert Lee", room: "Room 103", grade: "10", section: "A" },
+    { id: "5", day: "Monday", startTime: "11:30", endTime: "12:15", subject: "Physics", teacher: "Mrs. Lisa Park", room: "Lab 2", grade: "10", section: "A" },
+    { id: "6", day: "Tuesday", startTime: "08:00", endTime: "08:45", subject: "English", teacher: "Mr. John Smith", room: "Room 102", grade: "10", section: "A" },
+    { id: "7", day: "Tuesday", startTime: "08:50", endTime: "09:35", subject: "Mathematics", teacher: "Dr. Sarah Miller", room: "Room 101", grade: "10", section: "A" },
+    { id: "8", day: "Tuesday", startTime: "09:40", endTime: "10:25", subject: "Physics", teacher: "Mrs. Lisa Park", room: "Lab 2", grade: "10", section: "A" },
+    { id: "9", day: "Wednesday", startTime: "08:00", endTime: "08:45", subject: "Science", teacher: "Ms. Emily Chen", room: "Lab 1", grade: "10", section: "A" },
+    { id: "10", day: "Wednesday", startTime: "08:50", endTime: "09:35", subject: "History", teacher: "Mr. Robert Lee", room: "Room 103", grade: "10", section: "A" },
+    { id: "11", day: "Thursday", startTime: "08:00", endTime: "08:45", subject: "Mathematics", teacher: "Dr. Sarah Miller", room: "Room 101", grade: "10", section: "A" },
+    { id: "12", day: "Friday", startTime: "08:00", endTime: "08:45", subject: "English", teacher: "Mr. John Smith", room: "Room 102", grade: "10", section: "A" },
+]
+
+// Dashboard statistics
+export const dashboardStats = {
+    totalStudents: 847,
+    totalTeachers: 52,
+    totalClasses: 32,
+    attendanceRate: 94.5,
+    studentChange: "+12",
+    teacherChange: "+3",
+    classChange: "+2",
+    attendanceChange: "+2.3%",
+}
+
+// Recent activities
+export const recentActivities = [
+    { id: "1", action: "New student enrolled", details: "Emma Thompson joined Grade 10-A", time: "2 hours ago", type: "enrollment" },
+    { id: "2", action: "Grades submitted", details: "Math midterm results for Grade 10", time: "4 hours ago", type: "grades" },
+    { id: "3", action: "Attendance marked", details: "Grade 9-A attendance completed", time: "5 hours ago", type: "attendance" },
+    { id: "4", action: "Schedule updated", details: "Physics lab moved to Lab 2", time: "Yesterday", type: "schedule" },
+    { id: "5", action: "Parent meeting scheduled", details: "PTA meeting on Jan 30", time: "Yesterday", type: "meeting" },
+]

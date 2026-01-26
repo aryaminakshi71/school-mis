@@ -1,6 +1,6 @@
 "use client";
 
-import { env } from "@school-mis/env";
+import { env } from "@school/env";
 import posthog from "posthog-js";
 import { PostHogProvider as PHProvider } from "posthog-js/react";
 import { useEffect, type ReactNode } from "react";

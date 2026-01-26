@@ -3,7 +3,9 @@
  * All sub-features for student lifecycle management
  */
 
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "@/lib/api";
 import { useState } from "react";
 import {
   Users,
@@ -32,6 +34,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { useSearch, useDebounce } from "@/lib/search-utils";
+import { exportToCSV, exportToExcel } from "@/lib/export-utils";
+import { useListPageShortcuts } from "@/lib/keyboard-shortcuts";
+import { Skeleton, SkeletonTable } from "@/components/ui/skeleton";
+import { useConfirmDialog } from "@/components/ui/confirm-dialog";
+import { toast } from "sonner";
+import { handleError } from "@/lib/error-handler";
 
 export const Route = createFileRoute("/app/students")({
   component: StudentsPage,
@@ -49,110 +58,136 @@ const subFeatures = [
 ];
 
 // Mock data
-const students = [
-  {
-    id: "STU001",
-    name: "Aryan Sharma",
-    class: "Class 10-A",
-    rollNo: "15",
-    father: "Rajesh Sharma",
-    phone: "+91 98765 43210",
-    email: "aryan@email.com",
-    attendance: "95%",
-    status: "Active",
-    fees: "Paid",
-  },
-  {
-    id: "STU002",
-    name: "Priya Patel",
-    class: "Class 9-B",
-    rollNo: "22",
-    father: "Suresh Patel",
-    phone: "+91 98765 43211",
-    email: "priya@email.com",
-    attendance: "92%",
-    status: "Active",
-    fees: "Pending",
-  },
-  {
-    id: "STU003",
-    name: "Rahul Singh",
-    class: "Class 11-A",
-    rollNo: "08",
-    father: "Amit Singh",
-    phone: "+91 98765 43212",
-    email: "rahul@email.com",
-    attendance: "88%",
-    status: "Active",
-    fees: "Paid",
-  },
-  {
-    id: "STU004",
-    name: "Ananya Gupta",
-    class: "Class 8-A",
-    rollNo: "31",
-    father: "Ravi Gupta",
-    phone: "+91 98765 43213",
-    email: "ananya@email.com",
-    attendance: "97%",
-    status: "Active",
-    fees: "Paid",
-  },
-  {
-    id: "STU005",
-    name: "Vikram Kumar",
-    class: "Class 12-B",
-    rollNo: "45",
-    father: "Sanjay Kumar",
-    phone: "+91 98765 43214",
-    email: "vikram@email.com",
-    attendance: "91%",
-    status: "Active",
-    fees: "Overdue",
-  },
-];
+// Mock data removed in favor of api.students.list()
 
-const stats = [
-  {
-    title: "Total Students",
-    value: "1,247",
-    change: "+12%",
-    icon: Users,
-    color: "blue",
-  },
-  {
-    title: "New Admissions (Month)",
-    value: "45",
-    change: "+8",
-    icon: UserPlus,
-    color: "green",
-  },
-  {
-    title: "Avg Attendance",
-    value: "94.2%",
-    change: "+2.1%",
-    icon: Calendar,
-    color: "purple",
-  },
-  {
-    title: "Fee Defaulters",
-    value: "23",
-    change: "-5",
-    icon: AlertCircle,
-    color: "red",
-  },
-];
+
 
 function StudentsPage() {
-  const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
   const [selectedClass, setSelectedClass] = useState("all");
+  const { confirm, dialog } = useConfirmDialog();
 
-  const filteredStudents = students.filter(
-    (student) =>
-      student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      student.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      student.class.toLowerCase().includes(searchTerm.toLowerCase()),
+  const { data: students = [], isLoading, error } = useQuery({
+    queryKey: ["students"],
+    queryFn: async () => {
+      try {
+        return await api.students.list();
+      } catch (err) {
+        const message = handleError(err);
+        toast.error(message);
+        throw err;
+      }
+    },
+  });
+
+  // Enhanced search with useSearch hook
+  const {
+    searchQuery,
+    setSearchQuery,
+    filteredData: filteredStudents,
+    hasActiveFilters,
+    clearSearch,
+  } = useSearch({
+    data: students,
+    searchFields: ["firstName", "lastName", "admissionNumber", "className", "email", "phone"],
+    searchQuery: "",
+  });
+
+  const debouncedSearch = useDebounce(searchQuery, 300);
+
+  // Apply class filter
+  const finalFilteredStudents = selectedClass === "all"
+    ? filteredStudents
+    : filteredStudents.filter((s) => s.className === selectedClass);
+
+  // Keyboard shortcuts
+  useListPageShortcuts(
+    () => navigate({ to: "/app/students", search: { action: "new" } }),
+    () => window.location.reload(),
+    () => handleExport()
   );
+
+  // Export functionality
+  const handleExport = () => {
+    try {
+      const exportData = finalFilteredStudents.map((s) => ({
+        "Admission Number": s.admissionNumber,
+        "First Name": s.firstName,
+        "Last Name": s.lastName,
+        "Class": s.className,
+        "Roll Number": s.rollNumber,
+        "Email": s.email || "",
+        "Phone": s.phone || "",
+        "Father Name": s.fatherName || "",
+        "Attendance": `${s.attendance}%`,
+        "Status": s.status,
+      }));
+
+      exportToCSV(exportData, `students-export-${new Date().toISOString().split("T")[0]}`, {
+        "Admission Number": "Admission Number",
+        "First Name": "First Name",
+        "Last Name": "Last Name",
+        "Class": "Class",
+        "Roll Number": "Roll Number",
+        "Email": "Email",
+        "Phone": "Phone",
+        "Father Name": "Father Name",
+        "Attendance": "Attendance %",
+        "Status": "Status",
+      });
+      toast.success("Students exported successfully");
+    } catch (err) {
+      toast.error(handleError(err));
+    }
+  };
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <Card className="max-w-md">
+          <CardContent className="pt-6">
+            <div className="text-center">
+              <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold mb-2">Error Loading Students</h3>
+              <p className="text-sm text-gray-600 mb-4">{handleError(error)}</p>
+              <Button onClick={() => window.location.reload()}>Retry</Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  const stats = [
+    {
+      title: "Total Students",
+      value: students.length.toString(),
+      change: "+12%",
+      icon: Users,
+      color: "blue",
+    },
+    {
+      title: "New Admissions (Month)",
+      value: "5",
+      change: "+2",
+      icon: UserPlus,
+      color: "green",
+    },
+    {
+      title: "Avg Attendance",
+      value: Math.round(students.reduce((acc, s) => acc + s.attendance, 0) / (students.length || 1)) + "%",
+      change: "+2.1%",
+      icon: Calendar,
+      color: "purple",
+    },
+    {
+      title: "Fee Defaulters",
+      value: "2",
+      change: "-1",
+      icon: AlertCircle,
+      color: "red",
+    },
+  ];
 
   return (
     <div className="space-y-6">
@@ -168,11 +203,15 @@ function StudentsPage() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline">
+          <Button 
+            variant="outline" 
+            onClick={handleExport}
+            disabled={isLoading || finalFilteredStudents.length === 0}
+          >
             <Download className="mr-2 h-4 w-4" />
-            Export
+            Export ({finalFilteredStudents.length})
           </Button>
-          <Button>
+          <Button onClick={() => navigate({ to: "/app/students", search: { action: "new" } })}>
             <UserPlus className="mr-2 h-4 w-4" />
             New Admission
           </Button>
@@ -186,11 +225,10 @@ function StudentsPage() {
             <a
               key={feature.name}
               href={feature.href}
-              className={`flex items-center gap-2 px-4 py-2 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
-                feature.active
-                  ? "border-primary text-primary"
-                  : "border-transparent text-muted-foreground hover:text-foreground"
-              }`}
+              className={`flex items-center gap-2 px-4 py-2 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${feature.active
+                ? "border-primary text-primary"
+                : "border-transparent text-muted-foreground hover:text-foreground"
+                }`}
             >
               <feature.icon className="h-4 w-4" />
               {feature.name}
@@ -208,26 +246,24 @@ function StudentsPage() {
                 {stat.title}
               </CardTitle>
               <div
-                className={`p-2 rounded-lg ${
-                  stat.color === "blue"
-                    ? "bg-blue-100"
-                    : stat.color === "green"
-                      ? "bg-green-100"
-                      : stat.color === "purple"
-                        ? "bg-purple-100"
-                        : "bg-red-100"
-                }`}
+                className={`p-2 rounded-lg ${stat.color === "blue"
+                  ? "bg-blue-100"
+                  : stat.color === "green"
+                    ? "bg-green-100"
+                    : stat.color === "purple"
+                      ? "bg-purple-100"
+                      : "bg-red-100"
+                  }`}
               >
                 <stat.icon
-                  className={`h-4 w-4 ${
-                    stat.color === "blue"
-                      ? "text-blue-600"
-                      : stat.color === "green"
-                        ? "text-green-600"
-                        : stat.color === "purple"
-                          ? "text-purple-600"
-                          : "text-red-600"
-                  }`}
+                  className={`h-4 w-4 ${stat.color === "blue"
+                    ? "text-blue-600"
+                    : stat.color === "green"
+                      ? "text-green-600"
+                      : stat.color === "purple"
+                        ? "text-purple-600"
+                        : "text-red-600"
+                    }`}
                 />
               </div>
             </CardHeader>
@@ -256,11 +292,22 @@ function StudentsPage() {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
-              placeholder="Search students..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              type="search"
+              placeholder="Search students... (Press / to focus)"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-9 w-[300px]"
             />
+            {hasActiveFilters && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={clearSearch}
+                className="absolute right-2 top-1/2 -translate-y-1/2 h-6 px-2 text-xs"
+              >
+                Clear
+              </Button>
+            )}
           </div>
           <select
             value={selectedClass}
@@ -288,45 +335,76 @@ function StudentsPage() {
       {/* Students Table */}
       <Card>
         <CardHeader>
-          <CardTitle>Student List</CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle>Student List</CardTitle>
+            {hasActiveFilters && (
+              <Badge variant="outline" className="text-xs">
+                {finalFilteredStudents.length} of {students.length} students
+              </Badge>
+            )}
+          </div>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b text-left text-sm text-muted-foreground">
-                  <th className="pb-3 font-medium">Student ID</th>
-                  <th className="pb-3 font-medium">Name</th>
-                  <th className="pb-3 font-medium">Class</th>
-                  <th className="pb-3 font-medium">Roll No</th>
-                  <th className="pb-3 font-medium">Father's Name</th>
-                  <th className="pb-3 font-medium">Contact</th>
-                  <th className="pb-3 font-medium">Attendance</th>
-                  <th className="pb-3 font-medium">Fees</th>
-                  <th className="pb-3 font-medium">Status</th>
-                  <th className="pb-3 font-medium">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredStudents.map((student) => (
+          {isLoading ? (
+            <SkeletonTable rows={5} cols={10} />
+          ) : finalFilteredStudents.length === 0 ? (
+            <div className="text-center py-12">
+              <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold mb-2">
+                {hasActiveFilters ? "No students found" : "No students yet"}
+              </h3>
+              <p className="text-sm text-gray-600 mb-4">
+                {hasActiveFilters
+                  ? "Try adjusting your search or filters"
+                  : "Get started by adding your first student"}
+              </p>
+              {hasActiveFilters ? (
+                <Button variant="outline" onClick={clearSearch}>
+                  Clear Filters
+                </Button>
+              ) : (
+                <Button onClick={() => navigate({ to: "/app/students", search: { action: "new" } })}>
+                  <UserPlus className="mr-2 h-4 w-4" />
+                  Add First Student
+                </Button>
+              )}
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b text-left text-sm text-muted-foreground">
+                    <th className="pb-3 font-medium">Student ID</th>
+                    <th className="pb-3 font-medium">Name</th>
+                    <th className="pb-3 font-medium">Class</th>
+                    <th className="pb-3 font-medium">Roll No</th>
+                    <th className="pb-3 font-medium">Father's Name</th>
+                    <th className="pb-3 font-medium">Contact</th>
+                    <th className="pb-3 font-medium">Attendance</th>
+                    <th className="pb-3 font-medium">Fees</th>
+                    <th className="pb-3 font-medium">Status</th>
+                    <th className="pb-3 font-medium">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {finalFilteredStudents.map((student) => (
                   <tr key={student.id} className="border-b last:border-0">
-                    <td className="py-3 text-sm">{student.id}</td>
+                    <td className="py-3 text-sm">{student.admissionNumber}</td>
                     <td className="py-3">
                       <div className="flex items-center gap-2">
-                        <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-                          <span className="text-xs font-medium text-primary">
-                            {student.name
-                              .split(" ")
-                              .map((n) => n[0])
-                              .join("")}
-                          </span>
-                        </div>
-                        <span className="font-medium">{student.name}</span>
+                        <Link to={`/app/students/${student.id}`} className="flex items-center gap-2 hover:underline">
+                          <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                            <span className="text-xs font-medium text-primary">
+                              {student.firstName[0]}{student.lastName[0]}
+                            </span>
+                          </div>
+                          <span className="font-medium">{student.firstName} {student.lastName}</span>
+                        </Link>
                       </div>
                     </td>
-                    <td className="py-3 text-sm">{student.class}</td>
-                    <td className="py-3 text-sm">{student.rollNo}</td>
-                    <td className="py-3 text-sm">{student.father}</td>
+                    <td className="py-3 text-sm">{student.className}</td>
+                    <td className="py-3 text-sm">{student.rollNumber}</td>
+                    <td className="py-3 text-sm">{student.fatherName}</td>
                     <td className="py-3 text-sm">
                       <div className="flex flex-col">
                         <span className="text-xs text-muted-foreground">
@@ -340,37 +418,29 @@ function StudentsPage() {
                     <td className="py-3">
                       <Badge
                         variant={
-                          parseFloat(student.attendance) >= 95
+                          student.attendance >= 95
                             ? "success"
-                            : parseFloat(student.attendance) >= 90
+                            : student.attendance >= 90
                               ? "default"
                               : "warning"
                         }
                       >
-                        {student.attendance}
+                        {student.attendance}%
                       </Badge>
                     </td>
                     <td className="py-3">
-                      <Badge
-                        variant={
-                          student.fees === "Paid"
-                            ? "success"
-                            : student.fees === "Pending"
-                              ? "warning"
-                              : "destructive"
-                        }
-                      >
-                        {student.fees}
-                      </Badge>
+                      <Badge variant="success">Paid</Badge>
                     </td>
                     <td className="py-3">
                       <Badge variant="outline">{student.status}</Badge>
                     </td>
                     <td className="py-3">
                       <div className="flex gap-1">
-                        <Button variant="ghost" size="icon" className="h-8 w-8">
-                          <Eye className="h-4 w-4" />
-                        </Button>
+                        <Link to={`/app/students/${student.id}`}>
+                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                        </Link>
                         <Button variant="ghost" size="icon" className="h-8 w-8">
                           <Edit className="h-4 w-4" />
                         </Button>
@@ -381,26 +451,31 @@ function StudentsPage() {
                     </td>
                   </tr>
                 ))}
-              </tbody>
-            </table>
-          </div>
+                </tbody>
+              </table>
+            </div>
+          )}
 
           {/* Pagination */}
-          <div className="flex items-center justify-between pt-4">
-            <p className="text-sm text-muted-foreground">
-              Showing 1-{filteredStudents.length} of {students.length} students
-            </p>
-            <div className="flex gap-2">
-              <Button variant="outline" size="sm" disabled>
-                Previous
-              </Button>
-              <Button variant="outline" size="sm">
-                Next
-              </Button>
+          {!isLoading && finalFilteredStudents.length > 0 && (
+            <div className="flex items-center justify-between pt-4 border-t">
+              <p className="text-sm text-muted-foreground">
+                Showing 1-{finalFilteredStudents.length} of {students.length} students
+                {hasActiveFilters && ` (filtered from ${students.length} total)`}
+              </p>
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" disabled>
+                  Previous
+                </Button>
+                <Button variant="outline" size="sm">
+                  Next
+                </Button>
+              </div>
             </div>
-          </div>
+          )}
         </CardContent>
       </Card>
+      {dialog}
 
       {/* Quick Actions */}
       <div className="grid gap-4 md:grid-cols-3">

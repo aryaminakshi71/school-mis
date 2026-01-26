@@ -1,4 +1,4 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useAuth, UserRole } from "../lib/auth-context";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -20,6 +20,8 @@ import {
   Mail,
   ChevronRight,
   Send,
+  ArrowLeft,
+  ExternalLink,
 } from "lucide-react";
 import {
   Card,
@@ -276,12 +278,22 @@ function ParentPortal() {
   const currentChild = mockChildren[selectedChild];
 
   return (
-    <div>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Parent Portal</h1>
-        <p className="text-gray-600">
-          Track your child&apos;s progress and school activities
-        </p>
+    <div className="space-y-6">
+      {/* Header with Back Button */}
+      <div className="flex flex-col gap-4">
+        <Link
+          to="/app"
+          className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-blue-600 transition-colors w-fit group"
+        >
+          <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
+          Back to Dashboard
+        </Link>
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Parent Portal</h1>
+          <p className="text-gray-600 text-lg">
+            Track your child&apos;s progress and school activities
+          </p>
+        </div>
       </div>
 
       {mockChildren.length > 1 && (
@@ -353,12 +365,22 @@ function ParentPortal() {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="w-5 h-5" />
-              Attendance
-            </CardTitle>
+        <Card className="border-2 shadow-md hover:shadow-xl transition-all">
+          <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50 border-b">
+            <div className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <div className="w-8 h-8 rounded-lg bg-green-600 flex items-center justify-center">
+                  <TrendingUp className="w-4 h-4 text-white" />
+                </div>
+                Attendance
+              </CardTitle>
+              <Link
+                to="/app/attendance"
+                className="text-sm text-green-600 hover:text-green-700 font-medium flex items-center gap-1"
+              >
+                View Details <ExternalLink className="w-3 h-3" />
+              </Link>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="text-center mb-4">
@@ -404,12 +426,22 @@ function ParentPortal() {
       </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <DollarSign className="w-5 h-5" />
-              Fee Status
-            </CardTitle>
+        <Card className="border-2 shadow-md hover:shadow-xl transition-all">
+          <CardHeader className="bg-gradient-to-r from-emerald-50 to-teal-50 border-b">
+            <div className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <div className="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center">
+                  <DollarSign className="w-4 h-4 text-white" />
+                </div>
+                Fee Status
+              </CardTitle>
+              <Link
+                to="/app/fees"
+                className="text-sm text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1"
+              >
+                Pay Now <ExternalLink className="w-3 h-3" />
+              </Link>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
@@ -440,12 +472,22 @@ function ParentPortal() {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Home className="w-5 h-5" />
-              Homework
-            </CardTitle>
+        <Card className="border-2 shadow-md hover:shadow-xl transition-all">
+          <CardHeader className="bg-gradient-to-r from-amber-50 to-orange-50 border-b">
+            <div className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <div className="w-8 h-8 rounded-lg bg-amber-600 flex items-center justify-center">
+                  <Home className="w-4 h-4 text-white" />
+                </div>
+                Homework
+              </CardTitle>
+              <Link
+                to="/app/gradebook"
+                className="text-sm text-amber-600 hover:text-amber-700 font-medium flex items-center gap-1"
+              >
+                View All <ExternalLink className="w-3 h-3" />
+              </Link>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
@@ -473,12 +515,22 @@ function ParentPortal() {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <BookMarked className="w-5 h-5" />
-              Library Books
-            </CardTitle>
+        <Card className="border-2 shadow-md hover:shadow-xl transition-all">
+          <CardHeader className="bg-gradient-to-r from-violet-50 to-purple-50 border-b">
+            <div className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <div className="w-8 h-8 rounded-lg bg-violet-600 flex items-center justify-center">
+                  <BookMarked className="w-4 h-4 text-white" />
+                </div>
+                Library Books
+              </CardTitle>
+              <Link
+                to="/app/library"
+                className="text-sm text-violet-600 hover:text-violet-700 font-medium flex items-center gap-1"
+              >
+                Browse <ExternalLink className="w-3 h-3" />
+              </Link>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">

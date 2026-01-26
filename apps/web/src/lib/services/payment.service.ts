@@ -208,16 +208,9 @@ class PaymentService {
     metadata?: Record<string, string>,
   ): Promise<{ orderId: string; amount: number } | null> {
     try {
-      const response = await fetch("/api/payments/create-order", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount, currency, metadata }),
-      });
-
-      if (!response.ok) throw new Error("Failed to create order");
-
-      const data = await response.json();
-      return { orderId: data.orderId, amount: data.amount };
+      // Mock order creation
+      await new Promise(resolve => setTimeout(resolve, 500));
+      return { orderId: `order_${Date.now()}`, amount };
     } catch (error) {
       console.error("Failed to create payment order:", error);
       return null;
@@ -226,13 +219,9 @@ class PaymentService {
 
   async verifyPayment(transactionId: string): Promise<boolean> {
     try {
-      const response = await fetch("/api/payments/verify", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ transactionId }),
-      });
-
-      return response.ok;
+      // Mock verification
+      await new Promise(resolve => setTimeout(resolve, 500));
+      return true;
     } catch {
       return false;
     }
@@ -326,19 +315,9 @@ class PaymentService {
     amount?: number,
   ): Promise<{ success: boolean; refundId?: string; error?: string }> {
     try {
-      const response = await fetch("/api/payments/refund", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ transactionId, amount }),
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        return { success: false, error: error.message };
-      }
-
-      const data = await response.json();
-      return { success: true, refundId: data.refundId };
+      // Mock refund
+      await new Promise(resolve => setTimeout(resolve, 500));
+      return { success: true, refundId: `ref_${Date.now()}` };
     } catch (error) {
       return { success: false, error: "Refund failed" };
     }

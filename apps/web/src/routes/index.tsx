@@ -25,6 +25,7 @@ import {
   Calculator,
   Car,
   Users as UsersIcon,
+  LayoutDashboard,
 } from "lucide-react";
 import {
   Card,
@@ -40,12 +41,12 @@ export const Route = createFileRoute("/")({
 
 const rolePortals = [
   {
-    title: "Admin Portal",
+    title: "Admin Dashboard",
     href: "/app",
-    icon: Shield,
+    icon: LayoutDashboard,
     color: "blue",
     description:
-      "Complete system access - all modules, users, settings, and reports",
+      "Complete system access - all modules, users, settings, and reports. Main control center for administrators.",
     features: [
       "All Modules",
       "User Management",
@@ -285,9 +286,9 @@ function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-8">
-              <a href="/" className="text-xl font-bold text-blue-600">
+              <Link to="/" className="text-xl font-bold text-blue-600 hover:text-blue-700 transition-colors">
                 School MIS
-              </a>
+              </Link>
               <div className="hidden md:flex items-center gap-6">
                 <a
                   href="#portals"
@@ -310,18 +311,19 @@ function HomePage() {
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <a
-                href="/login"
-                className="text-gray-600 hover:text-blue-600 font-medium text-sm"
+              <Link
+                to="/login"
+                className="text-gray-600 hover:text-blue-600 font-medium text-sm transition-colors"
               >
                 Login
-              </a>
-              <a
-                href="/app"
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm font-medium flex items-center gap-2"
+              </Link>
+              <Link
+                to="/app"
+                className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-5 py-2.5 rounded-lg hover:from-blue-700 hover:to-blue-800 text-sm font-semibold flex items-center gap-2 shadow-md hover:shadow-lg transition-all"
               >
-                Dashboard
-              </a>
+                <LayoutDashboard className="h-4 w-4" />
+                Admin Dashboard
+              </Link>
             </div>
           </div>
         </div>
@@ -339,18 +341,19 @@ function HomePage() {
               exams, transport, library, inventory, hostels, and more.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a
-                href="/app"
-                className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 font-medium flex items-center justify-center gap-2"
-              >
-                Go to Dashboard
-              </a>
-              <a
-                href="#portals"
-                className="border border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-50 font-medium flex items-center justify-center gap-2"
-              >
-                Explore Portals
-              </a>
+                <Link
+                  to="/app"
+                  className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-lg hover:from-blue-700 hover:to-blue-800 font-semibold flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all"
+                >
+                  <LayoutDashboard className="h-5 w-5" />
+                  Go to Admin Dashboard
+                </Link>
+                <a
+                  href="#portals"
+                  className="border-2 border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-50 hover:border-blue-300 font-medium flex items-center justify-center gap-2 transition-all"
+                >
+                  Explore Portals
+                </a>
             </div>
           </div>
         </div>
@@ -400,12 +403,12 @@ function HomePage() {
                       </div>
                     ))}
                   </div>
-                  <a
-                    href={portal.href}
-                    className="text-sm font-medium text-blue-600 hover:text-blue-700 flex items-center gap-1"
+                  <Link
+                    to={portal.href}
+                    className="text-sm font-semibold text-blue-600 hover:text-blue-700 flex items-center gap-1.5 transition-colors group"
                   >
-                    Access Portal <ArrowRight className="w-4 h-4" />
-                  </a>
+                    Access Portal <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </Link>
                 </CardContent>
               </Card>
             ))}

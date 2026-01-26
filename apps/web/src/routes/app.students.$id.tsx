@@ -1,14 +1,20 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { api } from "@/lib/api";
 
 export const Route = createFileRoute("/app/students/$id")({
   component: StudentDetailPage,
 });
 
 async function fetchStudent(id: string) {
-  const res = await fetch(`/api/students/${id}`);
-  if (!res.ok) throw new Error("Failed to fetch student");
-  return res.json();
+  // Simulate API delay
+  await new Promise((resolve) => setTimeout(resolve, 300));
+
+  // Find student from mock data
+  const student = await api.students.get(id);
+
+  if (!student) throw new Error("Student not found");
+  return student;
 }
 
 function StudentDetailPage() {

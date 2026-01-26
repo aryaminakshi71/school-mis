@@ -67,6 +67,21 @@ export function createApp() {
   app.use("/api/*", rateLimitRedis({ limiterType: "api" }));
   app.use("/api/auth/*", rateLimitRedis({ limiterType: "auth" }));
 
+  // Root route - API information
+  app.get("/", (c: any) => {
+    return c.json({
+      name: "School MIS API",
+      version: "1.0.0",
+      status: "running",
+      endpoints: {
+        health: "/api/health",
+        docs: "/api/openapi.json",
+        auth: "/api/auth/login",
+      },
+      message: "API server is running. Use /api/* endpoints.",
+    });
+  });
+
   // Health check (non-RPC)
   app.get("/api/health", (c: any) => {
     return c.json({

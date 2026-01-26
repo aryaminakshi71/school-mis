@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useAuth } from "../lib/auth-context";
 import {
   User,
@@ -16,6 +16,8 @@ import {
   Home,
   Edit,
   Download,
+  ArrowLeft,
+  ExternalLink,
 } from "lucide-react";
 import {
   Card,
@@ -316,29 +318,47 @@ function StudentPortal() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Student Portal</h1>
-          <p className="text-gray-600">
-            Welcome back, {studentData.personal.name}!
-          </p>
+      {/* Header with Back Button */}
+      <div className="flex flex-col gap-4">
+        <Link
+          to="/app"
+          className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-blue-600 transition-colors w-fit group"
+        >
+          <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
+          Back to Dashboard
+        </Link>
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Student Portal</h1>
+            <p className="text-gray-600 text-lg">
+              Welcome back, <span className="font-semibold text-gray-900">{studentData.personal.name}</span>!
+            </p>
+          </div>
+          <Button 
+            size="sm" 
+            className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-md hover:shadow-lg transition-all"
+          >
+            <Download className="w-4 h-4 mr-2" />
+            Download Profile
+          </Button>
         </div>
-        <Button size="sm">
-          <Download className="w-4 h-4 mr-2" />
-          Download Profile
-        </Button>
       </div>
 
       {/* Personal Info Card */}
-      <Card>
-        <CardHeader className="pb-3">
+      <Card className="border-2 shadow-lg hover:shadow-xl transition-shadow">
+        <CardHeader className="pb-3 bg-gradient-to-r from-blue-50 to-indigo-50 border-b">
           <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2">
-              <User className="w-5 h-5" />
+            <CardTitle className="flex items-center gap-2 text-xl">
+              <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center">
+                <User className="w-5 h-5 text-white" />
+              </div>
               Personal Information
             </CardTitle>
-            <Button variant="ghost" size="sm">
+            <Button 
+              variant="ghost" 
+              size="sm"
+              className="hover:bg-blue-100 text-blue-600"
+            >
               <Edit className="w-4 h-4 mr-1" />
               Edit
             </Button>
@@ -347,7 +367,7 @@ function StudentPortal() {
         <CardContent>
           <div className="flex flex-col md:flex-row gap-6">
             <div className="flex items-center gap-4">
-              <div className="w-20 h-20 rounded-full bg-blue-600 flex items-center justify-center text-white text-2xl font-bold">
+              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-white text-2xl font-bold shadow-lg ring-4 ring-blue-100">
                 {studentData.personal.name
                   .split(" ")
                   .map((n) => n[0])
@@ -392,60 +412,60 @@ function StudentPortal() {
 
       {/* Quick Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="pt-4">
+        <Card className="border-2 hover:shadow-lg transition-all cursor-pointer group hover:border-green-300">
+          <CardContent className="pt-6">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
-                <TrendingUp className="w-5 h-5 text-green-600" />
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                <TrendingUp className="w-6 h-6 text-white" />
               </div>
               <div>
-                <p className="text-2xl font-bold">{averageMarks.toFixed(1)}%</p>
-                <p className="text-sm text-gray-500">Average Marks</p>
+                <p className="text-3xl font-bold text-gray-900">{averageMarks.toFixed(1)}%</p>
+                <p className="text-sm font-medium text-gray-600">Average Marks</p>
               </div>
             </div>
           </CardContent>
         </Card>
-        <Card>
-          <CardContent className="pt-4">
+        <Card className="border-2 hover:shadow-lg transition-all cursor-pointer group hover:border-blue-300">
+          <CardContent className="pt-6">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
-                <Calendar className="w-5 h-5 text-blue-600" />
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                <Calendar className="w-6 h-6 text-white" />
               </div>
               <div>
-                <p className="text-2xl font-bold">
+                <p className="text-3xl font-bold text-gray-900">
                   {studentData.attendance.percentage}%
                 </p>
-                <p className="text-sm text-gray-500">Attendance</p>
+                <p className="text-sm font-medium text-gray-600">Attendance</p>
               </div>
             </div>
           </CardContent>
         </Card>
-        <Card>
-          <CardContent className="pt-4">
+        <Card className="border-2 hover:shadow-lg transition-all cursor-pointer group hover:border-purple-300">
+          <CardContent className="pt-6">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
-                <Book className="w-5 h-5 text-purple-600" />
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                <Book className="w-6 h-6 text-white" />
               </div>
               <div>
-                <p className="text-2xl font-bold">
+                <p className="text-3xl font-bold text-gray-900">
                   {studentData.libraryBooks.length}
                 </p>
-                <p className="text-sm text-gray-500">Library Books</p>
+                <p className="text-sm font-medium text-gray-600">Library Books</p>
               </div>
             </div>
           </CardContent>
         </Card>
-        <Card>
-          <CardContent className="pt-4">
+        <Card className="border-2 hover:shadow-lg transition-all cursor-pointer group hover:border-orange-300">
+          <CardContent className="pt-6">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center">
-                <DollarSign className="w-5 h-5 text-orange-600" />
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                <DollarSign className="w-6 h-6 text-white" />
               </div>
               <div>
-                <p className="text-2xl font-bold">
+                <p className="text-3xl font-bold text-gray-900">
                   ₹{(paidFees / 1000).toFixed(1)}K
                 </p>
-                <p className="text-sm text-gray-500">Fees Paid</p>
+                <p className="text-sm font-medium text-gray-600">Fees Paid</p>
               </div>
             </div>
           </CardContent>
@@ -454,12 +474,22 @@ function StudentPortal() {
 
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Subjects & Performance */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <BookOpen className="w-5 h-5" />
-              Subjects & Performance
-            </CardTitle>
+        <Card className="border-2 shadow-md hover:shadow-xl transition-all">
+          <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b">
+            <div className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
+                  <BookOpen className="w-4 h-4 text-white" />
+                </div>
+                Subjects & Performance
+              </CardTitle>
+              <Link
+                to="/app/exams"
+                className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
+              >
+                View All <ExternalLink className="w-3 h-3" />
+              </Link>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
@@ -497,12 +527,22 @@ function StudentPortal() {
         </Card>
 
         {/* Today's Timetable */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Clock className="w-5 h-5" />
-              Today&apos;s Timetable
-            </CardTitle>
+        <Card className="border-2 shadow-md hover:shadow-xl transition-all">
+          <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50 border-b">
+            <div className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <div className="w-8 h-8 rounded-lg bg-purple-600 flex items-center justify-center">
+                  <Clock className="w-4 h-4 text-white" />
+                </div>
+                Today&apos;s Timetable
+              </CardTitle>
+              <Link
+                to="/app/schedule"
+                className="text-sm text-purple-600 hover:text-purple-700 font-medium flex items-center gap-1"
+              >
+                Full Schedule <ExternalLink className="w-3 h-3" />
+              </Link>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
@@ -529,12 +569,22 @@ function StudentPortal() {
         </Card>
 
         {/* Pending Homework */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <FileText className="w-5 h-5" />
-              Homework & Assignments
-            </CardTitle>
+        <Card className="border-2 shadow-md hover:shadow-xl transition-all">
+          <CardHeader className="bg-gradient-to-r from-amber-50 to-orange-50 border-b">
+            <div className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <div className="w-8 h-8 rounded-lg bg-amber-600 flex items-center justify-center">
+                  <FileText className="w-4 h-4 text-white" />
+                </div>
+                Homework & Assignments
+              </CardTitle>
+              <Link
+                to="/app/gradebook"
+                className="text-sm text-amber-600 hover:text-amber-700 font-medium flex items-center gap-1"
+              >
+                View All <ExternalLink className="w-3 h-3" />
+              </Link>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
@@ -565,12 +615,22 @@ function StudentPortal() {
         </Card>
 
         {/* Fee Status */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <DollarSign className="w-5 h-5" />
-              Fee Status
-            </CardTitle>
+        <Card className="border-2 shadow-md hover:shadow-xl transition-all">
+          <CardHeader className="bg-gradient-to-r from-emerald-50 to-teal-50 border-b">
+            <div className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <div className="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center">
+                  <DollarSign className="w-4 h-4 text-white" />
+                </div>
+                Fee Status
+              </CardTitle>
+              <Link
+                to="/app/fees"
+                className="text-sm text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1"
+              >
+                Pay Fees <ExternalLink className="w-3 h-3" />
+              </Link>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="mb-4">
@@ -610,12 +670,22 @@ function StudentPortal() {
         </Card>
 
         {/* Library Books */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Library className="w-5 h-5" />
-              Library Books
-            </CardTitle>
+        <Card className="border-2 shadow-md hover:shadow-xl transition-all">
+          <CardHeader className="bg-gradient-to-r from-violet-50 to-purple-50 border-b">
+            <div className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <div className="w-8 h-8 rounded-lg bg-violet-600 flex items-center justify-center">
+                  <Library className="w-4 h-4 text-white" />
+                </div>
+                Library Books
+              </CardTitle>
+              <Link
+                to="/app/library"
+                className="text-sm text-violet-600 hover:text-violet-700 font-medium flex items-center gap-1"
+              >
+                Browse Library <ExternalLink className="w-3 h-3" />
+              </Link>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
@@ -639,12 +709,22 @@ function StudentPortal() {
         </Card>
 
         {/* Transport Info */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Bus className="w-5 h-5" />
-              Transport Details
-            </CardTitle>
+        <Card className="border-2 shadow-md hover:shadow-xl transition-all">
+          <CardHeader className="bg-gradient-to-r from-cyan-50 to-blue-50 border-b">
+            <div className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <div className="w-8 h-8 rounded-lg bg-cyan-600 flex items-center justify-center">
+                  <Bus className="w-4 h-4 text-white" />
+                </div>
+                Transport Details
+              </CardTitle>
+              <Link
+                to="/app/transport"
+                className="text-sm text-cyan-600 hover:text-cyan-700 font-medium flex items-center gap-1"
+              >
+                Track Bus <ExternalLink className="w-3 h-3" />
+              </Link>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 gap-4">

@@ -3,6 +3,7 @@
  */
 
 import { Outlet, useLocation, Link, useNavigate } from "@tanstack/react-router";
+import { ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 import {
   LayoutDashboard,
@@ -120,23 +121,23 @@ const secondaryNavItems: NavItem[] = [
 
 function NavLink({ item, isActive }: { item: NavItem; isActive: boolean }) {
   return (
-    <a
-      href={item.href}
+    <Link
+      to={item.href}
       className={cn(
-        "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+        "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200",
         isActive
-          ? "bg-primary text-primary-foreground"
-          : "text-muted-foreground hover:bg-gray-100 hover:text-gray-900",
+          ? "bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-md"
+          : "text-gray-700 hover:bg-gray-100 hover:text-gray-900 hover:shadow-sm",
       )}
     >
-      <item.icon className="h-4 w-4" />
-      <span>{item.label}</span>
+      <item.icon className={cn("h-4 w-4", isActive ? "text-white" : "text-gray-500")} />
+      <span className="font-medium">{item.label}</span>
       {item.badge && (
-        <span className="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
+        <span className="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">
           {item.badge}
         </span>
       )}
-    </a>
+    </Link>
   );
 }
 
@@ -188,29 +189,29 @@ export default function AppLayout() {
 
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-white border-r shadow-sm transform transition-transform lg:relative lg:translate-x-0",
+          "fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-white border-r border-gray-200 shadow-xl transform transition-transform lg:relative lg:translate-x-0",
           sidebarOpen ? "translate-x-0" : "-translate-x-full",
         )}
       >
-        <div className="flex h-14 items-center border-b px-4 bg-blue-600 text-white">
-          <a
-            href="/"
+        <div className="flex h-16 items-center border-b px-4 bg-gradient-to-r from-blue-600 via-blue-700 to-blue-600 text-white shadow-lg">
+          <Link
+            to="/app"
             className="flex items-center gap-2 font-bold hover:opacity-90 transition-opacity"
           >
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/20">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/20 backdrop-blur-sm shadow-md">
               <span className="text-sm font-bold">SM</span>
             </div>
-            <span className="hidden sm:inline">School MIS</span>
-          </a>
-          <a
-            href="/"
-            className="ml-auto text-xs bg-white/20 px-2 py-1 rounded hover:bg-white/30 transition-colors hidden sm:flex items-center gap-1"
+            <span className="hidden sm:inline text-lg">School MIS</span>
+          </Link>
+          <Link
+            to="/app"
+            className="ml-auto text-xs bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-lg hover:bg-white/30 transition-all duration-200 hidden sm:flex items-center gap-1.5 font-medium shadow-sm"
           >
-            <Home className="w-3 h-3" />
-            Back to Home
-          </a>
+            <Home className="w-3.5 h-3.5" />
+            Dashboard
+          </Link>
           <button
-            className="ml-auto lg:hidden text-white"
+            className="ml-auto lg:hidden text-white p-1.5 hover:bg-white/20 rounded-lg transition-colors"
             onClick={() => setSidebarOpen(false)}
           >
             <X className="h-5 w-5" />
@@ -272,22 +273,29 @@ export default function AppLayout() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuItem asChild>
-                <a href="/">
+                <Link to="/app">
                   <Home className="mr-2 h-4 w-4" />
-                  Back to Home
-                </a>
+                  Dashboard
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <a href="/app/profile">
+                <Link to="/">
+                  <Home className="mr-2 h-4 w-4" />
+                  Landing Page
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Link to="/app/profile">
                   <User className="mr-2 h-4 w-4" />
                   Profile
-                </a>
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <a href="/app/settings">
+                <Link to="/app/settings">
                   <Settings className="mr-2 h-4 w-4" />
                   Settings
-                </a>
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => navigate({ to: "/login" })}>
@@ -300,43 +308,44 @@ export default function AppLayout() {
       </aside>
 
       <div className="flex flex-1 flex-col overflow-hidden">
-        <header className="flex h-14 items-center gap-4 border-b bg-white px-4 lg:px-6 shadow-sm">
+        <header className="flex h-16 items-center gap-4 border-b bg-white px-4 lg:px-6 shadow-md">
           <button
-            className="lg:hidden p-2 hover:bg-gray-100 rounded-lg"
+            className="lg:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
             onClick={() => setSidebarOpen(true)}
           >
             <Menu className="h-5 w-5" />
           </button>
 
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => window.history.back()}
-              className="p-2 hover:bg-gray-100 rounded-lg text-gray-600 hidden sm:flex items-center gap-1"
-              title="Go back"
+            <Link
+              to="/app"
+              className="p-2 hover:bg-gray-100 rounded-lg text-gray-600 flex items-center gap-1.5 transition-colors group"
+              title="Back to Dashboard"
             >
-              <ChevronRight className="h-4 w-4 rotate-180" />
-              <span className="text-sm">Back</span>
-            </button>
+              <ArrowLeft className="h-4 w-4 group-hover:text-blue-600 transition-colors" />
+              <span className="text-sm font-medium hidden sm:inline group-hover:text-blue-600 transition-colors">Dashboard</span>
+            </Link>
           </div>
 
-          <nav className="hidden md:flex items-center gap-1 text-sm">
+          <nav className="hidden md:flex items-center gap-1.5 text-sm bg-gray-50 px-3 py-1.5 rounded-lg">
             {breadcrumbs.map((crumb, index) => (
-              <div key={crumb.href} className="flex items-center gap-1">
+              <div key={crumb.href} className="flex items-center gap-1.5">
                 {index > 0 && (
-                  <ChevronRight className="h-4 w-4 text-gray-400" />
+                  <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
                 )}
                 {index === breadcrumbs.length - 1 ? (
-                  <span className="font-medium text-gray-900">
+                  <span className="font-semibold text-gray-900 flex items-center gap-1.5">
+                    {crumb.icon && <crumb.icon className="h-3.5 w-3.5 text-blue-600" />}
                     {crumb.label}
                   </span>
                 ) : (
-                  <a
-                    href={crumb.href}
-                    className="text-gray-500 hover:text-gray-900 flex items-center gap-1"
+                  <Link
+                    to={crumb.href}
+                    className="text-gray-600 hover:text-blue-600 flex items-center gap-1.5 transition-colors font-medium"
                   >
-                    {crumb.icon && <crumb.icon className="h-3 w-3" />}
+                    {crumb.icon && <crumb.icon className="h-3.5 w-3.5" />}
                     {crumb.label}
-                  </a>
+                  </Link>
                 )}
               </div>
             ))}
@@ -346,27 +355,27 @@ export default function AppLayout() {
 
           <button
             className={cn(
-              "hidden md:flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900",
-              "cursor-pointer px-3 py-1.5 rounded-md border border-gray-200 bg-gray-50 hover:bg-white",
+              "hidden md:flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900",
+              "cursor-pointer px-4 py-2 rounded-lg border border-gray-200 bg-white hover:border-blue-300 hover:shadow-sm transition-all",
             )}
           >
             <Search className="h-4 w-4" />
-            <span>Search...</span>
-            <kbd className="pointer-events-none ml-1 hidden h-5 select-none items-center gap-1 rounded border bg-gray-100 px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
+            <span className="text-gray-500">Search...</span>
+            <kbd className="pointer-events-none ml-1 hidden h-5 select-none items-center gap-1 rounded border bg-gray-50 px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
               <span className="text-xs">⌘</span>K
             </kbd>
           </button>
 
           <Button
             size="sm"
-            className="hidden sm:flex bg-blue-600 hover:bg-blue-700"
+            className="hidden sm:flex bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-md hover:shadow-lg transition-all"
           >
-            <Plus className="h-4 w-4 mr-1" />
+            <Plus className="h-4 w-4 mr-1.5" />
             Add New
           </Button>
         </header>
 
-        <main className="flex-1 overflow-auto p-4 lg:p-6 bg-gray-50">
+        <main className="flex-1 overflow-auto p-4 lg:p-6 bg-gradient-to-br from-gray-50 via-white to-gray-50">
           <div className="mx-auto max-w-7xl">
             <Outlet />
           </div>

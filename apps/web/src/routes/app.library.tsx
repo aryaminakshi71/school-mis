@@ -11,7 +11,15 @@ import {
   BookCheck,
   Edit,
   Send,
+  Search,
+  Download,
 } from "lucide-react";
+import { useSearch } from "@/lib/search-utils";
+import { exportToCSV } from "@/lib/export-utils";
+import { useListPageShortcuts } from "@/lib/keyboard-shortcuts";
+import { handleError } from "@/lib/error-handler";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export const Route = createFileRoute("/app/library")({
   component: LibraryPage,
@@ -20,6 +28,65 @@ export const Route = createFileRoute("/app/library")({
 function LibraryPage() {
   const [showModal, setShowModal] = useState(false);
   const [activeTab, setActiveTab] = useState<"books" | "issues">("books");
+
+  // Search functionality
+  const {
+    searchQuery: booksSearchQuery,
+    setSearchQuery: setBooksSearchQuery,
+    filteredData: filteredBooks,
+    hasActiveFilters: hasBooksFilters,
+    clearSearch: clearBooksSearch,
+  } = useSearch({
+    data: mockBooks,
+    searchFields: ["title", "author", "category"],
+  });
+
+  const {
+    searchQuery: issuesSearchQuery,
+    setSearchQuery: setIssuesSearchQuery,
+    filteredData: filteredIssues,
+    hasActiveFilters: hasIssuesFilters,
+    clearSearch: clearIssuesSearch,
+  } = useSearch({
+    data: mockIssues,
+    searchFields: ["book", "student", "id"],
+  });
+
+  // Export functionality
+  const handleExport = () => {
+    try {
+      if (activeTab === "books") {
+        const exportData = mockBooks.map((b) => ({
+          "Title": b.title,
+          "Author": b.author,
+          "Category": b.category,
+          "Available": b.available.toString(),
+          "Total": b.total.toString(),
+        }));
+        exportToCSV(exportData, `library-books-export-${new Date().toISOString().split("T")[0]}`);
+        toast.success("Books exported successfully");
+      } else {
+        const exportData = mockIssues.map((i) => ({
+          "Book": i.book,
+          "Student": i.student,
+          "Issue Date": i.issueDate,
+          "Due Date": i.dueDate,
+          "Status": i.status,
+        }));
+        exportToCSV(exportData, `library-issues-export-${new Date().toISOString().split("T")[0]}`);
+        toast.success("Book issues exported successfully");
+      }
+    } catch (err) {
+      toast.error(handleError(err));
+    }
+  };
+
+  // Keyboard shortcuts
+  useListPageShortcuts(
+    () => setShowModal(true),
+    () => window.location.reload(),
+    () => handleExport()
+  );
 
   const mockBooks = [
     {
@@ -107,13 +174,20 @@ function LibraryPage() {
           </h1>
           <p className="text-gray-600">Manage books and book issues</p>
         </div>
-        <button
-          onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          <Plus className="w-4 h-4" />
-          Add Book
-        </button>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={handleExport}
+            disabled={activeTab === "books" ? mockBooks.length === 0 : mockIssues.length === 0}
+          >
+            <Download className="mr-2 h-4 w-4" />
+            Export
+          </Button>
+          <Button onClick={() => setShowModal(true)}>
+            <Plus className="mr-2 h-4 w-4" />
+            Add Book
+          </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-4 gap-4 mb-6">
@@ -174,28 +248,59 @@ function LibraryPage() {
         </div>
 
         {activeTab === "books" ? (
-          <table className="w-full">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
-                  Title
-                </th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
-                  Author
-                </th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
-                  Category
-                </th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
-                  Available
-                </th>
+          <div>
+            {/* Search */}
+            <div className="p-4 border-b">
+              <div className="relative max-w-md">
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  type="search"
+                  placeholder="Search books... (Press / to focus)"
+                  value={booksSearchQuery}
+                  onChange={(e) => setBooksSearchQuery(e.target.value)}
+                  className="pl-9"
+                />
+                {hasBooksFilters && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={clearBooksSearch}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 h-6 px-2 text-xs"
+                  >
+                    Clear
+                  </Button>
+                )}
+              </div>
+            </div>
+            <table className="w-full">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
+                    Title
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
+                    Author
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
+                    Category
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
+                    Available
+                  </th>
                 <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
                   Actions
                 </th>
               </tr>
             </thead>
             <tbody>
-              {mockBooks.map((book) => (
+              {filteredBooks.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="px-4 py-8 text-center text-gray-500">
+                    {hasBooksFilters ? "No books found" : "No books available"}
+                  </td>
+                </tr>
+              ) : (
+                filteredBooks.map((book) => (
                 <tr key={book.id} className="border-t hover:bg-gray-50">
                   <td className="px-4 py-3 text-sm font-medium">
                     {book.title}
@@ -222,11 +327,37 @@ function LibraryPage() {
                     </button>
                   </td>
                 </tr>
-              ))}
+                ))
+              )}
             </tbody>
           </table>
+          </div>
         ) : (
-          <table className="w-full">
+          <div>
+            {/* Search */}
+            <div className="p-4 border-b">
+              <div className="relative max-w-md">
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  type="search"
+                  placeholder="Search issues... (Press / to focus)"
+                  value={issuesSearchQuery}
+                  onChange={(e) => setIssuesSearchQuery(e.target.value)}
+                  className="pl-9"
+                />
+                {hasIssuesFilters && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={clearIssuesSearch}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 h-6 px-2 text-xs"
+                  >
+                    Clear
+                  </Button>
+                )}
+              </div>
+            </div>
+            <table className="w-full">
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
@@ -250,7 +381,14 @@ function LibraryPage() {
               </tr>
             </thead>
             <tbody>
-              {mockIssues.map((issue) => (
+              {filteredIssues.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="px-4 py-8 text-center text-gray-500">
+                    {hasIssuesFilters ? "No issues found" : "No book issues"}
+                  </td>
+                </tr>
+              ) : (
+                filteredIssues.map((issue) => (
                 <tr key={issue.id} className="border-t hover:bg-gray-50">
                   <td className="px-4 py-3 text-sm font-medium">
                     {issue.book}
@@ -280,9 +418,11 @@ function LibraryPage() {
                     </button>
                   </td>
                 </tr>
-              ))}
+                ))
+              )}
             </tbody>
           </table>
+          </div>
         )}
       </div>
     </div>

@@ -3,8 +3,6 @@
  * Never exposed to browser
  */
 
-/// <reference types="@cloudflare/workers-types" />
-import { env as cfEnv } from "cloudflare:workers";
 import { z } from "zod";
 import { clientSchema } from "./client.js";
 
@@ -14,12 +12,13 @@ const serverSchema = clientSchema.extend({
     .default("development"),
 
   // Database
-  DATABASE_URL: z.string().url(),
+  DATABASE_URL: z.string().url().optional(),
 
   // Auth (Better Auth)
   BETTER_AUTH_SECRET: z
     .string()
-    .min(32, "BETTER_AUTH_SECRET must be at least 32 characters"),
+    .min(32, "BETTER_AUTH_SECRET must be at least 32 characters")
+    .optional(),
   BETTER_AUTH_URL: z.string().url().optional(),
 
   // OAuth Providers
@@ -79,4 +78,23 @@ const serverSchema = clientSchema.extend({
 
 export type ServerEnv = z.infer<typeof serverSchema>;
 
-export const env: ServerEnv = serverSchema.parse(cfEnv);
+// Try to get env from Cloudflare Workers if available, otherwise use process.env
+function getEnv(): Record<string, unknown> {
+  // Check if we're in a Cloudflare Workers environment
+  if (typeof globalThis !== "undefined" && "cloudflare" in globalThis) {
+    try {
+      // @ts-expect-error - Cloudflare Workers types
+      const cfEnv = globalThis.cloudflare?.env;
+      if (cfEnv) {
+        return cfEnv as Record<string, unknown>;
+      }
+    } catch {
+      // Fall through to process.env
+    }
+  }
+  
+  // Use process.env for Node.js/Bun environments
+  return process.env as Record<string, unknown>;
+}
+
+export const env: ServerEnv = serverSchema.parse(getEnv());

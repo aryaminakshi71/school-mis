@@ -5,7 +5,7 @@ import type {
 import {
   smsLogs,
   smsTemplates,
-} from "@school/storage/src/db/schema/school/school.schema";
+} from "@school/storage";
 import { db } from "@school/storage";
 
 interface TwilioConfig {

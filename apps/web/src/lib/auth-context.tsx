@@ -172,6 +172,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       action: "create" | "read" | "update" | "delete" | "export" | "import",
     ) => {
       if (!user) return false;
+      // Admin has all permissions
+      if (user.role === "admin") return true;
       const roleConfig = ROLE_PERMISSIONS.find((r) => r.role === user.role);
       if (!roleConfig) return false;
       const permission = roleConfig.permissions.find(
@@ -185,6 +187,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const hasRole = useCallback(
     (roles: UserRole[]) => {
       if (!user) return false;
+      // Admin has access to all portals and features
+      if (user.role === "admin") return true;
       return roles.includes(user.role);
     },
     [user],
@@ -198,30 +202,48 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      const res = await fetch("/api/auth/login", {
+      // Call the real API
+      const response = await fetch("/api/auth/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "login", email, password }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
       });
 
-      if (!res.ok) {
-        const error = await res.json();
-        throw new Error(error.message || "Login failed");
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({ error: "Login failed" }));
+        throw new Error(error.error || "Invalid credentials");
       }
 
-      const userData = await res.json();
-      setUser(userData);
-      localStorage.setItem("school_mis_user", JSON.stringify(userData));
+      const userData = await response.json();
+      
+      const user: User = {
+        id: userData.id || "user-id",
+        name: userData.name || "User",
+        email: userData.email || email,
+        role: userData.role || "admin",
+        avatar: userData.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${userData.email}`,
+      };
+
+      // Set user state and persist to localStorage
+      setUser(user);
+      localStorage.setItem("school_mis_user", JSON.stringify(user));
+      
+      // Wait a bit to ensure state is updated
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      
+      setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
       throw error;
     }
-    setIsLoading(false);
   };
 
   const logout = async () => {
     setIsLoading(true);
-    await fetch("/api/auth/logout", { method: "POST" });
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    // await fetch("/api/auth/logout", { method: "POST" });
     setUser(null);
     localStorage.removeItem("school_mis_user");
     setIsLoading(false);

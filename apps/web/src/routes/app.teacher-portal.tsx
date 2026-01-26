@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useAuth } from "../lib/auth-context";
 import { useState } from "react";
 import {
@@ -15,6 +15,8 @@ import {
   Settings,
   MessageSquare,
   UserPlus,
+  ArrowLeft,
+  ExternalLink,
 } from "lucide-react";
 import {
   Card,
@@ -170,19 +172,37 @@ function TeacherPortal() {
   const selectedClassData = mockClasses.find((c) => c.name === selectedClass);
 
   return (
-    <div>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Teacher Portal</h1>
-        <p className="text-gray-600">
-          Manage your classes, attendance, and academic activities
-        </p>
+    <div className="space-y-6">
+      {/* Header with Back Button */}
+      <div className="flex flex-col gap-4">
+        <Link
+          to="/app"
+          className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-blue-600 transition-colors w-fit group"
+        >
+          <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
+          Back to Dashboard
+        </Link>
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Teacher Portal</h1>
+          <p className="text-gray-600 text-lg">
+            Manage your classes, attendance, and academic activities
+          </p>
+        </div>
       </div>
 
-      <div className="grid lg:grid-cols-4 gap-6 mb-6">
-        <Card className="lg:col-span-3">
+      <div className="grid lg:grid-cols-4 gap-6">
+        <Card className="lg:col-span-3 border-2 shadow-lg hover:shadow-xl transition-all">
+          <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50 border-b pb-4">
+            <CardTitle className="flex items-center gap-2 text-xl">
+              <div className="w-10 h-10 rounded-lg bg-green-600 flex items-center justify-center">
+                <Users className="w-5 h-5 text-white" />
+              </div>
+              Teacher Profile
+            </CardTitle>
+          </CardHeader>
           <CardContent className="pt-6">
             <div className="flex items-start gap-4">
-              <div className="w-20 h-20 rounded-full bg-green-600 flex items-center justify-center text-white text-2xl font-bold">
+              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-green-600 to-emerald-700 flex items-center justify-center text-white text-2xl font-bold shadow-lg ring-4 ring-green-100">
                 {mockTeacher.name.charAt(0)}
               </div>
               <div className="flex-1">
@@ -225,10 +245,12 @@ function TeacherPortal() {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <BarChart3 className="w-5 h-5" />
+        <Card className="border-2 shadow-md hover:shadow-xl transition-all">
+          <CardHeader className="bg-gradient-to-r from-indigo-50 to-purple-50 border-b">
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center">
+                <BarChart3 className="w-4 h-4 text-white" />
+              </div>
               Quick Stats
             </CardTitle>
           </CardHeader>
@@ -255,13 +277,23 @@ function TeacherPortal() {
         </Card>
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-6 mb-6">
-        <Card className="lg:col-span-2">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Calendar className="w-5 h-5" />
-              Today&apos;s Timetable
-            </CardTitle>
+      <div className="grid lg:grid-cols-3 gap-6">
+        <Card className="lg:col-span-2 border-2 shadow-md hover:shadow-xl transition-all">
+          <CardHeader className="bg-gradient-to-r from-blue-50 to-cyan-50 border-b">
+            <div className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
+                  <Calendar className="w-4 h-4 text-white" />
+                </div>
+                Today&apos;s Timetable
+              </CardTitle>
+              <Link
+                to="/app/schedule"
+                className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
+              >
+                Full Schedule <ExternalLink className="w-3 h-3" />
+              </Link>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
@@ -294,12 +326,22 @@ function TeacherPortal() {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Users className="w-5 h-5" />
-              My Classes
-            </CardTitle>
+        <Card className="border-2 shadow-md hover:shadow-xl transition-all">
+          <CardHeader className="bg-gradient-to-r from-teal-50 to-cyan-50 border-b">
+            <div className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <div className="w-8 h-8 rounded-lg bg-teal-600 flex items-center justify-center">
+                  <Users className="w-4 h-4 text-white" />
+                </div>
+                My Classes
+              </CardTitle>
+              <Link
+                to="/app/classes"
+                className="text-sm text-teal-600 hover:text-teal-700 font-medium flex items-center gap-1"
+              >
+                View All <ExternalLink className="w-3 h-3" />
+              </Link>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
@@ -334,13 +376,23 @@ function TeacherPortal() {
         </Card>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-6 mb-6">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <ClipboardList className="w-5 h-5" />
-              Class Students - {selectedClass}
-            </CardTitle>
+      <div className="grid lg:grid-cols-2 gap-6">
+        <Card className="border-2 shadow-md hover:shadow-xl transition-all">
+          <CardHeader className="bg-gradient-to-r from-pink-50 to-rose-50 border-b">
+            <div className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <div className="w-8 h-8 rounded-lg bg-pink-600 flex items-center justify-center">
+                  <ClipboardList className="w-4 h-4 text-white" />
+                </div>
+                Class Students - {selectedClass}
+              </CardTitle>
+              <Link
+                to="/app/students"
+                className="text-sm text-pink-600 hover:text-pink-700 font-medium flex items-center gap-1"
+              >
+                View All <ExternalLink className="w-3 h-3" />
+              </Link>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
@@ -372,9 +424,11 @@ function TeacherPortal() {
                     >
                       {student.attendance}%
                     </span>
-                    <Button variant="ghost" size="sm">
-                      <MessageSquare className="w-4 h-4" />
-                    </Button>
+                    <Link to="/app/notifications">
+                      <Button variant="ghost" size="sm" className="hover:bg-blue-100">
+                        <MessageSquare className="w-4 h-4" />
+                      </Button>
+                    </Link>
                   </div>
                 </div>
               ))}
@@ -382,12 +436,22 @@ function TeacherPortal() {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <FileText className="w-5 h-5" />
-              Assignments
-            </CardTitle>
+        <Card className="border-2 shadow-md hover:shadow-xl transition-all">
+          <CardHeader className="bg-gradient-to-r from-amber-50 to-yellow-50 border-b">
+            <div className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <div className="w-8 h-8 rounded-lg bg-amber-600 flex items-center justify-center">
+                  <FileText className="w-4 h-4 text-white" />
+                </div>
+                Assignments
+              </CardTitle>
+              <Link
+                to="/app/gradebook"
+                className="text-sm text-amber-600 hover:text-amber-700 font-medium flex items-center gap-1"
+              >
+                Manage <ExternalLink className="w-3 h-3" />
+              </Link>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
@@ -428,12 +492,22 @@ function TeacherPortal() {
       </div>
 
       <div className="grid md:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Award className="w-5 h-5" />
-              Upcoming Exams
-            </CardTitle>
+        <Card className="border-2 shadow-md hover:shadow-xl transition-all">
+          <CardHeader className="bg-gradient-to-r from-purple-50 to-violet-50 border-b">
+            <div className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <div className="w-8 h-8 rounded-lg bg-purple-600 flex items-center justify-center">
+                  <Award className="w-4 h-4 text-white" />
+                </div>
+                Upcoming Exams
+              </CardTitle>
+              <Link
+                to="/app/exams"
+                className="text-sm text-purple-600 hover:text-purple-700 font-medium flex items-center gap-1"
+              >
+                Schedule <ExternalLink className="w-3 h-3" />
+              </Link>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">

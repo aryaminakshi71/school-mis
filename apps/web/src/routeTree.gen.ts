@@ -21,17 +21,18 @@ import { Route as AppStudentsRouteImport } from './routes/app.students'
 import { Route as AppStudentPortalRouteImport } from './routes/app.student-portal'
 import { Route as AppStaffPortalRouteImport } from './routes/app.staff-portal'
 import { Route as AppSettingsRouteImport } from './routes/app.settings'
+import { Route as AppScheduleRouteImport } from './routes/app.schedule'
 import { Route as AppReportsRouteImport } from './routes/app.reports'
 import { Route as AppProfileRouteImport } from './routes/app.profile'
 import { Route as AppParentPortalRouteImport } from './routes/app.parent-portal'
 import { Route as AppNotificationsRouteImport } from './routes/app.notifications'
 import { Route as AppLibraryRouteImport } from './routes/app.library'
 import { Route as AppInventoryRouteImport } from './routes/app.inventory'
+import { Route as AppGradebookRouteImport } from './routes/app.gradebook'
 import { Route as AppFeesRouteImport } from './routes/app.fees'
 import { Route as AppExamsRouteImport } from './routes/app.exams'
 import { Route as AppClassesRouteImport } from './routes/app.classes'
 import { Route as AppAttendanceRouteImport } from './routes/app.attendance'
-import { Route as ApiStudentsIndexRouteImport } from './routes/api/students/index'
 import { Route as AppTransportTrackingRouteImport } from './routes/app.transport.tracking'
 import { Route as AppStudentsIdRouteImport } from './routes/app.students.$id'
 import { Route as AppFeesReceiptIdRouteImport } from './routes/app.fees.receipt.$id'
@@ -96,6 +97,11 @@ const AppSettingsRoute = AppSettingsRouteImport.update({
   path: '/app/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppScheduleRoute = AppScheduleRouteImport.update({
+  id: '/app/schedule',
+  path: '/app/schedule',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppReportsRoute = AppReportsRouteImport.update({
   id: '/app/reports',
   path: '/app/reports',
@@ -126,6 +132,11 @@ const AppInventoryRoute = AppInventoryRouteImport.update({
   path: '/app/inventory',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppGradebookRoute = AppGradebookRouteImport.update({
+  id: '/app/gradebook',
+  path: '/app/gradebook',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppFeesRoute = AppFeesRouteImport.update({
   id: '/app/fees',
   path: '/app/fees',
@@ -144,11 +155,6 @@ const AppClassesRoute = AppClassesRouteImport.update({
 const AppAttendanceRoute = AppAttendanceRouteImport.update({
   id: '/app/attendance',
   path: '/app/attendance',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiStudentsIndexRoute = ApiStudentsIndexRouteImport.update({
-  id: '/api/students/',
-  path: '/api/students/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppTransportTrackingRoute = AppTransportTrackingRouteImport.update({
@@ -176,12 +182,14 @@ export interface FileRoutesByFullPath {
   '/app/classes': typeof AppClassesRoute
   '/app/exams': typeof AppExamsRoute
   '/app/fees': typeof AppFeesRouteWithChildren
+  '/app/gradebook': typeof AppGradebookRoute
   '/app/inventory': typeof AppInventoryRoute
   '/app/library': typeof AppLibraryRoute
   '/app/notifications': typeof AppNotificationsRoute
   '/app/parent-portal': typeof AppParentPortalRoute
   '/app/profile': typeof AppProfileRoute
   '/app/reports': typeof AppReportsRoute
+  '/app/schedule': typeof AppScheduleRoute
   '/app/settings': typeof AppSettingsRoute
   '/app/staff-portal': typeof AppStaffPortalRoute
   '/app/student-portal': typeof AppStudentPortalRoute
@@ -192,7 +200,6 @@ export interface FileRoutesByFullPath {
   '/app/': typeof AppIndexRoute
   '/app/students/$id': typeof AppStudentsIdRoute
   '/app/transport/tracking': typeof AppTransportTrackingRoute
-  '/api/students/': typeof ApiStudentsIndexRoute
   '/app/fees/receipt/$id': typeof AppFeesReceiptIdRoute
 }
 export interface FileRoutesByTo {
@@ -204,12 +211,14 @@ export interface FileRoutesByTo {
   '/app/classes': typeof AppClassesRoute
   '/app/exams': typeof AppExamsRoute
   '/app/fees': typeof AppFeesRouteWithChildren
+  '/app/gradebook': typeof AppGradebookRoute
   '/app/inventory': typeof AppInventoryRoute
   '/app/library': typeof AppLibraryRoute
   '/app/notifications': typeof AppNotificationsRoute
   '/app/parent-portal': typeof AppParentPortalRoute
   '/app/profile': typeof AppProfileRoute
   '/app/reports': typeof AppReportsRoute
+  '/app/schedule': typeof AppScheduleRoute
   '/app/settings': typeof AppSettingsRoute
   '/app/staff-portal': typeof AppStaffPortalRoute
   '/app/student-portal': typeof AppStudentPortalRoute
@@ -220,7 +229,6 @@ export interface FileRoutesByTo {
   '/app': typeof AppIndexRoute
   '/app/students/$id': typeof AppStudentsIdRoute
   '/app/transport/tracking': typeof AppTransportTrackingRoute
-  '/api/students': typeof ApiStudentsIndexRoute
   '/app/fees/receipt/$id': typeof AppFeesReceiptIdRoute
 }
 export interface FileRoutesById {
@@ -233,12 +241,14 @@ export interface FileRoutesById {
   '/app/classes': typeof AppClassesRoute
   '/app/exams': typeof AppExamsRoute
   '/app/fees': typeof AppFeesRouteWithChildren
+  '/app/gradebook': typeof AppGradebookRoute
   '/app/inventory': typeof AppInventoryRoute
   '/app/library': typeof AppLibraryRoute
   '/app/notifications': typeof AppNotificationsRoute
   '/app/parent-portal': typeof AppParentPortalRoute
   '/app/profile': typeof AppProfileRoute
   '/app/reports': typeof AppReportsRoute
+  '/app/schedule': typeof AppScheduleRoute
   '/app/settings': typeof AppSettingsRoute
   '/app/staff-portal': typeof AppStaffPortalRoute
   '/app/student-portal': typeof AppStudentPortalRoute
@@ -249,7 +259,6 @@ export interface FileRoutesById {
   '/app/': typeof AppIndexRoute
   '/app/students/$id': typeof AppStudentsIdRoute
   '/app/transport/tracking': typeof AppTransportTrackingRoute
-  '/api/students/': typeof ApiStudentsIndexRoute
   '/app/fees/receipt/$id': typeof AppFeesReceiptIdRoute
 }
 export interface FileRouteTypes {
@@ -263,12 +272,14 @@ export interface FileRouteTypes {
     | '/app/classes'
     | '/app/exams'
     | '/app/fees'
+    | '/app/gradebook'
     | '/app/inventory'
     | '/app/library'
     | '/app/notifications'
     | '/app/parent-portal'
     | '/app/profile'
     | '/app/reports'
+    | '/app/schedule'
     | '/app/settings'
     | '/app/staff-portal'
     | '/app/student-portal'
@@ -279,7 +290,6 @@ export interface FileRouteTypes {
     | '/app/'
     | '/app/students/$id'
     | '/app/transport/tracking'
-    | '/api/students/'
     | '/app/fees/receipt/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -291,12 +301,14 @@ export interface FileRouteTypes {
     | '/app/classes'
     | '/app/exams'
     | '/app/fees'
+    | '/app/gradebook'
     | '/app/inventory'
     | '/app/library'
     | '/app/notifications'
     | '/app/parent-portal'
     | '/app/profile'
     | '/app/reports'
+    | '/app/schedule'
     | '/app/settings'
     | '/app/staff-portal'
     | '/app/student-portal'
@@ -307,7 +319,6 @@ export interface FileRouteTypes {
     | '/app'
     | '/app/students/$id'
     | '/app/transport/tracking'
-    | '/api/students'
     | '/app/fees/receipt/$id'
   id:
     | '__root__'
@@ -319,12 +330,14 @@ export interface FileRouteTypes {
     | '/app/classes'
     | '/app/exams'
     | '/app/fees'
+    | '/app/gradebook'
     | '/app/inventory'
     | '/app/library'
     | '/app/notifications'
     | '/app/parent-portal'
     | '/app/profile'
     | '/app/reports'
+    | '/app/schedule'
     | '/app/settings'
     | '/app/staff-portal'
     | '/app/student-portal'
@@ -335,7 +348,6 @@ export interface FileRouteTypes {
     | '/app/'
     | '/app/students/$id'
     | '/app/transport/tracking'
-    | '/api/students/'
     | '/app/fees/receipt/$id'
   fileRoutesById: FileRoutesById
 }
@@ -348,12 +360,14 @@ export interface RootRouteChildren {
   AppClassesRoute: typeof AppClassesRoute
   AppExamsRoute: typeof AppExamsRoute
   AppFeesRoute: typeof AppFeesRouteWithChildren
+  AppGradebookRoute: typeof AppGradebookRoute
   AppInventoryRoute: typeof AppInventoryRoute
   AppLibraryRoute: typeof AppLibraryRoute
   AppNotificationsRoute: typeof AppNotificationsRoute
   AppParentPortalRoute: typeof AppParentPortalRoute
   AppProfileRoute: typeof AppProfileRoute
   AppReportsRoute: typeof AppReportsRoute
+  AppScheduleRoute: typeof AppScheduleRoute
   AppSettingsRoute: typeof AppSettingsRoute
   AppStaffPortalRoute: typeof AppStaffPortalRoute
   AppStudentPortalRoute: typeof AppStudentPortalRoute
@@ -362,7 +376,6 @@ export interface RootRouteChildren {
   AppTeachersRoute: typeof AppTeachersRoute
   AppTransportRoute: typeof AppTransportRouteWithChildren
   AppIndexRoute: typeof AppIndexRoute
-  ApiStudentsIndexRoute: typeof ApiStudentsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -451,6 +464,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app/schedule': {
+      id: '/app/schedule'
+      path: '/app/schedule'
+      fullPath: '/app/schedule'
+      preLoaderRoute: typeof AppScheduleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/app/reports': {
       id: '/app/reports'
       path: '/app/reports'
@@ -493,6 +513,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppInventoryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app/gradebook': {
+      id: '/app/gradebook'
+      path: '/app/gradebook'
+      fullPath: '/app/gradebook'
+      preLoaderRoute: typeof AppGradebookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/app/fees': {
       id: '/app/fees'
       path: '/app/fees'
@@ -519,13 +546,6 @@ declare module '@tanstack/react-router' {
       path: '/app/attendance'
       fullPath: '/app/attendance'
       preLoaderRoute: typeof AppAttendanceRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/students/': {
-      id: '/api/students/'
-      path: '/api/students'
-      fullPath: '/api/students/'
-      preLoaderRoute: typeof ApiStudentsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/app/transport/tracking': {
@@ -596,12 +616,14 @@ const rootRouteChildren: RootRouteChildren = {
   AppClassesRoute: AppClassesRoute,
   AppExamsRoute: AppExamsRoute,
   AppFeesRoute: AppFeesRouteWithChildren,
+  AppGradebookRoute: AppGradebookRoute,
   AppInventoryRoute: AppInventoryRoute,
   AppLibraryRoute: AppLibraryRoute,
   AppNotificationsRoute: AppNotificationsRoute,
   AppParentPortalRoute: AppParentPortalRoute,
   AppProfileRoute: AppProfileRoute,
   AppReportsRoute: AppReportsRoute,
+  AppScheduleRoute: AppScheduleRoute,
   AppSettingsRoute: AppSettingsRoute,
   AppStaffPortalRoute: AppStaffPortalRoute,
   AppStudentPortalRoute: AppStudentPortalRoute,
@@ -610,7 +632,6 @@ const rootRouteChildren: RootRouteChildren = {
   AppTeachersRoute: AppTeachersRoute,
   AppTransportRoute: AppTransportRouteWithChildren,
   AppIndexRoute: AppIndexRoute,
-  ApiStudentsIndexRoute: ApiStudentsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

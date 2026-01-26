@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, createFileRoute } from "@tanstack/react-router";
 import { useAuth } from "@/lib/auth-context";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -29,9 +29,11 @@ function LoginPage() {
     try {
       await login(email, password);
       toast.success("Login successful!");
-      navigate({ to: "/app" });
-    } catch {
-      toast.error("Login failed. Please try again.");
+      // Navigate after login completes
+      navigate({ to: "/app/" });
+    } catch (error) {
+      console.error("Login error:", error);
+      toast.error(error instanceof Error ? error.message : "Login failed. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -128,5 +130,3 @@ function LoginPage() {
     </div>
   );
 }
-
-import { createFileRoute } from "@tanstack/react-router";

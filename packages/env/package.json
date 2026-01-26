@@ -11,7 +11,7 @@
     "types": "wrangler types src/cloudflare.d.ts --env-interface Env"
   },
   "dependencies": {
-    "zod": "^4.1.13"
+    "zod": "^4.3.5"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250109.0"

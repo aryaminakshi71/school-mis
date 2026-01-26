@@ -18,11 +18,18 @@ import {
   ChevronRight,
   Search,
   Filter,
+  FileText,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { useSearch } from "@/lib/search-utils";
+import { exportToCSV } from "@/lib/export-utils";
+import { useListPageShortcuts } from "@/lib/keyboard-shortcuts";
+import { SkeletonTable } from "@/components/ui/skeleton";
+import { toast } from "sonner";
+import { handleError } from "@/lib/error-handler";
 
 export const Route = createFileRoute("/app/attendance")({
   component: AttendancePage,
@@ -140,6 +147,54 @@ function AttendancePage() {
     new Date().toISOString().split("T")[0],
   );
 
+  // Search functionality
+  const {
+    searchQuery,
+    setSearchQuery,
+    filteredData: filteredAttendance,
+    hasActiveFilters,
+    clearSearch,
+  } = useSearch({
+    data: todayAttendance,
+    searchFields: ["class"],
+  });
+
+  const {
+    searchQuery: absentSearchQuery,
+    setSearchQuery: setAbsentSearchQuery,
+    filteredData: filteredAbsentStudents,
+    hasActiveFilters: hasAbsentFilters,
+    clearSearch: clearAbsentSearch,
+  } = useSearch({
+    data: recentAbsentStudents,
+    searchFields: ["name", "class", "id"],
+  });
+
+  // Export functionality
+  const handleExport = () => {
+    try {
+      const exportData = todayAttendance.map((a) => ({
+        "Class": a.class,
+        "Total Students": a.total.toString(),
+        "Present": a.present.toString(),
+        "Absent": a.absent.toString(),
+        "Percentage": a.percentage,
+      }));
+
+      exportToCSV(exportData, `attendance-export-${selectedDate}`);
+      toast.success("Attendance report exported successfully");
+    } catch (err) {
+      toast.error(handleError(err));
+    }
+  };
+
+  // Keyboard shortcuts
+  useListPageShortcuts(
+    () => toast.info("Mark Attendance feature coming soon"),
+    () => window.location.reload(),
+    () => handleExport()
+  );
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -152,11 +207,15 @@ function AttendancePage() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline">
+          <Button 
+            variant="outline"
+            onClick={handleExport}
+            disabled={todayAttendance.length === 0}
+          >
             <Download className="mr-2 h-4 w-4" />
-            Export Report
+            Export Report ({todayAttendance.length})
           </Button>
-          <Button>
+          <Button onClick={() => toast.info("Mark Attendance feature coming soon")}>
             <Plus className="mr-2 h-4 w-4" />
             Mark Attendance
           </Button>
@@ -242,11 +301,31 @@ function AttendancePage() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>Today's Attendance - {selectedDate}</CardTitle>
-          <Button variant="ghost" size="sm">
-            Mark All Present
-          </Button>
+          <div className="flex items-center gap-2">
+            {hasActiveFilters && (
+              <Button variant="ghost" size="sm" onClick={clearSearch}>
+                Clear
+              </Button>
+            )}
+            <Button variant="ghost" size="sm">
+              Mark All Present
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
+          {/* Search */}
+          <div className="mb-4">
+            <div className="relative max-w-md">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                type="search"
+                placeholder="Search by class... (Press / to focus)"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-9"
+              />
+            </div>
+          </div>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
@@ -261,7 +340,14 @@ function AttendancePage() {
                 </tr>
               </thead>
               <tbody>
-                {todayAttendance.map((row) => (
+                {filteredAttendance.length === 0 ? (
+                  <tr>
+                    <td colSpan={7} className="py-8 text-center text-gray-500">
+                      {hasActiveFilters ? "No classes found" : "No attendance data"}
+                    </td>
+                  </tr>
+                ) : (
+                  filteredAttendance.map((row) => (
                   <tr key={row.class} className="border-b last:border-0">
                     <td className="py-3 font-medium">{row.class}</td>
                     <td className="py-3">{row.total}</td>
@@ -312,7 +398,8 @@ function AttendancePage() {
                       </Button>
                     </td>
                   </tr>
-                ))}
+                  ))
+                )}
               </tbody>
             </table>
           </div>
@@ -325,13 +412,41 @@ function AttendancePage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Recent Absences</CardTitle>
-            <Button variant="ghost" size="sm">
-              View All
-            </Button>
+            <div className="flex items-center gap-2">
+              {hasAbsentFilters && (
+                <Button variant="ghost" size="sm" onClick={clearAbsentSearch}>
+                  Clear
+                </Button>
+              )}
+              <Button variant="ghost" size="sm">
+                View All
+              </Button>
+            </div>
           </CardHeader>
           <CardContent>
+            {/* Search */}
+            <div className="mb-4">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  type="search"
+                  placeholder="Search absent students..."
+                  value={absentSearchQuery}
+                  onChange={(e) => setAbsentSearchQuery(e.target.value)}
+                  className="pl-9"
+                />
+              </div>
+            </div>
             <div className="space-y-4">
-              {recentAbsentStudents.map((student) => (
+              {filteredAbsentStudents.length === 0 ? (
+                <div className="text-center py-8">
+                  <XCircle className="h-8 w-8 text-gray-400 mx-auto mb-2" />
+                  <p className="text-sm text-gray-600">
+                    {hasAbsentFilters ? "No students found" : "No absences recorded"}
+                  </p>
+                </div>
+              ) : (
+                filteredAbsentStudents.map((student) => (
                 <div
                   key={student.id}
                   className="flex items-center justify-between p-3 rounded-lg border"
@@ -359,7 +474,8 @@ function AttendancePage() {
                     </Badge>
                   </div>
                 </div>
-              ))}
+                ))
+              )}
             </div>
           </CardContent>
         </Card>

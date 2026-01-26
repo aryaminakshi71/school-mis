@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useAuth } from "../lib/auth-context";
 import { useState } from "react";
 import {
@@ -216,12 +216,22 @@ function StaffPortal() {
   ];
 
   return (
-    <div>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Staff Portal</h1>
-        <p className="text-gray-600">
-          View your personal information, payroll, attendance, and performance
-        </p>
+    <div className="space-y-6">
+      {/* Header with Back Button */}
+      <div className="flex flex-col gap-4">
+        <Link
+          to="/app"
+          className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-blue-600 transition-colors w-fit group"
+        >
+          <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
+          Back to Dashboard
+        </Link>
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Staff Portal</h1>
+          <p className="text-gray-600 text-lg">
+            View your personal information, payroll, attendance, and performance
+          </p>
+        </div>
       </div>
 
       <div className="flex gap-2 mb-6 overflow-x-auto pb-2">

@@ -18,11 +18,18 @@ import {
   ChevronRight,
   Users,
   BookOpen,
+  CheckCircle,
+  TrendingUp,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { useSearch } from "@/lib/search-utils";
+import { exportToCSV } from "@/lib/export-utils";
+import { useListPageShortcuts } from "@/lib/keyboard-shortcuts";
+import { toast } from "sonner";
+import { handleError } from "@/lib/error-handler";
 
 export const Route = createFileRoute("/app/exams")({
   component: ExamsPage,
@@ -129,6 +136,55 @@ const stats = [
 ];
 
 function ExamsPage() {
+  // Search functionality
+  const {
+    searchQuery,
+    setSearchQuery,
+    filteredData: filteredExams,
+    hasActiveFilters,
+    clearSearch,
+  } = useSearch({
+    data: upcomingExams,
+    searchFields: ["name", "class", "id"],
+  });
+
+  const {
+    searchQuery: resultsSearchQuery,
+    setSearchQuery: setResultsSearchQuery,
+    filteredData: filteredResults,
+    hasActiveFilters: hasResultsFilters,
+    clearSearch: clearResultsSearch,
+  } = useSearch({
+    data: recentResults,
+    searchFields: ["exam", "class", "id"],
+  });
+
+  // Export functionality
+  const handleExport = () => {
+    try {
+      const exportData = recentResults.map((r) => ({
+        "Exam": r.exam,
+        "Class": r.class,
+        "Students": r.students.toString(),
+        "Average Marks": r.avgMarks,
+        "Pass Rate": r.passRate,
+        "Status": r.status,
+      }));
+
+      exportToCSV(exportData, `exam-results-export-${new Date().toISOString().split("T")[0]}`);
+      toast.success("Exam results exported successfully");
+    } catch (err) {
+      toast.error(handleError(err));
+    }
+  };
+
+  // Keyboard shortcuts
+  useListPageShortcuts(
+    () => toast.info("Schedule Exam feature coming soon"),
+    () => window.location.reload(),
+    () => handleExport()
+  );
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -141,11 +197,15 @@ function ExamsPage() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline">
+          <Button 
+            variant="outline"
+            onClick={handleExport}
+            disabled={recentResults.length === 0}
+          >
             <Download className="mr-2 h-4 w-4" />
-            Export Results
+            Export Results ({recentResults.length})
           </Button>
-          <Button>
+          <Button onClick={() => toast.info("Schedule Exam feature coming soon")}>
             <Plus className="mr-2 h-4 w-4" />
             Schedule Exam
           </Button>
@@ -218,13 +278,41 @@ function ExamsPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Upcoming Exams</CardTitle>
-            <Button variant="ghost" size="sm">
-              View Schedule
-            </Button>
+            <div className="flex items-center gap-2">
+              {hasActiveFilters && (
+                <Button variant="ghost" size="sm" onClick={clearSearch}>
+                  Clear
+                </Button>
+              )}
+              <Button variant="ghost" size="sm">
+                View Schedule
+              </Button>
+            </div>
           </CardHeader>
           <CardContent>
+            {/* Search */}
+            <div className="mb-4">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  type="search"
+                  placeholder="Search exams... (Press / to focus)"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-9"
+                />
+              </div>
+            </div>
             <div className="space-y-4">
-              {upcomingExams.map((exam) => (
+              {filteredExams.length === 0 ? (
+                <div className="text-center py-8">
+                  <Calendar className="h-8 w-8 text-gray-400 mx-auto mb-2" />
+                  <p className="text-sm text-gray-600">
+                    {hasActiveFilters ? "No exams found" : "No upcoming exams"}
+                  </p>
+                </div>
+              ) : (
+                filteredExams.map((exam) => (
                 <div
                   key={exam.id}
                   className="flex items-start justify-between p-4 rounded-lg border"
@@ -407,5 +495,3 @@ function ExamsPage() {
     </div>
   );
 }
-
-import { CheckCircle, TrendingUp } from "lucide-react";

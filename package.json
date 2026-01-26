@@ -20,10 +20,5 @@
     "test:e2e:install": "bun run --filter '@school/web' test:e2e:install",
     "typecheck": "bun run --filter '@school/api' typecheck && bun run --filter '@school/web' typecheck"
   },
-  "dependencies": {
-    "clsx": "^2.1.1",
-    "lucide-react": "^0.562.0",
-    "recharts": "^3.6.0",
-    "tailwind-merge": "^3.4.0"
-  }
+  "dependencies": {}
 }

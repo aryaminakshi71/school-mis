@@ -27,6 +27,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { useSearch } from "@/lib/search-utils";
+import { exportToCSV } from "@/lib/export-utils";
+import { useListPageShortcuts } from "@/lib/keyboard-shortcuts";
+import { SkeletonTable } from "@/components/ui/skeleton";
+import { toast } from "sonner";
+import { handleError } from "@/lib/error-handler";
 
 export const Route = createFileRoute("/app/fees")({
   component: FeesPage,
@@ -157,6 +163,48 @@ const stats = [
 
 function FeesPage() {
   const [activeTab, setActiveTab] = useState("dashboard");
+  
+  // Search functionality for fee collections
+  const {
+    searchQuery,
+    setSearchQuery,
+    filteredData: filteredCollections,
+    hasActiveFilters,
+    clearSearch,
+  } = useSearch({
+    data: feeCollections,
+    searchFields: ["student", "class", "id", "status"],
+  });
+
+  // Export functionality
+  const handleExport = () => {
+    try {
+      const exportData = feeCollections.map((c) => ({
+        "Receipt ID": c.id,
+        "Student": c.student,
+        "Class": c.class,
+        "Amount": c.amount,
+        "Payment Mode": c.mode,
+        "Date": c.date,
+        "Status": c.status,
+      }));
+
+      exportToCSV(exportData, `fee-collections-export-${new Date().toISOString().split("T")[0]}`);
+      toast.success("Fee collections exported successfully");
+    } catch (err) {
+      toast.error(handleError(err));
+    }
+  };
+
+  // Keyboard shortcuts
+  useListPageShortcuts(
+    () => {
+      // Open collect fee modal
+      toast.info("Collect Fee feature coming soon");
+    },
+    () => window.location.reload(),
+    () => handleExport()
+  );
 
   return (
     <div className="space-y-6">
@@ -170,11 +218,15 @@ function FeesPage() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline">
+          <Button 
+            variant="outline"
+            onClick={handleExport}
+            disabled={feeCollections.length === 0}
+          >
             <Download className="mr-2 h-4 w-4" />
-            Export Report
+            Export Report ({feeCollections.length})
           </Button>
-          <Button>
+          <Button onClick={() => toast.info("Collect Fee feature coming soon")}>
             <Plus className="mr-2 h-4 w-4" />
             Collect Fee
           </Button>
@@ -250,13 +302,46 @@ function FeesPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Recent Fee Collections</CardTitle>
-            <Button variant="ghost" size="sm">
-              View All
-            </Button>
+            <div className="flex items-center gap-2">
+              {hasActiveFilters && (
+                <Button variant="ghost" size="sm" onClick={clearSearch}>
+                  Clear
+                </Button>
+              )}
+              <Button variant="ghost" size="sm">
+                View All
+              </Button>
+            </div>
           </CardHeader>
           <CardContent>
+            {/* Search */}
+            <div className="mb-4">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  type="search"
+                  placeholder="Search collections... (Press / to focus)"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-9"
+                />
+              </div>
+            </div>
             <div className="space-y-4">
-              {feeCollections.map((collection) => (
+              {filteredCollections.length === 0 ? (
+                <div className="text-center py-8">
+                  <Receipt className="h-8 w-8 text-gray-400 mx-auto mb-2" />
+                  <p className="text-sm text-gray-600">
+                    {hasActiveFilters ? "No collections found" : "No collections yet"}
+                  </p>
+                  {hasActiveFilters && (
+                    <Button variant="outline" size="sm" onClick={clearSearch} className="mt-2">
+                      Clear Filters
+                    </Button>
+                  )}
+                </div>
+              ) : (
+                filteredCollections.map((collection) => (
                 <div
                   key={collection.id}
                   className="flex items-center justify-between"
@@ -289,7 +374,8 @@ function FeesPage() {
                     </Badge>
                   </div>
                 </div>
-              ))}
+                ))
+              )}
             </div>
           </CardContent>
         </Card>

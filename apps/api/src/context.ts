@@ -5,10 +5,10 @@
  */
 
 import type { Pool } from "pg";
-import type { ProcessEnv } from "@school/env";
+import type { ServerEnv } from "@school/env/server";
 
 export interface AppContext {
-  env: ProcessEnv;
+  env: ServerEnv;
   headers: Headers;
   requestId: string;
   logger?: Console;
