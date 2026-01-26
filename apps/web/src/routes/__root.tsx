@@ -1,5 +1,4 @@
 import {
-  HeadContent,
   Scripts,
   createRootRoute,
   Outlet,
@@ -30,17 +29,6 @@ const queryClient = new QueryClient({
 });
 
 export const Route = createRootRoute({
-  head: () => ({
-    meta: [
-      { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "School MIS - Modern School Management" },
-      {
-        name: "description",
-        content: "Complete school administration solution",
-      },
-    ],
-  }),
   component: RootDocument,
 });
 
@@ -51,7 +39,11 @@ function RootDocument() {
   return (
     <html lang="en" className="light">
       <head>
-        <HeadContent />
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>School MIS - Modern School Management</title>
+        <meta name="description" content="Complete school administration solution" />
+        <link rel="stylesheet" href="/src/styles/globals.css" />
       </head>
       <body>
         <ErrorBoundary>

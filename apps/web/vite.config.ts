@@ -23,11 +23,18 @@ export default defineConfig({
       srcDirectory: "src",
       start: { entry: "./start.tsx" },
       server: { entry: "./server.ts" },
+      routeAnalysis: {
+        forbidNotFound: false,
+        enabled: false,
+      },
     }),
     viteReact(),
   ],
   server: {
     port: 3007,
+    hmr: {
+      overlay: false,
+    },
   },
   ssr: {
     noExternal: ["@school/api", "@school/storage", "drizzle-orm"],
