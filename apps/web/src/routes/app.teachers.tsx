@@ -423,7 +423,6 @@ function TeachersPage() {
                     </td>
                   </tr>
                 ))}
-                  ))}
                 </tbody>
               </table>
             </div>

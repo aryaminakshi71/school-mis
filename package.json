@@ -20,5 +20,7 @@
     "test:e2e:install": "bun run --filter '@school/web' test:e2e:install",
     "typecheck": "bun run --filter '@school/api' typecheck && bun run --filter '@school/web' typecheck"
   },
-  "dependencies": {}
+  "dependencies": {
+    "vite": "7.3.1"
+  }
 }

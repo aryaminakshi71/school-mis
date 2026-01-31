@@ -161,20 +161,20 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       settings: { title: "Settings", icon: Settings },
     };
 
-    let currentPath = "/app";
+    let buildPath = "/app";
     paths.forEach((path) => {
-      currentPath += `/${path}`;
+      buildPath += `/${path}`;
       if (path in moduleMap) {
         breadcrumbs.push({
           title: moduleMap[path].title,
-          href: currentPath,
+          href: buildPath,
           icon: moduleMap[path].icon,
         });
       } else if (path !== "app") {
         breadcrumbs.push({
           title:
             path.charAt(0).toUpperCase() + path.slice(1).replace(/-/g, " "),
-          href: currentPath,
+          href: buildPath,
         });
       }
     });

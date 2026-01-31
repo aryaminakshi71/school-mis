@@ -543,5 +543,3 @@ function AttendancePage() {
     </div>
   );
 }
-
-import { FileText } from "lucide-react";

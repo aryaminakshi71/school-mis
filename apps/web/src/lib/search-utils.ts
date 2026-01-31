@@ -4,7 +4,7 @@
  * Common search functionality for list pages
  */
 
-import { useMemo, useState, useCallback } from "react";
+import React, { useMemo, useState, useCallback, useEffect } from "react";
 
 export interface SearchConfig<T> {
   data: T[];
@@ -93,7 +93,7 @@ export function useSearch<T>(
 export function useDebounce<T>(value: T, delay: number = 300): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedValue(value);
     }, delay);
@@ -105,6 +105,3 @@ export function useDebounce<T>(value: T, delay: number = 300): T {
 
   return debouncedValue;
 }
-
-// Add React import
-import React from "react";

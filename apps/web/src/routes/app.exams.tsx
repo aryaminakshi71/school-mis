@@ -1,5 +1,5 @@
 /**
- * Exams & Results Management - Complete Module
+ * Exams & Results Management - FIXED VERSION
  * All sub-features for exam scheduling, marks entry, and result processing
  */
 
@@ -347,7 +347,8 @@ function ExamsPage() {
                     </Button>
                   </div>
                 </div>
-              ))}
+              ))
+            )}
             </div>
           </CardContent>
         </Card>

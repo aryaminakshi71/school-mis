@@ -5,7 +5,7 @@
  * Works with Cloudflare Images or R2 with on-demand transformations.
  */
 
-import { env } from "@school/env";
+import { env } from "@school/env/client";
 import { useState } from "react";
 
 export interface OptimizedImageProps {

@@ -34,7 +34,24 @@ import { Route as AppExamsRouteImport } from './routes/app.exams'
 import { Route as AppClassesRouteImport } from './routes/app.classes'
 import { Route as AppAttendanceRouteImport } from './routes/app.attendance'
 import { Route as AppTransportTrackingRouteImport } from './routes/app.transport.tracking'
+import { Route as AppTeachersTrainingRouteImport } from './routes/app.teachers.training'
+import { Route as AppTeachersRecruitmentRouteImport } from './routes/app.teachers.recruitment'
+import { Route as AppTeachersPerformanceRouteImport } from './routes/app.teachers.performance'
+import { Route as AppTeachersPayrollRouteImport } from './routes/app.teachers.payroll'
+import { Route as AppTeachersLeaveRouteImport } from './routes/app.teachers.leave'
+import { Route as AppTeachersAttendanceRouteImport } from './routes/app.teachers.attendance'
+import { Route as AppStudentsTransferRouteImport } from './routes/app.students.transfer'
+import { Route as AppStudentsPerformanceRouteImport } from './routes/app.students.performance'
+import { Route as AppStudentsDisciplineRouteImport } from './routes/app.students.discipline'
+import { Route as AppStudentsAttendanceRouteImport } from './routes/app.students.attendance'
+import { Route as AppStudentsAlumniRouteImport } from './routes/app.students.alumni'
+import { Route as AppStudentsAdmissionRouteImport } from './routes/app.students.admission'
 import { Route as AppStudentsIdRouteImport } from './routes/app.students.$id'
+import { Route as AppAttendanceStudentsRouteImport } from './routes/app.attendance.students'
+import { Route as AppAttendanceStaffRouteImport } from './routes/app.attendance.staff'
+import { Route as AppAttendanceReportsRouteImport } from './routes/app.attendance.reports'
+import { Route as AppAttendanceLeaveRouteImport } from './routes/app.attendance.leave'
+import { Route as AppAttendanceAlertsRouteImport } from './routes/app.attendance.alerts'
 import { Route as AppFeesReceiptIdRouteImport } from './routes/app.fees.receipt.$id'
 
 const SignupRoute = SignupRouteImport.update({
@@ -162,10 +179,95 @@ const AppTransportTrackingRoute = AppTransportTrackingRouteImport.update({
   path: '/tracking',
   getParentRoute: () => AppTransportRoute,
 } as any)
+const AppTeachersTrainingRoute = AppTeachersTrainingRouteImport.update({
+  id: '/training',
+  path: '/training',
+  getParentRoute: () => AppTeachersRoute,
+} as any)
+const AppTeachersRecruitmentRoute = AppTeachersRecruitmentRouteImport.update({
+  id: '/recruitment',
+  path: '/recruitment',
+  getParentRoute: () => AppTeachersRoute,
+} as any)
+const AppTeachersPerformanceRoute = AppTeachersPerformanceRouteImport.update({
+  id: '/performance',
+  path: '/performance',
+  getParentRoute: () => AppTeachersRoute,
+} as any)
+const AppTeachersPayrollRoute = AppTeachersPayrollRouteImport.update({
+  id: '/payroll',
+  path: '/payroll',
+  getParentRoute: () => AppTeachersRoute,
+} as any)
+const AppTeachersLeaveRoute = AppTeachersLeaveRouteImport.update({
+  id: '/leave',
+  path: '/leave',
+  getParentRoute: () => AppTeachersRoute,
+} as any)
+const AppTeachersAttendanceRoute = AppTeachersAttendanceRouteImport.update({
+  id: '/attendance',
+  path: '/attendance',
+  getParentRoute: () => AppTeachersRoute,
+} as any)
+const AppStudentsTransferRoute = AppStudentsTransferRouteImport.update({
+  id: '/transfer',
+  path: '/transfer',
+  getParentRoute: () => AppStudentsRoute,
+} as any)
+const AppStudentsPerformanceRoute = AppStudentsPerformanceRouteImport.update({
+  id: '/performance',
+  path: '/performance',
+  getParentRoute: () => AppStudentsRoute,
+} as any)
+const AppStudentsDisciplineRoute = AppStudentsDisciplineRouteImport.update({
+  id: '/discipline',
+  path: '/discipline',
+  getParentRoute: () => AppStudentsRoute,
+} as any)
+const AppStudentsAttendanceRoute = AppStudentsAttendanceRouteImport.update({
+  id: '/attendance',
+  path: '/attendance',
+  getParentRoute: () => AppStudentsRoute,
+} as any)
+const AppStudentsAlumniRoute = AppStudentsAlumniRouteImport.update({
+  id: '/alumni',
+  path: '/alumni',
+  getParentRoute: () => AppStudentsRoute,
+} as any)
+const AppStudentsAdmissionRoute = AppStudentsAdmissionRouteImport.update({
+  id: '/admission',
+  path: '/admission',
+  getParentRoute: () => AppStudentsRoute,
+} as any)
 const AppStudentsIdRoute = AppStudentsIdRouteImport.update({
   id: '/$id',
   path: '/$id',
   getParentRoute: () => AppStudentsRoute,
+} as any)
+const AppAttendanceStudentsRoute = AppAttendanceStudentsRouteImport.update({
+  id: '/students',
+  path: '/students',
+  getParentRoute: () => AppAttendanceRoute,
+} as any)
+const AppAttendanceStaffRoute = AppAttendanceStaffRouteImport.update({
+  id: '/staff',
+  path: '/staff',
+  getParentRoute: () => AppAttendanceRoute,
+} as any)
+const AppAttendanceReportsRoute = AppAttendanceReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => AppAttendanceRoute,
+} as any)
+const AppAttendanceLeaveRoute = AppAttendanceLeaveRouteImport.update({
+  id: '/leave',
+  path: '/leave',
+  getParentRoute: () => AppAttendanceRoute,
+} as any)
+const AppAttendanceAlertsRoute = AppAttendanceAlertsRouteImport.update({
+  id: '/alerts',
+  path: '/alerts',
+  getParentRoute: () => AppAttendanceRoute,
 } as any)
 const AppFeesReceiptIdRoute = AppFeesReceiptIdRouteImport.update({
   id: '/receipt/$id',
@@ -178,7 +280,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
   '/signup': typeof SignupRoute
-  '/app/attendance': typeof AppAttendanceRoute
+  '/app/attendance': typeof AppAttendanceRouteWithChildren
   '/app/classes': typeof AppClassesRoute
   '/app/exams': typeof AppExamsRoute
   '/app/fees': typeof AppFeesRouteWithChildren
@@ -195,10 +297,27 @@ export interface FileRoutesByFullPath {
   '/app/student-portal': typeof AppStudentPortalRoute
   '/app/students': typeof AppStudentsRouteWithChildren
   '/app/teacher-portal': typeof AppTeacherPortalRoute
-  '/app/teachers': typeof AppTeachersRoute
+  '/app/teachers': typeof AppTeachersRouteWithChildren
   '/app/transport': typeof AppTransportRouteWithChildren
   '/app/': typeof AppIndexRoute
+  '/app/attendance/alerts': typeof AppAttendanceAlertsRoute
+  '/app/attendance/leave': typeof AppAttendanceLeaveRoute
+  '/app/attendance/reports': typeof AppAttendanceReportsRoute
+  '/app/attendance/staff': typeof AppAttendanceStaffRoute
+  '/app/attendance/students': typeof AppAttendanceStudentsRoute
   '/app/students/$id': typeof AppStudentsIdRoute
+  '/app/students/admission': typeof AppStudentsAdmissionRoute
+  '/app/students/alumni': typeof AppStudentsAlumniRoute
+  '/app/students/attendance': typeof AppStudentsAttendanceRoute
+  '/app/students/discipline': typeof AppStudentsDisciplineRoute
+  '/app/students/performance': typeof AppStudentsPerformanceRoute
+  '/app/students/transfer': typeof AppStudentsTransferRoute
+  '/app/teachers/attendance': typeof AppTeachersAttendanceRoute
+  '/app/teachers/leave': typeof AppTeachersLeaveRoute
+  '/app/teachers/payroll': typeof AppTeachersPayrollRoute
+  '/app/teachers/performance': typeof AppTeachersPerformanceRoute
+  '/app/teachers/recruitment': typeof AppTeachersRecruitmentRoute
+  '/app/teachers/training': typeof AppTeachersTrainingRoute
   '/app/transport/tracking': typeof AppTransportTrackingRoute
   '/app/fees/receipt/$id': typeof AppFeesReceiptIdRoute
 }
@@ -207,7 +326,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
   '/signup': typeof SignupRoute
-  '/app/attendance': typeof AppAttendanceRoute
+  '/app/attendance': typeof AppAttendanceRouteWithChildren
   '/app/classes': typeof AppClassesRoute
   '/app/exams': typeof AppExamsRoute
   '/app/fees': typeof AppFeesRouteWithChildren
@@ -224,10 +343,27 @@ export interface FileRoutesByTo {
   '/app/student-portal': typeof AppStudentPortalRoute
   '/app/students': typeof AppStudentsRouteWithChildren
   '/app/teacher-portal': typeof AppTeacherPortalRoute
-  '/app/teachers': typeof AppTeachersRoute
+  '/app/teachers': typeof AppTeachersRouteWithChildren
   '/app/transport': typeof AppTransportRouteWithChildren
   '/app': typeof AppIndexRoute
+  '/app/attendance/alerts': typeof AppAttendanceAlertsRoute
+  '/app/attendance/leave': typeof AppAttendanceLeaveRoute
+  '/app/attendance/reports': typeof AppAttendanceReportsRoute
+  '/app/attendance/staff': typeof AppAttendanceStaffRoute
+  '/app/attendance/students': typeof AppAttendanceStudentsRoute
   '/app/students/$id': typeof AppStudentsIdRoute
+  '/app/students/admission': typeof AppStudentsAdmissionRoute
+  '/app/students/alumni': typeof AppStudentsAlumniRoute
+  '/app/students/attendance': typeof AppStudentsAttendanceRoute
+  '/app/students/discipline': typeof AppStudentsDisciplineRoute
+  '/app/students/performance': typeof AppStudentsPerformanceRoute
+  '/app/students/transfer': typeof AppStudentsTransferRoute
+  '/app/teachers/attendance': typeof AppTeachersAttendanceRoute
+  '/app/teachers/leave': typeof AppTeachersLeaveRoute
+  '/app/teachers/payroll': typeof AppTeachersPayrollRoute
+  '/app/teachers/performance': typeof AppTeachersPerformanceRoute
+  '/app/teachers/recruitment': typeof AppTeachersRecruitmentRoute
+  '/app/teachers/training': typeof AppTeachersTrainingRoute
   '/app/transport/tracking': typeof AppTransportTrackingRoute
   '/app/fees/receipt/$id': typeof AppFeesReceiptIdRoute
 }
@@ -237,7 +373,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
   '/signup': typeof SignupRoute
-  '/app/attendance': typeof AppAttendanceRoute
+  '/app/attendance': typeof AppAttendanceRouteWithChildren
   '/app/classes': typeof AppClassesRoute
   '/app/exams': typeof AppExamsRoute
   '/app/fees': typeof AppFeesRouteWithChildren
@@ -254,10 +390,27 @@ export interface FileRoutesById {
   '/app/student-portal': typeof AppStudentPortalRoute
   '/app/students': typeof AppStudentsRouteWithChildren
   '/app/teacher-portal': typeof AppTeacherPortalRoute
-  '/app/teachers': typeof AppTeachersRoute
+  '/app/teachers': typeof AppTeachersRouteWithChildren
   '/app/transport': typeof AppTransportRouteWithChildren
   '/app/': typeof AppIndexRoute
+  '/app/attendance/alerts': typeof AppAttendanceAlertsRoute
+  '/app/attendance/leave': typeof AppAttendanceLeaveRoute
+  '/app/attendance/reports': typeof AppAttendanceReportsRoute
+  '/app/attendance/staff': typeof AppAttendanceStaffRoute
+  '/app/attendance/students': typeof AppAttendanceStudentsRoute
   '/app/students/$id': typeof AppStudentsIdRoute
+  '/app/students/admission': typeof AppStudentsAdmissionRoute
+  '/app/students/alumni': typeof AppStudentsAlumniRoute
+  '/app/students/attendance': typeof AppStudentsAttendanceRoute
+  '/app/students/discipline': typeof AppStudentsDisciplineRoute
+  '/app/students/performance': typeof AppStudentsPerformanceRoute
+  '/app/students/transfer': typeof AppStudentsTransferRoute
+  '/app/teachers/attendance': typeof AppTeachersAttendanceRoute
+  '/app/teachers/leave': typeof AppTeachersLeaveRoute
+  '/app/teachers/payroll': typeof AppTeachersPayrollRoute
+  '/app/teachers/performance': typeof AppTeachersPerformanceRoute
+  '/app/teachers/recruitment': typeof AppTeachersRecruitmentRoute
+  '/app/teachers/training': typeof AppTeachersTrainingRoute
   '/app/transport/tracking': typeof AppTransportTrackingRoute
   '/app/fees/receipt/$id': typeof AppFeesReceiptIdRoute
 }
@@ -288,7 +441,24 @@ export interface FileRouteTypes {
     | '/app/teachers'
     | '/app/transport'
     | '/app/'
+    | '/app/attendance/alerts'
+    | '/app/attendance/leave'
+    | '/app/attendance/reports'
+    | '/app/attendance/staff'
+    | '/app/attendance/students'
     | '/app/students/$id'
+    | '/app/students/admission'
+    | '/app/students/alumni'
+    | '/app/students/attendance'
+    | '/app/students/discipline'
+    | '/app/students/performance'
+    | '/app/students/transfer'
+    | '/app/teachers/attendance'
+    | '/app/teachers/leave'
+    | '/app/teachers/payroll'
+    | '/app/teachers/performance'
+    | '/app/teachers/recruitment'
+    | '/app/teachers/training'
     | '/app/transport/tracking'
     | '/app/fees/receipt/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -317,7 +487,24 @@ export interface FileRouteTypes {
     | '/app/teachers'
     | '/app/transport'
     | '/app'
+    | '/app/attendance/alerts'
+    | '/app/attendance/leave'
+    | '/app/attendance/reports'
+    | '/app/attendance/staff'
+    | '/app/attendance/students'
     | '/app/students/$id'
+    | '/app/students/admission'
+    | '/app/students/alumni'
+    | '/app/students/attendance'
+    | '/app/students/discipline'
+    | '/app/students/performance'
+    | '/app/students/transfer'
+    | '/app/teachers/attendance'
+    | '/app/teachers/leave'
+    | '/app/teachers/payroll'
+    | '/app/teachers/performance'
+    | '/app/teachers/recruitment'
+    | '/app/teachers/training'
     | '/app/transport/tracking'
     | '/app/fees/receipt/$id'
   id:
@@ -346,7 +533,24 @@ export interface FileRouteTypes {
     | '/app/teachers'
     | '/app/transport'
     | '/app/'
+    | '/app/attendance/alerts'
+    | '/app/attendance/leave'
+    | '/app/attendance/reports'
+    | '/app/attendance/staff'
+    | '/app/attendance/students'
     | '/app/students/$id'
+    | '/app/students/admission'
+    | '/app/students/alumni'
+    | '/app/students/attendance'
+    | '/app/students/discipline'
+    | '/app/students/performance'
+    | '/app/students/transfer'
+    | '/app/teachers/attendance'
+    | '/app/teachers/leave'
+    | '/app/teachers/payroll'
+    | '/app/teachers/performance'
+    | '/app/teachers/recruitment'
+    | '/app/teachers/training'
     | '/app/transport/tracking'
     | '/app/fees/receipt/$id'
   fileRoutesById: FileRoutesById
@@ -356,7 +560,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   PricingRoute: typeof PricingRoute
   SignupRoute: typeof SignupRoute
-  AppAttendanceRoute: typeof AppAttendanceRoute
+  AppAttendanceRoute: typeof AppAttendanceRouteWithChildren
   AppClassesRoute: typeof AppClassesRoute
   AppExamsRoute: typeof AppExamsRoute
   AppFeesRoute: typeof AppFeesRouteWithChildren
@@ -373,7 +577,7 @@ export interface RootRouteChildren {
   AppStudentPortalRoute: typeof AppStudentPortalRoute
   AppStudentsRoute: typeof AppStudentsRouteWithChildren
   AppTeacherPortalRoute: typeof AppTeacherPortalRoute
-  AppTeachersRoute: typeof AppTeachersRoute
+  AppTeachersRoute: typeof AppTeachersRouteWithChildren
   AppTransportRoute: typeof AppTransportRouteWithChildren
   AppIndexRoute: typeof AppIndexRoute
 }
@@ -555,12 +759,131 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppTransportTrackingRouteImport
       parentRoute: typeof AppTransportRoute
     }
+    '/app/teachers/training': {
+      id: '/app/teachers/training'
+      path: '/training'
+      fullPath: '/app/teachers/training'
+      preLoaderRoute: typeof AppTeachersTrainingRouteImport
+      parentRoute: typeof AppTeachersRoute
+    }
+    '/app/teachers/recruitment': {
+      id: '/app/teachers/recruitment'
+      path: '/recruitment'
+      fullPath: '/app/teachers/recruitment'
+      preLoaderRoute: typeof AppTeachersRecruitmentRouteImport
+      parentRoute: typeof AppTeachersRoute
+    }
+    '/app/teachers/performance': {
+      id: '/app/teachers/performance'
+      path: '/performance'
+      fullPath: '/app/teachers/performance'
+      preLoaderRoute: typeof AppTeachersPerformanceRouteImport
+      parentRoute: typeof AppTeachersRoute
+    }
+    '/app/teachers/payroll': {
+      id: '/app/teachers/payroll'
+      path: '/payroll'
+      fullPath: '/app/teachers/payroll'
+      preLoaderRoute: typeof AppTeachersPayrollRouteImport
+      parentRoute: typeof AppTeachersRoute
+    }
+    '/app/teachers/leave': {
+      id: '/app/teachers/leave'
+      path: '/leave'
+      fullPath: '/app/teachers/leave'
+      preLoaderRoute: typeof AppTeachersLeaveRouteImport
+      parentRoute: typeof AppTeachersRoute
+    }
+    '/app/teachers/attendance': {
+      id: '/app/teachers/attendance'
+      path: '/attendance'
+      fullPath: '/app/teachers/attendance'
+      preLoaderRoute: typeof AppTeachersAttendanceRouteImport
+      parentRoute: typeof AppTeachersRoute
+    }
+    '/app/students/transfer': {
+      id: '/app/students/transfer'
+      path: '/transfer'
+      fullPath: '/app/students/transfer'
+      preLoaderRoute: typeof AppStudentsTransferRouteImport
+      parentRoute: typeof AppStudentsRoute
+    }
+    '/app/students/performance': {
+      id: '/app/students/performance'
+      path: '/performance'
+      fullPath: '/app/students/performance'
+      preLoaderRoute: typeof AppStudentsPerformanceRouteImport
+      parentRoute: typeof AppStudentsRoute
+    }
+    '/app/students/discipline': {
+      id: '/app/students/discipline'
+      path: '/discipline'
+      fullPath: '/app/students/discipline'
+      preLoaderRoute: typeof AppStudentsDisciplineRouteImport
+      parentRoute: typeof AppStudentsRoute
+    }
+    '/app/students/attendance': {
+      id: '/app/students/attendance'
+      path: '/attendance'
+      fullPath: '/app/students/attendance'
+      preLoaderRoute: typeof AppStudentsAttendanceRouteImport
+      parentRoute: typeof AppStudentsRoute
+    }
+    '/app/students/alumni': {
+      id: '/app/students/alumni'
+      path: '/alumni'
+      fullPath: '/app/students/alumni'
+      preLoaderRoute: typeof AppStudentsAlumniRouteImport
+      parentRoute: typeof AppStudentsRoute
+    }
+    '/app/students/admission': {
+      id: '/app/students/admission'
+      path: '/admission'
+      fullPath: '/app/students/admission'
+      preLoaderRoute: typeof AppStudentsAdmissionRouteImport
+      parentRoute: typeof AppStudentsRoute
+    }
     '/app/students/$id': {
       id: '/app/students/$id'
       path: '/$id'
       fullPath: '/app/students/$id'
       preLoaderRoute: typeof AppStudentsIdRouteImport
       parentRoute: typeof AppStudentsRoute
+    }
+    '/app/attendance/students': {
+      id: '/app/attendance/students'
+      path: '/students'
+      fullPath: '/app/attendance/students'
+      preLoaderRoute: typeof AppAttendanceStudentsRouteImport
+      parentRoute: typeof AppAttendanceRoute
+    }
+    '/app/attendance/staff': {
+      id: '/app/attendance/staff'
+      path: '/staff'
+      fullPath: '/app/attendance/staff'
+      preLoaderRoute: typeof AppAttendanceStaffRouteImport
+      parentRoute: typeof AppAttendanceRoute
+    }
+    '/app/attendance/reports': {
+      id: '/app/attendance/reports'
+      path: '/reports'
+      fullPath: '/app/attendance/reports'
+      preLoaderRoute: typeof AppAttendanceReportsRouteImport
+      parentRoute: typeof AppAttendanceRoute
+    }
+    '/app/attendance/leave': {
+      id: '/app/attendance/leave'
+      path: '/leave'
+      fullPath: '/app/attendance/leave'
+      preLoaderRoute: typeof AppAttendanceLeaveRouteImport
+      parentRoute: typeof AppAttendanceRoute
+    }
+    '/app/attendance/alerts': {
+      id: '/app/attendance/alerts'
+      path: '/alerts'
+      fullPath: '/app/attendance/alerts'
+      preLoaderRoute: typeof AppAttendanceAlertsRouteImport
+      parentRoute: typeof AppAttendanceRoute
     }
     '/app/fees/receipt/$id': {
       id: '/app/fees/receipt/$id'
@@ -571,6 +894,26 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface AppAttendanceRouteChildren {
+  AppAttendanceAlertsRoute: typeof AppAttendanceAlertsRoute
+  AppAttendanceLeaveRoute: typeof AppAttendanceLeaveRoute
+  AppAttendanceReportsRoute: typeof AppAttendanceReportsRoute
+  AppAttendanceStaffRoute: typeof AppAttendanceStaffRoute
+  AppAttendanceStudentsRoute: typeof AppAttendanceStudentsRoute
+}
+
+const AppAttendanceRouteChildren: AppAttendanceRouteChildren = {
+  AppAttendanceAlertsRoute: AppAttendanceAlertsRoute,
+  AppAttendanceLeaveRoute: AppAttendanceLeaveRoute,
+  AppAttendanceReportsRoute: AppAttendanceReportsRoute,
+  AppAttendanceStaffRoute: AppAttendanceStaffRoute,
+  AppAttendanceStudentsRoute: AppAttendanceStudentsRoute,
+}
+
+const AppAttendanceRouteWithChildren = AppAttendanceRoute._addFileChildren(
+  AppAttendanceRouteChildren,
+)
 
 interface AppFeesRouteChildren {
   AppFeesReceiptIdRoute: typeof AppFeesReceiptIdRoute
@@ -585,14 +928,48 @@ const AppFeesRouteWithChildren =
 
 interface AppStudentsRouteChildren {
   AppStudentsIdRoute: typeof AppStudentsIdRoute
+  AppStudentsAdmissionRoute: typeof AppStudentsAdmissionRoute
+  AppStudentsAlumniRoute: typeof AppStudentsAlumniRoute
+  AppStudentsAttendanceRoute: typeof AppStudentsAttendanceRoute
+  AppStudentsDisciplineRoute: typeof AppStudentsDisciplineRoute
+  AppStudentsPerformanceRoute: typeof AppStudentsPerformanceRoute
+  AppStudentsTransferRoute: typeof AppStudentsTransferRoute
 }
 
 const AppStudentsRouteChildren: AppStudentsRouteChildren = {
   AppStudentsIdRoute: AppStudentsIdRoute,
+  AppStudentsAdmissionRoute: AppStudentsAdmissionRoute,
+  AppStudentsAlumniRoute: AppStudentsAlumniRoute,
+  AppStudentsAttendanceRoute: AppStudentsAttendanceRoute,
+  AppStudentsDisciplineRoute: AppStudentsDisciplineRoute,
+  AppStudentsPerformanceRoute: AppStudentsPerformanceRoute,
+  AppStudentsTransferRoute: AppStudentsTransferRoute,
 }
 
 const AppStudentsRouteWithChildren = AppStudentsRoute._addFileChildren(
   AppStudentsRouteChildren,
+)
+
+interface AppTeachersRouteChildren {
+  AppTeachersAttendanceRoute: typeof AppTeachersAttendanceRoute
+  AppTeachersLeaveRoute: typeof AppTeachersLeaveRoute
+  AppTeachersPayrollRoute: typeof AppTeachersPayrollRoute
+  AppTeachersPerformanceRoute: typeof AppTeachersPerformanceRoute
+  AppTeachersRecruitmentRoute: typeof AppTeachersRecruitmentRoute
+  AppTeachersTrainingRoute: typeof AppTeachersTrainingRoute
+}
+
+const AppTeachersRouteChildren: AppTeachersRouteChildren = {
+  AppTeachersAttendanceRoute: AppTeachersAttendanceRoute,
+  AppTeachersLeaveRoute: AppTeachersLeaveRoute,
+  AppTeachersPayrollRoute: AppTeachersPayrollRoute,
+  AppTeachersPerformanceRoute: AppTeachersPerformanceRoute,
+  AppTeachersRecruitmentRoute: AppTeachersRecruitmentRoute,
+  AppTeachersTrainingRoute: AppTeachersTrainingRoute,
+}
+
+const AppTeachersRouteWithChildren = AppTeachersRoute._addFileChildren(
+  AppTeachersRouteChildren,
 )
 
 interface AppTransportRouteChildren {
@@ -612,7 +989,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   PricingRoute: PricingRoute,
   SignupRoute: SignupRoute,
-  AppAttendanceRoute: AppAttendanceRoute,
+  AppAttendanceRoute: AppAttendanceRouteWithChildren,
   AppClassesRoute: AppClassesRoute,
   AppExamsRoute: AppExamsRoute,
   AppFeesRoute: AppFeesRouteWithChildren,
@@ -629,7 +1006,7 @@ const rootRouteChildren: RootRouteChildren = {
   AppStudentPortalRoute: AppStudentPortalRoute,
   AppStudentsRoute: AppStudentsRouteWithChildren,
   AppTeacherPortalRoute: AppTeacherPortalRoute,
-  AppTeachersRoute: AppTeachersRoute,
+  AppTeachersRoute: AppTeachersRouteWithChildren,
   AppTransportRoute: AppTransportRouteWithChildren,
   AppIndexRoute: AppIndexRoute,
 }
