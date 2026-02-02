@@ -1,4 +1,5 @@
 import handler from "@tanstack/react-start/server-entry";
+import api from "@school/api";
 import type { getRouter } from "./router";
 import type { startInstance } from "./start";
 
@@ -21,32 +22,15 @@ declare module "@tanstack/react-start" {
 }
 
 export default {
-  async fetch(request: Request): Promise<Response> {
+  async fetch(
+    request: Request,
+    env: Record<string, unknown>,
+    ctx: any
+  ): Promise<Response> {
     const url = new URL(request.url);
 
-    if (url.pathname.startsWith("/api/")) {
-      // Proxy API requests to the API server running on port 3000
-      const apiUrl = new URL(request.url);
-      apiUrl.hostname = "localhost";
-      apiUrl.port = "3000";
-      
-      try {
-        const response = await fetch(apiUrl.toString(), {
-          method: request.method,
-          headers: request.headers,
-          body: request.body,
-        });
-        return response;
-      } catch (error) {
-        console.error("API proxy error:", error);
-        return new Response(
-          JSON.stringify({ error: "API server unavailable" }),
-          {
-            status: 503,
-            headers: { "Content-Type": "application/json" },
-          }
-        );
-      }
+    if (url.pathname.startsWith("/api")) {
+      return api.fetch(request, env as any, ctx);
     }
 
     return handler.fetch(request, {

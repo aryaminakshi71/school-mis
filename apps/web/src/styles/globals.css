@@ -17,8 +17,8 @@
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.22 0.015 260);
 
-  /* Primary Brand - Professional Blue */
-  --primary: oklch(0.55 0.14 245);
+  /* Primary Brand - Indigo */
+  --primary: oklch(0.55 0.2 290);
   --primary-foreground: oklch(0.99 0.005 250);
   --primary-light: oklch(0.65 0.12 245);
   --primary-dark: oklch(0.45 0.14 245);
@@ -88,7 +88,7 @@
   --popover: oklch(0.16 0.01 260);
   --popover-foreground: oklch(0.95 0.005 250);
 
-  --primary: oklch(0.6 0.14 245);
+  --primary: oklch(0.65 0.2 290);
   --primary-foreground: oklch(0.99 0.005 250);
   --primary-light: oklch(0.7 0.12 245);
   --primary-dark: oklch(0.5 0.14 245);
@@ -266,6 +266,7 @@ body {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -276,6 +277,7 @@ body {
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -287,6 +289,7 @@ body {
     opacity: 0;
     transform: translateY(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -298,6 +301,7 @@ body {
     opacity: 0;
     transform: translateX(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -309,6 +313,7 @@ body {
     opacity: 0;
     transform: scale(0.95);
   }
+
   to {
     opacity: 1;
     transform: scale(1);
@@ -360,11 +365,9 @@ body {
 
 /* Gradient Text */
 .gradient-text {
-  background: linear-gradient(
-    135deg,
-    var(--primary) 0%,
-    var(--primary-light) 100%
-  );
+  background: linear-gradient(135deg,
+      var(--primary) 0%,
+      var(--primary-light) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -381,11 +384,9 @@ body {
   inset: 0;
   border-radius: inherit;
   padding: 1px;
-  background: linear-gradient(
-    135deg,
-    var(--primary) 0%,
-    var(--primary-light) 100%
-  );
+  background: linear-gradient(135deg,
+      var(--primary) 0%,
+      var(--primary-light) 100%);
   -webkit-mask:
     linear-gradient(#fff 0 0) content-box,
     linear-gradient(#fff 0 0);
@@ -398,12 +399,10 @@ body {
 
 /* Shimmer Loading */
 .shimmer {
-  background: linear-gradient(
-    90deg,
-    var(--muted) 0%,
-    var(--muted-foreground) 50%,
-    var(--muted) 100%
-  );
+  background: linear-gradient(90deg,
+      var(--muted) 0%,
+      var(--muted-foreground) 50%,
+      var(--muted) 100%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }
@@ -412,6 +411,7 @@ body {
   0% {
     background-position: 200% 0;
   }
+
   100% {
     background-position: -200% 0;
   }

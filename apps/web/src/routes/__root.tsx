@@ -2,6 +2,7 @@ import {
   Scripts,
   createRootRoute,
   Outlet,
+  HeadContent,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { Toaster } from "sonner";
@@ -11,6 +12,8 @@ import { ThemeProvider } from "../lib/theme-context";
 import { AuthProvider } from "../lib/auth-context";
 import { ErrorBoundary } from "../components/error-boundary";
 import { useGlobalShortcuts } from "../lib/keyboard-shortcuts";
+import { ErrorPage, NotFoundPage } from "../components/error";
+import { generateOrganizationSchema, generateWebSiteSchema, getSchoolMISOrganizationSchema } from "../lib/structured-data";
 
 import "../styles/globals.css";
 
@@ -30,20 +33,37 @@ const queryClient = new QueryClient({
 
 export const Route = createRootRoute({
   component: RootDocument,
+  errorComponent: ({ error }) => <ErrorPage error={error} />,
+  notFoundComponent: () => <NotFoundPage />,
 });
 
 function RootDocument() {
   // Enable global keyboard shortcuts
   useGlobalShortcuts();
 
+  const organizationSchema = generateOrganizationSchema(getSchoolMISOrganizationSchema())
+  const websiteSchema = generateWebSiteSchema({
+    name: 'School MIS',
+    url: import.meta.env.VITE_PUBLIC_SITE_URL || 'https://school-mis.your-domain.com',
+    description: 'Complete school administration solution for managing all school operations.',
+  })
+
   return (
     <html lang="en" className="light">
       <head>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>School MIS - Modern School Management</title>
-        <meta name="description" content="Complete school administration solution" />
-        <link rel="stylesheet" href="/src/styles/globals.css" />
+        <HeadContent />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationSchema),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(websiteSchema),
+          }}
+        />
       </head>
       <body>
         <ErrorBoundary>

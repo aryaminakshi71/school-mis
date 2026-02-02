@@ -3,10 +3,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite dev --port 3007",
+    "cf-typegen": "wrangler types",
+    "dev": "vite dev",
     "build": "vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
+    "lint": "eslint . --ext .ts,.tsx",
     "test": "bun test",
     "test:unit": "bun test --filter unit",
     "test:e2e": "playwright test",
@@ -54,6 +56,7 @@
     "zod": "^4.3.5"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.22.1",
     "@playwright/test": "^1.40.0",
     "@tailwindcss/vite": "^4.0.6",
     "@tanstack/devtools-vite": "^0.4.1",
@@ -66,6 +69,7 @@
     "typescript": "^5.9.3",
     "vite": "^7.3.1",
     "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "^2.1.8"
+    "vitest": "^2.1.8",
+    "wrangler": "^4.61.1"
   }
 }
