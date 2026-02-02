@@ -124,7 +124,7 @@ notifications.post("/send", async (c) => {
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return c.json({ error: error.errors }, 400);
+      return c.json({ error: error.issues }, 400);
     }
     return c.json({ error: "Failed to send notification" }, 500);
   }

@@ -94,7 +94,7 @@ export function createApp() {
   // Direct REST endpoints for Students (bypassing oRPC for now)
   app.get("/api/students", async (c: any) => {
     try {
-      const db = getDb();
+      const db = getDb(c.env);
       const page = parseInt(c.req.query("page") || "1");
       const limit = parseInt(c.req.query("limit") || "20");
       const search = c.req.query("search") || "";
@@ -149,7 +149,7 @@ export function createApp() {
 
   app.post("/api/students", async (c: any) => {
     try {
-      const db = getDb();
+      const db = getDb(c.env);
       const data = await c.req.json();
       const { randomUUID } = await import("crypto");
       const id = randomUUID();
@@ -185,7 +185,7 @@ export function createApp() {
 
   app.put("/api/students/:id", async (c: any) => {
     try {
-      const db = getDb();
+      const db = getDb(c.env);
       const id = c.req.param("id");
       const data = await c.req.json();
 
@@ -204,7 +204,7 @@ export function createApp() {
 
   app.delete("/api/students/:id", async (c: any) => {
     try {
-      const db = getDb();
+      const db = getDb(c.env);
       const id = c.req.param("id");
 
       await db.delete(students).where(eq(students.id, id));
@@ -218,7 +218,7 @@ export function createApp() {
 
   app.get("/api/students/:id", async (c: any) => {
     try {
-      const db = getDb();
+      const db = getDb(c.env);
       const id = c.req.param("id");
 
       const [student] = await db
@@ -263,7 +263,7 @@ export function createApp() {
   // Teachers endpoints
   app.get("/api/teachers", async (c: any) => {
     try {
-      const db = getDb();
+      const db = getDb(c.env);
       const search = c.req.query("search") || "";
 
       const conditions = [];
@@ -298,7 +298,7 @@ export function createApp() {
 
   app.put("/api/teachers/:id", async (c: any) => {
     try {
-      const db = getDb();
+      const db = getDb(c.env);
       const id = c.req.param("id");
       const data = await c.req.json();
 
@@ -326,7 +326,7 @@ export function createApp() {
 
   app.delete("/api/teachers/:id", async (c: any) => {
     try {
-      const db = getDb();
+      const db = getDb(c.env);
       const id = c.req.param("id");
 
       await db.delete(teachers).where(eq(teachers.id, id));
@@ -340,7 +340,7 @@ export function createApp() {
 
   app.get("/api/teachers/:id", async (c: any) => {
     try {
-      const db = getDb();
+      const db = getDb(c.env);
       const id = c.req.param("id");
 
       const [teacher] = await db
@@ -362,7 +362,7 @@ export function createApp() {
 
   app.post("/api/teachers", async (c: any) => {
     try {
-      const db = getDb();
+      const db = getDb(c.env);
       const data = await c.req.json();
       const { randomUUID } = await import("crypto");
       const id = randomUUID();
@@ -393,7 +393,7 @@ export function createApp() {
   // Classes endpoints
   app.get("/api/classes", async (c: any) => {
     try {
-      const db = getDb();
+      const db = getDb(c.env);
 
       const allClasses = await db
         .select({
@@ -430,7 +430,7 @@ export function createApp() {
 
   app.post("/api/classes", async (c: any) => {
     try {
-      const db = getDb();
+      const db = getDb(c.env);
       const data = await c.req.json();
       const { randomUUID } = await import("crypto");
       const id = randomUUID();
@@ -454,7 +454,7 @@ export function createApp() {
 
   app.put("/api/classes/:id", async (c: any) => {
     try {
-      const db = getDb();
+      const db = getDb(c.env);
       const id = c.req.param("id");
       const data = await c.req.json();
 
@@ -478,7 +478,7 @@ export function createApp() {
 
   app.delete("/api/classes/:id", async (c: any) => {
     try {
-      const db = getDb();
+      const db = getDb(c.env);
       const id = c.req.param("id");
 
       await db.delete(classes).where(eq(classes.id, id));
@@ -492,7 +492,7 @@ export function createApp() {
 
   app.get("/api/classes/list", async (c: any) => {
     try {
-      const db = getDb();
+      const db = getDb(c.env);
 
       const allClasses = await db
         .select({
@@ -513,7 +513,7 @@ export function createApp() {
   // Attendance endpoints
   app.get("/api/attendance", async (c: any) => {
     try {
-      const db = getDb();
+      const db = getDb(c.env);
       const date =
         c.req.query("date") || new Date().toISOString().split("T")[0];
       const classId = c.req.query("classId");
@@ -573,7 +573,7 @@ export function createApp() {
 
   app.post("/api/attendance", async (c: any) => {
     try {
-      const db = getDb();
+      const db = getDb(c.env);
       const data = await c.req.json();
 
       const activeSession = await db
@@ -614,7 +614,7 @@ export function createApp() {
   // Fees endpoints
   app.get("/api/fees", async (c: any) => {
     try {
-      const db = getDb();
+      const db = getDb(c.env);
       const studentId = c.req.query("studentId");
       const status = c.req.query("status");
 
@@ -688,7 +688,7 @@ export function createApp() {
 
   app.post("/api/fees", async (c: any) => {
     try {
-      const db = getDb();
+      const db = getDb(c.env);
       const data = await c.req.json();
       const { randomUUID } = await import("crypto");
       const id = randomUUID();
@@ -713,7 +713,7 @@ export function createApp() {
 
   app.post("/api/fees/:id/pay", async (c: any) => {
     try {
-      const db = getDb();
+      const db = getDb(c.env);
       const allocationId = c.req.param("id");
       const data = await c.req.json();
       const { randomUUID } = await import("crypto");

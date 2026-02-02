@@ -14,6 +14,8 @@ import { ErrorBoundary } from "../components/error-boundary";
 import { useGlobalShortcuts } from "../lib/keyboard-shortcuts";
 import { ErrorPage, NotFoundPage } from "../components/error";
 import { generateOrganizationSchema, generateWebSiteSchema, getSchoolMISOrganizationSchema } from "../lib/structured-data";
+import { registerServiceWorker } from "../lib/service-worker";
+import { useEffect } from "react";
 
 import "../styles/globals.css";
 
@@ -38,6 +40,11 @@ export const Route = createRootRoute({
 });
 
 function RootDocument() {
+  // Register service worker
+  useEffect(() => {
+    registerServiceWorker();
+  }, []);
+
   // Enable global keyboard shortcuts
   useGlobalShortcuts();
 

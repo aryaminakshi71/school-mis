@@ -1,43 +1,62 @@
 /**
  * Database Client
  *
- * Creates and manages database connections for API requests.
+ * Creates and manages database connections optimized for Cloudflare Workers with Neon.
+ * Supports Hyperdrive (Cloudflare Workers) or direct PostgreSQL connection.
+ *
+ * In Cloudflare Workers:
+ * - Use env.DATABASE.connectionString (from Hyperdrive binding)
+ * - Automatically uses Neon serverless driver optimized for edge runtime
+ *
+ * In local development:
+ * - Use connectionString parameter or DATABASE_URL env var
  */
 
-import { drizzle } from "drizzle-orm/node-postgres";
-import { Pool } from "pg";
+import { drizzle as drizzleNeon } from "drizzle-orm/neon-serverless";
+import { drizzle as drizzlePostgres } from "drizzle-orm/postgres-js";
+import { neonConfig } from "@neondatabase/serverless";
+import postgres from "postgres";
 import * as schema from "@school/storage";
 
-let pool: Pool | null = null;
-let dbInstance: ReturnType<typeof drizzle> | null = null;
+let dbInstance: ReturnType<typeof drizzleNeon> | ReturnType<typeof drizzlePostgres> | null = null;
 
-function getPool(): Pool {
+/**
+ * Get database connection
+ * Supports Hyperdrive connection string from Cloudflare env or direct DATABASE_URL
+ */
+export function getDb(env?: { DATABASE?: { connectionString: string }; DATABASE_URL?: string }) {
+  // Check for Hyperdrive connection string from Cloudflare env
   const connectionString =
+    env?.DATABASE?.connectionString ||
+    env?.DATABASE_URL ||
     process.env.DATABASE_URL ||
     "postgresql://postgres@localhost:5432/school_mis";
 
-  if (!pool) {
-    pool = new Pool({
-      connectionString,
-      max: 20,                    // Max connections
-      idleTimeoutMillis: 30000,   // 30 seconds
-      connectionTimeoutMillis: 2000, // 2 seconds
-    });
-  }
-
-  return pool;
-}
-
-export function getDb(): ReturnType<typeof drizzle> {
   if (!dbInstance) {
-    const pool = getPool();
-    dbInstance = drizzle(pool, { schema });
+    // Determine if we're in local development
+    const isLocal = connectionString.includes("localhost") ||
+      connectionString.includes("127.0.0.1") ||
+      process.env.NODE_ENV === "development";
+
+    if (isLocal) {
+      // Local development: Use postgres.js for TCP connections
+      const client = postgres(connectionString, {
+        max: 20,
+        idle_timeout: 20,
+        connect_timeout: 10,
+        ssl: false,
+      });
+      dbInstance = drizzlePostgres(client, { schema });
+    } else {
+      // Production/Cloudflare: Use Neon Serverless (works with Hyperdrive connection strings)
+      // Optimize Neon for Cloudflare Workers
+      neonConfig.fetchConnectionCache = true;
+
+      // drizzle-orm/neon-serverless accepts connection string directly
+      dbInstance = drizzleNeon(connectionString, { schema });
+    }
   }
   return dbInstance;
-}
-
-export function getPoolClient(): Pool {
-  return getPool();
 }
 
 export { schema };
