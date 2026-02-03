@@ -14,6 +14,7 @@ import { loggerMiddleware } from "./middleware/logger.js";
 import { initSentry } from "./lib/sentry.js";
 import { initDatadog } from "./lib/datadog.js";
 import { rateLimitRedis } from "./middleware/rate-limit-redis.js";
+import { setSecurityHeaders } from "./lib/security.js";
 import { appRouter } from "./routers/index.js";
 import { getDb } from "./lib/db.js";
 import {
@@ -62,6 +63,12 @@ export function createApp() {
   );
   app.use("*", requestId());
   app.use("*", loggerMiddleware);
+  
+  // Security headers middleware
+  app.use("*", async (c, next) => {
+    await next();
+    setSecurityHeaders(c.res.headers);
+  });
 
   // Rate limiting middleware
   app.use("/api/*", rateLimitRedis({ limiterType: "api" }));
@@ -900,6 +907,59 @@ export function createApp() {
     }
 
     await next();
+  });
+
+  // OpenAPI spec
+  app.get("/api/openapi.json", async (c: any) => {
+    const generator = new OpenAPIGenerator({
+      schemaConverters: [new ZodToJsonSchemaConverter()],
+    });
+
+    const spec = await generator.generate(appRouter, {
+      info: {
+        title: "School MIS API",
+        version: "1.0.0",
+        description: "School Management Information System API",
+      },
+      servers: [
+        {
+          url: c.env?.VITE_PUBLIC_SITE_URL || "http://localhost:3000",
+          description: "Current",
+        },
+      ],
+      security: [{ bearerAuth: [] }],
+      components: {
+        securitySchemes: {
+          bearerAuth: {
+            type: "http",
+            scheme: "bearer",
+            bearerFormat: "JWT",
+            description: "JWT token from Better Auth",
+          },
+        },
+      },
+      tags: [
+        { name: "Students", description: "Student management operations" },
+        { name: "Teachers", description: "Teacher management operations" },
+        { name: "Classes", description: "Class management operations" },
+        { name: "Attendance", description: "Attendance tracking" },
+        { name: "Fees", description: "Fee management operations" },
+        { name: "System", description: "System endpoints" },
+      ],
+    });
+
+    return c.json(spec);
+  });
+
+  // Scalar API Documentation UI
+  app.get("/api/docs", async (c: any) => {
+    const { Scalar } = await import("@scalar/hono-api-reference");
+    return Scalar({
+      spec: {
+        url: "/api/openapi.json",
+      },
+      theme: "purple",
+    })(c);
   });
 
   return app;

@@ -15,6 +15,7 @@ import { useGlobalShortcuts } from "../lib/keyboard-shortcuts";
 import { ErrorPage, NotFoundPage } from "../components/error";
 import { generateOrganizationSchema, generateWebSiteSchema, getSchoolMISOrganizationSchema } from "../lib/structured-data";
 import { registerServiceWorker } from "../lib/service-worker";
+import { addSkipLink } from "../lib/accessibility";
 import { useEffect } from "react";
 
 import "../styles/globals.css";
@@ -43,6 +44,8 @@ function RootDocument() {
   // Register service worker
   useEffect(() => {
     registerServiceWorker();
+    // Add skip link for accessibility
+    addSkipLink("main-content", "Skip to main content");
   }, []);
 
   // Enable global keyboard shortcuts

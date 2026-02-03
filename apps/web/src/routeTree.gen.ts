@@ -32,6 +32,7 @@ import { Route as AppGradebookRouteImport } from './routes/app.gradebook'
 import { Route as AppFeesRouteImport } from './routes/app.fees'
 import { Route as AppExamsRouteImport } from './routes/app.exams'
 import { Route as AppClassesRouteImport } from './routes/app.classes'
+import { Route as AppBillingRouteImport } from './routes/app/billing'
 import { Route as AppAttendanceRouteImport } from './routes/app.attendance'
 import { Route as AppTransportTrackingRouteImport } from './routes/app.transport.tracking'
 import { Route as AppTeachersTrainingRouteImport } from './routes/app.teachers.training'
@@ -169,6 +170,11 @@ const AppClassesRoute = AppClassesRouteImport.update({
   path: '/app/classes',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppBillingRoute = AppBillingRouteImport.update({
+  id: '/app/billing',
+  path: '/app/billing',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppAttendanceRoute = AppAttendanceRouteImport.update({
   id: '/app/attendance',
   path: '/app/attendance',
@@ -281,6 +287,7 @@ export interface FileRoutesByFullPath {
   '/pricing': typeof PricingRoute
   '/signup': typeof SignupRoute
   '/app/attendance': typeof AppAttendanceRouteWithChildren
+  '/app/billing': typeof AppBillingRoute
   '/app/classes': typeof AppClassesRoute
   '/app/exams': typeof AppExamsRoute
   '/app/fees': typeof AppFeesRouteWithChildren
@@ -327,6 +334,7 @@ export interface FileRoutesByTo {
   '/pricing': typeof PricingRoute
   '/signup': typeof SignupRoute
   '/app/attendance': typeof AppAttendanceRouteWithChildren
+  '/app/billing': typeof AppBillingRoute
   '/app/classes': typeof AppClassesRoute
   '/app/exams': typeof AppExamsRoute
   '/app/fees': typeof AppFeesRouteWithChildren
@@ -374,6 +382,7 @@ export interface FileRoutesById {
   '/pricing': typeof PricingRoute
   '/signup': typeof SignupRoute
   '/app/attendance': typeof AppAttendanceRouteWithChildren
+  '/app/billing': typeof AppBillingRoute
   '/app/classes': typeof AppClassesRoute
   '/app/exams': typeof AppExamsRoute
   '/app/fees': typeof AppFeesRouteWithChildren
@@ -422,6 +431,7 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/signup'
     | '/app/attendance'
+    | '/app/billing'
     | '/app/classes'
     | '/app/exams'
     | '/app/fees'
@@ -468,6 +478,7 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/signup'
     | '/app/attendance'
+    | '/app/billing'
     | '/app/classes'
     | '/app/exams'
     | '/app/fees'
@@ -514,6 +525,7 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/signup'
     | '/app/attendance'
+    | '/app/billing'
     | '/app/classes'
     | '/app/exams'
     | '/app/fees'
@@ -561,6 +573,7 @@ export interface RootRouteChildren {
   PricingRoute: typeof PricingRoute
   SignupRoute: typeof SignupRoute
   AppAttendanceRoute: typeof AppAttendanceRouteWithChildren
+  AppBillingRoute: typeof AppBillingRoute
   AppClassesRoute: typeof AppClassesRoute
   AppExamsRoute: typeof AppExamsRoute
   AppFeesRoute: typeof AppFeesRouteWithChildren
@@ -743,6 +756,13 @@ declare module '@tanstack/react-router' {
       path: '/app/classes'
       fullPath: '/app/classes'
       preLoaderRoute: typeof AppClassesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app/billing': {
+      id: '/app/billing'
+      path: '/app/billing'
+      fullPath: '/app/billing'
+      preLoaderRoute: typeof AppBillingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/app/attendance': {
@@ -990,6 +1010,7 @@ const rootRouteChildren: RootRouteChildren = {
   PricingRoute: PricingRoute,
   SignupRoute: SignupRoute,
   AppAttendanceRoute: AppAttendanceRouteWithChildren,
+  AppBillingRoute: AppBillingRoute,
   AppClassesRoute: AppClassesRoute,
   AppExamsRoute: AppExamsRoute,
   AppFeesRoute: AppFeesRouteWithChildren,
