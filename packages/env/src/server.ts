@@ -28,7 +28,11 @@ const serverSchema = clientSchema.extend({
   GITHUB_CLIENT_SECRET: z.string().optional(),
 
   // Redis (Upstash)
-  UPSTASH_REDIS_REST_URL: z.string().url().optional(),
+  UPSTASH_REDIS_REST_URL: z.union([
+    z.string().url(),
+    z.literal(""),
+    z.undefined(),
+  ]).optional(),
   UPSTASH_REDIS_REST_TOKEN: z.string().optional(),
 
   // Storage (R2)
@@ -38,8 +42,12 @@ const serverSchema = clientSchema.extend({
   R2_BUCKET_NAME: z.string().optional(),
 
   // Stripe
-  STRIPE_SECRET_KEY: z.string().startsWith("sk_").optional(),
-  STRIPE_WEBHOOK_SECRET: z.string().startsWith("whsec_").optional(),
+  STRIPE_SECRET_KEY: z.union([
+    z.string().startsWith("sk_"),
+    z.literal(""),
+    z.undefined(),
+  ]).optional(),
+  STRIPE_WEBHOOK_SECRET: z.string().startsWith("whsec_").or(z.literal("")).optional(),
 
   // Email (SMTP)
   SMTP_HOST: z.string().optional(),
