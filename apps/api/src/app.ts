@@ -70,9 +70,14 @@ export function createApp() {
     setSecurityHeaders(c.res.headers);
   });
 
-  // Rate limiting middleware
-  app.use("/api/*", rateLimitRedis({ limiterType: "api" }));
-  app.use("/api/auth/*", rateLimitRedis({ limiterType: "auth" }));
+  // Health check (non-RPC) - must be before rate limiting
+  app.get("/api/health", (c: any) => {
+    return c.json({
+      status: "ok",
+      timestamp: new Date().toISOString(),
+      version: "1.0.0",
+    });
+  });
 
   // Root route - API information
   app.get("/", (c: any) => {
@@ -89,14 +94,9 @@ export function createApp() {
     });
   });
 
-  // Health check (non-RPC)
-  app.get("/api/health", (c: any) => {
-    return c.json({
-      status: "ok",
-      timestamp: new Date().toISOString(),
-      version: "1.0.0",
-    });
-  });
+  // Rate limiting middleware
+  app.use("/api/*", rateLimitRedis({ limiterType: "api" }));
+  app.use("/api/auth/*", rateLimitRedis({ limiterType: "auth" }));
 
   // Direct REST endpoints for Students (bypassing oRPC for now)
   app.get("/api/students", async (c: any) => {
