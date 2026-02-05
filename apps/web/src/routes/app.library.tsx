@@ -25,6 +25,76 @@ export const Route = createFileRoute("/app/library")({
   component: LibraryPage,
 });
 
+const mockBooks = [
+  {
+    id: "1",
+    title: "Mathematics Class 9",
+    author: "R.D. Sharma",
+    category: "Textbook",
+    available: 5,
+    total: 10,
+  },
+  {
+    id: "2",
+    title: "Physics Class 10",
+    author: "H.C. Verma",
+    category: "Textbook",
+    available: 3,
+    total: 8,
+  },
+  {
+    id: "3",
+    title: "Chemistry Standard 11",
+    author: "O.P. Tandon",
+    category: "Textbook",
+    available: 7,
+    total: 10,
+  },
+  {
+    id: "4",
+    title: "The Great Gatsby",
+    author: "F. Scott Fitzgerald",
+    category: "Novel",
+    available: 2,
+    total: 5,
+  },
+  {
+    id: "5",
+    title: "To Kill a Mockingbird",
+    author: "Harper Lee",
+    category: "Novel",
+    available: 4,
+    total: 6,
+  },
+];
+
+const mockIssues = [
+  {
+    id: "1",
+    book: "Mathematics Class 9",
+    student: "John Smith",
+    issueDate: "2026-01-10",
+    dueDate: "2026-01-24",
+    status: "active",
+  },
+  {
+    id: "2",
+    book: "Physics Class 10",
+    student: "Emma Wilson",
+    issueDate: "2026-01-08",
+    dueDate: "2026-01-22",
+    status: "active",
+  },
+  {
+    id: "3",
+    book: "Chemistry Standard 11",
+    student: "James Brown",
+    issueDate: "2026-01-05",
+    dueDate: "2026-01-19",
+    status: "overdue",
+  },
+];
+
 function LibraryPage() {
   const [showModal, setShowModal] = useState(false);
   const [activeTab, setActiveTab] = useState<"books" | "issues">("books");
@@ -87,76 +157,6 @@ function LibraryPage() {
     () => window.location.reload(),
     () => handleExport()
   );
-
-  const mockBooks = [
-    {
-      id: "1",
-      title: "Mathematics Class 9",
-      author: "R.D. Sharma",
-      category: "Textbook",
-      available: 5,
-      total: 10,
-    },
-    {
-      id: "2",
-      title: "Physics Class 10",
-      author: "H.C. Verma",
-      category: "Textbook",
-      available: 3,
-      total: 8,
-    },
-    {
-      id: "3",
-      title: "Chemistry Standard 11",
-      author: "O.P. Tandon",
-      category: "Textbook",
-      available: 7,
-      total: 10,
-    },
-    {
-      id: "4",
-      title: "The Great Gatsby",
-      author: "F. Scott Fitzgerald",
-      category: "Novel",
-      available: 2,
-      total: 5,
-    },
-    {
-      id: "5",
-      title: "To Kill a Mockingbird",
-      author: "Harper Lee",
-      category: "Novel",
-      available: 4,
-      total: 6,
-    },
-  ];
-
-  const mockIssues = [
-    {
-      id: "1",
-      book: "Mathematics Class 9",
-      student: "John Smith",
-      issueDate: "2026-01-10",
-      dueDate: "2026-01-24",
-      status: "active",
-    },
-    {
-      id: "2",
-      book: "Physics Class 10",
-      student: "Emma Wilson",
-      issueDate: "2026-01-08",
-      dueDate: "2026-01-22",
-      status: "active",
-    },
-    {
-      id: "3",
-      book: "Chemistry Standard 11",
-      student: "James Brown",
-      issueDate: "2026-01-05",
-      dueDate: "2026-01-19",
-      status: "overdue",
-    },
-  ];
 
   const stats = {
     totalBooks: mockBooks.reduce((sum, b) => sum + b.total, 0),

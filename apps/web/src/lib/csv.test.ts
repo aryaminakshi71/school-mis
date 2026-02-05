@@ -1,7 +1,11 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, afterEach } from "vitest";
 import { exportToCSV, downloadTemplate, parseCSV } from "../lib/csv";
 
 describe("CSV Utilities", () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   describe("exportToCSV", () => {
     it("should export data to CSV format", () => {
       const data = [
@@ -16,12 +20,19 @@ describe("CSV Utilities", () => {
 
       global.URL.createObjectURL = mockCreateObjectURL;
       global.URL.revokeObjectURL = mockRevokeObjectURL;
-      global.document.createElement = vi.fn().mockReturnValue({
+      vi.spyOn(document, "createElement").mockReturnValue({
         setAttribute: vi.fn(),
+        click: vi.fn(),
         style: {},
-      }) as unknown as Document["createElement"];
-      global.document.body.appendChild = mockAppendChild;
-      global.document.body.removeChild = mockRemove;
+      } as unknown as ReturnType<Document["createElement"]>);
+      vi.spyOn(document.body, "appendChild").mockImplementation((node) => {
+        mockAppendChild(node);
+        return node as Node;
+      });
+      vi.spyOn(document.body, "removeChild").mockImplementation((node) => {
+        mockRemove(node);
+        return node as Node;
+      });
 
       exportToCSV(data, { filename: "test" });
 
@@ -78,8 +89,19 @@ describe("CSV Utilities", () => {
 
       global.URL.createObjectURL = mockCreateObjectURL;
       global.URL.revokeObjectURL = mockRevokeObjectURL;
-      global.document.body.appendChild = mockAppendChild;
-      global.document.body.removeChild = mockRemove;
+      vi.spyOn(document, "createElement").mockReturnValue({
+        setAttribute: vi.fn(),
+        click: vi.fn(),
+        style: {},
+      } as unknown as ReturnType<Document["createElement"]>);
+      vi.spyOn(document.body, "appendChild").mockImplementation((node) => {
+        mockAppendChild(node);
+        return node as Node;
+      });
+      vi.spyOn(document.body, "removeChild").mockImplementation((node) => {
+        mockRemove(node);
+        return node as Node;
+      });
 
       downloadTemplate(headers, sampleData, "template");
 

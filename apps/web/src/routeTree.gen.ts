@@ -14,6 +14,7 @@ import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app/index'
+import { Route as SitemapXmlRouteImport } from './routes/sitemap.xml'
 import { Route as AppTransportRouteImport } from './routes/app.transport'
 import { Route as AppTeachersRouteImport } from './routes/app.teachers'
 import { Route as AppTeacherPortalRouteImport } from './routes/app.teacher-portal'
@@ -78,6 +79,11 @@ const IndexRoute = IndexRouteImport.update({
 const AppIndexRoute = AppIndexRouteImport.update({
   id: '/app/',
   path: '/app/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapXmlRoute = SitemapXmlRouteImport.update({
+  id: '/sitemap/xml',
+  path: '/sitemap/xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppTransportRoute = AppTransportRouteImport.update({
@@ -306,6 +312,7 @@ export interface FileRoutesByFullPath {
   '/app/teacher-portal': typeof AppTeacherPortalRoute
   '/app/teachers': typeof AppTeachersRouteWithChildren
   '/app/transport': typeof AppTransportRouteWithChildren
+  '/sitemap/xml': typeof SitemapXmlRoute
   '/app/': typeof AppIndexRoute
   '/app/attendance/alerts': typeof AppAttendanceAlertsRoute
   '/app/attendance/leave': typeof AppAttendanceLeaveRoute
@@ -353,6 +360,7 @@ export interface FileRoutesByTo {
   '/app/teacher-portal': typeof AppTeacherPortalRoute
   '/app/teachers': typeof AppTeachersRouteWithChildren
   '/app/transport': typeof AppTransportRouteWithChildren
+  '/sitemap/xml': typeof SitemapXmlRoute
   '/app': typeof AppIndexRoute
   '/app/attendance/alerts': typeof AppAttendanceAlertsRoute
   '/app/attendance/leave': typeof AppAttendanceLeaveRoute
@@ -401,6 +409,7 @@ export interface FileRoutesById {
   '/app/teacher-portal': typeof AppTeacherPortalRoute
   '/app/teachers': typeof AppTeachersRouteWithChildren
   '/app/transport': typeof AppTransportRouteWithChildren
+  '/sitemap/xml': typeof SitemapXmlRoute
   '/app/': typeof AppIndexRoute
   '/app/attendance/alerts': typeof AppAttendanceAlertsRoute
   '/app/attendance/leave': typeof AppAttendanceLeaveRoute
@@ -450,6 +459,7 @@ export interface FileRouteTypes {
     | '/app/teacher-portal'
     | '/app/teachers'
     | '/app/transport'
+    | '/sitemap/xml'
     | '/app/'
     | '/app/attendance/alerts'
     | '/app/attendance/leave'
@@ -497,6 +507,7 @@ export interface FileRouteTypes {
     | '/app/teacher-portal'
     | '/app/teachers'
     | '/app/transport'
+    | '/sitemap/xml'
     | '/app'
     | '/app/attendance/alerts'
     | '/app/attendance/leave'
@@ -544,6 +555,7 @@ export interface FileRouteTypes {
     | '/app/teacher-portal'
     | '/app/teachers'
     | '/app/transport'
+    | '/sitemap/xml'
     | '/app/'
     | '/app/attendance/alerts'
     | '/app/attendance/leave'
@@ -592,6 +604,7 @@ export interface RootRouteChildren {
   AppTeacherPortalRoute: typeof AppTeacherPortalRoute
   AppTeachersRoute: typeof AppTeachersRouteWithChildren
   AppTransportRoute: typeof AppTransportRouteWithChildren
+  SitemapXmlRoute: typeof SitemapXmlRoute
   AppIndexRoute: typeof AppIndexRoute
 }
 
@@ -630,6 +643,13 @@ declare module '@tanstack/react-router' {
       path: '/app'
       fullPath: '/app/'
       preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap/xml': {
+      id: '/sitemap/xml'
+      path: '/sitemap/xml'
+      fullPath: '/sitemap/xml'
+      preLoaderRoute: typeof SitemapXmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/app/transport': {
@@ -1029,6 +1049,7 @@ const rootRouteChildren: RootRouteChildren = {
   AppTeacherPortalRoute: AppTeacherPortalRoute,
   AppTeachersRoute: AppTeachersRouteWithChildren,
   AppTransportRoute: AppTransportRouteWithChildren,
+  SitemapXmlRoute: SitemapXmlRoute,
   AppIndexRoute: AppIndexRoute,
 }
 export const routeTree = rootRouteImport

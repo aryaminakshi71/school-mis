@@ -406,7 +406,6 @@ function ClassesPage() {
                   type="button"
                   onClick={handleCloseModal}
                   className="px-4 py-2 border rounded-lg hover:bg-gray-50"
-                  type="button"
                 >
                   Cancel
                 </button>

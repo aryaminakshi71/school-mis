@@ -49,8 +49,6 @@ export function getDb(env?: { DATABASE?: { connectionString: string }; DATABASE_
       dbInstance = drizzlePostgres(client, { schema });
     } else {
       // Production/Cloudflare: Use Neon Serverless (works with Hyperdrive connection strings)
-      // Optimize Neon for Cloudflare Workers
-      neonConfig.fetchConnectionCache = true;
 
       // drizzle-orm/neon-serverless accepts connection string directly
       dbInstance = drizzleNeon(connectionString, { schema });

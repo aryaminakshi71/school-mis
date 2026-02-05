@@ -20,6 +20,7 @@
     "@orpc/openapi": "^1.13.4",
     "@orpc/server": "^1.13.4",
     "@orpc/zod": "^1.13.4",
+    "@scalar/hono-api-reference": "^0.6.0",
     "@school/env": "workspace:*",
     "@school/storage": "workspace:*",
     "@sentry/node": "^8.0.0",
