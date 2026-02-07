@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link, useLocation } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 
@@ -19,7 +19,8 @@ async function fetchStudent(id: string) {
 
 function StudentDetailPage() {
   const params = Route.useParams();
-  const studentId = params.id;
+  const location = useLocation();
+  const studentId = params.id || location.pathname.split("/").pop() || "";
 
   const {
     data: student,
@@ -46,12 +47,12 @@ function StudentDetailPage() {
           Error loading student
         </h2>
         <p className="text-gray-600">The student could not be found.</p>
-        <a
-          href="/app/students"
+        <Link
+          to="/app/students"
           className="mt-4 inline-block text-blue-600 hover:underline"
         >
           ← Back to Students
-        </a>
+        </Link>
       </div>
     );
   }
@@ -59,12 +60,12 @@ function StudentDetailPage() {
   return (
     <div>
       <div className="mb-6">
-        <a
-          href="/app/students"
+        <Link
+          to="/app/students"
           className="text-blue-600 hover:underline mb-4 inline-block"
         >
           ← Back to Students
-        </a>
+        </Link>
         <div className="flex items-center gap-4">
           <div className="w-20 h-20 rounded-full bg-blue-600 flex items-center justify-center text-white text-2xl font-bold">
             {student.firstName?.charAt(0)}

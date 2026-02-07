@@ -35,6 +35,11 @@ import { Route as AppExamsRouteImport } from './routes/app.exams'
 import { Route as AppClassesRouteImport } from './routes/app.classes'
 import { Route as AppBillingRouteImport } from './routes/app/billing'
 import { Route as AppAttendanceRouteImport } from './routes/app.attendance'
+import { Route as AppTransportIndexRouteImport } from './routes/app.transport.index'
+import { Route as AppTeachersIndexRouteImport } from './routes/app.teachers.index'
+import { Route as AppStudentsIndexRouteImport } from './routes/app.students.index'
+import { Route as AppFeesIndexRouteImport } from './routes/app.fees.index'
+import { Route as AppAttendanceIndexRouteImport } from './routes/app.attendance.index'
 import { Route as AppTransportTrackingRouteImport } from './routes/app.transport.tracking'
 import { Route as AppTeachersTrainingRouteImport } from './routes/app.teachers.training'
 import { Route as AppTeachersRecruitmentRouteImport } from './routes/app.teachers.recruitment'
@@ -49,6 +54,12 @@ import { Route as AppStudentsAttendanceRouteImport } from './routes/app.students
 import { Route as AppStudentsAlumniRouteImport } from './routes/app.students.alumni'
 import { Route as AppStudentsAdmissionRouteImport } from './routes/app.students.admission'
 import { Route as AppStudentsIdRouteImport } from './routes/app.students.$id'
+import { Route as AppFeesStructureRouteImport } from './routes/app.fees.structure'
+import { Route as AppFeesSalaryRouteImport } from './routes/app.fees.salary'
+import { Route as AppFeesReportsRouteImport } from './routes/app.fees.reports'
+import { Route as AppFeesPaymentRouteImport } from './routes/app.fees.payment'
+import { Route as AppFeesExpensesRouteImport } from './routes/app.fees.expenses'
+import { Route as AppFeesBudgetRouteImport } from './routes/app.fees.budget'
 import { Route as AppAttendanceStudentsRouteImport } from './routes/app.attendance.students'
 import { Route as AppAttendanceStaffRouteImport } from './routes/app.attendance.staff'
 import { Route as AppAttendanceReportsRouteImport } from './routes/app.attendance.reports'
@@ -186,6 +197,31 @@ const AppAttendanceRoute = AppAttendanceRouteImport.update({
   path: '/app/attendance',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppTransportIndexRoute = AppTransportIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppTransportRoute,
+} as any)
+const AppTeachersIndexRoute = AppTeachersIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppTeachersRoute,
+} as any)
+const AppStudentsIndexRoute = AppStudentsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppStudentsRoute,
+} as any)
+const AppFeesIndexRoute = AppFeesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppFeesRoute,
+} as any)
+const AppAttendanceIndexRoute = AppAttendanceIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppAttendanceRoute,
+} as any)
 const AppTransportTrackingRoute = AppTransportTrackingRouteImport.update({
   id: '/tracking',
   path: '/tracking',
@@ -256,6 +292,36 @@ const AppStudentsIdRoute = AppStudentsIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => AppStudentsRoute,
 } as any)
+const AppFeesStructureRoute = AppFeesStructureRouteImport.update({
+  id: '/structure',
+  path: '/structure',
+  getParentRoute: () => AppFeesRoute,
+} as any)
+const AppFeesSalaryRoute = AppFeesSalaryRouteImport.update({
+  id: '/salary',
+  path: '/salary',
+  getParentRoute: () => AppFeesRoute,
+} as any)
+const AppFeesReportsRoute = AppFeesReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => AppFeesRoute,
+} as any)
+const AppFeesPaymentRoute = AppFeesPaymentRouteImport.update({
+  id: '/payment',
+  path: '/payment',
+  getParentRoute: () => AppFeesRoute,
+} as any)
+const AppFeesExpensesRoute = AppFeesExpensesRouteImport.update({
+  id: '/expenses',
+  path: '/expenses',
+  getParentRoute: () => AppFeesRoute,
+} as any)
+const AppFeesBudgetRoute = AppFeesBudgetRouteImport.update({
+  id: '/budget',
+  path: '/budget',
+  getParentRoute: () => AppFeesRoute,
+} as any)
 const AppAttendanceStudentsRoute = AppAttendanceStudentsRouteImport.update({
   id: '/students',
   path: '/students',
@@ -319,6 +385,12 @@ export interface FileRoutesByFullPath {
   '/app/attendance/reports': typeof AppAttendanceReportsRoute
   '/app/attendance/staff': typeof AppAttendanceStaffRoute
   '/app/attendance/students': typeof AppAttendanceStudentsRoute
+  '/app/fees/budget': typeof AppFeesBudgetRoute
+  '/app/fees/expenses': typeof AppFeesExpensesRoute
+  '/app/fees/payment': typeof AppFeesPaymentRoute
+  '/app/fees/reports': typeof AppFeesReportsRoute
+  '/app/fees/salary': typeof AppFeesSalaryRoute
+  '/app/fees/structure': typeof AppFeesStructureRoute
   '/app/students/$id': typeof AppStudentsIdRoute
   '/app/students/admission': typeof AppStudentsAdmissionRoute
   '/app/students/alumni': typeof AppStudentsAlumniRoute
@@ -333,6 +405,11 @@ export interface FileRoutesByFullPath {
   '/app/teachers/recruitment': typeof AppTeachersRecruitmentRoute
   '/app/teachers/training': typeof AppTeachersTrainingRoute
   '/app/transport/tracking': typeof AppTransportTrackingRoute
+  '/app/attendance/': typeof AppAttendanceIndexRoute
+  '/app/fees/': typeof AppFeesIndexRoute
+  '/app/students/': typeof AppStudentsIndexRoute
+  '/app/teachers/': typeof AppTeachersIndexRoute
+  '/app/transport/': typeof AppTransportIndexRoute
   '/app/fees/receipt/$id': typeof AppFeesReceiptIdRoute
 }
 export interface FileRoutesByTo {
@@ -340,11 +417,9 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
   '/signup': typeof SignupRoute
-  '/app/attendance': typeof AppAttendanceRouteWithChildren
   '/app/billing': typeof AppBillingRoute
   '/app/classes': typeof AppClassesRoute
   '/app/exams': typeof AppExamsRoute
-  '/app/fees': typeof AppFeesRouteWithChildren
   '/app/gradebook': typeof AppGradebookRoute
   '/app/inventory': typeof AppInventoryRoute
   '/app/library': typeof AppLibraryRoute
@@ -356,10 +431,7 @@ export interface FileRoutesByTo {
   '/app/settings': typeof AppSettingsRoute
   '/app/staff-portal': typeof AppStaffPortalRoute
   '/app/student-portal': typeof AppStudentPortalRoute
-  '/app/students': typeof AppStudentsRouteWithChildren
   '/app/teacher-portal': typeof AppTeacherPortalRoute
-  '/app/teachers': typeof AppTeachersRouteWithChildren
-  '/app/transport': typeof AppTransportRouteWithChildren
   '/sitemap/xml': typeof SitemapXmlRoute
   '/app': typeof AppIndexRoute
   '/app/attendance/alerts': typeof AppAttendanceAlertsRoute
@@ -367,6 +439,12 @@ export interface FileRoutesByTo {
   '/app/attendance/reports': typeof AppAttendanceReportsRoute
   '/app/attendance/staff': typeof AppAttendanceStaffRoute
   '/app/attendance/students': typeof AppAttendanceStudentsRoute
+  '/app/fees/budget': typeof AppFeesBudgetRoute
+  '/app/fees/expenses': typeof AppFeesExpensesRoute
+  '/app/fees/payment': typeof AppFeesPaymentRoute
+  '/app/fees/reports': typeof AppFeesReportsRoute
+  '/app/fees/salary': typeof AppFeesSalaryRoute
+  '/app/fees/structure': typeof AppFeesStructureRoute
   '/app/students/$id': typeof AppStudentsIdRoute
   '/app/students/admission': typeof AppStudentsAdmissionRoute
   '/app/students/alumni': typeof AppStudentsAlumniRoute
@@ -381,6 +459,11 @@ export interface FileRoutesByTo {
   '/app/teachers/recruitment': typeof AppTeachersRecruitmentRoute
   '/app/teachers/training': typeof AppTeachersTrainingRoute
   '/app/transport/tracking': typeof AppTransportTrackingRoute
+  '/app/attendance': typeof AppAttendanceIndexRoute
+  '/app/fees': typeof AppFeesIndexRoute
+  '/app/students': typeof AppStudentsIndexRoute
+  '/app/teachers': typeof AppTeachersIndexRoute
+  '/app/transport': typeof AppTransportIndexRoute
   '/app/fees/receipt/$id': typeof AppFeesReceiptIdRoute
 }
 export interface FileRoutesById {
@@ -416,6 +499,12 @@ export interface FileRoutesById {
   '/app/attendance/reports': typeof AppAttendanceReportsRoute
   '/app/attendance/staff': typeof AppAttendanceStaffRoute
   '/app/attendance/students': typeof AppAttendanceStudentsRoute
+  '/app/fees/budget': typeof AppFeesBudgetRoute
+  '/app/fees/expenses': typeof AppFeesExpensesRoute
+  '/app/fees/payment': typeof AppFeesPaymentRoute
+  '/app/fees/reports': typeof AppFeesReportsRoute
+  '/app/fees/salary': typeof AppFeesSalaryRoute
+  '/app/fees/structure': typeof AppFeesStructureRoute
   '/app/students/$id': typeof AppStudentsIdRoute
   '/app/students/admission': typeof AppStudentsAdmissionRoute
   '/app/students/alumni': typeof AppStudentsAlumniRoute
@@ -430,6 +519,11 @@ export interface FileRoutesById {
   '/app/teachers/recruitment': typeof AppTeachersRecruitmentRoute
   '/app/teachers/training': typeof AppTeachersTrainingRoute
   '/app/transport/tracking': typeof AppTransportTrackingRoute
+  '/app/attendance/': typeof AppAttendanceIndexRoute
+  '/app/fees/': typeof AppFeesIndexRoute
+  '/app/students/': typeof AppStudentsIndexRoute
+  '/app/teachers/': typeof AppTeachersIndexRoute
+  '/app/transport/': typeof AppTransportIndexRoute
   '/app/fees/receipt/$id': typeof AppFeesReceiptIdRoute
 }
 export interface FileRouteTypes {
@@ -466,6 +560,12 @@ export interface FileRouteTypes {
     | '/app/attendance/reports'
     | '/app/attendance/staff'
     | '/app/attendance/students'
+    | '/app/fees/budget'
+    | '/app/fees/expenses'
+    | '/app/fees/payment'
+    | '/app/fees/reports'
+    | '/app/fees/salary'
+    | '/app/fees/structure'
     | '/app/students/$id'
     | '/app/students/admission'
     | '/app/students/alumni'
@@ -480,6 +580,11 @@ export interface FileRouteTypes {
     | '/app/teachers/recruitment'
     | '/app/teachers/training'
     | '/app/transport/tracking'
+    | '/app/attendance/'
+    | '/app/fees/'
+    | '/app/students/'
+    | '/app/teachers/'
+    | '/app/transport/'
     | '/app/fees/receipt/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -487,11 +592,9 @@ export interface FileRouteTypes {
     | '/login'
     | '/pricing'
     | '/signup'
-    | '/app/attendance'
     | '/app/billing'
     | '/app/classes'
     | '/app/exams'
-    | '/app/fees'
     | '/app/gradebook'
     | '/app/inventory'
     | '/app/library'
@@ -503,10 +606,7 @@ export interface FileRouteTypes {
     | '/app/settings'
     | '/app/staff-portal'
     | '/app/student-portal'
-    | '/app/students'
     | '/app/teacher-portal'
-    | '/app/teachers'
-    | '/app/transport'
     | '/sitemap/xml'
     | '/app'
     | '/app/attendance/alerts'
@@ -514,6 +614,12 @@ export interface FileRouteTypes {
     | '/app/attendance/reports'
     | '/app/attendance/staff'
     | '/app/attendance/students'
+    | '/app/fees/budget'
+    | '/app/fees/expenses'
+    | '/app/fees/payment'
+    | '/app/fees/reports'
+    | '/app/fees/salary'
+    | '/app/fees/structure'
     | '/app/students/$id'
     | '/app/students/admission'
     | '/app/students/alumni'
@@ -528,6 +634,11 @@ export interface FileRouteTypes {
     | '/app/teachers/recruitment'
     | '/app/teachers/training'
     | '/app/transport/tracking'
+    | '/app/attendance'
+    | '/app/fees'
+    | '/app/students'
+    | '/app/teachers'
+    | '/app/transport'
     | '/app/fees/receipt/$id'
   id:
     | '__root__'
@@ -562,6 +673,12 @@ export interface FileRouteTypes {
     | '/app/attendance/reports'
     | '/app/attendance/staff'
     | '/app/attendance/students'
+    | '/app/fees/budget'
+    | '/app/fees/expenses'
+    | '/app/fees/payment'
+    | '/app/fees/reports'
+    | '/app/fees/salary'
+    | '/app/fees/structure'
     | '/app/students/$id'
     | '/app/students/admission'
     | '/app/students/alumni'
@@ -576,6 +693,11 @@ export interface FileRouteTypes {
     | '/app/teachers/recruitment'
     | '/app/teachers/training'
     | '/app/transport/tracking'
+    | '/app/attendance/'
+    | '/app/fees/'
+    | '/app/students/'
+    | '/app/teachers/'
+    | '/app/transport/'
     | '/app/fees/receipt/$id'
   fileRoutesById: FileRoutesById
 }
@@ -792,6 +914,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAttendanceRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app/transport/': {
+      id: '/app/transport/'
+      path: '/'
+      fullPath: '/app/transport/'
+      preLoaderRoute: typeof AppTransportIndexRouteImport
+      parentRoute: typeof AppTransportRoute
+    }
+    '/app/teachers/': {
+      id: '/app/teachers/'
+      path: '/'
+      fullPath: '/app/teachers/'
+      preLoaderRoute: typeof AppTeachersIndexRouteImport
+      parentRoute: typeof AppTeachersRoute
+    }
+    '/app/students/': {
+      id: '/app/students/'
+      path: '/'
+      fullPath: '/app/students/'
+      preLoaderRoute: typeof AppStudentsIndexRouteImport
+      parentRoute: typeof AppStudentsRoute
+    }
+    '/app/fees/': {
+      id: '/app/fees/'
+      path: '/'
+      fullPath: '/app/fees/'
+      preLoaderRoute: typeof AppFeesIndexRouteImport
+      parentRoute: typeof AppFeesRoute
+    }
+    '/app/attendance/': {
+      id: '/app/attendance/'
+      path: '/'
+      fullPath: '/app/attendance/'
+      preLoaderRoute: typeof AppAttendanceIndexRouteImport
+      parentRoute: typeof AppAttendanceRoute
+    }
     '/app/transport/tracking': {
       id: '/app/transport/tracking'
       path: '/tracking'
@@ -890,6 +1047,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppStudentsIdRouteImport
       parentRoute: typeof AppStudentsRoute
     }
+    '/app/fees/structure': {
+      id: '/app/fees/structure'
+      path: '/structure'
+      fullPath: '/app/fees/structure'
+      preLoaderRoute: typeof AppFeesStructureRouteImport
+      parentRoute: typeof AppFeesRoute
+    }
+    '/app/fees/salary': {
+      id: '/app/fees/salary'
+      path: '/salary'
+      fullPath: '/app/fees/salary'
+      preLoaderRoute: typeof AppFeesSalaryRouteImport
+      parentRoute: typeof AppFeesRoute
+    }
+    '/app/fees/reports': {
+      id: '/app/fees/reports'
+      path: '/reports'
+      fullPath: '/app/fees/reports'
+      preLoaderRoute: typeof AppFeesReportsRouteImport
+      parentRoute: typeof AppFeesRoute
+    }
+    '/app/fees/payment': {
+      id: '/app/fees/payment'
+      path: '/payment'
+      fullPath: '/app/fees/payment'
+      preLoaderRoute: typeof AppFeesPaymentRouteImport
+      parentRoute: typeof AppFeesRoute
+    }
+    '/app/fees/expenses': {
+      id: '/app/fees/expenses'
+      path: '/expenses'
+      fullPath: '/app/fees/expenses'
+      preLoaderRoute: typeof AppFeesExpensesRouteImport
+      parentRoute: typeof AppFeesRoute
+    }
+    '/app/fees/budget': {
+      id: '/app/fees/budget'
+      path: '/budget'
+      fullPath: '/app/fees/budget'
+      preLoaderRoute: typeof AppFeesBudgetRouteImport
+      parentRoute: typeof AppFeesRoute
+    }
     '/app/attendance/students': {
       id: '/app/attendance/students'
       path: '/students'
@@ -941,6 +1140,7 @@ interface AppAttendanceRouteChildren {
   AppAttendanceReportsRoute: typeof AppAttendanceReportsRoute
   AppAttendanceStaffRoute: typeof AppAttendanceStaffRoute
   AppAttendanceStudentsRoute: typeof AppAttendanceStudentsRoute
+  AppAttendanceIndexRoute: typeof AppAttendanceIndexRoute
 }
 
 const AppAttendanceRouteChildren: AppAttendanceRouteChildren = {
@@ -949,6 +1149,7 @@ const AppAttendanceRouteChildren: AppAttendanceRouteChildren = {
   AppAttendanceReportsRoute: AppAttendanceReportsRoute,
   AppAttendanceStaffRoute: AppAttendanceStaffRoute,
   AppAttendanceStudentsRoute: AppAttendanceStudentsRoute,
+  AppAttendanceIndexRoute: AppAttendanceIndexRoute,
 }
 
 const AppAttendanceRouteWithChildren = AppAttendanceRoute._addFileChildren(
@@ -956,10 +1157,24 @@ const AppAttendanceRouteWithChildren = AppAttendanceRoute._addFileChildren(
 )
 
 interface AppFeesRouteChildren {
+  AppFeesBudgetRoute: typeof AppFeesBudgetRoute
+  AppFeesExpensesRoute: typeof AppFeesExpensesRoute
+  AppFeesPaymentRoute: typeof AppFeesPaymentRoute
+  AppFeesReportsRoute: typeof AppFeesReportsRoute
+  AppFeesSalaryRoute: typeof AppFeesSalaryRoute
+  AppFeesStructureRoute: typeof AppFeesStructureRoute
+  AppFeesIndexRoute: typeof AppFeesIndexRoute
   AppFeesReceiptIdRoute: typeof AppFeesReceiptIdRoute
 }
 
 const AppFeesRouteChildren: AppFeesRouteChildren = {
+  AppFeesBudgetRoute: AppFeesBudgetRoute,
+  AppFeesExpensesRoute: AppFeesExpensesRoute,
+  AppFeesPaymentRoute: AppFeesPaymentRoute,
+  AppFeesReportsRoute: AppFeesReportsRoute,
+  AppFeesSalaryRoute: AppFeesSalaryRoute,
+  AppFeesStructureRoute: AppFeesStructureRoute,
+  AppFeesIndexRoute: AppFeesIndexRoute,
   AppFeesReceiptIdRoute: AppFeesReceiptIdRoute,
 }
 
@@ -974,6 +1189,7 @@ interface AppStudentsRouteChildren {
   AppStudentsDisciplineRoute: typeof AppStudentsDisciplineRoute
   AppStudentsPerformanceRoute: typeof AppStudentsPerformanceRoute
   AppStudentsTransferRoute: typeof AppStudentsTransferRoute
+  AppStudentsIndexRoute: typeof AppStudentsIndexRoute
 }
 
 const AppStudentsRouteChildren: AppStudentsRouteChildren = {
@@ -984,6 +1200,7 @@ const AppStudentsRouteChildren: AppStudentsRouteChildren = {
   AppStudentsDisciplineRoute: AppStudentsDisciplineRoute,
   AppStudentsPerformanceRoute: AppStudentsPerformanceRoute,
   AppStudentsTransferRoute: AppStudentsTransferRoute,
+  AppStudentsIndexRoute: AppStudentsIndexRoute,
 }
 
 const AppStudentsRouteWithChildren = AppStudentsRoute._addFileChildren(
@@ -997,6 +1214,7 @@ interface AppTeachersRouteChildren {
   AppTeachersPerformanceRoute: typeof AppTeachersPerformanceRoute
   AppTeachersRecruitmentRoute: typeof AppTeachersRecruitmentRoute
   AppTeachersTrainingRoute: typeof AppTeachersTrainingRoute
+  AppTeachersIndexRoute: typeof AppTeachersIndexRoute
 }
 
 const AppTeachersRouteChildren: AppTeachersRouteChildren = {
@@ -1006,6 +1224,7 @@ const AppTeachersRouteChildren: AppTeachersRouteChildren = {
   AppTeachersPerformanceRoute: AppTeachersPerformanceRoute,
   AppTeachersRecruitmentRoute: AppTeachersRecruitmentRoute,
   AppTeachersTrainingRoute: AppTeachersTrainingRoute,
+  AppTeachersIndexRoute: AppTeachersIndexRoute,
 }
 
 const AppTeachersRouteWithChildren = AppTeachersRoute._addFileChildren(
@@ -1014,10 +1233,12 @@ const AppTeachersRouteWithChildren = AppTeachersRoute._addFileChildren(
 
 interface AppTransportRouteChildren {
   AppTransportTrackingRoute: typeof AppTransportTrackingRoute
+  AppTransportIndexRoute: typeof AppTransportIndexRoute
 }
 
 const AppTransportRouteChildren: AppTransportRouteChildren = {
   AppTransportTrackingRoute: AppTransportTrackingRoute,
+  AppTransportIndexRoute: AppTransportIndexRoute,
 }
 
 const AppTransportRouteWithChildren = AppTransportRoute._addFileChildren(

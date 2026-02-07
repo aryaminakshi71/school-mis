@@ -315,7 +315,7 @@ curl -X POST http://localhost:3008/api/auth \
 
 | Role       | Email                 | Password      |
 | ---------- | --------------------- | ------------- |
-| Admin      | admin@school.com      | admin123      |
+| Admin      | admin@school.edu      | admin123      |
 | Teacher    | teacher@school.com    | teacher123    |
 | Student    | student@school.com    | student123    |
 | Parent     | parent@school.com     | parent123     |

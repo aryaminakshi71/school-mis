@@ -32,27 +32,29 @@ export function getDb(env?: { DATABASE?: { connectionString: string }; DATABASE_
     process.env.DATABASE_URL ||
     "postgresql://postgres@localhost:5432/school_mis";
 
+  // Determine if we're in local development
+  const isLocal = connectionString.includes("localhost") ||
+    connectionString.includes("127.0.0.1") ||
+    process.env.NODE_ENV === "development";
+
+  if (isLocal) {
+    // Local development: Use postgres.js for TCP connections
+    // Note: In Cloudflare Workers (workerd), we cannot reuse I/O objects across requests
+    // so we must create a new connection for each request in local dev.
+    const client = postgres(connectionString, {
+      max: 1, // Single connection per request to avoid leaks if we can't close pool
+      idle_timeout: 20,
+      connect_timeout: 10,
+      ssl: false,
+    });
+    return drizzlePostgres(client, { schema });
+  }
+
   if (!dbInstance) {
-    // Determine if we're in local development
-    const isLocal = connectionString.includes("localhost") ||
-      connectionString.includes("127.0.0.1") ||
-      process.env.NODE_ENV === "development";
+    // Production/Cloudflare: Use Neon Serverless (works with Hyperdrive connection strings)
 
-    if (isLocal) {
-      // Local development: Use postgres.js for TCP connections
-      const client = postgres(connectionString, {
-        max: 20,
-        idle_timeout: 20,
-        connect_timeout: 10,
-        ssl: false,
-      });
-      dbInstance = drizzlePostgres(client, { schema });
-    } else {
-      // Production/Cloudflare: Use Neon Serverless (works with Hyperdrive connection strings)
-
-      // drizzle-orm/neon-serverless accepts connection string directly
-      dbInstance = drizzleNeon(connectionString, { schema });
-    }
+    // drizzle-orm/neon-serverless accepts connection string directly
+    dbInstance = drizzleNeon(connectionString, { schema });
   }
   return dbInstance;
 }

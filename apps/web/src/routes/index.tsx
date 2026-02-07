@@ -286,25 +286,25 @@ function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-8">
-              <Link to="/" className="text-xl font-bold text-blue-600 hover:text-blue-700 transition-colors">
+              <Link to="/" className="text-xl font-bold text-primary hover:text-primary-dark transition-colors">
                 School MIS
               </Link>
               <div className="hidden md:flex items-center gap-6">
                 <a
                   href="#portals"
-                  className="text-gray-600 hover:text-blue-600 text-sm font-medium"
+                  className="text-gray-600 hover:text-primary text-sm font-medium"
                 >
                   Portals
                 </a>
                 <a
                   href="#modules"
-                  className="text-gray-600 hover:text-blue-600 text-sm font-medium"
+                  className="text-gray-600 hover:text-primary text-sm font-medium"
                 >
                   Modules
                 </a>
                 <a
                   href="#features"
-                  className="text-gray-600 hover:text-blue-600 text-sm font-medium"
+                  className="text-gray-600 hover:text-primary text-sm font-medium"
                 >
                   Features
                 </a>
@@ -313,13 +313,13 @@ function HomePage() {
             <div className="flex items-center gap-3">
               <Link
                 to="/login"
-                className="text-gray-600 hover:text-blue-600 font-medium text-sm transition-colors"
+                className="text-gray-600 hover:text-primary font-medium text-sm transition-colors"
               >
                 Login
               </Link>
               <Link
                 to="/app"
-                className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-5 py-2.5 rounded-lg hover:from-blue-700 hover:to-blue-800 text-sm font-semibold flex items-center gap-2 shadow-md hover:shadow-lg transition-all"
+                className="bg-primary text-primary-foreground px-5 py-2.5 rounded-lg hover:bg-primary-dark text-sm font-semibold flex items-center gap-2 shadow-md hover:shadow-lg transition-all"
               >
                 <LayoutDashboard className="h-4 w-4" />
                 Admin Dashboard
@@ -341,19 +341,19 @@ function HomePage() {
               exams, transport, library, inventory, hostels, and more.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link
-                  to="/app"
-                  className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-lg hover:from-blue-700 hover:to-blue-800 font-semibold flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all"
-                >
-                  <LayoutDashboard className="h-5 w-5" />
-                  Go to Admin Dashboard
-                </Link>
-                <a
-                  href="#portals"
-                  className="border-2 border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-50 hover:border-blue-300 font-medium flex items-center justify-center gap-2 transition-all"
-                >
-                  Explore Portals
-                </a>
+              <Link
+                to="/app"
+                className="bg-primary text-primary-foreground px-6 py-3 rounded-lg hover:bg-primary-dark font-semibold flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all"
+              >
+                <LayoutDashboard className="h-5 w-5" />
+                Go to Admin Dashboard
+              </Link>
+              <a
+                href="#portals"
+                className="border-2 border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-50 hover:border-primary-light font-medium flex items-center justify-center gap-2 transition-all"
+              >
+                Explore Portals
+              </a>
             </div>
           </div>
         </div>
@@ -405,7 +405,7 @@ function HomePage() {
                   </div>
                   <Link
                     to={portal.href}
-                    className="text-sm font-semibold text-blue-600 hover:text-blue-700 flex items-center gap-1.5 transition-colors group"
+                    className="text-sm font-semibold text-primary hover:text-primary-dark flex items-center gap-1.5 transition-colors group"
                   >
                     Access Portal <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </Link>
@@ -421,7 +421,7 @@ function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             <div className="text-center p-4">
-              <div className="text-3xl font-bold text-blue-600">16</div>
+              <div className="text-3xl font-bold text-primary">16</div>
               <div className="text-sm text-gray-600 mt-1">Core Modules</div>
             </div>
             <div className="text-center p-4">
@@ -462,8 +462,8 @@ function HomePage() {
               >
                 <CardContent className="pt-4">
                   <div className="flex items-center gap-2 mb-3">
-                    <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
-                      <category.icon className="w-4 h-4 text-blue-600" />
+                    <div className="w-8 h-8 rounded-lg bg-primary-light/20 flex items-center justify-center">
+                      <category.icon className="w-4 h-4 text-primary" />
                     </div>
                     <h3 className="font-semibold text-gray-900">
                       {category.name}
@@ -530,8 +530,8 @@ function HomePage() {
 
           <div className="grid md:grid-cols-4 gap-6">
             <div className="text-center p-4">
-              <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-3">
-                <Shield className="w-6 h-6 text-blue-600" />
+              <div className="w-12 h-12 rounded-full bg-primary-light/20 flex items-center justify-center mx-auto mb-3">
+                <Shield className="w-6 h-6 text-primary" />
               </div>
               <h3 className="font-semibold text-gray-900 mb-2">
                 Secure & Reliable

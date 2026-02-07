@@ -334,9 +334,10 @@ function StudentPortal() {
               Welcome back, <span className="font-semibold text-gray-900">{studentData.personal.name}</span>!
             </p>
           </div>
-          <Button 
-            size="sm" 
-            className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-md hover:shadow-lg transition-all"
+
+          <Button
+            size="sm"
+            className="bg-primary text-primary-foreground shadow-md hover:shadow-lg hover:bg-primary/90 transition-all"
           >
             <Download className="w-4 h-4 mr-2" />
             Download Profile
@@ -346,18 +347,19 @@ function StudentPortal() {
 
       {/* Personal Info Card */}
       <Card className="border-2 shadow-lg hover:shadow-xl transition-shadow">
-        <CardHeader className="pb-3 bg-gradient-to-r from-blue-50 to-indigo-50 border-b">
+        <CardHeader className="pb-3 bg-gradient-to-r from-primary/10 to-primary/5 border-b">
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2 text-xl">
-              <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center">
-                <User className="w-5 h-5 text-white" />
+              <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center">
+                <User className="w-5 h-5 text-primary-foreground" />
               </div>
               Personal Information
             </CardTitle>
-            <Button 
-              variant="ghost" 
+
+            <Button
+              variant="ghost"
               size="sm"
-              className="hover:bg-blue-100 text-blue-600"
+              className="hover:bg-primary/10 text-primary"
             >
               <Edit className="w-4 h-4 mr-1" />
               Edit
@@ -367,7 +369,7 @@ function StudentPortal() {
         <CardContent>
           <div className="flex flex-col md:flex-row gap-6">
             <div className="flex items-center gap-4">
-              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-white text-2xl font-bold shadow-lg ring-4 ring-blue-100">
+              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center text-primary-foreground text-2xl font-bold shadow-lg ring-4 ring-primary/20">
                 {studentData.personal.name
                   .split(" ")
                   .map((n) => n[0])
@@ -408,10 +410,10 @@ function StudentPortal() {
             </div>
           </div>
         </CardContent>
-      </Card>
+      </Card >
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      < div className="grid grid-cols-2 md:grid-cols-4 gap-4" >
         <Card className="border-2 hover:shadow-lg transition-all cursor-pointer group hover:border-green-300">
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
@@ -470,7 +472,7 @@ function StudentPortal() {
             </div>
           </CardContent>
         </Card>
-      </div>
+      </div >
 
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Subjects & Performance */}
@@ -478,8 +480,8 @@ function StudentPortal() {
           <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b">
             <div className="flex items-center justify-between">
               <CardTitle className="flex items-center gap-2 text-lg">
-                <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
-                  <BookOpen className="w-4 h-4 text-white" />
+                <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+                  <BookOpen className="w-4 h-4 text-primary-foreground" />
                 </div>
                 Subjects & Performance
               </CardTitle>
@@ -507,15 +509,14 @@ function StudentPortal() {
                       {subject.marks}/{subject.maxMarks}
                     </p>
                     <span
-                      className={`px-2 py-0.5 rounded text-xs ${
-                        subject.marks >= 90
-                          ? "bg-green-100 text-green-700"
-                          : subject.marks >= 75
-                            ? "bg-blue-100 text-blue-700"
-                            : subject.marks >= 60
-                              ? "bg-yellow-100 text-yellow-700"
-                              : "bg-red-100 text-red-700"
-                      }`}
+                      className={`px-2 py-0.5 rounded text-xs ${subject.marks >= 90
+                        ? "bg-green-100 text-green-700"
+                        : subject.marks >= 75
+                          ? "bg-blue-100 text-blue-700"
+                          : subject.marks >= 60
+                            ? "bg-yellow-100 text-yellow-700"
+                            : "bg-red-100 text-red-700"
+                        }`}
                     >
                       {subject.grade}
                     </span>
@@ -549,11 +550,10 @@ function StudentPortal() {
               {studentData.timetable.map((period, idx) => (
                 <div
                   key={idx}
-                  className={`flex items-center gap-3 p-2 rounded-lg ${
-                    ["Assembly", "Break", "Lunch"].includes(period.period)
-                      ? "bg-gray-100"
-                      : "bg-blue-50"
-                  }`}
+                  className={`flex items-center gap-3 p-2 rounded-lg ${["Assembly", "Break", "Lunch"].includes(period.period)
+                    ? "bg-gray-100"
+                    : "bg-blue-50"
+                    }`}
                 >
                   <span className="text-sm font-medium text-gray-600 w-20">
                     {period.time}
@@ -600,11 +600,10 @@ function StudentPortal() {
                     </p>
                   </div>
                   <span
-                    className={`px-2 py-0.5 rounded text-xs ${
-                      hw.status === "submitted"
-                        ? "bg-green-100 text-green-700"
-                        : "bg-yellow-100 text-yellow-700"
-                    }`}
+                    className={`px-2 py-0.5 rounded text-xs ${hw.status === "submitted"
+                      ? "bg-green-100 text-green-700"
+                      : "bg-yellow-100 text-yellow-700"
+                      }`}
                   >
                     {hw.status}
                   </span>
@@ -653,11 +652,10 @@ function StudentPortal() {
                 >
                   <span>{fee.type}</span>
                   <span
-                    className={`px-2 py-0.5 rounded text-xs ${
-                      fee.status === "paid"
-                        ? "bg-green-100 text-green-700"
-                        : "bg-red-100 text-red-700"
-                    }`}
+                    className={`px-2 py-0.5 rounded text-xs ${fee.status === "paid"
+                      ? "bg-green-100 text-green-700"
+                      : "bg-red-100 text-red-700"
+                      }`}
                   >
                     {fee.status === "paid"
                       ? `₹${fee.amount.toLocaleString()} (Paid)`
@@ -762,6 +760,6 @@ function StudentPortal() {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </div >
   );
 }

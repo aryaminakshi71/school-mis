@@ -6,7 +6,11 @@
  */
 
 import { db, schema } from "./db";
+import { sql } from "drizzle-orm";
 import { v4 as uuidv4 } from "uuid";
+
+const toDateStr = (d: Date) => d.toISOString().split("T")[0];
+const toTimeStr = (d: Date) => d.toTimeString().split(" ")[0];
 
 const {
   sessions,
@@ -38,14 +42,21 @@ async function seed() {
   console.log("🌱 Starting database seed...");
 
   try {
+    // 0. Cleanup
+    console.log("🧹 Cleaning up database...");
+    // Truncate main tables with CASCADE to clean up all related data
+    await db.execute(
+      sql`TRUNCATE TABLE "sessions", "teachers", "transport_routes", "fee_categories", "holidays", "library_books", "circulars", "vehicles", "drivers" RESTART IDENTITY CASCADE`,
+    );
+
     // 1. Create Session
     console.log("📚 Creating session...");
     const sessionId = uuidv4();
     await db.insert(sessions).values({
       id: sessionId,
       name: "2025-2026",
-      startDate: new Date("2025-04-01"),
-      endDate: new Date("2026-03-31"),
+      startDate: "2025-04-01",
+      endDate: "2026-03-31",
       isActive: true,
       status: "active",
     });
@@ -196,7 +207,9 @@ async function seed() {
         lastName: surnames[i % surnames.length],
         email: `${firstName.toLowerCase()}.${surnames[i % surnames.length].toLowerCase()}${i}@student.com`,
         phone: `+91 98765${String(42000 + i).padEnd(5, "0")}`,
-        dateOfBirth: new Date(2010 + (i % 5), (i % 12) + 1, (i % 28) + 1),
+        dateOfBirth: toDateStr(
+          new Date(2010 + (i % 5), i % 12, (i % 28) + 1),
+        ),
         gender,
         bloodGroup: ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"][i % 8],
         classId: classIds[classIndex],
@@ -215,7 +228,7 @@ async function seed() {
       for (let j = 0; j < 5; j++) {
         await db.insert(subjects).values({
           name: subjectsList[j],
-          code: `SUB-${j + 1}`,
+          code: `SUB-${classIds.indexOf(classId) + 1}-${j + 1}`,
           classId,
           teacherId: teacherIds[j % teacherIds.length],
         });
@@ -255,30 +268,34 @@ async function seed() {
           categoryId: categoryTuition,
           classId,
           sessionId,
-          amount: 5000 + classNum * 500,
-          dueDate: new Date(
-            currentDate.getFullYear(),
-            currentDate.getMonth() + 1,
-            15,
+          amount: (5000 + classNum * 500).toString(),
+          dueDate: toDateStr(
+            new Date(
+              currentDate.getFullYear(),
+              currentDate.getMonth() + 1,
+              15,
+            ),
           ),
         },
         {
           categoryId: categoryTransport,
           classId,
           sessionId,
-          amount: 2000,
-          dueDate: new Date(
-            currentDate.getFullYear(),
-            currentDate.getMonth() + 1,
-            15,
+          amount: "2000",
+          dueDate: toDateStr(
+            new Date(
+              currentDate.getFullYear(),
+              currentDate.getMonth() + 1,
+              15,
+            ),
           ),
         },
         {
           categoryId: categoryExam,
           classId,
           sessionId,
-          amount: 1500,
-          dueDate: new Date("2025-12-15"),
+          amount: "1500",
+          dueDate: "2025-12-15",
         },
       ]);
     }
@@ -296,10 +313,12 @@ async function seed() {
           studentId,
           classId: classIds[studentIds.indexOf(studentId) % classIds.length],
           sessionId,
-          date,
+          date: toDateStr(date),
           status,
           checkInTime:
-            status === "present" ? new Date(date.setHours(7, 45)) : null,
+            status === "present"
+              ? toTimeStr(new Date(date.setHours(7, 45)))
+              : null,
         });
       }
     }
@@ -335,9 +354,9 @@ async function seed() {
         ],
         totalCopies: 5,
         availableCopies: 5 - (i % 3),
-        price: 200 + i * 10,
+        price: (200 + i * 10).toString(),
         status: "available",
-      });
+      } as any);
     }
 
     // 10. Create Transport Routes
@@ -353,7 +372,7 @@ async function seed() {
         routeName: "North Campus",
         startPoint: "Sector 15",
         endPoint: "City Centre",
-        distance: 15.5,
+        distance: "15.5",
         estimatedTime: 45,
       },
       {
@@ -362,7 +381,7 @@ async function seed() {
         routeName: "South Campus",
         startPoint: "DLF Phase 1",
         endPoint: "Golf Course Road",
-        distance: 12.0,
+        distance: "12.0",
         estimatedTime: 35,
       },
       {
@@ -371,7 +390,7 @@ async function seed() {
         routeName: "East Corridor",
         startPoint: "Indirapuram",
         endPoint: "Vasundhara",
-        distance: 18.5,
+        distance: "18.5",
         estimatedTime: 50,
       },
     ]);
@@ -411,31 +430,31 @@ async function seed() {
     await db.insert(holidays).values([
       {
         title: "Independence Day",
-        date: new Date("2025-08-15"),
+        date: "2025-08-15",
         type: "national",
         isRecurring: true,
       },
       {
         title: "Republic Day",
-        date: new Date("2026-01-26"),
+        date: "2026-01-26",
         type: "national",
         isRecurring: true,
       },
       {
         title: "Diwali Vacation",
-        date: new Date("2025-11-12"),
+        date: "2025-11-12",
         type: "festival",
         isRecurring: true,
       },
       {
         title: "Christmas",
-        date: new Date("2025-12-25"),
+        date: "2025-12-25",
         type: "festival",
         isRecurring: true,
       },
       {
         title: "Summer Vacation",
-        date: new Date("2025-05-25"),
+        date: "2025-05-25",
         type: "vacation",
         isRecurring: true,
       },
@@ -468,7 +487,7 @@ async function seed() {
         content:
           "PTM scheduled for next Saturday at 10 AM. All parents are requested to attend.",
         circularNumber: "CIR-001",
-        date: new Date(),
+        date: toDateStr(new Date()),
         type: "general",
         priority: "normal",
         status: "published",
@@ -478,7 +497,7 @@ async function seed() {
         content:
           "School will remain closed on August 15th, 2025 on account of Independence Day.",
         circularNumber: "CIR-002",
-        date: new Date("2025-08-10"),
+        date: "2025-08-10",
         type: "holiday",
         priority: "urgent",
         status: "published",
@@ -488,7 +507,7 @@ async function seed() {
         content:
           "Annual sports day will be held on February 5th, 2026. Parents are cordially invited.",
         circularNumber: "CIR-003",
-        date: new Date("2025-08-01"),
+        date: "2025-08-01",
         type: "event",
         priority: "normal",
         status: "published",

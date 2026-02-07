@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 
 export const Route = createFileRoute("/app/fees/receipt/$id")({
@@ -33,9 +33,9 @@ function ReceiptPage() {
   return (
     <div className="max-w-2xl mx-auto">
       <div className="mb-6 flex items-center justify-between">
-        <a href="/app/fees" className="text-blue-600 hover:underline">
+        <Link to="/app/fees" className="text-blue-600 hover:underline">
           ← Back to Fees
-        </a>
+        </Link>
         <button
           onClick={handlePrint}
           disabled={isGenerating}

@@ -173,11 +173,17 @@ export const smsRouter = {
         throw new Error("Phone number not found");
       }
 
+      // Ensure recipientId is a valid string
+      const finalRecipientId = input.recipientId || recipientId;
+      if (!finalRecipientId) {
+        throw new Error("Recipient ID is required");
+      }
+
       const [log] = await db
         .insert(schema.smsLogs)
         .values({
           recipientType: input.recipientType,
-          recipientId: input.recipientId || recipientId,
+          recipientId: finalRecipientId,
           phoneNumber,
           message: input.message,
           templateId: input.templateId,

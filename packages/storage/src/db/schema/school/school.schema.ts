@@ -1095,3 +1095,18 @@ export const feePaymentHistoryRelations = relations(feePaymentHistory, ({ one })
 export const directoryRelations = relations(directory, ({ many }) => ({
   birthdays: many(birthdays),
 }));
+
+// Expenses Table
+export const expenses = pgTable('expenses', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  category: text('category').notNull(),
+  description: text('description').notNull(),
+  amount: decimal('amount', { precision: 10, scale: 2 }).notNull(),
+  date: date('date').notNull(),
+  paymentMethod: text('payment_method'),
+  paidTo: text('paid_to'),
+  status: varchar('status', { length: 20 }).default('pending'),
+  createdBy: uuid('created_by'),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+});

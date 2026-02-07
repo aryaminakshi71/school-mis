@@ -6,6 +6,8 @@
 
 import { onError } from "@orpc/server";
 import { RPCHandler } from "@orpc/server/fetch";
+import { OpenAPIGenerator } from "@orpc/openapi";
+import { ZodToJsonSchemaConverter } from "@orpc/zod";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { requestId } from "hono/request-id";
@@ -27,6 +29,14 @@ import {
   sessions,
   feeCategories,
   feeStructures,
+  expenses,
+  reportCards,
+  reportCardDetails,
+  subjects,
+  transportRoutes,
+  transportVehicles,
+  libraryBooks,
+  libraryTransactions,
 } from "@school/storage";
 import { eq, like, and, desc, sql } from "drizzle-orm";
 
@@ -63,7 +73,7 @@ export function createApp() {
   );
   app.use("*", requestId());
   app.use("*", loggerMiddleware);
-  
+
   // Security headers middleware
   app.use("*", async (c, next) => {
     await next();
@@ -135,7 +145,7 @@ export function createApp() {
         .offset(offset);
 
       const [{ count }] = await db
-        .select({ count: students.id })
+        .select({ count: sql<number>`count(*)` })
         .from(students)
         .where(and(...conditions));
 
@@ -618,6 +628,81 @@ export function createApp() {
     }
   });
 
+
+
+  // Fee Structure Endpoints
+  app.get("/api/fee-structures", async (c: any) => {
+    try {
+      const db = getDb(c.env);
+      const structures = await db
+        .select({
+          id: feeStructures.id,
+          amount: feeStructures.amount,
+          dueDate: feeStructures.dueDate,
+          className: classes.name,
+          categoryName: feeCategories.name,
+          frequency: feeCategories.frequency,
+        })
+        .from(feeStructures)
+        .leftJoin(classes, eq(feeStructures.classId, classes.id))
+        .innerJoin(feeCategories, eq(feeStructures.categoryId, feeCategories.id));
+
+      return c.json({ structures });
+    } catch (error) {
+      console.error("Error fetching fee structures:", error);
+      return c.json({ error: "Failed to fetch fee structures" }, 500);
+    }
+  });
+
+  app.post("/api/fee-structures", async (c: any) => {
+    try {
+      const db = getDb(c.env);
+      const data = await c.req.json();
+
+      const [newStructure] = await db
+        .insert(feeStructures)
+        .values({
+          categoryId: data.categoryId,
+          classId: data.classId || null,
+          sessionId: data.sessionId,
+          amount: data.amount,
+          dueDate: data.dueDate,
+        })
+        .returning();
+
+      return c.json({ success: true, structure: newStructure });
+    } catch (error) {
+      console.error("Error creating fee structure:", error);
+      return c.json({ error: "Failed to create fee structure" }, 500);
+    }
+  });
+
+  app.get("/api/fee-categories", async (c: any) => {
+    try {
+      const db = getDb(c.env);
+      const categories = await db.select().from(feeCategories);
+      return c.json({ categories });
+    } catch (error) {
+      return c.json({ error: "Failed to fetch categories" }, 500);
+    }
+  });
+
+  app.post("/api/fee-categories", async (c: any) => {
+    try {
+      const db = getDb(c.env);
+      const data = await c.req.json();
+      const [newCategory] = await db.insert(feeCategories).values({
+        name: data.name,
+        type: data.type,
+        frequency: data.frequency,
+        isRecurring: data.isRecurring || false,
+      }).returning();
+      return c.json({ success: true, category: newCategory });
+    } catch (error) {
+      return c.json({ error: "Failed to create category" }, 500);
+    }
+  });
+
   // Fees endpoints
   app.get("/api/fees", async (c: any) => {
     try {
@@ -766,6 +851,408 @@ export function createApp() {
     } catch (error) {
       console.error("Error processing payment:", error);
       return c.json({ error: "Failed to process payment" }, 500);
+    }
+  });
+
+  // Expense Endpoints
+  app.get("/api/expenses", async (c: any) => {
+    try {
+      const db = getDb(c.env);
+      const allExpenses = await db.select().from(expenses).orderBy(desc(expenses.date));
+      return c.json({ expenses: allExpenses });
+    } catch (error) {
+      console.error("Error fetching expenses:", error);
+      return c.json({ error: "Failed to fetch expenses" }, 500);
+    }
+  });
+
+  app.post("/api/expenses", async (c: any) => {
+    try {
+      const db = getDb(c.env);
+      const data = await c.req.json();
+
+      const [newExpense] = await db
+        .insert(expenses)
+        .values({
+          category: data.category,
+          description: data.description,
+          amount: data.amount,
+          date: data.date,
+          paymentMethod: data.paymentMethod,
+          paidTo: data.paidTo,
+          status: 'paid',
+        })
+        .returning();
+
+      return c.json({ success: true, expense: newExpense });
+    } catch (error) {
+      console.error("Error creating expense:", error);
+      return c.json({ error: "Failed to create expense" }, 500);
+    }
+  });
+
+  app.get("/api/expenses/stats", async (c: any) => {
+    try {
+      const db = getDb(c.env);
+      const allExpenses = await db.select().from(expenses);
+      const total = allExpenses.reduce((sum, e) => sum + Number(e.amount), 0);
+      return c.json({ totalExpenses: total });
+    } catch (error) {
+      return c.json({ totalExpenses: 0 });
+    }
+  });
+
+  // Grades / Report Cards Endpoints
+  app.get("/api/grades", async (c: any) => {
+    try {
+      const db = getDb(c.env);
+      const studentId = c.req.query("studentId");
+      const classId = c.req.query("classId");
+
+      // Get all report card details with student and subject info
+      let query = db
+        .select({
+          id: reportCardDetails.id,
+          reportCardId: reportCardDetails.reportCardId,
+          subjectId: reportCardDetails.subjectId,
+          maxMarks: reportCardDetails.maxMarks,
+          obtainedMarks: reportCardDetails.obtainedMarks,
+          grade: reportCardDetails.grade,
+          remarks: reportCardDetails.remarks,
+          studentId: reportCards.studentId,
+          examType: reportCards.examType,
+          classId: reportCards.classId,
+        })
+        .from(reportCardDetails)
+        .innerJoin(reportCards, eq(reportCardDetails.reportCardId, reportCards.id));
+
+      const allDetails = await query;
+
+      // Enrich with student and subject names
+      const enrichedGrades = await Promise.all(
+        allDetails.map(async (detail) => {
+          const [student] = await db
+            .select({ firstName: students.firstName, lastName: students.lastName })
+            .from(students)
+            .where(eq(students.id, detail.studentId))
+            .limit(1);
+
+          const [subject] = await db
+            .select({ name: subjects.name })
+            .from(subjects)
+            .where(eq(subjects.id, detail.subjectId))
+            .limit(1);
+
+          return {
+            id: detail.id,
+            studentId: detail.studentId,
+            studentName: student ? `${student.firstName} ${student.lastName}` : "Unknown",
+            subject: subject?.name || "Unknown",
+            examType: detail.examType,
+            score: Number(detail.obtainedMarks),
+            maxScore: Number(detail.maxMarks),
+            grade: detail.grade || calculateGrade(Number(detail.obtainedMarks), Number(detail.maxMarks)),
+            date: new Date().toISOString().split("T")[0], // Placeholder
+          };
+        })
+      );
+
+      return c.json({ grades: enrichedGrades });
+    } catch (error) {
+      console.error("Error fetching grades:", error);
+      return c.json({ grades: [] });
+    }
+  });
+
+  app.post("/api/grades", async (c: any) => {
+    try {
+      const db = getDb(c.env);
+      const data = await c.req.json();
+
+      // First, find or create a report card for this student/exam
+      let [existingReportCard] = await db
+        .select()
+        .from(reportCards)
+        .where(
+          and(
+            eq(reportCards.studentId, data.studentId),
+            eq(reportCards.examType, data.examType),
+            eq(reportCards.classId, data.classId)
+          )
+        )
+        .limit(1);
+
+      let reportCardId = existingReportCard?.id;
+
+      if (!reportCardId) {
+        // Create new report card
+        const [newReportCard] = await db
+          .insert(reportCards)
+          .values({
+            studentId: data.studentId,
+            classId: data.classId,
+            sessionId: data.sessionId,
+            examType: data.examType,
+            status: "draft",
+          })
+          .returning();
+        reportCardId = newReportCard.id;
+      }
+
+      // Add the grade detail
+      const [newGrade] = await db
+        .insert(reportCardDetails)
+        .values({
+          reportCardId,
+          subjectId: data.subjectId,
+          maxMarks: data.maxMarks,
+          obtainedMarks: data.obtainedMarks,
+          grade: data.grade || calculateGrade(data.obtainedMarks, data.maxMarks),
+        })
+        .returning();
+
+      return c.json({ success: true, grade: newGrade });
+    } catch (error) {
+      console.error("Error creating grade:", error);
+      return c.json({ error: "Failed to create grade" }, 500);
+    }
+  });
+
+  app.get("/api/subjects", async (c: any) => {
+    try {
+      const db = getDb(c.env);
+      const allSubjects = await db.select().from(subjects);
+      return c.json({ subjects: allSubjects });
+    } catch (error) {
+      return c.json({ subjects: [] });
+    }
+  });
+
+  // Helper function for grade calculation
+  function calculateGrade(obtained: number, max: number): string {
+    const percentage = (obtained / max) * 100;
+    if (percentage >= 90) return "A+";
+    if (percentage >= 80) return "A";
+    if (percentage >= 70) return "B+";
+    if (percentage >= 60) return "B";
+    if (percentage >= 50) return "C";
+    if (percentage >= 40) return "D";
+    return "F";
+  }
+
+
+
+  // Transport API
+  app.get("/api/transport/routes", async (c: any) => {
+    try {
+      const db = getDb(c.env);
+      const routes = await db.select().from(transportRoutes);
+      return c.json({ routes });
+    } catch (error) {
+      console.error("Error fetching transport routes:", error);
+      return c.json({ routes: [] });
+    }
+  });
+
+  app.post("/api/transport/routes", async (c: any) => {
+    try {
+      const db = getDb(c.env);
+      const data = await c.req.json();
+      const [newRoute] = await db
+        .insert(transportRoutes)
+        .values({
+          routeName: data.routeName,
+          startPoint: data.startPoint,
+          endPoint: data.endPoint,
+          distance: data.distance,
+          estimatedTime: data.estimatedTime,
+          fare: data.fare,
+          status: "active",
+        })
+        .returning();
+      return c.json({ success: true, route: newRoute });
+    } catch (error) {
+      console.error("Error creating transport route:", error);
+      return c.json({ error: "Failed to create route" }, 500);
+    }
+  });
+
+  app.get("/api/transport/vehicles", async (c: any) => {
+    try {
+      const db = getDb(c.env);
+      const vehicles = await db.select().from(transportVehicles);
+      return c.json({ vehicles });
+    } catch (error) {
+      return c.json({ vehicles: [] });
+    }
+  });
+
+  app.post("/api/transport/vehicles", async (c: any) => {
+    try {
+      const db = getDb(c.env);
+      const data = await c.req.json();
+      const [newVehicle] = await db
+        .insert(transportVehicles)
+        .values({
+          vehicleNumber: data.vehicleNumber,
+          vehicleType: data.vehicleType,
+          capacity: data.capacity,
+          driverName: data.driverName,
+          driverPhone: data.driverPhone,
+          routeId: data.routeId,
+          status: "active",
+        })
+        .returning();
+      return c.json({ success: true, vehicle: newVehicle });
+    } catch (error) {
+      return c.json({ error: "Failed to create vehicle" }, 500);
+    }
+  });
+
+  // Library API
+  app.get("/api/library/books", async (c: any) => {
+    try {
+      const db = getDb(c.env);
+      const search = c.req.query("search");
+      const category = c.req.query("category");
+
+      let books = await db.select().from(libraryBooks);
+
+      if (search) {
+        books = books.filter(
+          (b) =>
+            b.title.toLowerCase().includes(search.toLowerCase()) ||
+            b.author?.toLowerCase().includes(search.toLowerCase()) ||
+            b.isbn?.toLowerCase().includes(search.toLowerCase())
+        );
+      }
+
+      if (category && category !== "all") {
+        books = books.filter((b) => b.category === category);
+      }
+
+      return c.json({ books });
+    } catch (error) {
+      console.error("Error fetching library books:", error);
+      return c.json({ books: [] });
+    }
+  });
+
+  app.post("/api/library/books", async (c: any) => {
+    try {
+      const db = getDb(c.env);
+      const data = await c.req.json();
+      const [newBook] = await db
+        .insert(libraryBooks)
+        .values({
+          title: data.title,
+          author: data.author,
+          isbn: data.isbn,
+          category: data.category,
+          publisher: data.publisher,
+          publicationYear: data.publicationYear,
+          totalCopies: data.totalCopies || 1,
+          availableCopies: data.availableCopies || 1,
+          location: data.location,
+          status: "available",
+        })
+        .returning();
+      return c.json({ success: true, book: newBook });
+    } catch (error) {
+      console.error("Error creating book:", error);
+      return c.json({ error: "Failed to add book" }, 500);
+    }
+  });
+
+  app.get("/api/library/transactions", async (c: any) => {
+    try {
+      const db = getDb(c.env);
+      const transactions = await db
+        .select()
+        .from(libraryTransactions)
+        .orderBy(desc(libraryTransactions.issueDate));
+      return c.json({ transactions });
+    } catch (error) {
+      return c.json({ transactions: [] });
+    }
+  });
+
+  app.post("/api/library/issue", async (c: any) => {
+    try {
+      const db = getDb(c.env);
+      const data = await c.req.json();
+
+      // Create transaction
+      const [transaction] = await db
+        .insert(libraryTransactions)
+        .values({
+          bookId: data.bookId,
+          studentId: data.studentId,
+          issueDate: new Date().toISOString().split("T")[0],
+          dueDate: data.dueDate,
+          status: "issued",
+        })
+        .returning();
+
+      // Update book availability
+      const [book] = await db
+        .select()
+        .from(libraryBooks)
+        .where(eq(libraryBooks.id, data.bookId))
+        .limit(1);
+
+      if (book && book.availableCopies > 0) {
+        await db
+          .update(libraryBooks)
+          .set({ availableCopies: book.availableCopies - 1 })
+          .where(eq(libraryBooks.id, data.bookId));
+      }
+
+      return c.json({ success: true, transaction });
+    } catch (error) {
+      return c.json({ error: "Failed to issue book" }, 500);
+    }
+  });
+
+  app.post("/api/library/return", async (c: any) => {
+    try {
+      const db = getDb(c.env);
+      const data = await c.req.json();
+
+      // Update transaction
+      await db
+        .update(libraryTransactions)
+        .set({
+          returnDate: new Date().toISOString().split("T")[0],
+          status: "returned",
+        })
+        .where(eq(libraryTransactions.id, data.transactionId));
+
+      // Update book availability
+      const [transaction] = await db
+        .select()
+        .from(libraryTransactions)
+        .where(eq(libraryTransactions.id, data.transactionId))
+        .limit(1);
+
+      if (transaction) {
+        const [book] = await db
+          .select()
+          .from(libraryBooks)
+          .where(eq(libraryBooks.id, transaction.bookId))
+          .limit(1);
+
+        if (book) {
+          await db
+            .update(libraryBooks)
+            .set({ availableCopies: book.availableCopies + 1 })
+            .where(eq(libraryBooks.id, transaction.bookId));
+        }
+      }
+
+      return c.json({ success: true });
+    } catch (error) {
+      return c.json({ error: "Failed to return book" }, 500);
     }
   });
 
@@ -951,15 +1438,23 @@ export function createApp() {
     return c.json(spec);
   });
 
-  // Scalar API Documentation UI
-  app.get("/api/docs", async (c: any) => {
-    const { Scalar } = await import("@scalar/hono-api-reference");
-    return Scalar({
-      spec: {
-        url: "/api/openapi.json",
-      },
-      theme: "purple",
-    })(c);
+  // API Documentation - redirect to OpenAPI JSON endpoint
+  // Note: Scalar API Reference has type definition issues in current version
+  app.get("/api/docs", (c: any) => {
+    return c.html(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>School MIS API Documentation</title>
+          <meta charset="utf-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference"></script>
+        </head>
+        <body>
+          <script id="api-reference" data-url="/api/openapi.json"></script>
+        </body>
+      </html>
+    `);
   });
 
   return app;

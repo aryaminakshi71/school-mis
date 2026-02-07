@@ -18,6 +18,10 @@ import {
   CardTitle,
 } from "../components/ui/card";
 import { Button } from "../components/ui/button";
+import { api } from "../lib/api";
+import { exportToCSV } from "../lib/export-utils";
+import { toast } from "sonner";
+import { useState } from "react";
 
 export const Route = createFileRoute("/app/reports")({
   component: ReportsPage,
@@ -25,6 +29,75 @@ export const Route = createFileRoute("/app/reports")({
 
 function ReportsPage() {
   const { user, hasRole } = useAuth();
+  const [loading, setLoading] = useState(false);
+
+  const handleGenerateReport = async (reportName: string, type: string) => {
+    console.log("Generating report:", reportName);
+    try {
+      setLoading(true);
+      toast.info(`Generating ${reportName}...`);
+
+      let data: any[] = [];
+      let filename = reportName.toLowerCase().replace(/\s+/g, "-");
+
+      switch (reportName) {
+        case "Admission Report":
+        case "Student Reports":
+          const students = await api.students.list();
+          data = students.map((s: any) => ({
+            "Admission No": s.admissionNumber,
+            "Name": `${s.firstName} ${s.lastName}`,
+            "Class": s.className,
+            "Roll No": s.rollNumber,
+            "Father Name": s.fatherName,
+            "Phone": s.phone,
+            "Status": s.status
+          }));
+          break;
+
+        case "Fee Collection":
+          const fees = await api.fees.list();
+          data = fees.map((f: any) => ({
+            "Receipt ID": f.id,
+            "Student": f.studentName,
+            "Class": f.className,
+            "Amount": f.amount,
+            "Date": new Date(f.createdAt).toLocaleDateString(),
+            "Status": f.status
+          }));
+          break;
+
+        case "Staff Directory":
+          const teachers = await api.teachers.list();
+          data = teachers.map((t: any) => ({
+            "ID": t.employeeId,
+            "Name": `${t.firstName} ${t.lastName}`,
+            "Subject": t.subject,
+            "Qualification": t.qualification,
+            "Phone": t.phone,
+            "Email": t.email
+          }));
+          break;
+
+        default:
+          toast.info("This report type is coming soon!");
+          setLoading(false);
+          return;
+      }
+
+      if (data.length > 0) {
+        exportToCSV(data, `${filename}-${new Date().toISOString().split("T")[0]}`);
+        toast.success(`${reportName} downloaded successfully`);
+      } else {
+        toast.warning("No data found for this report");
+      }
+    } catch (error) {
+      console.error("Report generation failed:", error);
+      toast.error("Failed to generate report");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (!hasRole(["admin", "accountant", "teacher"])) {
     return (
@@ -278,7 +351,9 @@ function ReportsPage() {
                 {category.reports.map((report, rIdx) => (
                   <button
                     key={rIdx}
-                    className="w-full flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors text-left"
+                    onClick={() => handleGenerateReport(report.name, report.type)}
+                    disabled={loading}
+                    className="w-full flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors text-left disabled:opacity-50"
                   >
                     <div>
                       <p className="font-medium text-sm">{report.name}</p>
@@ -308,26 +383,24 @@ function ReportsPage() {
               >
                 <div className="flex items-center gap-3">
                   <div
-                    className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                      report.type === "finance"
-                        ? "bg-green-100"
-                        : report.type === "student"
-                          ? "bg-blue-100"
-                          : report.type === "academic"
-                            ? "bg-purple-100"
-                            : "bg-orange-100"
-                    }`}
+                    className={`w-10 h-10 rounded-lg flex items-center justify-center ${report.type === "finance"
+                      ? "bg-green-100"
+                      : report.type === "student"
+                        ? "bg-blue-100"
+                        : report.type === "academic"
+                          ? "bg-purple-100"
+                          : "bg-orange-100"
+                      }`}
                   >
                     <BarChart3
-                      className={`w-5 h-5 ${
-                        report.type === "finance"
-                          ? "text-green-600"
-                          : report.type === "student"
-                            ? "text-blue-600"
-                            : report.type === "academic"
-                              ? "text-purple-600"
-                              : "text-orange-600"
-                      }`}
+                      className={`w-5 h-5 ${report.type === "finance"
+                        ? "text-green-600"
+                        : report.type === "student"
+                          ? "text-blue-600"
+                          : report.type === "academic"
+                            ? "text-purple-600"
+                            : "text-orange-600"
+                        }`}
                     />
                   </div>
                   <div>

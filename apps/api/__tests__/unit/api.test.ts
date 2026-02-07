@@ -15,7 +15,7 @@ describe("API Health Endpoint", () => {
     const res = await app.request("http://localhost/api/health");
     expect(res.status).toBe(200);
 
-    const body = await res.json();
+    const body = await res.json() as { status: string; version: string; timestamp: string };
     expect(body.status).toBe("ok");
     expect(body.version).toBe("1.0.0");
     expect(body.timestamp).toBeDefined();
@@ -40,7 +40,7 @@ describe("Students Router", () => {
     const res = await app.request("http://localhost/api/school/students");
     expect(res.status).toBe(200);
 
-    const body = await res.json();
+    const body = await res.json() as { students: unknown[]; pagination: { total: number } };
     expect(body.students).toBeInstanceOf(Array);
     expect(body.students.length).toBe(0);
     expect(body.pagination.total).toBe(0);
@@ -64,9 +64,10 @@ describe("Attendance Router", () => {
     );
     expect(res.status).toBe(200);
 
-    const body = await res.json();
+    const body = await res.json() as { totalStudents: number; present: number; attendanceRate: number };
     expect(body.totalStudents).toBe(100);
     expect(body.present).toBe(95);
     expect(body.attendanceRate).toBe(95);
   });
 });
+

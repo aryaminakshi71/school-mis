@@ -61,34 +61,40 @@ export const studentsRouter = {
           }
 
           const allStudents = await db
-        .select({
-          id: students.id,
-          admissionNumber: students.admissionNumber,
-          firstName: students.firstName,
-          lastName: students.lastName,
-          email: students.email,
-          phone: students.phone,
-          gender: students.gender,
-          className: classes.name,
-          section: classes.section,
-          fatherName: students.fatherName,
-          fatherPhone: students.fatherPhone,
-          createdAt: students.createdAt,
-        })
-        .from(students)
-        .leftJoin(classes, eq(students.classId, classes.id))
-        .where(and(...conditions))
-        .orderBy(desc(students.createdAt))
-        .limit(limit)
-        .offset(offset);
+            .select({
+              id: students.id,
+              admissionNumber: students.admissionNumber,
+              firstName: students.firstName,
+              lastName: students.lastName,
+              email: students.email,
+              phone: students.phone,
+              gender: students.gender,
+              className: classes.name,
+              section: classes.section,
+              fatherName: students.fatherName,
+              fatherPhone: students.fatherPhone,
+              status: students.status,
+              createdAt: students.createdAt,
+            })
+            .from(students)
+            .leftJoin(classes, eq(students.classId, classes.id))
+            .where(and(...conditions))
+            .orderBy(desc(students.createdAt))
+            .limit(limit)
+            .offset(offset);
 
-      const [{ count }] = await db
-        .select({ count: students.id })
-        .from(students)
-        .where(and(...conditions));
+          const [{ count }] = await db
+            .select({ count: students.id })
+            .from(students)
+            .where(and(...conditions));
 
           return {
-            students: allStudents,
+            students: allStudents.map((s) => ({
+              ...s,
+              status: s.status ? "active" : "inactive",
+              rollNumber: s.admissionNumber ? parseInt(s.admissionNumber.split("-").pop() || "0") : 0,
+              attendance: 75 + Math.floor(Math.random() * 20), // Mock attendance for demo
+            })),
             pagination: {
               page,
               limit,

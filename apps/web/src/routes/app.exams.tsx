@@ -197,7 +197,7 @@ function ExamsPage() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button 
+          <Button
             variant="outline"
             onClick={handleExport}
             disabled={recentResults.length === 0}
@@ -216,18 +216,21 @@ function ExamsPage() {
       <div className="border-b">
         <nav className="flex gap-1 overflow-x-auto pb-px">
           {subFeatures.map((feature) => (
-            <a
+            <button
               key={feature.name}
-              href={feature.href}
-              className={`flex items-center gap-2 px-4 py-2 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
-                feature.active
-                  ? "border-primary text-primary"
-                  : "border-transparent text-muted-foreground hover:text-foreground"
-              }`}
+              onClick={() => {
+                if (feature.name !== "Dashboard") {
+                  toast.info(`${feature.name} feature coming soon`);
+                }
+              }}
+              className={`flex items-center gap-2 px-4 py-2 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${feature.active
+                ? "border-primary text-primary"
+                : "border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                }`}
             >
               <feature.icon className="h-4 w-4" />
               {feature.name}
-            </a>
+            </button>
           ))}
         </nav>
       </div>
@@ -241,26 +244,24 @@ function ExamsPage() {
                 {stat.title}
               </CardTitle>
               <div
-                className={`p-2 rounded-lg ${
-                  stat.color === "blue"
-                    ? "bg-blue-100"
-                    : stat.color === "green"
-                      ? "bg-green-100"
-                      : stat.color === "purple"
-                        ? "bg-purple-100"
-                        : "bg-yellow-100"
-                }`}
+                className={`p-2 rounded-lg ${stat.color === "blue"
+                  ? "bg-blue-100"
+                  : stat.color === "green"
+                    ? "bg-green-100"
+                    : stat.color === "purple"
+                      ? "bg-purple-100"
+                      : "bg-yellow-100"
+                  }`}
               >
                 <stat.icon
-                  className={`h-4 w-4 ${
-                    stat.color === "blue"
-                      ? "text-blue-600"
-                      : stat.color === "green"
-                        ? "text-green-600"
-                        : stat.color === "purple"
-                          ? "text-purple-600"
-                          : "text-yellow-600"
-                  }`}
+                  className={`h-4 w-4 ${stat.color === "blue"
+                    ? "text-blue-600"
+                    : stat.color === "green"
+                      ? "text-green-600"
+                      : stat.color === "purple"
+                        ? "text-purple-600"
+                        : "text-yellow-600"
+                    }`}
                 />
               </div>
             </CardHeader>
@@ -313,42 +314,42 @@ function ExamsPage() {
                 </div>
               ) : (
                 filteredExams.map((exam) => (
-                <div
-                  key={exam.id}
-                  className="flex items-start justify-between p-4 rounded-lg border"
-                >
-                  <div>
-                    <p className="font-medium">{exam.name}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {exam.class}
-                    </p>
-                    <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
-                      <Calendar className="h-3 w-3" />
-                      {exam.date}
-                      <Clock className="h-3 w-3 ml-2" />
-                      {exam.time}
+                  <div
+                    key={exam.id}
+                    className="flex items-start justify-between p-4 rounded-lg border"
+                  >
+                    <div>
+                      <p className="font-medium">{exam.name}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {exam.class}
+                      </p>
+                      <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
+                        <Calendar className="h-3 w-3" />
+                        {exam.date}
+                        <Clock className="h-3 w-3 ml-2" />
+                        {exam.time}
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <Badge
+                        variant={
+                          exam.status === "Scheduled"
+                            ? "success"
+                            : exam.status === "Hall Pending"
+                              ? "warning"
+                              : "outline"
+                        }
+                      >
+                        {exam.status}
+                      </Badge>
+                      <Button variant="ghost" size="sm" className="mt-2">
+                        Details
+                        <ChevronRight className="h-4 w-4 ml-1" />
+                      </Button>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <Badge
-                      variant={
-                        exam.status === "Scheduled"
-                          ? "success"
-                          : exam.status === "Hall Pending"
-                            ? "warning"
-                            : "outline"
-                      }
-                    >
-                      {exam.status}
-                    </Badge>
-                    <Button variant="ghost" size="sm" className="mt-2">
-                      Details
-                      <ChevronRight className="h-4 w-4 ml-1" />
-                    </Button>
-                  </div>
-                </div>
-              ))
-            )}
+                ))
+              )}
             </div>
           </CardContent>
         </Card>

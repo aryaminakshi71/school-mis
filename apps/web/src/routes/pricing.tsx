@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/pricing")({
   component: PricingPage,
@@ -9,19 +9,19 @@ function PricingPage() {
     <div className="min-h-screen">
       <header className="bg-white shadow-sm fixed top-0 left-0 right-0 z-50">
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <a href="/" className="text-xl font-bold text-blue-600">
+          <Link to="/" className="text-xl font-bold text-blue-600">
             School MIS
-          </a>
+          </Link>
           <div className="flex gap-4">
-            <a href="/features" className="text-gray-600 hover:text-blue-600">
+            <a href="/#features" className="text-gray-600 hover:text-blue-600">
               Features
             </a>
-            <a href="/pricing" className="text-blue-600 font-medium">
+            <Link to="/pricing" className="text-blue-600 font-medium">
               Pricing
-            </a>
-            <a href="/login" className="text-gray-600 hover:text-blue-600">
+            </Link>
+            <Link to="/login" className="text-gray-600 hover:text-blue-600">
               Login
-            </a>
+            </Link>
           </div>
         </nav>
       </header>
@@ -67,12 +67,12 @@ function PricingPage() {
                     </li>
                   ))}
                 </ul>
-                <a
-                  href="/signup"
+                <Link
+                  to="/signup"
                   className={`block text-center py-3 rounded-lg ${p.popular ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-900"}`}
                 >
                   Get Started
-                </a>
+                </Link>
               </div>
             ))}
           </div>

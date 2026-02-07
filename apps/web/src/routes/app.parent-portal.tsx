@@ -283,7 +283,7 @@ function ParentPortal() {
       <div className="flex flex-col gap-4">
         <Link
           to="/app"
-          className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-blue-600 transition-colors w-fit group"
+          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors w-fit group"
         >
           <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
           Back to Dashboard
@@ -303,19 +303,18 @@ function ParentPortal() {
               <button
                 key={child.id}
                 onClick={() => setSelectedChild(index)}
-                className={`flex items-center gap-3 px-4 py-2 rounded-lg whitespace-nowrap transition-colors ${
-                  selectedChild === index
-                    ? "bg-blue-100 border-2 border-blue-500"
-                    : "bg-gray-50 border-2 border-transparent hover:bg-gray-100"
-                }`}
+                className={`flex items-center gap-3 px-4 py-2 rounded-lg whitespace-nowrap transition-colors ${selectedChild === index
+                  ? "bg-primary/10 border-2 border-primary"
+                  : "bg-gray-50 border-2 border-transparent hover:bg-gray-100"
+                  }`}
               >
-                <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-bold">
+                <span className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-sm font-bold">
                   {child.name.charAt(0)}
-                </div>
-                <div className="text-left">
-                  <p className="font-medium text-sm">{child.name}</p>
-                  <p className="text-xs text-gray-500">{child.class}</p>
-                </div>
+                </span>
+                <span className="text-left">
+                  <span className="font-medium text-sm block">{child.name}</span>
+                  <span className="text-xs text-muted-foreground block">{child.class}</span>
+                </span>
               </button>
             ))}
           </div>
@@ -332,14 +331,14 @@ function ParentPortal() {
           </CardHeader>
           <CardContent>
             <div className="flex items-start gap-4">
-              <div className="w-16 h-16 rounded-full bg-blue-600 flex items-center justify-center text-white text-xl font-bold">
+              <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-xl font-bold">
                 {currentChild.name.charAt(0)}
               </div>
               <div className="flex-1">
-                <h3 className="text-lg font-bold text-gray-900">
+                <h3 className="text-lg font-bold text-foreground">
                   {currentChild.name}
                 </h3>
-                <p className="text-gray-600">
+                <p className="text-muted-foreground">
                   {currentChild.class} - Section {currentChild.section}
                 </p>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
@@ -384,8 +383,8 @@ function ParentPortal() {
           </CardHeader>
           <CardContent>
             <div className="text-center mb-4">
-              <div className="text-4xl font-bold text-blue-600">93.3%</div>
-              <p className="text-gray-500">Overall Attendance</p>
+              <div className="text-4xl font-bold text-primary">93.3%</div>
+              <p className="text-muted-foreground">Overall Attendance</p>
             </div>
             <div className="grid grid-cols-3 gap-2 text-center">
               <div className="p-2 bg-green-50 rounded-lg">
@@ -650,11 +649,10 @@ function ParentPortal() {
               {mockNotices.map((notice) => (
                 <div
                   key={notice.id}
-                  className={`p-3 rounded-lg border-l-4 ${
-                    notice.priority === "high"
-                      ? "bg-red-50 border-red-500"
-                      : "bg-blue-50 border-blue-500"
-                  }`}
+                  className={`p-3 rounded-lg border-l-4 ${notice.priority === "high"
+                    ? "bg-red-50 border-red-500"
+                    : "bg-primary/5 border-primary"
+                    }`}
                 >
                   <p className="font-medium text-sm">{notice.title}</p>
                   <p className="text-xs text-gray-500 mb-1">{notice.date}</p>
@@ -702,13 +700,12 @@ function ParentPortal() {
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
                     <div
-                      className={`h-2 rounded-full ${
-                        subject.marks >= 90
-                          ? "bg-green-500"
-                          : subject.marks >= 75
-                            ? "bg-blue-500"
-                            : "bg-yellow-500"
-                      }`}
+                      className={`h-2 rounded-full ${subject.marks >= 90
+                        ? "bg-green-500"
+                        : subject.marks >= 75
+                          ? "bg-blue-500"
+                          : "bg-yellow-500"
+                        }`}
                       style={{ width: `${subject.marks}%` }}
                     />
                   </div>

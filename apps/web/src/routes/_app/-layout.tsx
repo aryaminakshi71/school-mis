@@ -41,7 +41,13 @@ import { Button } from "@/components/ui/button";
 
 const getBreadcrumbs = (pathname: string) => {
   const paths = pathname.split("/").filter(Boolean);
-  const breadcrumbs = [{ label: "Home", href: "/app", icon: Home }];
+  interface BreadcrumbItem {
+    label: string;
+    href: string;
+    icon?: any;
+  }
+
+  const breadcrumbs: BreadcrumbItem[] = [{ label: "Home", href: "/app", icon: Home }];
 
   if (paths.length === 0) return breadcrumbs;
 
@@ -168,11 +174,11 @@ export default function AppLayout() {
 
   const userInitials = user?.name
     ? user.name
-        .split(" ")
-        .map((n) => n[0])
-        .join("")
-        .toUpperCase()
-        .slice(0, 2)
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2)
     : "??";
 
   const currentPath =
@@ -260,14 +266,14 @@ export default function AppLayout() {
                     {userInitials}
                   </AvatarFallback>
                 </Avatar>
-                <div className="flex flex-col items-start text-left">
+                <span className="flex flex-col items-start text-left">
                   <span className="text-sm font-medium">
                     {user?.name || "User"}
                   </span>
                   <span className="text-xs text-muted-foreground">
                     {user?.role || "Admin"}
                   </span>
-                </div>
+                </span>
                 <ChevronRight className="ml-auto h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>

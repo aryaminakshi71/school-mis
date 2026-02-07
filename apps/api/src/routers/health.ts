@@ -45,17 +45,27 @@ export const healthRouter = {
       }),
     )
     .handler(async ({ context }) => {
-      const checks = {
-        database: { status: "unknown" as const, responseTime: 0 },
-        cache: { status: "unknown" as const, responseTime: 0 },
+      // Define type for health check results
+      type HealthCheckResult = {
+        status: "healthy" | "unhealthy" | "unknown";
+        responseTime?: number;
+        error?: string;
+      };
+
+      const checks: {
+        database: HealthCheckResult;
+        cache: HealthCheckResult;
+      } = {
+        database: { status: "unknown", responseTime: 0 },
+        cache: { status: "unknown", responseTime: 0 },
       };
 
       // Check database
       try {
         const dbStart = Date.now();
         const connectionString =
-          context.env?.DATABASE?.connectionString ||
-          context.env?.DATABASE_URL ||
+          (context.env as any)?.DATABASE?.connectionString ||
+          (context.env as any)?.DATABASE_URL ||
           process.env.DATABASE_URL;
 
         if (connectionString) {
@@ -82,7 +92,7 @@ export const healthRouter = {
       // Check cache (if Redis is configured)
       try {
         const cacheStart = Date.now();
-        const redisUrl = context.env?.REDIS_URL || process.env.REDIS_URL;
+        const redisUrl = (context.env as any)?.REDIS_URL || process.env.REDIS_URL;
         if (redisUrl) {
           checks.cache = {
             status: "healthy",
@@ -105,7 +115,7 @@ export const healthRouter = {
       // Determine overall status
       const overallStatus =
         checks.database.status === "healthy" &&
-        (checks.cache?.status === "healthy" || checks.cache?.status === "unknown")
+          (checks.cache?.status === "healthy" || checks.cache?.status === "unknown")
           ? "ok"
           : checks.database.status === "unhealthy"
             ? "error"

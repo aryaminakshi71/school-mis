@@ -2,6 +2,7 @@ import { HeadContent, Scripts, Outlet, createRootRoute } from '@tanstack/react-r
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AuthProvider } from '../lib/auth-context'
 import { NotFoundPage } from '@/components/error'
+import '../styles/globals.css'
 
 export const Route = createRootRoute({
   head: () => ({

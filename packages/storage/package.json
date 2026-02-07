@@ -18,11 +18,13 @@
     "@upstash/redis": "^1.36.1",
     "drizzle-kit": "^0.31.8",
     "drizzle-orm": "^0.45.1",
-    "postgres": "^3.4.8"
+    "postgres": "^3.4.8",
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "@types/node": "^22.19.2",
     "@types/pg": "^8.10.9",
+    "@types/uuid": "^11.0.0",
     "jose": "^5.9.0",
     "typescript": "^5.9.3"
   }

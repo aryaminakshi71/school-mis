@@ -1,5 +1,6 @@
-import type { BunTestConfig } from "bun:test";
-
+/**
+ * Bun Test Configuration
+ */
 export default {
   testTimeout: 10000,
   coverage: true,
@@ -11,4 +12,5 @@ export default {
       statements: 50,
     },
   },
-} satisfies BunTestConfig;
+};
+

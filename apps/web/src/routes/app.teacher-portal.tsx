@@ -177,7 +177,7 @@ function TeacherPortal() {
       <div className="flex flex-col gap-4">
         <Link
           to="/app"
-          className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-blue-600 transition-colors w-fit group"
+          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors w-fit group"
         >
           <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
           Back to Dashboard
@@ -192,17 +192,17 @@ function TeacherPortal() {
 
       <div className="grid lg:grid-cols-4 gap-6">
         <Card className="lg:col-span-3 border-2 shadow-lg hover:shadow-xl transition-all">
-          <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50 border-b pb-4">
+          <CardHeader className="bg-gradient-to-r from-primary/10 to-primary/5 border-b pb-4">
             <CardTitle className="flex items-center gap-2 text-xl">
-              <div className="w-10 h-10 rounded-lg bg-green-600 flex items-center justify-center">
-                <Users className="w-5 h-5 text-white" />
+              <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center">
+                <Users className="w-5 h-5 text-primary-foreground" />
               </div>
               Teacher Profile
             </CardTitle>
           </CardHeader>
           <CardContent className="pt-6">
             <div className="flex items-start gap-4">
-              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-green-600 to-emerald-700 flex items-center justify-center text-white text-2xl font-bold shadow-lg ring-4 ring-green-100">
+              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center text-primary-foreground text-2xl font-bold shadow-lg ring-4 ring-primary/20">
                 {mockTeacher.name.charAt(0)}
               </div>
               <div className="flex-1">
@@ -214,7 +214,7 @@ function TeacherPortal() {
                   {mockTeacher.subjects.map((subject, i) => (
                     <span
                       key={i}
-                      className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-sm"
+                      className="px-2 py-1 bg-primary/10 text-primary rounded text-sm"
                     >
                       {subject}
                     </span>
@@ -279,17 +279,17 @@ function TeacherPortal() {
 
       <div className="grid lg:grid-cols-3 gap-6">
         <Card className="lg:col-span-2 border-2 shadow-md hover:shadow-xl transition-all">
-          <CardHeader className="bg-gradient-to-r from-blue-50 to-cyan-50 border-b">
+          <CardHeader className="bg-gradient-to-r from-primary/10 to-primary/5 border-b">
             <div className="flex items-center justify-between">
               <CardTitle className="flex items-center gap-2 text-lg">
-                <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
-                  <Calendar className="w-4 h-4 text-white" />
+                <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+                  <Calendar className="w-4 h-4 text-primary-foreground" />
                 </div>
                 Today&apos;s Timetable
               </CardTitle>
               <Link
                 to="/app/schedule"
-                className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
+                className="text-sm text-primary hover:text-primary/80 font-medium flex items-center gap-1"
               >
                 Full Schedule <ExternalLink className="w-3 h-3" />
               </Link>
@@ -300,11 +300,10 @@ function TeacherPortal() {
               {mockTimetable.map((period, i) => (
                 <div
                   key={i}
-                  className={`flex items-center gap-3 p-3 rounded-lg ${
-                    period.period === "Break" || period.period === "Lunch"
-                      ? "bg-gray-100"
-                      : "bg-green-50"
-                  }`}
+                  className={`flex items-center gap-3 p-3 rounded-lg ${period.period === "Break" || period.period === "Lunch"
+                    ? "bg-gray-100"
+                    : "bg-green-50"
+                    }`}
                 >
                   <span className="text-sm font-medium text-gray-600 w-20">
                     {period.time}
@@ -349,26 +348,25 @@ function TeacherPortal() {
                 <button
                   key={cls.id}
                   onClick={() => setSelectedClass(cls.name)}
-                  className={`w-full p-3 rounded-lg text-left transition-colors ${
-                    selectedClass === cls.name
-                      ? "bg-green-100 border-2 border-green-500"
-                      : "bg-gray-50 hover:bg-gray-100"
-                  }`}
+                  className={`w-full p-3 rounded-lg text-left transition-colors flex flex-col ${selectedClass === cls.name
+                    ? "bg-green-100 border-2 border-green-500"
+                    : "bg-gray-50 hover:bg-gray-100"
+                    }`}
                 >
-                  <div className="flex justify-between items-center">
+                  <span className="flex justify-between items-center w-full">
                     <span className="font-medium">{cls.name}</span>
                     <span className="text-sm text-gray-500">
                       {cls.strength} students
                     </span>
-                  </div>
-                  <div className="flex gap-4 mt-1 text-sm">
+                  </span>
+                  <span className="flex gap-4 mt-1 text-sm w-full">
                     <span className="text-gray-500">
                       Avg: {cls.averageMarks}%
                     </span>
                     <span className="text-gray-500">
                       Att: {cls.averageAttendance}%
                     </span>
-                  </div>
+                  </span>
                 </button>
               ))}
             </div>
@@ -414,18 +412,17 @@ function TeacherPortal() {
                   </div>
                   <div className="flex items-center gap-2">
                     <span
-                      className={`text-sm px-2 py-1 rounded ${
-                        student.attendance >= 90
-                          ? "bg-green-100 text-green-700"
-                          : student.attendance >= 80
-                            ? "bg-yellow-100 text-yellow-700"
-                            : "bg-red-100 text-red-700"
-                      }`}
+                      className={`text-sm px-2 py-1 rounded ${student.attendance >= 90
+                        ? "bg-green-100 text-green-700"
+                        : student.attendance >= 80
+                          ? "bg-yellow-100 text-yellow-700"
+                          : "bg-red-100 text-red-700"
+                        }`}
                     >
                       {student.attendance}%
                     </span>
                     <Link to="/app/notifications">
-                      <Button variant="ghost" size="sm" className="hover:bg-blue-100">
+                      <Button variant="ghost" size="sm" className="hover:bg-primary/10">
                         <MessageSquare className="w-4 h-4" />
                       </Button>
                     </Link>

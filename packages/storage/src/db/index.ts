@@ -12,10 +12,10 @@ import * as schema from "./schema/school";
 const connectionString = process.env.DATABASE_URL || "";
 
 const client = postgres(connectionString, {
-  max: 20,                    // Max connections (increased from 10)
-  idle_timeout: 20,           // 20 seconds
-  connect_timeout: 10,        // 10 seconds
-  ssl: "require",            // Neon requires SSL
+  max: 20,
+  idle_timeout: 20,
+  connect_timeout: 10,
+  ssl: connectionString.includes("sslmode=require") ? "require" : false,
 });
 
 export const db = drizzle(client, { schema });

@@ -116,7 +116,7 @@ export function createStripePlugin(config: StripeConfig) {
  */
 export function createStripeClient(secretKey: string): Stripe {
   return new Stripe(secretKey, {
-    apiVersion: "2025-08-27.basil",
+    apiVersion: "2023-10-16",
     typescript: true,
   });
 }

@@ -1,8 +1,7 @@
 /**
- * Mock Data API for Development
+ * API Client
  *
- * This file provides mock data for all modules until the database is connected.
- * Replace these with actual database queries when connected.
+ * This file provides the API client for connecting to the backend.
  */
 
 import { v4 as uuid } from "uuid";
@@ -79,467 +78,373 @@ export interface AttendanceRecord {
   date: string;
 }
 
-// Mock Data Stores
-let students: Student[] = [
-  {
-    id: uuid(),
-    admissionNumber: "STU001",
-    firstName: "Aryan",
-    lastName: "Sharma",
-    email: "aryan@email.com",
-    phone: "+91 98765 43210",
-    classId: "1",
-    className: "Class 10-A",
-    rollNumber: 15,
-    fatherName: "Rajesh Sharma",
-    fatherPhone: "+91 98765 43211",
-    attendance: 95,
-    status: "active",
-    createdAt: "2025-01-01",
-  },
-  {
-    id: uuid(),
-    admissionNumber: "STU002",
-    firstName: "Priya",
-    lastName: "Patel",
-    email: "priya@email.com",
-    phone: "+91 98765 43212",
-    classId: "2",
-    className: "Class 9-B",
-    rollNumber: 22,
-    fatherName: "Suresh Patel",
-    fatherPhone: "+91 98765 43213",
-    attendance: 92,
-    status: "active",
-    createdAt: "2025-01-02",
-  },
-  {
-    id: uuid(),
-    admissionNumber: "STU003",
-    firstName: "Rahul",
-    lastName: "Singh",
-    email: "rahul@email.com",
-    phone: "+91 98765 43214",
-    classId: "3",
-    className: "Class 11-A",
-    rollNumber: 8,
-    fatherName: "Amit Singh",
-    fatherPhone: "+91 98765 43215",
-    attendance: 88,
-    status: "active",
-    createdAt: "2025-01-03",
-  },
-  {
-    id: uuid(),
-    admissionNumber: "STU004",
-    firstName: "Ananya",
-    lastName: "Gupta",
-    email: "ananya@email.com",
-    phone: "+91 98765 43216",
-    classId: "4",
-    className: "Class 8-A",
-    rollNumber: 31,
-    fatherName: "Ravi Gupta",
-    fatherPhone: "+91 98765 43217",
-    attendance: 97,
-    status: "active",
-    createdAt: "2025-01-04",
-  },
-  {
-    id: uuid(),
-    admissionNumber: "STU005",
-    firstName: "Vikram",
-    lastName: "Kumar",
-    email: "vikram@email.com",
-    phone: "+91 98765 43218",
-    classId: "5",
-    className: "Class 12-B",
-    rollNumber: 45,
-    fatherName: "Sanjay Kumar",
-    fatherPhone: "+91 98765 43219",
-    attendance: 91,
-    status: "active",
-    createdAt: "2025-01-05",
-  },
-];
+// Helper to handle API requests
+const request = async (path: string, options: RequestInit = {}) => {
+  const response = await fetch(`/api${path}`, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
 
-let teachers: Teacher[] = [
-  {
-    id: uuid(),
-    employeeId: "TCH001",
-    firstName: "Dr. Rajesh",
-    lastName: "Kumar",
-    email: "rajesh@school.edu",
-    phone: "+91 98765 43220",
-    qualification: "M.Sc, B.Ed",
-    subject: "Mathematics",
-    salary: 65000,
-    attendance: 98,
-    status: "active",
-    createdAt: "2024-01-01",
-  },
-  {
-    id: uuid(),
-    employeeId: "TCH002",
-    firstName: "Mrs. Priya",
-    lastName: "Sharma",
-    email: "priya@school.edu",
-    phone: "+91 98765 43221",
-    qualification: "M.Sc, B.Ed",
-    subject: "Science",
-    salary: 55000,
-    attendance: 95,
-    status: "active",
-    createdAt: "2024-01-02",
-  },
-  {
-    id: uuid(),
-    employeeId: "TCH003",
-    firstName: "Mr. Amit",
-    lastName: "Singh",
-    email: "amit@school.edu",
-    phone: "+91 98765 43222",
-    qualification: "M.P.Ed",
-    subject: "Physical Education",
-    salary: 45000,
-    attendance: 92,
-    status: "active",
-    createdAt: "2024-01-03",
-  },
-  {
-    id: uuid(),
-    employeeId: "TCH004",
-    firstName: "Ms. Ananya",
-    lastName: "Gupta",
-    email: "ananya@school.edu",
-    phone: "+91 98765 43223",
-    qualification: "M.A, B.Ed",
-    subject: "English",
-    salary: 40000,
-    attendance: 97,
-    status: "active",
-    createdAt: "2024-01-04",
-  },
-];
+  if (!response.ok) {
+    throw new Error(`API Error: ${response.statusText}`);
+  }
 
-let classes: Class[] = [
-  {
-    id: "1",
-    name: "Class 10",
-    section: "A",
-    capacity: 45,
-    students: 42,
-    classTeacher: "Dr. Rajesh Kumar",
-  },
-  {
-    id: "2",
-    name: "Class 10",
-    section: "B",
-    capacity: 45,
-    students: 40,
-    classTeacher: "Mrs. Priya Sharma",
-  },
-  {
-    id: "3",
-    name: "Class 11",
-    section: "A",
-    capacity: 40,
-    students: 38,
-    classTeacher: "Mr. Amit Singh",
-  },
-  {
-    id: "4",
-    name: "Class 8",
-    section: "A",
-    capacity: 45,
-    students: 40,
-    classTeacher: "Ms. Ananya Gupta",
-  },
-  {
-    id: "5",
-    name: "Class 12",
-    section: "B",
-    capacity: 40,
-    students: 35,
-    classTeacher: "Dr. Rajesh Kumar",
-  },
-];
-
-let feePayments: FeePayment[] = [
-  {
-    id: uuid(),
-    studentId: "1",
-    studentName: "Aryan Sharma",
-    className: "Class 10-A",
-    amount: 45000,
-    paymentMethod: "Online",
-    status: "paid",
-    date: "2026-01-20",
-  },
-  {
-    id: uuid(),
-    studentId: "2",
-    studentName: "Priya Patel",
-    className: "Class 9-B",
-    amount: 38000,
-    paymentMethod: "Cash",
-    status: "paid",
-    date: "2026-01-20",
-  },
-  {
-    id: uuid(),
-    studentId: "3",
-    studentName: "Rahul Singh",
-    className: "Class 11-A",
-    amount: 52000,
-    paymentMethod: "Online",
-    status: "paid",
-    date: "2026-01-19",
-  },
-  {
-    id: uuid(),
-    studentId: "4",
-    studentName: "Ananya Gupta",
-    className: "Class 8-A",
-    amount: 35000,
-    paymentMethod: "Pending",
-    status: "pending",
-    date: "2026-01-19",
-  },
-  {
-    id: uuid(),
-    studentId: "5",
-    studentName: "Vikram Kumar",
-    className: "Class 12-B",
-    amount: 55000,
-    paymentMethod: "Online",
-    status: "overdue",
-    date: "2026-01-18",
-  },
-];
-
-let exams: Exam[] = [
-  {
-    id: uuid(),
-    name: "Mathematics UT-3",
-    className: "Class 10",
-    subject: "Mathematics",
-    date: "2026-01-25",
-    status: "scheduled",
-  },
-  {
-    id: uuid(),
-    name: "Science UT-3",
-    className: "Class 10",
-    subject: "Science",
-    date: "2026-01-27",
-    status: "scheduled",
-  },
-  {
-    id: uuid(),
-    name: "English Half-Yearly",
-    className: "Class 12",
-    subject: "English",
-    date: "2026-01-30",
-    status: "pending_results",
-  },
-];
-
-let attendanceRecords: AttendanceRecord[] = [
-  {
-    id: uuid(),
-    className: "Class 10-A",
-    total: 42,
-    present: 40,
-    absent: 2,
-    percentage: 95.2,
-    date: "2026-01-21",
-  },
-  {
-    id: uuid(),
-    className: "Class 10-B",
-    total: 40,
-    present: 38,
-    absent: 2,
-    percentage: 95.0,
-    date: "2026-01-21",
-  },
-  {
-    id: uuid(),
-    className: "Class 9-A",
-    total: 38,
-    present: 37,
-    absent: 1,
-    percentage: 97.4,
-    date: "2026-01-21",
-  },
-  {
-    id: uuid(),
-    className: "Class 9-B",
-    total: 36,
-    present: 34,
-    absent: 2,
-    percentage: 94.4,
-    date: "2026-01-21",
-  },
-  {
-    id: uuid(),
-    className: "Class 8-A",
-    total: 40,
-    present: 39,
-    absent: 1,
-    percentage: 97.5,
-    date: "2026-01-21",
-  },
-];
+  return response.json();
+};
 
 // API Functions
 export const api = {
   // Students
   students: {
-    list: async () => students,
-    get: async (id: string) => students.find((s) => s.id === id),
+    list: async () => {
+      const data = await request("/students?limit=100");
+      return data.students;
+    },
+    get: async (id: string) => {
+      const data = await request(`/students/${id}`);
+      return data;
+    },
     create: async (data: Omit<Student, "id" | "createdAt">) => {
-      const newStudent = {
-        ...data,
-        id: uuid(),
-        createdAt: new Date().toISOString(),
-      };
-      students.push(newStudent);
-      return newStudent;
+      return request("/students", {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
     },
     update: async (id: string, data: Partial<Student>) => {
-      const index = students.findIndex((s) => s.id === id);
-      if (index !== -1) {
-        students[index] = { ...students[index], ...data };
-        return students[index];
-      }
-      return null;
+      return request(`/students/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(data),
+      });
     },
     delete: async (id: string) => {
-      const index = students.findIndex((s) => s.id === id);
-      if (index !== -1) {
-        students.splice(index, 1);
-        return true;
-      }
-      return false;
+      return request(`/students/${id}`, {
+        method: "DELETE",
+      });
     },
   },
 
   // Teachers
   teachers: {
-    list: async () => teachers,
-    get: async (id: string) => teachers.find((t) => t.id === id),
+    list: async () => {
+      const data = await request("/teachers");
+      return data.teachers;
+    },
+    get: async (id: string) => {
+      return request(`/teachers/${id}`);
+    },
     create: async (data: Omit<Teacher, "id" | "createdAt">) => {
-      const newTeacher = {
-        ...data,
-        id: uuid(),
-        createdAt: new Date().toISOString(),
-      };
-      teachers.push(newTeacher);
-      return newTeacher;
+      return request("/teachers", {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
     },
     update: async (id: string, data: Partial<Teacher>) => {
-      const index = teachers.findIndex((t) => t.id === id);
-      if (index !== -1) {
-        teachers[index] = { ...teachers[index], ...data };
-        return teachers[index];
-      }
-      return null;
+      return request(`/teachers/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(data),
+      });
     },
     delete: async (id: string) => {
-      const index = teachers.findIndex((t) => t.id === id);
-      if (index !== -1) {
-        teachers.splice(index, 1);
-        return true;
-      }
-      return false;
+      return request(`/teachers/${id}`, {
+        method: "DELETE",
+      });
     },
   },
 
   // Classes
   classes: {
-    list: async () => classes,
-    get: async (id: string) => classes.find((c) => c.id === id),
+    list: async () => {
+      const data = await request("/classes");
+      return data.classes;
+    },
+    get: async (id: string) => {
+      const data = await request("/classes");
+      return data.classes.find((c: Class) => c.id === id);
+    },
     create: async (data: Omit<Class, "id" | "students">) => {
-      const newClass: Class = {
-        ...data,
-        id: uuid(),
-        students: 0,
-      };
-      classes.push(newClass);
-      return newClass;
+      return request("/classes", {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
     },
     update: async (id: string, data: Partial<Class>) => {
-      const index = classes.findIndex((c) => c.id === id);
-      if (index !== -1) {
-        classes[index] = { ...classes[index], ...data };
-        return classes[index];
-      }
-      return null;
+      return request(`/classes/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(data),
+      });
     },
     delete: async (id: string) => {
-      const index = classes.findIndex((c) => c.id === id);
-      if (index !== -1) {
-        classes.splice(index, 1);
-        return true;
-      }
-      return false;
+      return request(`/classes/${id}`, {
+        method: "DELETE",
+      });
     },
   },
 
   // Fees
   fees: {
-    list: async () => feePayments,
-    collect: async (data: Omit<FeePayment, "id">) => {
-      const newPayment = { ...data, id: uuid() };
-      feePayments.push(newPayment);
-      return newPayment;
+    list: async () => {
+      const data = await request("/fees");
+      return data.fees;
     },
-    getStats: async () => ({
-      totalCollected: feePayments
-        .filter((f) => f.status === "paid")
-        .reduce((sum, f) => sum + f.amount, 0),
-      pending: feePayments
-        .filter((f) => f.status === "pending")
-        .reduce((sum, f) => sum + f.amount, 0),
-      overdue: feePayments
-        .filter((f) => f.status === "overdue")
-        .reduce((sum, f) => sum + f.amount, 0),
-    }),
+    collect: async (data: Omit<FeePayment, "id">) => {
+      return request("/fees", {
+        method: "POST",
+        body: JSON.stringify(data)
+      });
+    },
+    getStats: async () => {
+      const data = await request("/fees");
+      const fees: FeePayment[] = data.fees || [];
+
+      return {
+        totalCollected: fees
+          .filter((f) => f.status === "paid")
+          .reduce((sum, f) => sum + Number(f.amount), 0),
+        pending: fees
+          .filter((f) => f.status === "pending")
+          .reduce((sum, f) => sum + Number(f.amount), 0),
+        overdue: fees
+          .filter((f) => f.status === "overdue")
+          .reduce((sum, f) => sum + Number(f.amount), 0),
+      };
+    },
+  },
+
+  // Expenses
+  expenses: {
+    list: async () => {
+      const data = await request("/expenses");
+      return data.expenses;
+    },
+    create: async (data: any) => {
+      return request("/expenses", {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+    },
+    getStats: async () => {
+      const data = await request("/expenses/stats");
+      return data;
+    },
+  },
+
+  // Fee Structures
+  feeStructures: {
+    list: async () => {
+      const data = await request("/fee-structures");
+      return data.structures;
+    },
+    create: async (data: any) => {
+      return request("/fee-structures", {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+    },
+  },
+
+  // Fee Categories
+  feeCategories: {
+    list: async () => {
+      const data = await request("/fee-categories");
+      return data.categories;
+    },
+    create: async (data: any) => {
+      return request("/fee-categories", {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+    },
   },
 
   // Exams
   exams: {
-    list: async () => exams,
+    list: async () => {
+      try {
+        const data = await request("/exams");
+        return data.exams || [];
+      } catch (e) {
+        console.warn("Exams endpoint not ready", e);
+        return [];
+      }
+    },
     create: async (data: Omit<Exam, "id">) => {
-      const newExam = { ...data, id: uuid() };
-      exams.push(newExam);
-      return newExam;
+      return request("/exams", {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+    },
+  },
+
+  // Grades
+  grades: {
+    list: async () => {
+      try {
+        const data = await request("/grades");
+        return data.grades || [];
+      } catch (e) {
+        console.warn("Grades endpoint not ready", e);
+        return [];
+      }
+    },
+    create: async (data: any) => {
+      return request("/grades", {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+    },
+  },
+
+  // Subjects
+  subjects: {
+    list: async () => {
+      try {
+        const data = await request("/subjects");
+        return data.subjects || [];
+      } catch (e) {
+        console.warn("Subjects endpoint not ready", e);
+        return [];
+      }
     },
   },
 
   // Attendance
   attendance: {
-    list: async () => attendanceRecords,
-    getByDate: async (date: string) =>
-      attendanceRecords.filter((a) => a.date === date),
+    list: async () => {
+      const data = await request("/attendance");
+      return data.attendance;
+    },
+    getByDate: async (date: string) => {
+      const data = await request(`/attendance?date=${date}`);
+      return data.attendance;
+    },
   },
 
   // Dashboard Stats
   dashboard: {
-    getStats: async () => ({
-      totalStudents: students.length,
-      totalTeachers: teachers.length,
-      totalClasses: classes.length,
-      todayAttendance: attendanceRecords[0]?.percentage || 0,
-      monthlyFeeCollection: feePayments
-        .filter((f) => f.status === "paid")
-        .reduce((sum, f) => sum + f.amount, 0),
-      pendingFeePayments: feePayments.filter(
-        (f) => f.status === "pending" || f.status === "overdue",
-      ).length,
-    }),
+    getStats: async () => {
+      try {
+        // Use request helper for cleaner error handling
+        const [studentsData, teachersData, classesData, feesData] = await Promise.all([
+          request("/students?limit=1"),
+          request("/teachers"),
+          request("/classes"),
+          request("/fees"),
+        ]);
+
+        const fees = feesData.fees || [];
+
+        return {
+          totalStudents: studentsData.pagination?.total || 0,
+          totalTeachers: teachersData.teachers?.length || 0,
+          totalClasses: classesData.classes?.length || 0,
+          todayAttendance: 94.2, // Placeholder
+          monthlyFeeCollection: fees
+            .filter((f: any) => f.status === "completed" || f.status === "paid")
+            .reduce((sum: number, f: any) => sum + Number(f.amount), 0),
+          pendingFeePayments: fees.filter(
+            (f: any) => f.status === "pending" || f.status === "overdue",
+          ).length,
+        };
+      } catch (error) {
+        console.error("Dashboard stats error:", error);
+        return {
+          totalStudents: 0,
+          totalTeachers: 0,
+          totalClasses: 0,
+          todayAttendance: 0,
+          monthlyFeeCollection: 0,
+          pendingFeePayments: 0,
+        };
+      }
+    },
+  },
+
+  // Transport
+  transport: {
+    routes: {
+      list: async () => {
+        try {
+          const data = await request("/transport/routes");
+          return data.routes || [];
+        } catch (e) {
+          console.warn("Transport routes endpoint not ready", e);
+          return [];
+        }
+      },
+      create: async (data: any) => {
+        return request("/transport/routes", {
+          method: "POST",
+          body: JSON.stringify(data),
+        });
+      },
+    },
+    vehicles: {
+      list: async () => {
+        try {
+          const data = await request("/transport/vehicles");
+          return data.vehicles || [];
+        } catch (e) {
+          console.warn("Transport vehicles endpoint not ready", e);
+          return [];
+        }
+      },
+      create: async (data: any) => {
+        return request("/transport/vehicles", {
+          method: "POST",
+          body: JSON.stringify(data),
+        });
+      },
+    },
+  },
+
+  // Library
+  library: {
+    books: {
+      list: async (search?: string, category?: string) => {
+        try {
+          const params = new URLSearchParams();
+          if (search) params.append("search", search);
+          if (category) params.append("category", category);
+          const data = await request(`/library/books?${params.toString()}`);
+          return data.books || [];
+        } catch (e) {
+          console.warn("Library books endpoint not ready", e);
+          return [];
+        }
+      },
+      create: async (data: any) => {
+        return request("/library/books", {
+          method: "POST",
+          body: JSON.stringify(data),
+        });
+      },
+    },
+    transactions: {
+      list: async () => {
+        try {
+          const data = await request("/library/transactions");
+          return data.transactions || [];
+        } catch (e) {
+          console.warn("Library transactions endpoint not ready", e);
+          return [];
+        }
+      },
+    },
+    issue: async (data: { bookId: string; studentId: string; dueDate: string }) => {
+      return request("/library/issue", {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+    },
+    return: async (transactionId: string) => {
+      return request("/library/return", {
+        method: "POST",
+        body: JSON.stringify({ transactionId }),
+      });
+    },
   },
 };
 

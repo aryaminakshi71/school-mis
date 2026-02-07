@@ -9,7 +9,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { organization } from "better-auth/plugins";
 import type { Database } from "@school/storage";
 import { schema } from "@school/storage";
-import { createStripePlugin, createStripeClient } from "@school/auth/config/stripe";
+import { createStripePlugin, createStripeClient } from "@school/auth";
 
 export function createAuth(db: Database, env: Record<string, any>) {
   // Build plugins array

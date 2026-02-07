@@ -42,13 +42,16 @@ export class APIError extends Error {
   }
 
   toJSON() {
-    return {
+    const result: Record<string, unknown> = {
       name: this.name,
       code: this.code,
       message: this.message,
       statusCode: this.statusCode,
-      ...(this.details && { details: this.details }),
     };
+    if (this.details !== undefined) {
+      result.details = this.details;
+    }
+    return result;
   }
 }
 

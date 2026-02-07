@@ -2,7 +2,7 @@
  * Dashboard - Complete Overview with Data from API
  */
 
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import {
   Users,
@@ -258,7 +258,7 @@ export default function DashboardHome() {
             <Download className="mr-2 h-4 w-4" />
             Export Report
           </Button>
-          <Button className="bg-blue-600 hover:bg-blue-700">
+          <Button className="bg-primary hover:bg-primary-dark">
             <Plus className="mr-2 h-4 w-4" />
             Quick Add
           </Button>
@@ -272,8 +272,8 @@ export default function DashboardHome() {
             <CardTitle className="text-sm font-medium text-gray-600">
               Total Students
             </CardTitle>
-            <div className="p-2 rounded-lg bg-blue-100">
-              <Users className="h-4 w-4 text-blue-600" />
+            <div className="p-2 rounded-lg bg-primary-light/20">
+              <Users className="h-4 w-4 text-primary" />
             </div>
           </CardHeader>
           <CardContent>
@@ -351,65 +351,63 @@ export default function DashboardHome() {
         </h2>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {allModules.map((module) => (
-            <a
+            <Link
               key={module.name}
-              href={module.href}
-              className="group relative overflow-hidden rounded-xl border border-gray-200 bg-white p-4 hover:shadow-lg hover:border-blue-200 transition-all"
+              to={module.href}
+              className="group relative overflow-hidden rounded-xl border border-gray-200 bg-white p-4 hover:shadow-lg hover:border-primary-light transition-all"
             >
               <div className="flex items-start justify-between mb-3">
                 <div
-                  className={`p-3 rounded-lg ${
-                    module.color === "blue"
-                      ? "bg-blue-100"
-                      : module.color === "purple"
-                        ? "bg-purple-100"
-                        : module.color === "green"
-                          ? "bg-green-100"
-                          : module.color === "orange"
-                            ? "bg-orange-100"
-                            : module.color === "red"
-                              ? "bg-red-100"
-                              : module.color === "yellow"
-                                ? "bg-yellow-100"
-                                : module.color === "indigo"
-                                  ? "bg-indigo-100"
-                                  : module.color === "pink"
-                                    ? "bg-pink-100"
-                                    : module.color === "cyan"
-                                      ? "bg-cyan-100"
-                                      : module.color === "teal"
-                                        ? "bg-teal-100"
-                                        : module.color === "amber"
-                                          ? "bg-amber-100"
-                                          : "bg-rose-100"
-                  }`}
+                  className={`p-3 rounded-lg ${module.color === "blue"
+                    ? "bg-primary-light/20"
+                    : module.color === "purple"
+                      ? "bg-purple-100"
+                      : module.color === "green"
+                        ? "bg-green-100"
+                        : module.color === "orange"
+                          ? "bg-orange-100"
+                          : module.color === "red"
+                            ? "bg-red-100"
+                            : module.color === "yellow"
+                              ? "bg-yellow-100"
+                              : module.color === "indigo"
+                                ? "bg-indigo-100"
+                                : module.color === "pink"
+                                  ? "bg-pink-100"
+                                  : module.color === "cyan"
+                                    ? "bg-cyan-100"
+                                    : module.color === "teal"
+                                      ? "bg-teal-100"
+                                      : module.color === "amber"
+                                        ? "bg-amber-100"
+                                        : "bg-rose-100"
+                    }`}
                 >
                   <module.icon
-                    className={`h-5 w-5 ${
-                      module.color === "blue"
-                        ? "text-blue-600"
-                        : module.color === "purple"
-                          ? "text-purple-600"
-                          : module.color === "green"
-                            ? "text-green-600"
-                            : module.color === "orange"
-                              ? "text-orange-600"
-                              : module.color === "red"
-                                ? "text-red-600"
-                                : module.color === "yellow"
-                                  ? "text-yellow-600"
-                                  : module.color === "indigo"
-                                    ? "text-indigo-600"
-                                    : module.color === "pink"
-                                      ? "text-pink-600"
-                                      : module.color === "cyan"
-                                        ? "text-cyan-600"
-                                        : module.color === "teal"
-                                          ? "text-teal-600"
-                                          : module.color === "amber"
-                                            ? "text-amber-600"
-                                            : "text-rose-600"
-                    }`}
+                    className={`h-5 w-5 ${module.color === "blue"
+                      ? "text-primary"
+                      : module.color === "purple"
+                        ? "text-purple-600"
+                        : module.color === "green"
+                          ? "text-green-600"
+                          : module.color === "orange"
+                            ? "text-orange-600"
+                            : module.color === "red"
+                              ? "text-red-600"
+                              : module.color === "yellow"
+                                ? "text-yellow-600"
+                                : module.color === "indigo"
+                                  ? "text-indigo-600"
+                                  : module.color === "pink"
+                                    ? "text-pink-600"
+                                    : module.color === "cyan"
+                                      ? "text-cyan-600"
+                                      : module.color === "teal"
+                                        ? "text-teal-600"
+                                        : module.color === "amber"
+                                          ? "text-amber-600"
+                                          : "text-rose-600"
+                      }`}
                   />
                 </div>
                 <ChevronRight className="h-5 w-5 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -450,7 +448,7 @@ export default function DashboardHome() {
                   </Badge>
                 )}
               </div>
-            </a>
+            </Link>
           ))}
         </div>
       </div>
@@ -499,11 +497,11 @@ export default function DashboardHome() {
             <div className="space-y-4">
               {upcomingEvents.map((event, index) => (
                 <div key={index} className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-lg bg-blue-50 flex flex-col items-center justify-center">
+                  <div className="w-12 h-12 rounded-lg bg-primary-light/20 flex flex-col items-center justify-center">
                     <span className="text-xs text-gray-500">
                       {event.date.split(" ")[0]}
                     </span>
-                    <span className="text-sm font-bold text-blue-600">
+                    <span className="text-sm font-bold text-primary">
                       {event.date.split(" ")[1].replace(",", "")}
                     </span>
                   </div>
@@ -513,15 +511,14 @@ export default function DashboardHome() {
                     </p>
                     <Badge
                       variant="outline"
-                      className={`mt-1 ${
-                        event.type === "exam"
-                          ? "text-red-600 border-red-200"
-                          : event.type === "meeting"
-                            ? "text-blue-600 border-blue-200"
-                            : event.type === "event"
-                              ? "text-green-600 border-green-200"
-                              : "text-yellow-600 border-yellow-200"
-                      }`}
+                      className={`mt-1 ${event.type === "exam"
+                        ? "text-red-600 border-red-200"
+                        : event.type === "meeting"
+                          ? "text-primary border-primary/20"
+                          : event.type === "event"
+                            ? "text-green-600 border-green-200"
+                            : "text-yellow-600 border-yellow-200"
+                        }`}
                     >
                       {event.type.charAt(0).toUpperCase() + event.type.slice(1)}
                     </Badge>
@@ -554,10 +551,10 @@ export default function DashboardHome() {
               </div>
             </CardContent>
           </Card>
-          <Card className="cursor-pointer hover:shadow-md transition-all border-gray-200 hover:border-blue-200">
+          <Card className="cursor-pointer hover:shadow-md transition-all border-gray-200 hover:border-primary/20">
             <CardContent className="flex items-center gap-4 p-4">
-              <div className="p-3 rounded-lg bg-blue-100">
-                <Calendar className="h-5 w-5 text-blue-600" />
+              <div className="p-3 rounded-lg bg-primary-light/20">
+                <Calendar className="h-5 w-5 text-primary" />
               </div>
               <div>
                 <p className="font-medium text-gray-900">Mark Attendance</p>

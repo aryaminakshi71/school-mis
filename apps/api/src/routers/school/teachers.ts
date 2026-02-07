@@ -4,19 +4,37 @@
  * oRPC router for teacher management.
  */
 
-import { z } from 'zod';
-import { pub, orgAuthed } from '../../procedures/index.js';
+import { z } from "zod";
+import { pub, orgAuthed } from "../../procedures/index.js";
+import { getDb } from "../../lib/db.js";
+import { teachers } from "@school/storage";
+import { desc, eq } from "drizzle-orm";
 
 export const teachersRouter = {
   list: pub
     .route({
-      method: 'GET',
-      path: '/teachers',
-      summary: 'Get all teachers',
-      tags: ['Teachers'],
+      method: "GET",
+      path: "/teachers",
+      summary: "Get all teachers",
+      tags: ["Teachers"],
     })
-    .output(z.array(z.any()))
-    .handler(async () => []),
+    .output(z.object({ teachers: z.array(z.any()) }))
+    .handler(async () => {
+      const db = getDb();
+      const allTeachers = await db
+        .select()
+        .from(teachers)
+        .orderBy(desc(teachers.createdAt));
+
+      return {
+        teachers: allTeachers.map((t) => ({
+          ...t,
+          status: t.status ? "active" : "inactive",
+          salary: 45000 + Math.floor(Math.random() * 20000), // Mock salary
+          attendance: 85 + Math.floor(Math.random() * 10), // Mock attendance
+        })),
+      };
+    }),
 
   get: pub
     .route({

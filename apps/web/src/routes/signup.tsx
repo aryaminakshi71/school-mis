@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/signup")({
   component: SignupPage,
@@ -40,18 +40,18 @@ function SignupPage() {
               placeholder="••••••••"
             />
           </div>
-          <a
-            href="/app"
+          <Link
+            to="/app"
             className="block w-full bg-blue-600 text-white text-center py-3 rounded-lg hover:bg-blue-700"
           >
             Create Account
-          </a>
+          </Link>
         </form>
         <p className="text-center mt-6 text-gray-600">
           Already have an account?{" "}
-          <a href="/login" className="text-blue-600">
+          <Link to="/login" className="text-blue-600">
             Login
-          </a>
+          </Link>
         </p>
       </div>
     </div>
