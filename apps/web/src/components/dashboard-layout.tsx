@@ -1,43 +1,35 @@
-import * as React from "react";
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import {
-  LayoutDashboard,
-  Users,
-  GraduationCap,
+  Award,
+  BarChart3,
+  Bell,
   BookOpen,
+  Building,
   Calendar,
+  Car,
+  CheckCircle,
+  ChevronRight,
+  ClipboardList,
   DollarSign,
-  Bus,
-  FileText,
+  GraduationCap,
+  Home,
+  LayoutDashboard,
+  LogOut,
+  Menu,
   MessageSquare,
   Package,
-  BarChart3,
-  Settings,
-  Home,
-  ChevronRight,
-  LogOut,
-  Search,
-  Menu,
-  X,
-  Bell,
   Plus,
+  Search,
+  Settings,
   User,
-  Moon,
-  Sun,
-  Building,
-  ClipboardList,
-  Calculator,
-  Award,
-  Gift,
-  Megaphone,
-  Car,
-  MapPinHouse,
-  CheckCircle,
+  Users,
+  X,
 } from "lucide-react";
+import * as React from "react";
 import { useAuth } from "../../lib/auth-context";
 import { cn } from "../../lib/utils";
+import { Avatar, AvatarFallback } from "../ui/avatar";
 import { Button } from "../ui/button";
-import { Card, CardContent } from "../ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -46,7 +38,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { Avatar, AvatarFallback } from "../ui/avatar";
 
 interface NavItem {
   title: string;
@@ -204,33 +195,33 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 flex flex-col w-[16rem] bg-sidebar border-r border-sidebar-border transition-transform duration-300 lg:translate-x-0",
+          "fixed inset-y-0 left-0 z-50 flex w-[16rem] flex-col border-sidebar-border border-r bg-sidebar transition-transform duration-300 lg:translate-x-0",
           sidebarOpen ? "translate-x-0" : "-translate-x-full",
         )}
       >
         {/* Logo */}
-        <div className="flex items-center gap-3 h-16 px-4 border-b border-sidebar-border">
-          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-primary text-primary-foreground font-bold text-lg">
+        <div className="flex h-16 items-center gap-3 border-sidebar-border border-b px-4">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary font-bold text-lg text-primary-foreground">
             SM
           </div>
           <div className="flex flex-col">
             <span className="font-bold text-foreground">School MIS</span>
-            <span className="text-xs text-muted-foreground">
+            <span className="text-muted-foreground text-xs">
               Management System
             </span>
           </div>
           <button
-            className="ml-auto lg:hidden text-muted-foreground hover:text-foreground"
+            className="ml-auto text-muted-foreground hover:text-foreground lg:hidden"
             onClick={() => setSidebarOpen(false)}
           >
-            <X className="w-5 h-5" />
+            <X className="h-5 w-5" />
           </button>
         </div>
 
         {/* Navigation */}
         <nav className="flex-1 overflow-y-auto py-4">
-          <div className="px-3 mb-2">
-            <span className="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+          <div className="mb-2 px-3">
+            <span className="px-3 font-semibold text-muted-foreground text-xs uppercase tracking-wider">
               Main Menu
             </span>
           </div>
@@ -244,19 +235,19 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                   <Link
                     to={item.href}
                     className={cn(
-                      "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200",
+                      "flex items-center gap-3 rounded-lg px-3 py-2.5 font-medium text-sm transition-all duration-200",
                       isActive
                         ? "bg-primary text-primary-foreground"
                         : "text-sidebar-foreground hover:bg-sidebar-hover",
                     )}
                     onClick={() => setSidebarOpen(false)}
                   >
-                    <item.icon className="w-5 h-5 flex-shrink-0" />
+                    <item.icon className="h-5 w-5 flex-shrink-0" />
                     <span className="flex-1">{item.title}</span>
                     {item.badge && (
                       <span
                         className={cn(
-                          "px-2 py-0.5 rounded-full text-xs font-semibold",
+                          "rounded-full px-2 py-0.5 font-semibold text-xs",
                           isActive
                             ? "bg-primary-foreground/20 text-primary-foreground"
                             : getBadgeColorClass(item.badgeColor),
@@ -271,10 +262,10 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             })}
           </ul>
 
-          <div className="my-4 border-t border-sidebar-border" />
+          <div className="my-4 border-sidebar-border border-t" />
 
-          <div className="px-3 mb-2">
-            <span className="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+          <div className="mb-2 px-3">
+            <span className="px-3 font-semibold text-muted-foreground text-xs uppercase tracking-wider">
               Portals & More
             </span>
           </div>
@@ -288,14 +279,14 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                   <Link
                     to={item.href}
                     className={cn(
-                      "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200",
+                      "flex items-center gap-3 rounded-lg px-3 py-2.5 font-medium text-sm transition-all duration-200",
                       isActive
                         ? "bg-primary text-primary-foreground"
                         : "text-sidebar-foreground hover:bg-sidebar-hover",
                     )}
                     onClick={() => setSidebarOpen(false)}
                   >
-                    <item.icon className="w-5 h-5 flex-shrink-0" />
+                    <item.icon className="h-5 w-5 flex-shrink-0" />
                     <span>{item.title}</span>
                   </Link>
                 </li>
@@ -305,24 +296,24 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         </nav>
 
         {/* User Profile */}
-        <div className="p-4 border-t border-sidebar-border">
+        <div className="border-sidebar-border border-t p-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="w-full flex items-center gap-3 p-2 rounded-lg hover:bg-sidebar-hover transition-colors">
+              <button className="flex w-full items-center gap-3 rounded-lg p-2 transition-colors hover:bg-sidebar-hover">
                 <Avatar className="h-10 w-10">
-                  <AvatarFallback className="bg-primary text-primary-foreground font-semibold">
+                  <AvatarFallback className="bg-primary font-semibold text-primary-foreground">
                     {userInitials}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 text-left">
-                  <p className="text-sm font-medium text-foreground truncate">
+                  <p className="truncate font-medium text-foreground text-sm">
                     {user?.name || "User"}
                   </p>
-                  <p className="text-xs text-muted-foreground capitalize">
+                  <p className="text-muted-foreground text-xs capitalize">
                     {user?.role || "Admin"}
                   </p>
                 </div>
-                <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                <ChevronRight className="h-4 w-4 text-muted-foreground" />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
@@ -330,19 +321,19 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
                 <a href="/" className="flex items-center gap-2">
-                  <Home className="w-4 h-4" />
+                  <Home className="h-4 w-4" />
                   Back to Home
                 </a>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <a href="/app/profile" className="flex items-center gap-2">
-                  <User className="w-4 h-4" />
+                  <User className="h-4 w-4" />
                   Profile
                 </a>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <a href="/app/settings" className="flex items-center gap-2">
-                  <Settings className="w-4 h-4" />
+                  <Settings className="h-4 w-4" />
                   Settings
                 </a>
               </DropdownMenuItem>
@@ -354,7 +345,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 }}
                 className="text-destructive focus:text-destructive"
               >
-                <LogOut className="w-4 h-4 mr-2" />
+                <LogOut className="mr-2 h-4 w-4" />
                 Log out
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -365,34 +356,34 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       {/* Main Content */}
       <div className="lg:pl-[16rem]">
         {/* Header */}
-        <header className="sticky top-0 z-30 h-16 bg-background/80 backdrop-blur-lg border-b border-border">
-          <div className="flex items-center justify-between h-full px-4 lg:px-6">
+        <header className="sticky top-0 z-30 h-16 border-border border-b bg-background/80 backdrop-blur-lg">
+          <div className="flex h-full items-center justify-between px-4 lg:px-6">
             <div className="flex items-center gap-4">
               <button
-                className="lg:hidden p-2 rounded-lg hover:bg-accent transition-colors"
+                className="rounded-lg p-2 transition-colors hover:bg-accent lg:hidden"
                 onClick={() => setSidebarOpen(true)}
               >
-                <Menu className="w-5 h-5" />
+                <Menu className="h-5 w-5" />
               </button>
 
               {/* Breadcrumbs */}
-              <nav className="hidden md:flex items-center gap-1 text-sm">
+              <nav className="hidden items-center gap-1 text-sm md:flex">
                 {breadcrumbs.map((crumb, index) => (
                   <React.Fragment key={crumb.href}>
                     {index > 0 && (
-                      <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                      <ChevronRight className="h-4 w-4 text-muted-foreground" />
                     )}
                     {index === breadcrumbs.length - 1 ? (
-                      <span className="font-medium text-foreground flex items-center gap-2">
-                        {crumb.icon && <crumb.icon className="w-4 h-4" />}
+                      <span className="flex items-center gap-2 font-medium text-foreground">
+                        {crumb.icon && <crumb.icon className="h-4 w-4" />}
                         {crumb.title}
                       </span>
                     ) : (
                       <a
                         href={crumb.href}
-                        className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2"
+                        className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground"
                       >
-                        {crumb.icon && <crumb.icon className="w-4 h-4" />}
+                        {crumb.icon && <crumb.icon className="h-4 w-4" />}
                         {crumb.title}
                       </a>
                     )}
@@ -403,26 +394,26 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
             <div className="flex items-center gap-2">
               {/* Search */}
-              <div className="hidden md:flex items-center gap-2 px-3 py-2 rounded-lg bg-muted/50 border border-input hover:bg-muted transition-colors cursor-pointer w-64">
-                <Search className="w-4 h-4 text-muted-foreground" />
-                <span className="text-sm text-muted-foreground">Search...</span>
-                <kbd className="ml-auto text-xs text-muted-foreground bg-background px-1.5 py-0.5 rounded border">
+              <div className="hidden w-64 cursor-pointer items-center gap-2 rounded-lg border border-input bg-muted/50 px-3 py-2 transition-colors hover:bg-muted md:flex">
+                <Search className="h-4 w-4 text-muted-foreground" />
+                <span className="text-muted-foreground text-sm">Search...</span>
+                <kbd className="ml-auto rounded border bg-background px-1.5 py-0.5 text-muted-foreground text-xs">
                   ⌘K
                 </kbd>
               </div>
 
               {/* Quick Add */}
               <Button size="sm" className="hidden sm:flex">
-                <Plus className="w-4 h-4 mr-1" />
+                <Plus className="mr-1 h-4 w-4" />
                 Quick Add
               </Button>
 
               {/* Notifications */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="relative p-2 rounded-lg hover:bg-accent transition-colors">
-                    <Bell className="w-5 h-5" />
-                    <span className="absolute top-1 right-1 w-2 h-2 bg-destructive rounded-full" />
+                  <button className="relative rounded-lg p-2 transition-colors hover:bg-accent">
+                    <Bell className="h-5 w-5" />
+                    <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-destructive" />
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-80">
@@ -436,27 +427,27 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                   <div className="max-h-96 overflow-y-auto">
                     <DropdownMenuItem className="flex flex-col items-start gap-1 p-3">
                       <div className="flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4 text-success" />
+                        <CheckCircle className="h-4 w-4 text-success" />
                         <span className="font-medium">
                           Fee payment received
                         </span>
                       </div>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-muted-foreground text-sm">
                         ₹45,500 from 23 students
                       </p>
-                      <span className="text-xs text-muted-foreground">
+                      <span className="text-muted-foreground text-xs">
                         2 hours ago
                       </span>
                     </DropdownMenuItem>
                     <DropdownMenuItem className="flex flex-col items-start gap-1 p-3">
                       <div className="flex items-center gap-2">
-                        <Users className="w-4 h-4 text-info" />
+                        <Users className="h-4 w-4 text-info" />
                         <span className="font-medium">New admission</span>
                       </div>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-muted-foreground text-sm">
                         Aryan Sharma - Class 9-A
                       </p>
-                      <span className="text-xs text-muted-foreground">
+                      <span className="text-muted-foreground text-xs">
                         10 min ago
                       </span>
                     </DropdownMenuItem>
@@ -469,7 +460,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               </DropdownMenu>
 
               {/* User Avatar (mobile) */}
-              <button className="lg:hidden p-1">
+              <button className="p-1 lg:hidden">
                 <Avatar className="h-8 w-8">
                   <AvatarFallback className="bg-primary text-primary-foreground text-sm">
                     {userInitials}

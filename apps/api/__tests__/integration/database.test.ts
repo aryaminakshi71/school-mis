@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, afterAll } from "bun:test";
+import { describe, expect, it } from "bun:test";
 import { Hono } from "hono";
 
 describe("Database Integration Tests", () => {

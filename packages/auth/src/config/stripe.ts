@@ -5,7 +5,7 @@
  * Pattern adapted from Fanbeam/Samva.
  */
 
-import { stripe as stripePlugin, type Subscription } from "@better-auth/stripe";
+import { stripe as stripePlugin } from "@better-auth/stripe";
 import type { Database } from "@school/storage";
 import Stripe from "stripe";
 
@@ -46,7 +46,10 @@ export function createStripePlugin(config: StripeConfig) {
       plans: [],
 
       // Owners and admins can manage organization subscription
-      authorizeReference: async ({ user, referenceId }: { user: any; referenceId: string }) => {
+      authorizeReference: async ({
+        user,
+        referenceId,
+      }: { user: any; referenceId: string }) => {
         // TODO: Implement authorization check based on your member table structure
         // const member = await db.query.members.findFirst({
         //   where: and(
@@ -59,21 +62,23 @@ export function createStripePlugin(config: StripeConfig) {
       },
 
       // Handle subscription lifecycle events
-      onSubscriptionComplete: async ({ subscription }: { subscription: any }) => {
+      onSubscriptionComplete: async ({
+        subscription,
+      }: { subscription: any }) => {
         console.log(
-          `[Stripe] Subscription completed for org ${subscription.referenceId}, plan: ${subscription.plan}`
+          `[Stripe] Subscription completed for org ${subscription.referenceId}, plan: ${subscription.plan}`,
         );
       },
 
       onSubscriptionUpdate: async ({ subscription }: { subscription: any }) => {
         console.log(
-          `[Stripe] Subscription updated for org ${subscription.referenceId}, status: ${subscription.status}`
+          `[Stripe] Subscription updated for org ${subscription.referenceId}, status: ${subscription.status}`,
         );
       },
 
       onSubscriptionCancel: async ({ subscription }: { subscription: any }) => {
         console.log(
-          `[Stripe] Subscription canceled for org ${subscription.referenceId}`
+          `[Stripe] Subscription canceled for org ${subscription.referenceId}`,
         );
       },
     },
@@ -103,7 +108,7 @@ export function createStripePlugin(config: StripeConfig) {
             ? invoice.subscription
             : invoice.subscription?.id;
         console.log(
-          `[Stripe] Payment failed for invoice ${invoice.id}, subscription: ${subscriptionId}`
+          `[Stripe] Payment failed for invoice ${invoice.id}, subscription: ${subscriptionId}`,
         );
         // TODO: Send payment failed notification email
       }

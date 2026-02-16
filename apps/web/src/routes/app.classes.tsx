@@ -1,18 +1,26 @@
-import { useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
-import { Plus, Edit, Trash2, BookOpen, Search, Download, AlertCircle } from "lucide-react";
-import { api, type Class } from "@/lib/api";
-import { useSearch } from "@/lib/search-utils";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { useConfirmDialog } from "@/components/ui/confirm-dialog";
+import { Input } from "@/components/ui/input";
+import { SkeletonCard } from "@/components/ui/skeleton";
+import { type Class, api } from "@/lib/api";
+import { handleError } from "@/lib/error-handler";
 import { exportToCSV } from "@/lib/export-utils";
 import { useListPageShortcuts } from "@/lib/keyboard-shortcuts";
-import { Skeleton, SkeletonCard } from "@/components/ui/skeleton";
-import { useConfirmDialog } from "@/components/ui/confirm-dialog";
-import { handleError } from "@/lib/error-handler";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useSearch } from "@/lib/search-utils";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
+import {
+  AlertCircle,
+  BookOpen,
+  Download,
+  Edit,
+  Plus,
+  Search,
+  Trash2,
+} from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/app/classes")({
   component: ClassesPage,
@@ -56,7 +64,7 @@ function ClassesPage() {
   useListPageShortcuts(
     () => setShowModal(true),
     () => queryClient.invalidateQueries({ queryKey: ["classes"] }),
-    () => handleExport()
+    () => handleExport(),
   );
 
   // Export functionality
@@ -64,14 +72,17 @@ function ClassesPage() {
     try {
       const exportData = filteredClasses.map((c) => ({
         "Class Name": c.name,
-        "Section": c.section || "",
+        Section: c.section || "",
         "Class Teacher": c.classTeacher || "",
-        "Students": c.students.toString(),
-        "Capacity": (c.capacity || 40).toString(),
+        Students: c.students.toString(),
+        Capacity: (c.capacity || 40).toString(),
         "Available Seats": ((c.capacity || 40) - c.students).toString(),
       }));
 
-      exportToCSV(exportData, `classes-export-${new Date().toISOString().split("T")[0]}`);
+      exportToCSV(
+        exportData,
+        `classes-export-${new Date().toISOString().split("T")[0]}`,
+      );
       toast.success("Classes exported successfully");
     } catch (err) {
       toast.error(handleError(err));
@@ -79,7 +90,8 @@ function ClassesPage() {
   };
 
   const createMutation = useMutation({
-    mutationFn: (data: Omit<Class, "id" | "students">) => api.classes.create(data),
+    mutationFn: (data: Omit<Class, "id" | "students">) =>
+      api.classes.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["classes"] });
       toast.success("Class created successfully");
@@ -141,7 +153,7 @@ function ClassesPage() {
         variant: "danger",
         confirmText: "Delete",
         cancelText: "Cancel",
-      }
+      },
     );
     if (confirmed) {
       deleteMutation.mutate(id);
@@ -156,18 +168,15 @@ function ClassesPage() {
   const totalStudents =
     classes?.reduce((sum: number, c: Class) => sum + c.students, 0) || 0;
   const totalCapacity =
-    classes?.reduce(
-      (sum: number, c: Class) => sum + (c.capacity || 0),
-      0,
-    ) || 0;
+    classes?.reduce((sum: number, c: Class) => sum + (c.capacity || 0), 0) || 0;
   const availableSeats = totalCapacity - totalStudents;
 
   return (
     <div>
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-6">
+      <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Classes</h1>
-          <p className="text-gray-600">Manage classes and sections</p>
+          <h1 className="font-bold text-3xl text-foreground">Classes</h1>
+          <p className="text-muted-foreground">Manage classes and sections</p>
         </div>
         <div className="flex gap-2">
           <Button
@@ -188,7 +197,7 @@ function ClassesPage() {
       {/* Search */}
       <div className="mb-6">
         <div className="relative max-w-md">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Search className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
           <Input
             type="search"
             placeholder="Search classes... (Press / to focus)"
@@ -201,7 +210,7 @@ function ClassesPage() {
               variant="ghost"
               size="sm"
               onClick={clearSearch}
-              className="absolute right-2 top-1/2 -translate-y-1/2 h-6 px-2 text-xs"
+              className="-translate-y-1/2 absolute top-1/2 right-2 h-6 px-2 text-xs"
             >
               Clear
             </Button>
@@ -209,25 +218,25 @@ function ClassesPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-4 mb-6">
-        <div className="bg-blue-100 p-4 rounded-lg">
-          <p className="text-blue-700 text-sm font-medium">Total Classes</p>
-          <p className="text-2xl font-bold text-blue-800">
+      <div className="mb-6 grid grid-cols-3 gap-4">
+        <div className="rounded-lg bg-primary/10 p-4">
+          <p className="font-medium text-primary text-sm">Total Classes</p>
+          <p className="font-bold text-2xl text-primary">
             {classes?.length || 0}
           </p>
         </div>
-        <div className="bg-green-100 p-4 rounded-lg">
-          <p className="text-green-700 text-sm font-medium">Total Students</p>
-          <p className="text-2xl font-bold text-green-800">{totalStudents}</p>
+        <div className="rounded-lg bg-success/15 p-4">
+          <p className="font-medium text-sm text-success">Total Students</p>
+          <p className="font-bold text-2xl text-success">{totalStudents}</p>
         </div>
-        <div className="bg-yellow-100 p-4 rounded-lg">
-          <p className="text-yellow-700 text-sm font-medium">Available Seats</p>
-          <p className="text-2xl font-bold text-yellow-800">{availableSeats}</p>
+        <div className="rounded-lg bg-warning/15 p-4">
+          <p className="font-medium text-sm text-warning">Available Seats</p>
+          <p className="font-bold text-2xl text-warning">{availableSeats}</p>
         </div>
       </div>
 
       {isLoading ? (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {[1, 2, 3, 4, 5, 6].map((i) => (
             <SkeletonCard key={i} />
           ))}
@@ -235,11 +244,19 @@ function ClassesPage() {
       ) : error ? (
         <Card>
           <CardContent className="pt-6">
-            <div className="text-center py-12">
-              <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">Error Loading Classes</h3>
-              <p className="text-sm text-gray-600 mb-4">{handleError(error)}</p>
-              <Button onClick={() => queryClient.invalidateQueries({ queryKey: ["classes"] })}>
+            <div className="py-12 text-center">
+              <AlertCircle className="mx-auto mb-4 h-12 w-12 text-destructive" />
+              <h3 className="mb-2 font-semibold text-lg">
+                Error Loading Classes
+              </h3>
+              <p className="mb-4 text-muted-foreground text-sm">
+                {handleError(error)}
+              </p>
+              <Button
+                onClick={() =>
+                  queryClient.invalidateQueries({ queryKey: ["classes"] })
+                }
+              >
                 Retry
               </Button>
             </div>
@@ -248,12 +265,12 @@ function ClassesPage() {
       ) : filteredClasses.length === 0 ? (
         <Card>
           <CardContent className="pt-6">
-            <div className="text-center py-12">
-              <BookOpen className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">
+            <div className="py-12 text-center">
+              <BookOpen className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
+              <h3 className="mb-2 font-semibold text-lg">
                 {hasActiveFilters ? "No classes found" : "No classes yet"}
               </h3>
-              <p className="text-sm text-gray-600 mb-4">
+              <p className="mb-4 text-muted-foreground text-sm">
                 {hasActiveFilters
                   ? "Try adjusting your search"
                   : "Get started by adding your first class"}
@@ -272,38 +289,39 @@ function ClassesPage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {filteredClasses.map((cls: Class) => (
             <div
               key={cls.id}
-              className="bg-white rounded-lg border p-6 shadow-sm hover:shadow-md transition-shadow"
+              className="rounded-lg border bg-card p-6 shadow-sm transition-shadow hover:shadow-md"
             >
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-bold">{cls.name}</h3>
-                <span className="text-sm text-gray-500">
+              <div className="mb-4 flex items-center justify-between">
+                <h3 className="font-bold text-lg">{cls.name}</h3>
+                <span className="text-muted-foreground text-sm">
                   Section {cls.section || "-"}
                 </span>
               </div>
-              <div className="space-y-2 mb-4">
+              <div className="mb-4 space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Class Teacher</span>
+                  <span className="text-muted-foreground">Class Teacher</span>
                   <span className="font-medium">{cls.classTeacher}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Students</span>
+                  <span className="text-muted-foreground">Students</span>
                   <span className="font-medium">
                     {cls.students} / {cls.capacity || 40}
                   </span>
                 </div>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
+              <div className="mb-4 h-2 w-full rounded-full bg-muted">
                 <div
-                  className={`h-2 rounded-full ${cls.students / (cls.capacity || 40) > 0.9
-                      ? "bg-red-500"
+                  className={`h-2 rounded-full ${
+                    cls.students / (cls.capacity || 40) > 0.9
+                      ? "bg-destructive"
                       : cls.students / (cls.capacity || 40) > 0.7
-                        ? "bg-yellow-500"
-                        : "bg-green-500"
-                    }`}
+                        ? "bg-warning"
+                        : "bg-success"
+                  }`}
                   style={{
                     width: `${(cls.students / (cls.capacity || 40)) * 100}%`,
                   }}
@@ -312,18 +330,18 @@ function ClassesPage() {
               <div className="flex gap-2">
                 <button
                   onClick={() => handleEdit(cls)}
-                  className="flex-1 flex items-center justify-center gap-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                  className="flex flex-1 items-center justify-center gap-1 rounded-lg bg-primary py-2 text-primary-foreground text-sm transition-colors hover:bg-primary/90"
                 >
-                  <Edit className="w-4 h-4" />
+                  <Edit className="h-4 w-4" />
                   Edit
                 </button>
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => handleDelete(cls.id, cls.name)}
-                  className="px-3 text-red-600 hover:bg-red-50 hover:text-red-700"
+                  className="px-3 text-destructive hover:bg-destructive/10 hover:text-destructive"
                 >
-                  <Trash2 className="w-4 h-4" />
+                  <Trash2 className="h-4 w-4" />
                 </Button>
               </div>
             </div>
@@ -333,22 +351,22 @@ function ClassesPage() {
       {dialog}
 
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <h2 className="text-xl font-bold mb-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="w-full max-w-md rounded-lg bg-card p-6">
+            <h2 className="mb-4 font-bold text-xl">
               {editingClass ? "Edit Class" : "Add Class"}
             </h2>
             <form onSubmit={handleSubmit}>
-              <div className="grid grid-cols-2 gap-4 mb-4">
+              <div className="mb-4 grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="mb-1 block font-medium text-foreground text-sm">
                     Class Name
                   </label>
                   <select
                     name="name"
                     defaultValue={editingClass?.name || ""}
                     required
-                    className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full rounded-lg border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
                   >
                     <option value="">Select</option>
                     <option>Class 9</option>
@@ -358,14 +376,14 @@ function ClassesPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="mb-1 block font-medium text-foreground text-sm">
                     Section
                   </label>
                   <select
                     name="section"
                     defaultValue={editingClass?.section || ""}
                     required
-                    className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full rounded-lg border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
                   >
                     <option value="">Select</option>
                     <option>A</option>
@@ -375,13 +393,13 @@ function ClassesPage() {
                 </div>
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="mb-1 block font-medium text-foreground text-sm">
                   Class Teacher
                 </label>
                 <select
                   name="classTeacher"
                   defaultValue={editingClass?.classTeacher || ""}
-                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full rounded-lg border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
                 >
                   <option value="">Select Teacher</option>
                   <option>Dr. Rajesh Kumar</option>
@@ -391,27 +409,27 @@ function ClassesPage() {
                 </select>
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="mb-1 block font-medium text-foreground text-sm">
                   Capacity
                 </label>
                 <input
                   type="number"
                   name="capacity"
                   defaultValue={editingClass?.capacity || 40}
-                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full rounded-lg border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
                 />
               </div>
-              <div className="flex gap-4 justify-end">
+              <div className="flex justify-end gap-4">
                 <button
                   type="button"
                   onClick={handleCloseModal}
-                  className="px-4 py-2 border rounded-lg hover:bg-gray-50"
+                  className="rounded-lg border px-4 py-2 hover:bg-muted"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  className="rounded-lg bg-primary px-4 py-2 text-primary-foreground transition-colors hover:bg-primary/90"
                   disabled={
                     createMutation.isPending || updateMutation.isPending
                   }

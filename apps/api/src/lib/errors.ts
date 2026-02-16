@@ -1,6 +1,6 @@
 /**
  * Error Handling Utilities
- * 
+ *
  * Provides standardized error handling for the CRM API.
  */
 
@@ -34,7 +34,7 @@ export class APIError extends Error {
     public code: ErrorCode,
     message: string,
     public statusCode: number,
-    public details?: unknown
+    public details?: unknown,
   ) {
     super(message);
     this.name = "APIError";
@@ -55,6 +55,21 @@ export class APIError extends Error {
   }
 }
 
+export class RateLimitError extends APIError {
+  constructor(message = "Rate limit exceeded", retryAfterSeconds?: number) {
+    super(
+      ErrorCode.RATE_LIMITED,
+      message,
+      429,
+      retryAfterSeconds !== undefined
+        ? { retryAfter: retryAfterSeconds }
+        : undefined,
+    );
+    this.name = "RateLimitError";
+    Object.setPrototypeOf(this, RateLimitError.prototype);
+  }
+}
+
 // Error factory functions
 export const Errors = {
   // 400 Bad Request
@@ -66,7 +81,7 @@ export const Errors = {
       ErrorCode.VALIDATION_ERROR,
       "Validation failed",
       400,
-      errors.format()
+      errors.format(),
     ),
 
   // 401 Unauthorized
@@ -81,14 +96,14 @@ export const Errors = {
     new APIError(
       ErrorCode.ORGANIZATION_REQUIRED,
       "Organization access required",
-      403
+      403,
     ),
 
   noOrganizationAccess: () =>
     new APIError(
       ErrorCode.NO_ORGANIZATION_ACCESS,
       "You don't have access to this organization",
-      403
+      403,
     ),
 
   // 404 Not Found
@@ -96,8 +111,7 @@ export const Errors = {
     new APIError(ErrorCode.NOT_FOUND, `${resource} not found`, 404),
 
   // 409 Conflict
-  conflict: (message: string) =>
-    new APIError(ErrorCode.CONFLICT, message, 409),
+  conflict: (message: string) => new APIError(ErrorCode.CONFLICT, message, 409),
 
   // Business logic errors (422 Unprocessable Entity)
   insufficientStock: (itemName: string, available: number) =>
@@ -105,7 +119,7 @@ export const Errors = {
       ErrorCode.INSUFFICIENT_STOCK,
       `Insufficient stock for ${itemName}. Only ${available} available.`,
       422,
-      { itemName, available }
+      { itemName, available },
     ),
 
   invalidStatusTransition: (from: string, to: string) =>
@@ -113,7 +127,7 @@ export const Errors = {
       ErrorCode.INVALID_STATUS_TRANSITION,
       `Cannot transition from ${from} to ${to}`,
       422,
-      { from, to }
+      { from, to },
     ),
 
   // 500 Internal Server Error
@@ -122,7 +136,7 @@ export const Errors = {
       ErrorCode.DATABASE_ERROR,
       `Database error during ${operation}`,
       500,
-      details
+      details,
     ),
 
   externalService: (service: string, details?: unknown) =>
@@ -130,7 +144,7 @@ export const Errors = {
       ErrorCode.EXTERNAL_SERVICE_ERROR,
       `External service error: ${service}`,
       500,
-      details
+      details,
     ),
 
   server: (message = "Internal server error") =>
@@ -141,7 +155,7 @@ export const Errors = {
     new APIError(
       ErrorCode.SERVICE_UNAVAILABLE,
       `${service} is temporarily unavailable`,
-      503
+      503,
     ),
 
   // 429 Rate Limited
@@ -150,7 +164,7 @@ export const Errors = {
       ErrorCode.RATE_LIMITED,
       message,
       429,
-      retryAfter ? { retryAfter } : undefined
+      retryAfter ? { retryAfter } : undefined,
     ),
 };
 
@@ -181,9 +195,7 @@ export function formatErrorResponse(error: APIError): ErrorResponse {
  */
 export function isRetryableError(error: unknown): boolean {
   if (error instanceof APIError) {
-    return (
-      error.statusCode >= 500 && error.statusCode < 600
-    );
+    return error.statusCode >= 500 && error.statusCode < 600;
   }
   return false;
 }
@@ -197,15 +209,21 @@ export function parseApiError(response: Response, data?: unknown): APIError {
 
   switch (statusCode) {
     case 400:
-      return Errors.badRequest(errorData?.message || errorData?.error || "Invalid request");
+      return Errors.badRequest(
+        errorData?.message || errorData?.error || "Invalid request",
+      );
     case 401:
       return Errors.unauthorized(errorData?.message || errorData?.error);
     case 403:
       return Errors.forbidden(errorData?.message || errorData?.error);
     case 404:
-      return Errors.notFound(errorData?.message || errorData?.error || "Resource");
+      return Errors.notFound(
+        errorData?.message || errorData?.error || "Resource",
+      );
     case 409:
-      return Errors.conflict(errorData?.message || errorData?.error || "Conflict");
+      return Errors.conflict(
+        errorData?.message || errorData?.error || "Conflict",
+      );
     case 429:
       return Errors.rateLimited(errorData?.message || "Too many requests");
     case 500:
@@ -214,6 +232,8 @@ export function parseApiError(response: Response, data?: unknown): APIError {
     case 504:
       return Errors.server(errorData?.message || "Server error");
     default:
-      return Errors.server(errorData?.message || errorData?.error || "Request failed");
+      return Errors.server(
+        errorData?.message || errorData?.error || "Request failed",
+      );
   }
 }

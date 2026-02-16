@@ -1,5 +1,5 @@
+import { AlertTriangle, Home, RefreshCw } from "lucide-react";
 import * as React from "react";
-import { AlertTriangle, RefreshCw, Home } from "lucide-react";
 import { Button } from "./button";
 
 interface ErrorBoundaryProps {
@@ -50,35 +50,35 @@ class ErrorBoundary extends React.Component<
       }
 
       return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-          <div className="max-w-md w-full text-center">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-red-100 flex items-center justify-center">
-              <AlertTriangle className="w-8 h-8 text-red-600" />
+        <div className="flex min-h-screen items-center justify-center bg-muted px-4">
+          <div className="w-full max-w-md text-center">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-destructive/10">
+              <AlertTriangle className="h-8 w-8 text-destructive" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            <h1 className="mb-2 font-bold text-2xl text-foreground">
               Something went wrong
             </h1>
-            <p className="text-gray-600 mb-6">
+            <p className="mb-6 text-muted-foreground">
               We encountered an unexpected error. Please try again or go back to
               the dashboard.
             </p>
             {this.state.error && process.env.NODE_ENV === "development" && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 text-left">
-                <p className="text-sm font-medium text-red-800 mb-1">
+              <div className="mb-6 rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-left">
+                <p className="mb-1 font-medium text-destructive text-sm">
                   Error Message:
                 </p>
-                <p className="text-xs text-red-600 font-mono">
+                <p className="font-mono text-destructive text-xs">
                   {this.state.error.message}
                 </p>
               </div>
             )}
-            <div className="flex gap-3 justify-center">
+            <div className="flex justify-center gap-3">
               <Button
                 onClick={this.handleReload}
                 variant="outline"
                 className="flex items-center gap-2"
               >
-                <RefreshCw className="w-4 h-4" />
+                <RefreshCw className="h-4 w-4" />
                 Reload Page
               </Button>
               <Button
@@ -86,7 +86,7 @@ class ErrorBoundary extends React.Component<
                 variant="default"
                 className="flex items-center gap-2"
               >
-                <Home className="w-4 h-4" />
+                <Home className="h-4 w-4" />
                 Go to Dashboard
               </Button>
             </div>

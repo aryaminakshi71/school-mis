@@ -1,37 +1,32 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useAuth, UserRole } from "../lib/auth-context";
-import { useState } from "react";
-import { toast } from "sonner";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import {
-  User,
-  BookOpen,
-  Calendar,
-  DollarSign,
-  CheckCircle,
-  Clock,
-  FileText,
-  TrendingUp,
-  MessageSquare,
-  Bus,
-  Home,
-  BookMarked,
-  Users,
-  Phone,
-  Mail,
-  ChevronRight,
-  Send,
   ArrowLeft,
+  BookMarked,
+  BookOpen,
+  Bus,
+  DollarSign,
   ExternalLink,
+  FileText,
+  Home,
+  Mail,
+  MessageSquare,
+  Phone,
+  Send,
+  TrendingUp,
+  User,
+  Users,
 } from "lucide-react";
+import { useState } from "react";
+import { Badge } from "../components/ui/badge";
+import { Button } from "../components/ui/button";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
-import { Button } from "../components/ui/button";
-import { Badge } from "../components/ui/badge";
 import { Input } from "../components/ui/input";
+import { useAuth } from "../lib/auth-context";
 
 export const Route = createFileRoute("/app/parent-portal")({
   component: ParentPortal,
@@ -42,13 +37,13 @@ function ParentPortal() {
 
   if (!hasRole(["parent", "admin", "student"])) {
     return (
-      <div className="flex items-center justify-center h-96">
+      <div className="flex h-96 items-center justify-center">
         <div className="text-center">
-          <User className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-          <h2 className="text-xl font-bold text-gray-900 mb-2">
+          <User className="mx-auto mb-4 h-16 w-16 text-muted-foreground" />
+          <h2 className="mb-2 font-bold text-foreground text-xl">
             Access Denied
           </h2>
-          <p className="text-gray-600">
+          <p className="text-muted-foreground">
             This portal is only available for parents and students.
           </p>
         </div>
@@ -283,14 +278,16 @@ function ParentPortal() {
       <div className="flex flex-col gap-4">
         <Link
           to="/app"
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors w-fit group"
+          className="group inline-flex w-fit items-center gap-2 text-muted-foreground text-sm transition-colors hover:text-primary"
         >
-          <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
+          <ArrowLeft className="group-hover:-translate-x-1 h-4 w-4 transition-transform" />
           Back to Dashboard
         </Link>
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Parent Portal</h1>
-          <p className="text-gray-600 text-lg">
+          <h1 className="mb-2 font-bold text-3xl text-foreground">
+            Parent Portal
+          </h1>
+          <p className="text-lg text-muted-foreground">
             Track your child&apos;s progress and school activities
           </p>
         </div>
@@ -303,17 +300,22 @@ function ParentPortal() {
               <button
                 key={child.id}
                 onClick={() => setSelectedChild(index)}
-                className={`flex items-center gap-3 px-4 py-2 rounded-lg whitespace-nowrap transition-colors ${selectedChild === index
-                  ? "bg-primary/10 border-2 border-primary"
-                  : "bg-gray-50 border-2 border-transparent hover:bg-gray-100"
-                  }`}
+                className={`flex items-center gap-3 whitespace-nowrap rounded-lg px-4 py-2 transition-colors ${
+                  selectedChild === index
+                    ? "border-2 border-primary bg-primary/10"
+                    : "border-2 border-transparent bg-muted hover:bg-muted"
+                }`}
               >
-                <span className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-sm font-bold">
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary font-bold text-primary-foreground text-sm">
                   {child.name.charAt(0)}
                 </span>
                 <span className="text-left">
-                  <span className="font-medium text-sm block">{child.name}</span>
-                  <span className="text-xs text-muted-foreground block">{child.class}</span>
+                  <span className="block font-medium text-sm">
+                    {child.name}
+                  </span>
+                  <span className="block text-muted-foreground text-xs">
+                    {child.class}
+                  </span>
                 </span>
               </button>
             ))}
@@ -321,41 +323,45 @@ function ParentPortal() {
         </div>
       )}
 
-      <div className="grid lg:grid-cols-3 gap-6 mb-6">
+      <div className="mb-6 grid gap-6 lg:grid-cols-3">
         <Card className="lg:col-span-2">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <User className="w-5 h-5" />
+              <User className="h-5 w-5" />
               Student Information
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-start gap-4">
-              <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-xl font-bold">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary font-bold text-primary-foreground text-xl">
                 {currentChild.name.charAt(0)}
               </div>
               <div className="flex-1">
-                <h3 className="text-lg font-bold text-foreground">
+                <h3 className="font-bold text-foreground text-lg">
                   {currentChild.name}
                 </h3>
                 <p className="text-muted-foreground">
                   {currentChild.class} - Section {currentChild.section}
                 </p>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+                <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-4">
                   <div>
-                    <p className="text-sm text-gray-500">Roll Number</p>
+                    <p className="text-muted-foreground text-sm">Roll Number</p>
                     <p className="font-medium">{currentChild.rollNumber}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Admission Date</p>
+                    <p className="text-muted-foreground text-sm">
+                      Admission Date
+                    </p>
                     <p className="font-medium">{currentChild.admissionDate}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Date of Birth</p>
+                    <p className="text-muted-foreground text-sm">
+                      Date of Birth
+                    </p>
                     <p className="font-medium">{currentChild.dateOfBirth}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Blood Group</p>
+                    <p className="text-muted-foreground text-sm">Blood Group</p>
                     <p className="font-medium">{currentChild.bloodGroup}</p>
                   </div>
                 </div>
@@ -364,55 +370,55 @@ function ParentPortal() {
           </CardContent>
         </Card>
 
-        <Card className="border-2 shadow-md hover:shadow-xl transition-all">
-          <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50 border-b">
+        <Card className="border-2 shadow-md transition-all hover:shadow-xl">
+          <CardHeader className="border-b bg-gradient-to-r from-success to-success/90">
             <div className="flex items-center justify-between">
               <CardTitle className="flex items-center gap-2 text-lg">
-                <div className="w-8 h-8 rounded-lg bg-green-600 flex items-center justify-center">
-                  <TrendingUp className="w-4 h-4 text-white" />
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-success">
+                  <TrendingUp className="h-4 w-4 text-background" />
                 </div>
                 Attendance
               </CardTitle>
               <Link
                 to="/app/attendance"
-                className="text-sm text-green-600 hover:text-green-700 font-medium flex items-center gap-1"
+                className="flex items-center gap-1 font-medium text-sm text-success hover:text-success"
               >
-                View Details <ExternalLink className="w-3 h-3" />
+                View Details <ExternalLink className="h-3 w-3" />
               </Link>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-center mb-4">
-              <div className="text-4xl font-bold text-primary">93.3%</div>
+            <div className="mb-4 text-center">
+              <div className="font-bold text-4xl text-primary">93.3%</div>
               <p className="text-muted-foreground">Overall Attendance</p>
             </div>
             <div className="grid grid-cols-3 gap-2 text-center">
-              <div className="p-2 bg-green-50 rounded-lg">
-                <div className="text-green-600 font-bold">42</div>
-                <div className="text-xs text-green-600">Present</div>
+              <div className="rounded-lg bg-success/15 p-2">
+                <div className="font-bold text-success">42</div>
+                <div className="text-success text-xs">Present</div>
               </div>
-              <div className="p-2 bg-red-50 rounded-lg">
-                <div className="text-red-600 font-bold">3</div>
-                <div className="text-xs text-red-600">Absent</div>
+              <div className="rounded-lg bg-destructive/10 p-2">
+                <div className="font-bold text-destructive">3</div>
+                <div className="text-destructive text-xs">Absent</div>
               </div>
-              <div className="p-2 bg-gray-50 rounded-lg">
-                <div className="text-gray-600 font-bold">45</div>
-                <div className="text-xs text-gray-600">Total</div>
+              <div className="rounded-lg bg-muted p-2">
+                <div className="font-bold text-muted-foreground">45</div>
+                <div className="text-muted-foreground text-xs">Total</div>
               </div>
             </div>
-            <div className="mt-4 pt-4 border-t">
-              <p className="text-sm text-gray-500 mb-2">Monthly Breakdown</p>
+            <div className="mt-4 border-t pt-4">
+              <p className="mb-2 text-muted-foreground text-sm">
+                Monthly Breakdown
+              </p>
               {mockAttendance.map((month) => (
                 <div
                   key={month.month}
-                  className="flex justify-between items-center text-sm py-1"
+                  className="flex items-center justify-between py-1 text-sm"
                 >
                   <span>{month.month}</span>
                   <span
                     className={
-                      month.percentage >= 90
-                        ? "text-green-600"
-                        : "text-yellow-600"
+                      month.percentage >= 90 ? "text-success" : "text-warning"
                     }
                   >
                     {month.percentage}%
@@ -424,46 +430,46 @@ function ParentPortal() {
         </Card>
       </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-        <Card className="border-2 shadow-md hover:shadow-xl transition-all">
-          <CardHeader className="bg-gradient-to-r from-emerald-50 to-teal-50 border-b">
+      <div className="mb-6 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <Card className="border-2 shadow-md transition-all hover:shadow-xl">
+          <CardHeader className="border-b bg-gradient-to-r from-primary/15 to-card">
             <div className="flex items-center justify-between">
               <CardTitle className="flex items-center gap-2 text-lg">
-                <div className="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center">
-                  <DollarSign className="w-4 h-4 text-white" />
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
+                  <DollarSign className="h-4 w-4 text-background" />
                 </div>
                 Fee Status
               </CardTitle>
               <Link
                 to="/app/fees"
-                className="text-sm text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1"
+                className="flex items-center gap-1 font-medium text-primary text-sm hover:text-primary"
               >
-                Pay Now <ExternalLink className="w-3 h-3" />
+                Pay Now <ExternalLink className="h-3 w-3" />
               </Link>
             </div>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
               <div className="flex justify-between">
-                <span className="text-gray-600">Total Fees</span>
+                <span className="text-muted-foreground">Total Fees</span>
                 <span className="font-bold">
                   ₹{mockFees.total.toLocaleString()}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">Paid</span>
-                <span className="font-bold text-green-600">
+                <span className="text-muted-foreground">Paid</span>
+                <span className="font-bold text-success">
                   ₹{mockFees.paid.toLocaleString()}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">Pending</span>
-                <span className="font-bold text-yellow-600">
+                <span className="text-muted-foreground">Pending</span>
+                <span className="font-bold text-warning">
                   ₹{mockFees.pending.toLocaleString()}
                 </span>
               </div>
-              <div className="pt-3 border-t">
-                <p className="text-sm text-gray-500">
+              <div className="border-t pt-3">
+                <p className="text-muted-foreground text-sm">
                   Next due date: {mockFees.dueDate}
                 </p>
               </div>
@@ -471,31 +477,33 @@ function ParentPortal() {
           </CardContent>
         </Card>
 
-        <Card className="border-2 shadow-md hover:shadow-xl transition-all">
-          <CardHeader className="bg-gradient-to-r from-amber-50 to-orange-50 border-b">
+        <Card className="border-2 shadow-md transition-all hover:shadow-xl">
+          <CardHeader className="border-b bg-gradient-to-r from-warning to-warning/90">
             <div className="flex items-center justify-between">
               <CardTitle className="flex items-center gap-2 text-lg">
-                <div className="w-8 h-8 rounded-lg bg-amber-600 flex items-center justify-center">
-                  <Home className="w-4 h-4 text-white" />
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-warning">
+                  <Home className="h-4 w-4 text-background" />
                 </div>
                 Homework
               </CardTitle>
               <Link
                 to="/app/gradebook"
-                className="text-sm text-amber-600 hover:text-amber-700 font-medium flex items-center gap-1"
+                className="flex items-center gap-1 font-medium text-sm text-warning hover:text-warning"
               >
-                View All <ExternalLink className="w-3 h-3" />
+                View All <ExternalLink className="h-3 w-3" />
               </Link>
             </div>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
               {mockHomework.slice(0, 3).map((hw) => (
-                <div key={hw.id} className="p-2 bg-gray-50 rounded-lg">
+                <div key={hw.id} className="rounded-lg bg-muted p-2">
                   <div className="flex items-start justify-between">
                     <div>
                       <p className="font-medium text-sm">{hw.subject}</p>
-                      <p className="text-xs text-gray-500">{hw.title}</p>
+                      <p className="text-muted-foreground text-xs">
+                        {hw.title}
+                      </p>
                     </div>
                     <Badge
                       variant={
@@ -505,7 +513,7 @@ function ParentPortal() {
                       {hw.status}
                     </Badge>
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="mt-1 text-muted-foreground text-xs">
                     Due: {hw.dueDate}
                   </p>
                 </div>
@@ -514,20 +522,20 @@ function ParentPortal() {
           </CardContent>
         </Card>
 
-        <Card className="border-2 shadow-md hover:shadow-xl transition-all">
-          <CardHeader className="bg-gradient-to-r from-violet-50 to-purple-50 border-b">
+        <Card className="border-2 shadow-md transition-all hover:shadow-xl">
+          <CardHeader className="border-b bg-gradient-to-r from-primary/5 to-primary/5">
             <div className="flex items-center justify-between">
               <CardTitle className="flex items-center gap-2 text-lg">
-                <div className="w-8 h-8 rounded-lg bg-violet-600 flex items-center justify-center">
-                  <BookMarked className="w-4 h-4 text-white" />
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
+                  <BookMarked className="h-4 w-4 text-background" />
                 </div>
                 Library Books
               </CardTitle>
               <Link
                 to="/app/library"
-                className="text-sm text-violet-600 hover:text-violet-700 font-medium flex items-center gap-1"
+                className="flex items-center gap-1 font-medium text-primary text-sm hover:text-primary"
               >
-                Browse <ExternalLink className="w-3 h-3" />
+                Browse <ExternalLink className="h-3 w-3" />
               </Link>
             </div>
           </CardHeader>
@@ -536,12 +544,12 @@ function ParentPortal() {
               {mockLibraryBooks.map((book) => (
                 <div
                   key={book.id}
-                  className="p-2 bg-purple-50 rounded-lg border-l-4 border-purple-500"
+                  className="rounded-lg border-primary border-l-4 bg-primary/5 p-2"
                 >
                   <p className="font-medium text-sm">{book.title}</p>
-                  <p className="text-xs text-gray-500">{book.author}</p>
-                  <div className="flex justify-between mt-2">
-                    <span className="text-xs text-purple-600">
+                  <p className="text-muted-foreground text-xs">{book.author}</p>
+                  <div className="mt-2 flex justify-between">
+                    <span className="text-primary text-xs">
                       Due: {book.dueDate}
                     </span>
                   </div>
@@ -554,26 +562,26 @@ function ParentPortal() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Bus className="w-5 h-5" />
+              <Bus className="h-5 w-5" />
               Transport
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-gray-600">Route</span>
+                <span className="text-muted-foreground">Route</span>
                 <span className="font-medium">{mockTransport.route}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">Stop</span>
+                <span className="text-muted-foreground">Stop</span>
                 <span className="font-medium">{mockTransport.stop}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">Pickup</span>
+                <span className="text-muted-foreground">Pickup</span>
                 <span className="font-medium">{mockTransport.pickupTime}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">Drop</span>
+                <span className="text-muted-foreground">Drop</span>
                 <span className="font-medium">{mockTransport.dropTime}</span>
               </div>
             </div>
@@ -581,11 +589,11 @@ function ParentPortal() {
         </Card>
       </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+      <div className="mb-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <Card className="lg:col-span-2">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <BookOpen className="w-5 h-5" />
+              <BookOpen className="h-5 w-5" />
               Exam Results
             </CardTitle>
           </CardHeader>
@@ -593,7 +601,7 @@ function ParentPortal() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b text-left text-gray-500">
+                  <tr className="border-b text-left text-muted-foreground">
                     <th className="pb-2 font-medium">Exam</th>
                     <th className="pb-2 font-medium">Date</th>
                     <th className="pb-2 font-medium">Marks</th>
@@ -604,7 +612,9 @@ function ParentPortal() {
                   {mockExams.map((exam, i) => (
                     <tr key={i} className="border-b last:border-0">
                       <td className="py-3 font-medium">{exam.name}</td>
-                      <td className="py-3 text-gray-500">{exam.date}</td>
+                      <td className="py-3 text-muted-foreground">
+                        {exam.date}
+                      </td>
                       <td className="py-3">
                         {exam.marks !== undefined ? (
                           <span>
@@ -640,7 +650,7 @@ function ParentPortal() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <MessageSquare className="w-5 h-5" />
+              <MessageSquare className="h-5 w-5" />
               Notices
             </CardTitle>
           </CardHeader>
@@ -649,14 +659,19 @@ function ParentPortal() {
               {mockNotices.map((notice) => (
                 <div
                   key={notice.id}
-                  className={`p-3 rounded-lg border-l-4 ${notice.priority === "high"
-                    ? "bg-red-50 border-red-500"
-                    : "bg-primary/5 border-primary"
-                    }`}
+                  className={`rounded-lg border-l-4 p-3 ${
+                    notice.priority === "high"
+                      ? "border-destructive/30 bg-destructive/10"
+                      : "border-primary bg-primary/5"
+                  }`}
                 >
                   <p className="font-medium text-sm">{notice.title}</p>
-                  <p className="text-xs text-gray-500 mb-1">{notice.date}</p>
-                  <p className="text-sm text-gray-600">{notice.message}</p>
+                  <p className="mb-1 text-muted-foreground text-xs">
+                    {notice.date}
+                  </p>
+                  <p className="text-muted-foreground text-sm">
+                    {notice.message}
+                  </p>
                 </div>
               ))}
             </div>
@@ -664,11 +679,11 @@ function ParentPortal() {
         </Card>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-6 mb-6">
+      <div className="mb-6 grid gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="w-5 h-5" />
+              <TrendingUp className="h-5 w-5" />
               Subject Performance
             </CardTitle>
           </CardHeader>
@@ -679,10 +694,12 @@ function ParentPortal() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="font-medium">{subject.subject}</p>
-                      <p className="text-xs text-gray-500">{subject.teacher}</p>
+                      <p className="text-muted-foreground text-xs">
+                        {subject.teacher}
+                      </p>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium">
+                      <span className="font-medium text-sm">
                         {subject.marks}%
                       </span>
                       <Badge
@@ -698,14 +715,15 @@ function ParentPortal() {
                       </Badge>
                     </div>
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div className="h-2 w-full rounded-full bg-muted">
                     <div
-                      className={`h-2 rounded-full ${subject.marks >= 90
-                        ? "bg-green-500"
-                        : subject.marks >= 75
-                          ? "bg-blue-500"
-                          : "bg-yellow-500"
-                        }`}
+                      className={`h-2 rounded-full ${
+                        subject.marks >= 90
+                          ? "bg-success"
+                          : subject.marks >= 75
+                            ? "bg-primary"
+                            : "bg-warning"
+                      }`}
                       style={{ width: `${subject.marks}%` }}
                     />
                   </div>
@@ -718,35 +736,37 @@ function ParentPortal() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Users className="w-5 h-5" />
+              <Users className="h-5 w-5" />
               Teacher Contact
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
               {mockTeachers.map((teacher) => (
-                <div key={teacher.name} className="p-3 bg-gray-50 rounded-lg">
+                <div key={teacher.name} className="rounded-lg bg-muted p-3">
                   <div className="flex items-start justify-between">
                     <div>
                       <p className="font-medium">{teacher.name}</p>
-                      <p className="text-sm text-gray-500">{teacher.subject}</p>
+                      <p className="text-muted-foreground text-sm">
+                        {teacher.subject}
+                      </p>
                     </div>
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={() => setShowContactForm(true)}
                     >
-                      <MessageSquare className="w-4 h-4 mr-1" />
+                      <MessageSquare className="mr-1 h-4 w-4" />
                       Message
                     </Button>
                   </div>
-                  <div className="flex gap-3 mt-2 text-xs text-gray-500">
+                  <div className="mt-2 flex gap-3 text-muted-foreground text-xs">
                     <span className="flex items-center gap-1">
-                      <Phone className="w-3 h-3" />
+                      <Phone className="h-3 w-3" />
                       {teacher.phone}
                     </span>
                     <span className="flex items-center gap-1">
-                      <Mail className="w-3 h-3" />
+                      <Mail className="h-3 w-3" />
                       {teacher.email}
                     </span>
                   </div>
@@ -761,15 +781,15 @@ function ParentPortal() {
         <Card className="mb-6">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Send className="w-5 h-5" />
+              <Send className="h-5 w-5" />
               Contact Teacher
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid md:grid-cols-2 gap-4 mb-4">
+            <div className="mb-4 grid gap-4 md:grid-cols-2">
               <div>
-                <label className="text-sm font-medium">Select Teacher</label>
-                <select className="w-full mt-1 p-2 border rounded-lg">
+                <label className="font-medium text-sm">Select Teacher</label>
+                <select className="mt-1 w-full rounded-lg border p-2">
                   {mockTeachers.map((teacher) => (
                     <option key={teacher.name} value={teacher.name}>
                       {teacher.name} - {teacher.subject}
@@ -778,21 +798,21 @@ function ParentPortal() {
                 </select>
               </div>
               <div>
-                <label className="text-sm font-medium">Subject</label>
+                <label className="font-medium text-sm">Subject</label>
                 <Input placeholder="Enter subject" className="mt-1" />
               </div>
             </div>
             <div className="mb-4">
-              <label className="text-sm font-medium">Message</label>
+              <label className="font-medium text-sm">Message</label>
               <textarea
                 placeholder="Enter your message..."
-                className="w-full mt-1 p-2 border rounded-lg"
+                className="mt-1 w-full rounded-lg border p-2"
                 rows={4}
               />
             </div>
             <div className="flex gap-2">
               <Button>
-                <Send className="w-4 h-4 mr-2" />
+                <Send className="mr-2 h-4 w-4" />
                 Send Message
               </Button>
               <Button
@@ -809,27 +829,29 @@ function ParentPortal() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <FileText className="w-5 h-5" />
+            <FileText className="h-5 w-5" />
             Academic Performance Summary
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid md:grid-cols-4 gap-4">
-            <div className="text-center p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg">
-              <p className="text-3xl font-bold text-blue-600">A</p>
-              <p className="text-sm text-gray-600">Current Grade</p>
+          <div className="grid gap-4 md:grid-cols-4">
+            <div className="rounded-lg bg-gradient-to-br from-primary/5 to-primary/10 p-4 text-center">
+              <p className="font-bold text-3xl text-primary">A</p>
+              <p className="text-muted-foreground text-sm">Current Grade</p>
             </div>
-            <div className="text-center p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-lg">
-              <p className="text-3xl font-bold text-green-600">3.8</p>
-              <p className="text-sm text-gray-600">GPA</p>
+            <div className="rounded-lg bg-gradient-to-br from-success to-success/90 p-4 text-center">
+              <p className="font-bold text-3xl text-success">3.8</p>
+              <p className="text-muted-foreground text-sm">GPA</p>
             </div>
-            <div className="text-center p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg">
-              <p className="text-3xl font-bold text-purple-600">Top 15%</p>
-              <p className="text-sm text-gray-600">Class Rank</p>
+            <div className="rounded-lg bg-gradient-to-br from-primary/5 to-primary/10 p-4 text-center">
+              <p className="font-bold text-3xl text-primary">Top 15%</p>
+              <p className="text-muted-foreground text-sm">Class Rank</p>
             </div>
-            <div className="text-center p-4 bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg">
-              <p className="text-3xl font-bold text-orange-600">95%</p>
-              <p className="text-sm text-gray-600">Assignment Completion</p>
+            <div className="rounded-lg bg-gradient-to-br from-warning to-warning/90 p-4 text-center">
+              <p className="font-bold text-3xl text-warning">95%</p>
+              <p className="text-muted-foreground text-sm">
+                Assignment Completion
+              </p>
             </div>
           </div>
         </CardContent>

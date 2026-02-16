@@ -1,8 +1,9 @@
-import { HeadContent, Scripts } from '@tanstack/react-router'
+import { HeadContent, Scripts } from "@tanstack/react-router";
 
 export function ErrorPage({ error }: { error: Error | unknown }) {
-  const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred'
-  const errorStack = error instanceof Error ? error.stack : undefined
+  const errorMessage =
+    error instanceof Error ? error.message : "An unexpected error occurred";
+  const errorStack = error instanceof Error ? error.stack : undefined;
 
   return (
     <html lang="en">
@@ -10,28 +11,32 @@ export function ErrorPage({ error }: { error: Error | unknown }) {
         <HeadContent />
       </head>
       <body>
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-          <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-6">
-            <h1 className="text-2xl font-bold text-red-600 mb-4">Something went wrong</h1>
-            <p className="text-gray-700 mb-4">{errorMessage}</p>
+        <div className="flex min-h-screen items-center justify-center bg-muted p-4">
+          <div className="w-full max-w-md rounded-lg bg-card p-6 shadow-lg">
+            <h1 className="mb-4 font-bold text-2xl text-destructive">
+              Something went wrong
+            </h1>
+            <p className="mb-4 text-foreground">{errorMessage}</p>
             {import.meta.env.DEV && errorStack && (
               <details className="mb-4">
-                <summary className="cursor-pointer text-sm text-gray-600">Error Details</summary>
-                <pre className="mt-2 p-2 bg-gray-100 rounded text-xs overflow-auto">
+                <summary className="cursor-pointer text-muted-foreground text-sm">
+                  Error Details
+                </summary>
+                <pre className="mt-2 overflow-auto rounded bg-muted p-2 text-xs">
                   <code>{errorStack}</code>
                 </pre>
               </details>
             )}
             <div className="flex gap-2">
               <button
-                onClick={() => window.location.href = "/"}
-                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                onClick={() => (window.location.href = "/")}
+                className="rounded bg-primary px-4 py-2 text-primary-foreground hover:bg-primary/90"
               >
                 Go Home
               </button>
               <button
                 onClick={() => window.location.reload()}
-                className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+                className="rounded bg-muted px-4 py-2 text-foreground hover:bg-muted"
               >
                 Retry
               </button>
@@ -41,5 +46,5 @@ export function ErrorPage({ error }: { error: Error | unknown }) {
         <Scripts />
       </body>
     </html>
-  )
+  );
 }

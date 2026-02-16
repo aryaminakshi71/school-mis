@@ -4,8 +4,8 @@
  * Defines the context structure for API requests.
  */
 
-import type { Pool } from "pg";
 import type { ServerEnv } from "@school/env/server";
+import type { Pool } from "pg";
 
 export interface AppContext {
   env: ServerEnv;

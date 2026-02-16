@@ -53,7 +53,7 @@ const SidebarFooter = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("border-t border-sidebar-border p-2", className)}
+    className={cn("border-sidebar-border border-t p-2", className)}
     {...props}
   />
 ));
@@ -79,7 +79,8 @@ const SidebarMenuItem = React.forwardRef<
 ));
 SidebarMenuItem.displayName = "SidebarMenuItem";
 
-interface SidebarMenuButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface SidebarMenuButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   isActive?: boolean;
   tooltip?: string;
   size?: "default" | "sm" | "lg";
@@ -99,7 +100,7 @@ const SidebarMenuButton = React.forwardRef<
     <button
       ref={ref}
       className={cn(
-        "flex w-full items-center gap-2 rounded-lg text-sm font-medium transition-colors",
+        "flex w-full items-center gap-2 rounded-lg font-medium text-sm transition-colors",
         "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
         isActive
           ? "bg-sidebar-accent text-sidebar-accent-foreground"

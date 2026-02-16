@@ -1,5 +1,13 @@
-import { useState, useEffect, useCallback } from "react";
-import { Send, Image, Paperclip, Smile, MoreVertical, Phone, Video } from "lucide-react";
+import {
+  Image,
+  MoreVertical,
+  Paperclip,
+  Phone,
+  Send,
+  Smile,
+  Video,
+} from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 
@@ -49,7 +57,10 @@ class MessagingService {
       try {
         this.conversations = JSON.parse(savedConversations).map((c: any) => ({
           ...c,
-          lastMessage: { ...c.lastMessage, timestamp: new Date(c.lastMessage.timestamp) },
+          lastMessage: {
+            ...c.lastMessage,
+            timestamp: new Date(c.lastMessage.timestamp),
+          },
         }));
       } catch {
         this.conversations = [];
@@ -62,7 +73,7 @@ class MessagingService {
         Object.entries(parsed).forEach(([key, msgs]: [string, any]) => {
           this.messages.set(
             key,
-            msgs.map((m: any) => ({ ...m, timestamp: new Date(m.timestamp) }))
+            msgs.map((m: any) => ({ ...m, timestamp: new Date(m.timestamp) })),
           );
         });
       } catch {
@@ -72,8 +83,14 @@ class MessagingService {
   }
 
   private saveData() {
-    localStorage.setItem("school_conversations", JSON.stringify(this.conversations));
-    localStorage.setItem("school_messages", JSON.stringify(Object.fromEntries(this.messages)));
+    localStorage.setItem(
+      "school_conversations",
+      JSON.stringify(this.conversations),
+    );
+    localStorage.setItem(
+      "school_messages",
+      JSON.stringify(Object.fromEntries(this.messages)),
+    );
   }
 
   private notifyListeners() {
@@ -87,7 +104,9 @@ class MessagingService {
 
   getConversations(): Conversation[] {
     return [...this.conversations].sort(
-      (a, b) => new Date(b.lastMessage.timestamp).getTime() - new Date(a.lastMessage.timestamp).getTime()
+      (a, b) =>
+        new Date(b.lastMessage.timestamp).getTime() -
+        new Date(a.lastMessage.timestamp).getTime(),
     );
   }
 
@@ -95,8 +114,15 @@ class MessagingService {
     return this.messages.get(conversationId) || [];
   }
 
-  sendMessage(conversationId: string, content: string, type: "text" | "image" | "file" = "text", attachment?: Attachment) {
-    const conversation = this.conversations.find((c) => c.id === conversationId);
+  sendMessage(
+    conversationId: string,
+    content: string,
+    type: "text" | "image" | "file" = "text",
+    attachment?: Attachment,
+  ) {
+    const conversation = this.conversations.find(
+      (c) => c.id === conversationId,
+    );
     if (!conversation) return null;
 
     const newMessage: Message = {
@@ -124,7 +150,9 @@ class MessagingService {
   }
 
   markAsRead(conversationId: string) {
-    const conversation = this.conversations.find((c) => c.id === conversationId);
+    const conversation = this.conversations.find(
+      (c) => c.id === conversationId,
+    );
     if (conversation) {
       conversation.unreadCount = 0;
 
@@ -142,8 +170,14 @@ class MessagingService {
     }
   }
 
-  createConversation(participantId: string, participantName: string, participantRole: string): Conversation {
-    const existing = this.conversations.find((c) => c.participantId === participantId);
+  createConversation(
+    participantId: string,
+    participantName: string,
+    participantRole: string,
+  ): Conversation {
+    const existing = this.conversations.find(
+      (c) => c.participantId === participantId,
+    );
     if (existing) return existing;
 
     const newConversation: Conversation = {
@@ -173,7 +207,9 @@ class MessagingService {
   }
 
   deleteConversation(conversationId: string) {
-    this.conversations = this.conversations.filter((c) => c.id !== conversationId);
+    this.conversations = this.conversations.filter(
+      (c) => c.id !== conversationId,
+    );
     this.messages.delete(conversationId);
     this.saveData();
     this.notifyListeners();
@@ -188,7 +224,9 @@ export const messagingService = new MessagingService();
 
 export function useMessaging(currentUserId: string = "current_user") {
   const [conversations, setConversations] = useState<Conversation[]>([]);
-  const [activeConversation, setActiveConversation] = useState<string | null>(null);
+  const [activeConversation, setActiveConversation] = useState<string | null>(
+    null,
+  );
   const [messages, setMessages] = useState<Message[]>([]);
   const [messageInput, setMessageInput] = useState("");
   const [isSending, setIsSending] = useState(false);
@@ -209,12 +247,21 @@ export function useMessaging(currentUserId: string = "current_user") {
   }, [activeConversation]);
 
   const sendMessage = useCallback(
-    async (content: string, type: "text" | "image" | "file" = "text", attachment?: Attachment) => {
+    async (
+      content: string,
+      type: "text" | "image" | "file" = "text",
+      attachment?: Attachment,
+    ) => {
       if (!activeConversation || !content.trim()) return;
 
       setIsSending(true);
       try {
-        const message = messagingService.sendMessage(activeConversation, content, type, attachment);
+        const message = messagingService.sendMessage(
+          activeConversation,
+          content,
+          type,
+          attachment,
+        );
         if (message) {
           setMessages((prev) => [...prev, message]);
         }
@@ -222,7 +269,7 @@ export function useMessaging(currentUserId: string = "current_user") {
         setIsSending(false);
       }
     },
-    [activeConversation]
+    [activeConversation],
   );
 
   const handleSend = useCallback(() => {
@@ -233,18 +280,29 @@ export function useMessaging(currentUserId: string = "current_user") {
   }, [messageInput, sendMessage]);
 
   const createConversation = useCallback(
-    (participantId: string, participantName: string, participantRole: string) => {
-      return messagingService.createConversation(participantId, participantName, participantRole);
+    (
+      participantId: string,
+      participantName: string,
+      participantRole: string,
+    ) => {
+      return messagingService.createConversation(
+        participantId,
+        participantName,
+        participantRole,
+      );
     },
-    []
+    [],
   );
 
-  const deleteConversation = useCallback((conversationId: string) => {
-    messagingService.deleteConversation(conversationId);
-    if (activeConversation === conversationId) {
-      setActiveConversation(null);
-    }
-  }, [activeConversation]);
+  const deleteConversation = useCallback(
+    (conversationId: string) => {
+      messagingService.deleteConversation(conversationId);
+      if (activeConversation === conversationId) {
+        setActiveConversation(null);
+      }
+    },
+    [activeConversation],
+  );
 
   return {
     conversations,
@@ -269,47 +327,68 @@ interface ChatInterfaceProps {
   onClose: () => void;
 }
 
-export function ChatInterface({ conversationId, participantName, participantRole, onClose }: ChatInterfaceProps) {
-  const { messages, messageInput, setMessageInput, handleSend, isSending } = useMessaging();
+export function ChatInterface({
+  conversationId,
+  participantName,
+  participantRole,
+  onClose,
+}: ChatInterfaceProps) {
+  const { messages, messageInput, setMessageInput, handleSend, isSending } =
+    useMessaging();
 
   return (
-    <div className="flex flex-col h-96 bg-white rounded-xl border border-gray-200 shadow-lg">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+    <div className="flex h-96 flex-col rounded-xl border border-border bg-card shadow-lg">
+      <div className="flex items-center justify-between border-border border-b px-4 py-3">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-medium">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary font-medium text-primary-foreground">
             {participantName.charAt(0)}
           </div>
           <div>
-            <p className="font-medium text-gray-900">{participantName}</p>
-            <p className="text-xs text-gray-500">{participantRole}</p>
+            <p className="font-medium text-foreground">{participantName}</p>
+            <p className="text-muted-foreground text-xs">{participantRole}</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="icon" className="h-8 w-8">
-            <Phone className="w-4 h-4" />
+            <Phone className="h-4 w-4" />
           </Button>
           <Button variant="ghost" size="icon" className="h-8 w-8">
-            <Video className="w-4 h-4" />
+            <Video className="h-4 w-4" />
           </Button>
-          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onClose}>
-            <MoreVertical className="w-4 h-4" />
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8"
+            onClick={onClose}
+          >
+            <MoreVertical className="h-4 w-4" />
           </Button>
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-3">
+      <div className="flex-1 space-y-3 overflow-y-auto p-4">
         {messages.map((message) => {
           const isOwn = message.senderId === "current_user";
           return (
-            <div key={message.id} className={`flex ${isOwn ? "justify-end" : "justify-start"}`}>
+            <div
+              key={message.id}
+              className={`flex ${isOwn ? "justify-end" : "justify-start"}`}
+            >
               <div
-                className={`max-w-[70%] px-4 py-2 rounded-xl ${
-                  isOwn ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-900"
+                className={`max-w-[70%] rounded-xl px-4 py-2 ${
+                  isOwn
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-muted text-foreground"
                 }`}
               >
                 <p className="text-sm">{message.content}</p>
-                <p className={`text-xs mt-1 ${isOwn ? "text-blue-200" : "text-gray-400"}`}>
-                  {new Date(message.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                <p
+                  className={`mt-1 text-xs ${isOwn ? "text-primary" : "text-muted-foreground"}`}
+                >
+                  {new Date(message.timestamp).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
                 </p>
               </div>
             </div>
@@ -317,12 +396,12 @@ export function ChatInterface({ conversationId, participantName, participantRole
         })}
       </div>
 
-      <div className="flex items-center gap-2 px-4 py-3 border-t border-gray-100">
+      <div className="flex items-center gap-2 border-border border-t px-4 py-3">
         <Button variant="ghost" size="icon" className="h-8 w-8">
-          <Image className="w-4 h-4" />
+          <Image className="h-4 w-4" />
         </Button>
         <Button variant="ghost" size="icon" className="h-8 w-8">
-          <Paperclip className="w-4 h-4" />
+          <Paperclip className="h-4 w-4" />
         </Button>
         <Input
           placeholder="Type a message..."
@@ -332,10 +411,15 @@ export function ChatInterface({ conversationId, participantName, participantRole
           className="flex-1"
         />
         <Button variant="ghost" size="icon" className="h-8 w-8">
-          <Smile className="w-4 h-4" />
+          <Smile className="h-4 w-4" />
         </Button>
-        <Button size="icon" className="h-8 w-8" onClick={handleSend} disabled={isSending || !messageInput.trim()}>
-          <Send className="w-4 h-4" />
+        <Button
+          size="icon"
+          className="h-8 w-8"
+          onClick={handleSend}
+          disabled={isSending || !messageInput.trim()}
+        >
+          <Send className="h-4 w-4" />
         </Button>
       </div>
     </div>

@@ -1,12 +1,8 @@
-import { SignJWT, jwtVerify } from "jose";
-import { db } from "@school/storage";
-import {
-  users,
-  userPasswords,
-  userSessions,
-} from "@school/storage";
-import { eq, and, desc } from "drizzle-orm";
 import { createHmac, randomBytes } from "crypto";
+import { db } from "@school/storage";
+import { userPasswords, userSessions, users } from "@school/storage";
+import { and, eq } from "drizzle-orm";
+import { SignJWT, jwtVerify } from "jose";
 
 const JWT_SECRET = new TextEncoder().encode(
   process.env.JWT_SECRET || "fallback-secret-key-change-in-production",

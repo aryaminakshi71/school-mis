@@ -1,22 +1,21 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useAuth } from "../lib/auth-context";
 import {
-  Package,
-  TrendingUp,
   AlertTriangle,
-  CheckCircle,
-  ShoppingCart,
-  FileText,
-  ArrowUp,
   ArrowDown,
+  ArrowUp,
+  FileText,
+  Package,
+  ShoppingCart,
+  TrendingUp,
 } from "lucide-react";
+import { Button } from "../components/ui/button";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
-import { Button } from "../components/ui/button";
+import { useAuth } from "../lib/auth-context";
 
 export const Route = createFileRoute("/app/inventory")({
   component: InventoryPage,
@@ -27,13 +26,13 @@ function InventoryPage() {
 
   if (!hasRole(["admin", "accountant", "librarian"])) {
     return (
-      <div className="flex items-center justify-center h-96">
+      <div className="flex h-96 items-center justify-center">
         <div className="text-center">
-          <Package className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-          <h2 className="text-xl font-bold text-gray-900 mb-2">
+          <Package className="mx-auto mb-4 h-16 w-16 text-muted-foreground" />
+          <h2 className="mb-2 font-bold text-foreground text-xl">
             Access Denied
           </h2>
-          <p className="text-gray-600">
+          <p className="text-muted-foreground">
             You don't have permission to view inventory.
           </p>
         </div>
@@ -140,39 +139,39 @@ function InventoryPage() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">
+        <h1 className="font-bold text-2xl text-foreground">
           Inventory Management
         </h1>
-        <p className="text-gray-600">
+        <p className="text-muted-foreground">
           Track and manage school supplies and equipment
         </p>
       </div>
 
-      <div className="grid md:grid-cols-4 gap-4 mb-6">
+      <div className="mb-6 grid gap-4 md:grid-cols-4">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-500">
+            <CardTitle className="font-medium text-muted-foreground text-sm">
               Total Items
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-2">
-              <Package className="w-8 h-8 text-blue-600" />
-              <span className="text-2xl font-bold">{mockInventory.length}</span>
+              <Package className="h-8 w-8 text-primary" />
+              <span className="font-bold text-2xl">{mockInventory.length}</span>
             </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-500">
+            <CardTitle className="font-medium text-muted-foreground text-sm">
               Total Value
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-2">
-              <TrendingUp className="w-8 h-8 text-green-600" />
-              <span className="text-2xl font-bold">
+              <TrendingUp className="h-8 w-8 text-success" />
+              <span className="font-bold text-2xl">
                 ₹{totalValue.toLocaleString()}
               </span>
             </div>
@@ -181,28 +180,28 @@ function InventoryPage() {
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-500">
+            <CardTitle className="font-medium text-muted-foreground text-sm">
               Low Stock Alerts
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-2">
-              <AlertTriangle className="w-8 h-8 text-yellow-600" />
-              <span className="text-2xl font-bold">{lowStockItems.length}</span>
+              <AlertTriangle className="h-8 w-8 text-warning" />
+              <span className="font-bold text-2xl">{lowStockItems.length}</span>
             </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-500">
+            <CardTitle className="font-medium text-muted-foreground text-sm">
               Active Orders
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-2">
-              <ShoppingCart className="w-8 h-8 text-purple-600" />
-              <span className="text-2xl font-bold">
+              <ShoppingCart className="h-8 w-8 text-primary" />
+              <span className="font-bold text-2xl">
                 {
                   mockPurchaseOrders.filter((p) => p.status !== "delivered")
                     .length
@@ -213,14 +212,14 @@ function InventoryPage() {
         </Card>
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-6">
+      <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
                 <span>Inventory Items</span>
                 <Button size="sm">
-                  <Package className="w-4 h-4 mr-1" />
+                  <Package className="mr-1 h-4 w-4" />
                   Add Item
                 </Button>
               </CardTitle>
@@ -230,31 +229,31 @@ function InventoryPage() {
                 {mockInventory.map((item) => (
                   <div
                     key={item.id}
-                    className={`flex items-center justify-between p-3 rounded-lg border ${
+                    className={`flex items-center justify-between rounded-lg border p-3 ${
                       item.status === "low-stock"
-                        ? "border-yellow-200 bg-yellow-50"
-                        : "border-gray-200"
+                        ? "border-warning/30 bg-warning/15"
+                        : "border-border"
                     }`}
                   >
                     <div className="flex items-center gap-3">
                       <div
-                        className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                        className={`flex h-10 w-10 items-center justify-center rounded-lg ${
                           item.status === "low-stock"
-                            ? "bg-yellow-100"
-                            : "bg-blue-100"
+                            ? "bg-warning/15"
+                            : "bg-primary/10"
                         }`}
                       >
                         <Package
-                          className={`w-5 h-5 ${
+                          className={`h-5 w-5 ${
                             item.status === "low-stock"
-                              ? "text-yellow-600"
-                              : "text-blue-600"
+                              ? "text-warning"
+                              : "text-primary"
                           }`}
                         />
                       </div>
                       <div>
                         <p className="font-medium">{item.name}</p>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-muted-foreground text-sm">
                           {item.category} • {item.quantity} {item.unit}
                         </p>
                       </div>
@@ -264,11 +263,11 @@ function InventoryPage() {
                         ₹{item.price.toLocaleString()}
                       </span>
                       {item.status === "low-stock" ? (
-                        <span className="px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-xs font-medium">
+                        <span className="rounded bg-warning/15 px-2 py-1 font-medium text-warning text-xs">
                           Low Stock
                         </span>
                       ) : (
-                        <span className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-medium">
+                        <span className="rounded bg-success/15 px-2 py-1 font-medium text-success text-xs">
                           In Stock
                         </span>
                       )}
@@ -284,31 +283,35 @@ function InventoryPage() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <ShoppingCart className="w-5 h-5" />
+                <ShoppingCart className="h-5 w-5" />
                 Purchase Orders
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
                 {mockPurchaseOrders.map((order) => (
-                  <div key={order.id} className="p-3 bg-gray-50 rounded-lg">
-                    <div className="flex justify-between items-start mb-2">
+                  <div key={order.id} className="rounded-lg bg-muted p-3">
+                    <div className="mb-2 flex items-start justify-between">
                       <span className="font-medium">{order.id}</span>
                       <span
-                        className={`px-2 py-0.5 rounded text-xs ${
+                        className={`rounded px-2 py-0.5 text-xs ${
                           order.status === "delivered"
-                            ? "bg-green-100 text-green-700"
+                            ? "bg-success/15 text-success"
                             : order.status === "processing"
-                              ? "bg-blue-100 text-blue-700"
-                              : "bg-yellow-100 text-yellow-700"
+                              ? "bg-primary/10 text-primary"
+                              : "bg-warning/15 text-warning"
                         }`}
                       >
                         {order.status}
                       </span>
                     </div>
-                    <p className="text-sm text-gray-600">{order.supplier}</p>
-                    <div className="flex justify-between mt-2 text-sm">
-                      <span className="text-gray-500">{order.items} items</span>
+                    <p className="text-muted-foreground text-sm">
+                      {order.supplier}
+                    </p>
+                    <div className="mt-2 flex justify-between text-sm">
+                      <span className="text-muted-foreground">
+                        {order.items} items
+                      </span>
                       <span className="font-medium">
                         ₹{order.amount.toLocaleString()}
                       </span>
@@ -316,8 +319,8 @@ function InventoryPage() {
                   </div>
                 ))}
               </div>
-              <Button variant="outline" className="w-full mt-4">
-                <FileText className="w-4 h-4 mr-2" />
+              <Button variant="outline" className="mt-4 w-full">
+                <FileText className="mr-2 h-4 w-4" />
                 View All Orders
               </Button>
             </CardContent>
@@ -329,19 +332,19 @@ function InventoryPage() {
             </CardHeader>
             <CardContent className="space-y-2">
               <Button variant="outline" className="w-full justify-start">
-                <ShoppingCart className="w-4 h-4 mr-2" />
+                <ShoppingCart className="mr-2 h-4 w-4" />
                 New Purchase Order
               </Button>
               <Button variant="outline" className="w-full justify-start">
-                <FileText className="w-4 h-4 mr-2" />
+                <FileText className="mr-2 h-4 w-4" />
                 Stock Entry
               </Button>
               <Button variant="outline" className="w-full justify-start">
-                <ArrowUp className="w-4 h-4 mr-2" />
+                <ArrowUp className="mr-2 h-4 w-4" />
                 Stock Adjustment
               </Button>
               <Button variant="outline" className="w-full justify-start">
-                <ArrowDown className="w-4 h-4 mr-2" />
+                <ArrowDown className="mr-2 h-4 w-4" />
                 Stock Consumption
               </Button>
             </CardContent>

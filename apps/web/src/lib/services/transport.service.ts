@@ -370,9 +370,7 @@ class TransportService {
     return this.studentTransport.get(studentId);
   }
 
-  getStudentRouteInfo(
-    studentId: string,
-  ): {
+  getStudentRouteInfo(studentId: string): {
     route: Route | undefined;
     stop: RouteStop | undefined;
     bus: Bus | undefined;

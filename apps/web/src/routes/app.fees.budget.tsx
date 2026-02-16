@@ -2,29 +2,15 @@
  * Budget Management - Financial Planning and Tracking
  */
 
-import { createFileRoute } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
-import {
-  PieChart,
-  FileText,
-  Receipt,
-  CreditCard,
-  ArrowDownRight,
-  Calculator,
-  Building,
-  Plus,
-  TrendingUp,
-  TrendingDown,
-  Target,
-  BarChart3,
-  Loader2,
-  Edit,
-  Trash2,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -34,6 +20,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -43,6 +30,23 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { api } from "@/lib/api";
+import { createFileRoute } from "@tanstack/react-router";
+import {
+  ArrowDownRight,
+  BarChart3,
+  Building,
+  Calculator,
+  CreditCard,
+  Edit,
+  FileText,
+  PieChart,
+  Plus,
+  Receipt,
+  Target,
+  TrendingDown,
+  TrendingUp,
+} from "lucide-react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/app/fees/budget")({
@@ -62,14 +66,62 @@ const subFeatures = [
 
 // Budget categories
 const budgetCategories = [
-  { id: "salaries", name: "Staff Salaries", icon: "👥", budgeted: 500000, spent: 420000 },
-  { id: "infrastructure", name: "Infrastructure", icon: "🏗️", budgeted: 200000, spent: 85000 },
-  { id: "utilities", name: "Utilities", icon: "💡", budgeted: 50000, spent: 42000 },
-  { id: "teaching", name: "Teaching Materials", icon: "📚", budgeted: 100000, spent: 65000 },
-  { id: "maintenance", name: "Maintenance", icon: "🔧", budgeted: 75000, spent: 58000 },
-  { id: "events", name: "Events & Activities", icon: "🎉", budgeted: 80000, spent: 25000 },
-  { id: "technology", name: "Technology", icon: "💻", budgeted: 150000, spent: 120000 },
-  { id: "misc", name: "Miscellaneous", icon: "📦", budgeted: 30000, spent: 18000 },
+  {
+    id: "salaries",
+    name: "Staff Salaries",
+    icon: "👥",
+    budgeted: 500000,
+    spent: 420000,
+  },
+  {
+    id: "infrastructure",
+    name: "Infrastructure",
+    icon: "🏗️",
+    budgeted: 200000,
+    spent: 85000,
+  },
+  {
+    id: "utilities",
+    name: "Utilities",
+    icon: "💡",
+    budgeted: 50000,
+    spent: 42000,
+  },
+  {
+    id: "teaching",
+    name: "Teaching Materials",
+    icon: "📚",
+    budgeted: 100000,
+    spent: 65000,
+  },
+  {
+    id: "maintenance",
+    name: "Maintenance",
+    icon: "🔧",
+    budgeted: 75000,
+    spent: 58000,
+  },
+  {
+    id: "events",
+    name: "Events & Activities",
+    icon: "🎉",
+    budgeted: 80000,
+    spent: 25000,
+  },
+  {
+    id: "technology",
+    name: "Technology",
+    icon: "💻",
+    budgeted: 150000,
+    spent: 120000,
+  },
+  {
+    id: "misc",
+    name: "Miscellaneous",
+    icon: "📦",
+    budgeted: 30000,
+    spent: 18000,
+  },
 ];
 
 function BudgetPage() {
@@ -101,7 +153,10 @@ function BudgetPage() {
     fetchStats();
   }, []);
 
-  const totalBudgeted = budgetCategories.reduce((sum, cat) => sum + cat.budgeted, 0);
+  const totalBudgeted = budgetCategories.reduce(
+    (sum, cat) => sum + cat.budgeted,
+    0,
+  );
   const totalSpent = budgetCategories.reduce((sum, cat) => sum + cat.spent, 0);
   const budgetUtilization = ((totalSpent / totalBudgeted) * 100).toFixed(1);
   const remainingBudget = totalBudgeted - totalSpent;
@@ -114,11 +169,13 @@ function BudgetPage() {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500">
+    <div className="fade-in animate-in space-y-6 duration-500">
       {/* Header */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">Budget Management</h1>
+          <h1 className="font-bold text-3xl text-foreground tracking-tight">
+            Budget Management
+          </h1>
           <p className="text-muted-foreground">
             Plan, allocate, and track financial resources.
           </p>
@@ -153,7 +210,9 @@ function BudgetPage() {
                   <Label>Category</Label>
                   <Select
                     value={budgetForm.category}
-                    onValueChange={(val) => setBudgetForm({ ...budgetForm, category: val })}
+                    onValueChange={(val) =>
+                      setBudgetForm({ ...budgetForm, category: val })
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select category" />
@@ -173,14 +232,18 @@ function BudgetPage() {
                     type="number"
                     placeholder="100000"
                     value={budgetForm.amount}
-                    onChange={(e) => setBudgetForm({ ...budgetForm, amount: e.target.value })}
+                    onChange={(e) =>
+                      setBudgetForm({ ...budgetForm, amount: e.target.value })
+                    }
                   />
                 </div>
                 <div className="space-y-2">
                   <Label>Financial Year</Label>
                   <Select
                     value={budgetForm.period}
-                    onValueChange={(val) => setBudgetForm({ ...budgetForm, period: val })}
+                    onValueChange={(val) =>
+                      setBudgetForm({ ...budgetForm, period: val })
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -192,7 +255,11 @@ function BudgetPage() {
                   </Select>
                 </div>
                 <DialogFooter>
-                  <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setIsDialogOpen(false)}
+                  >
                     Cancel
                   </Button>
                   <Button type="submit">Add Allocation</Button>
@@ -210,10 +277,11 @@ function BudgetPage() {
             <a
               key={feature.name}
               href={feature.href}
-              className={`flex items-center gap-2 px-4 py-2 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${feature.active
+              className={`flex items-center gap-2 whitespace-nowrap border-b-2 px-4 py-2 font-medium text-sm transition-colors ${
+                feature.active
                   ? "border-primary text-primary"
                   : "border-transparent text-muted-foreground hover:text-foreground"
-                }`}
+              }`}
             >
               <feature.icon className="h-4 w-4" />
               {feature.name}
@@ -226,44 +294,54 @@ function BudgetPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Total Budget</CardTitle>
+            <CardTitle className="font-medium text-sm">Total Budget</CardTitle>
             <Target className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">₹{(totalBudgeted / 100000).toFixed(1)}L</div>
-            <p className="text-xs text-muted-foreground">For {selectedPeriod}</p>
+            <div className="font-bold text-2xl">
+              ₹{(totalBudgeted / 100000).toFixed(1)}L
+            </div>
+            <p className="text-muted-foreground text-xs">
+              For {selectedPeriod}
+            </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Spent</CardTitle>
-            <TrendingDown className="h-4 w-4 text-red-500" />
+            <CardTitle className="font-medium text-sm">Spent</CardTitle>
+            <TrendingDown className="h-4 w-4 text-destructive" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-red-600">₹{(totalSpent / 100000).toFixed(1)}L</div>
-            <p className="text-xs text-muted-foreground">{budgetUtilization}% utilized</p>
+            <div className="font-bold text-2xl text-destructive">
+              ₹{(totalSpent / 100000).toFixed(1)}L
+            </div>
+            <p className="text-muted-foreground text-xs">
+              {budgetUtilization}% utilized
+            </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Remaining</CardTitle>
-            <TrendingUp className="h-4 w-4 text-green-500" />
+            <CardTitle className="font-medium text-sm">Remaining</CardTitle>
+            <TrendingUp className="h-4 w-4 text-success" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">₹{(remainingBudget / 100000).toFixed(1)}L</div>
-            <p className="text-xs text-muted-foreground">Available to spend</p>
+            <div className="font-bold text-2xl text-success">
+              ₹{(remainingBudget / 100000).toFixed(1)}L
+            </div>
+            <p className="text-muted-foreground text-xs">Available to spend</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Income</CardTitle>
-            <BarChart3 className="h-4 w-4 text-blue-500" />
+            <CardTitle className="font-medium text-sm">Income</CardTitle>
+            <BarChart3 className="h-4 w-4 text-primary" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-600">
+            <div className="font-bold text-2xl text-primary">
               ₹{(feeStats.totalCollected / 100000).toFixed(1)}L
             </div>
-            <p className="text-xs text-muted-foreground">Fee collections</p>
+            <p className="text-muted-foreground text-xs">Fee collections</p>
           </CardContent>
         </Card>
       </div>
@@ -272,7 +350,9 @@ function BudgetPage() {
       <Card>
         <CardHeader>
           <CardTitle>Budget Utilization</CardTitle>
-          <CardDescription>Track spending against allocated budgets</CardDescription>
+          <CardDescription>
+            Track spending against allocated budgets
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-6">
@@ -289,26 +369,34 @@ function BudgetPage() {
                       <span className="font-medium">{category.name}</span>
                     </div>
                     <div className="text-right">
-                      <span className={`font-semibold ${isOverBudget ? "text-red-600" : ""}`}>
+                      <span
+                        className={`font-semibold ${isOverBudget ? "text-destructive" : ""}`}
+                      >
                         ₹{(category.spent / 1000).toFixed(0)}K
                       </span>
-                      <span className="text-muted-foreground"> / ₹{(category.budgeted / 1000).toFixed(0)}K</span>
+                      <span className="text-muted-foreground">
+                        {" "}
+                        / ₹{(category.budgeted / 1000).toFixed(0)}K
+                      </span>
                     </div>
                   </div>
                   <div className="relative h-2 w-full rounded-full bg-secondary">
                     <div
-                      className={`absolute left-0 top-0 h-full rounded-full transition-all ${isOverBudget
-                          ? "bg-red-500"
+                      className={`absolute top-0 left-0 h-full rounded-full transition-all ${
+                        isOverBudget
+                          ? "bg-destructive"
                           : isWarning
-                            ? "bg-yellow-500"
-                            : "bg-green-500"
-                        }`}
+                            ? "bg-warning"
+                            : "bg-success"
+                      }`}
                       style={{ width: `${Math.min(utilization, 100)}%` }}
                     />
                   </div>
-                  <div className="flex justify-between text-xs text-muted-foreground">
+                  <div className="flex justify-between text-muted-foreground text-xs">
                     <span>{utilization.toFixed(0)}% utilized</span>
-                    {isOverBudget && <Badge variant="destructive">Over Budget</Badge>}
+                    {isOverBudget && (
+                      <Badge variant="destructive">Over Budget</Badge>
+                    )}
                     {isWarning && <Badge variant="warning">Near Limit</Badge>}
                   </div>
                 </div>
@@ -328,12 +416,12 @@ function BudgetPage() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b text-left text-sm text-muted-foreground">
+                <tr className="border-b text-left text-muted-foreground text-sm">
                   <th className="pb-3 font-medium">Category</th>
-                  <th className="pb-3 font-medium text-right">Budgeted</th>
-                  <th className="pb-3 font-medium text-right">Actual</th>
-                  <th className="pb-3 font-medium text-right">Variance</th>
-                  <th className="pb-3 font-medium text-right">Status</th>
+                  <th className="pb-3 text-right font-medium">Budgeted</th>
+                  <th className="pb-3 text-right font-medium">Actual</th>
+                  <th className="pb-3 text-right font-medium">Variance</th>
+                  <th className="pb-3 text-right font-medium">Status</th>
                   <th className="pb-3 font-medium">Actions</th>
                 </tr>
               </thead>
@@ -350,9 +438,15 @@ function BudgetPage() {
                           <span className="font-medium">{category.name}</span>
                         </div>
                       </td>
-                      <td className="py-3 text-right">₹{category.budgeted.toLocaleString()}</td>
-                      <td className="py-3 text-right">₹{category.spent.toLocaleString()}</td>
-                      <td className={`py-3 text-right font-medium ${isPositive ? "text-green-600" : "text-red-600"}`}>
+                      <td className="py-3 text-right">
+                        ₹{category.budgeted.toLocaleString()}
+                      </td>
+                      <td className="py-3 text-right">
+                        ₹{category.spent.toLocaleString()}
+                      </td>
+                      <td
+                        className={`py-3 text-right font-medium ${isPositive ? "text-success" : "text-destructive"}`}
+                      >
                         {isPositive ? "+" : ""}₹{variance.toLocaleString()}
                       </td>
                       <td className="py-3 text-right">
@@ -362,7 +456,11 @@ function BudgetPage() {
                       </td>
                       <td className="py-3">
                         <div className="flex gap-1">
-                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                          >
                             <Edit className="h-4 w-4" />
                           </Button>
                         </div>
@@ -374,13 +472,22 @@ function BudgetPage() {
               <tfoot>
                 <tr className="border-t-2 font-semibold">
                   <td className="pt-3">Total</td>
-                  <td className="pt-3 text-right">₹{totalBudgeted.toLocaleString()}</td>
-                  <td className="pt-3 text-right">₹{totalSpent.toLocaleString()}</td>
-                  <td className={`pt-3 text-right ${remainingBudget >= 0 ? "text-green-600" : "text-red-600"}`}>
-                    {remainingBudget >= 0 ? "+" : ""}₹{remainingBudget.toLocaleString()}
+                  <td className="pt-3 text-right">
+                    ₹{totalBudgeted.toLocaleString()}
                   </td>
                   <td className="pt-3 text-right">
-                    <Badge variant={remainingBudget >= 0 ? "success" : "destructive"}>
+                    ₹{totalSpent.toLocaleString()}
+                  </td>
+                  <td
+                    className={`pt-3 text-right ${remainingBudget >= 0 ? "text-success" : "text-destructive"}`}
+                  >
+                    {remainingBudget >= 0 ? "+" : ""}₹
+                    {remainingBudget.toLocaleString()}
+                  </td>
+                  <td className="pt-3 text-right">
+                    <Badge
+                      variant={remainingBudget >= 0 ? "success" : "destructive"}
+                    >
                       {remainingBudget >= 0 ? "On Track" : "Over Budget"}
                     </Badge>
                   </td>

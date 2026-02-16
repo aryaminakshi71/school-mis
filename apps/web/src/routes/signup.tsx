@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link, createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/signup")({
   component: SignupPage,
@@ -6,50 +6,62 @@ export const Route = createFileRoute("/signup")({
 
 function SignupPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="max-w-md w-full bg-white p-8 rounded-lg shadow">
-        <h1 className="text-2xl font-bold text-center mb-8">Create Account</h1>
-        <form className="space-y-4">
+    <div className="flex min-h-screen items-center justify-center">
+      <div className="w-full max-w-md rounded-lg bg-card p-8 shadow">
+        <h1 className="mb-8 text-center font-bold text-2xl">Create Account</h1>
+        <form className="space-y-4" action="/app" method="get">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="school-name"
+              className="mb-1 block font-medium text-foreground text-sm"
+            >
               School Name
             </label>
             <input
+              id="school-name"
               type="text"
-              className="w-full p-3 border rounded-lg"
+              className="w-full rounded-lg border p-3"
               placeholder="Springfield High School"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="email"
+              className="mb-1 block font-medium text-foreground text-sm"
+            >
               Email
             </label>
             <input
+              id="email"
               type="email"
-              className="w-full p-3 border rounded-lg"
+              className="w-full rounded-lg border p-3"
               placeholder="admin@school.edu"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="password"
+              className="mb-1 block font-medium text-foreground text-sm"
+            >
               Password
             </label>
             <input
+              id="password"
               type="password"
-              className="w-full p-3 border rounded-lg"
+              className="w-full rounded-lg border p-3"
               placeholder="••••••••"
             />
           </div>
-          <Link
-            to="/app"
-            className="block w-full bg-blue-600 text-white text-center py-3 rounded-lg hover:bg-blue-700"
+          <button
+            type="submit"
+            className="block w-full rounded-lg bg-primary py-3 text-center text-primary-foreground hover:bg-primary/90"
           >
             Create Account
-          </Link>
+          </button>
         </form>
-        <p className="text-center mt-6 text-gray-600">
+        <p className="mt-6 text-center text-muted-foreground">
           Already have an account?{" "}
-          <Link to="/login" className="text-blue-600">
+          <Link to="/login" className="text-primary">
             Login
           </Link>
         </p>

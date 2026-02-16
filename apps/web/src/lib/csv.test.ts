@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, afterEach } from "vitest";
-import { exportToCSV, downloadTemplate, parseCSV } from "../lib/csv";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { downloadTemplate, exportToCSV, parseCSV } from "../lib/csv";
 
 describe("CSV Utilities", () => {
   afterEach(() => {

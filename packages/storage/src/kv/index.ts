@@ -22,7 +22,7 @@ export interface CacheOptions {
 }
 
 const DEFAULT_TTL = 3600; // 1 hour
-const CACHE_PREFIX = 'school-mis:';
+const CACHE_PREFIX = "school-mis:";
 
 export class KVCache {
   private binding: KVNamespace | null = null;
@@ -35,7 +35,7 @@ export class KVCache {
   private getBinding(): KVNamespace {
     if (
       !this.binding &&
-      typeof process !== 'undefined' &&
+      typeof process !== "undefined" &&
       (process.env as Record<string, string>)[`KV_${config.bindingName}`]
     ) {
       // In production, this would be resolved by the Cloudflare runtime
@@ -53,10 +53,13 @@ export class KVCache {
   }
 
   private buildKey(key: string, prefix?: string): string {
-    return `${CACHE_PREFIX}${prefix || ''}${key}`;
+    return `${CACHE_PREFIX}${prefix || ""}${key}`;
   }
 
-  async get<T = unknown>(key: string, options?: CacheOptions): Promise<T | null> {
+  async get<T = unknown>(
+    key: string,
+    options?: CacheOptions,
+  ): Promise<T | null> {
     const binding = this.getBinding();
     const fullKey = this.buildKey(key, options?.prefix);
 
@@ -71,7 +74,11 @@ export class KVCache {
     }
   }
 
-  async set(key: string, value: unknown, options?: CacheOptions): Promise<void> {
+  async set(
+    key: string,
+    value: unknown,
+    options?: CacheOptions,
+  ): Promise<void> {
     const binding = this.getBinding();
     const fullKey = this.buildKey(key, options?.prefix);
     const ttl = options?.ttl || DEFAULT_TTL;
@@ -79,7 +86,7 @@ export class KVCache {
     try {
       await binding.put(fullKey, JSON.stringify(value), { expirationTtl: ttl });
     } catch (error) {
-      console.error('KV cache set error:', error);
+      console.error("KV cache set error:", error);
     }
   }
 
@@ -90,7 +97,7 @@ export class KVCache {
     try {
       await binding.delete(fullKey);
     } catch (error) {
-      console.error('KV cache delete error:', error);
+      console.error("KV cache delete error:", error);
     }
   }
 
@@ -104,12 +111,12 @@ export class KVCache {
         await binding.delete(key.name);
       }
     } catch (error) {
-      console.error('KV cache invalidate error:', error);
+      console.error("KV cache invalidate error:", error);
     }
   }
 
   async invalidateAll(): Promise<void> {
-    await this.invalidatePattern('');
+    await this.invalidatePattern("");
   }
 }
 
@@ -118,14 +125,14 @@ export function createKVCache(config: KVConfig): KVCache {
 }
 
 export const kvCache = createKVCache({
-  bindingName: 'SCHOOL_CACHE',
+  bindingName: "SCHOOL_CACHE",
 });
 
 export async function cacheWithInvalidation<T>(
   cache: KVCache,
   key: string,
   fetcher: () => Promise<T>,
-  options?: CacheOptions
+  options?: CacheOptions,
 ): Promise<T> {
   const cached = await cache.get<T>(key, options);
   if (cached) return cached;
@@ -136,17 +143,18 @@ export async function cacheWithInvalidation<T>(
 }
 
 export const CACHE_KEYS = {
-  STUDENTS: (id?: string) => (id ? `students:${id}` : 'students:all'),
-  CLASSES: (id?: string) => (id ? `classes:${id}` : 'classes:all'),
-  TEACHERS: (id?: string) => (id ? `teachers:${id}` : 'teachers:all'),
-  SESSIONS: (id?: string) => (id ? `sessions:${id}` : 'sessions:all'),
-  FEES: (id?: string) => (id ? `fees:${id}` : 'fees:all'),
-  ATTENDANCE: (date: string, classId?: string) => `attendance:${date}:${classId || 'all'}`,
+  STUDENTS: (id?: string) => (id ? `students:${id}` : "students:all"),
+  CLASSES: (id?: string) => (id ? `classes:${id}` : "classes:all"),
+  TEACHERS: (id?: string) => (id ? `teachers:${id}` : "teachers:all"),
+  SESSIONS: (id?: string) => (id ? `sessions:${id}` : "sessions:all"),
+  FEES: (id?: string) => (id ? `fees:${id}` : "fees:all"),
+  ATTENDANCE: (date: string, classId?: string) =>
+    `attendance:${date}:${classId || "all"}`,
   TIMETABLE: (classId: string, day: number) => `timetable:${classId}:${day}`,
   EXAM_SCHEDULE: (classId: string) => `exam-schedule:${classId}`,
   REPORT_CARDS: (studentId: string) => `report-cards:${studentId}`,
-  TRANSPORT: (routeId?: string) => `transport:${routeId || 'routes'}`,
-  LIBRARY: (bookId?: string) => `library:${bookId || 'books'}`,
+  TRANSPORT: (routeId?: string) => `transport:${routeId || "routes"}`,
+  LIBRARY: (bookId?: string) => `library:${bookId || "books"}`,
   HEALTH: (studentId: string) => `health:${studentId}`,
   HOLIDAYS: (sessionId: string) => `holidays:${sessionId}`,
   BIRTHDAYS: (month: number) => `birthdays:${month}`,

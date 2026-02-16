@@ -1,11 +1,3 @@
-/**
- * API Client
- *
- * This file provides the API client for connecting to the backend.
- */
-
-import { v4 as uuid } from "uuid";
-
 // Types
 export interface Student {
   id: string;
@@ -192,7 +184,7 @@ export const api = {
     collect: async (data: Omit<FeePayment, "id">) => {
       return request("/fees", {
         method: "POST",
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
       });
     },
     getStats: async () => {
@@ -327,12 +319,13 @@ export const api = {
     getStats: async () => {
       try {
         // Use request helper for cleaner error handling
-        const [studentsData, teachersData, classesData, feesData] = await Promise.all([
-          request("/students?limit=1"),
-          request("/teachers"),
-          request("/classes"),
-          request("/fees"),
-        ]);
+        const [studentsData, teachersData, classesData, feesData] =
+          await Promise.all([
+            request("/students?limit=1"),
+            request("/teachers"),
+            request("/classes"),
+            request("/fees"),
+          ]);
 
         const fees = feesData.fees || [];
 
@@ -433,7 +426,11 @@ export const api = {
         }
       },
     },
-    issue: async (data: { bookId: string; studentId: string; dueDate: string }) => {
+    issue: async (data: {
+      bookId: string;
+      studentId: string;
+      dueDate: string;
+    }) => {
       return request("/library/issue", {
         method: "POST",
         body: JSON.stringify(data),

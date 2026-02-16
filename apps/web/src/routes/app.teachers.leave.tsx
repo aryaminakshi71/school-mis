@@ -2,39 +2,33 @@
  * Staff Leave Management - Leave requests, approval workflow, leave balance
  */
 
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
-import {
-  Users,
-  UserPlus,
-  DollarSign,
-  Calendar,
-  Award,
-  Search,
-  Plus,
-  CheckCircle,
-  XCircle,
-  Clock,
-  Download,
-  FileText,
-  TrendingUp,
-  AlertCircle,
-  Filter,
-  CalendarDays,
-  Hourglass,
-  MoreVertical,
-  Eye,
-  Edit,
-  Trash,
-  ThumbsUp,
-  ThumbsDown,
-} from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { useSearch } from "@/lib/search-utils";
 import { exportToCSV } from "@/lib/export-utils";
+import { useSearch } from "@/lib/search-utils";
+import { createFileRoute } from "@tanstack/react-router";
+import {
+  Award,
+  Calendar,
+  CalendarDays,
+  CheckCircle,
+  Clock,
+  DollarSign,
+  Download,
+  Eye,
+  Filter,
+  Hourglass,
+  Plus,
+  Search,
+  ThumbsDown,
+  ThumbsUp,
+  TrendingUp,
+  UserPlus,
+  Users,
+} from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/app/teachers/leave")({
@@ -144,12 +138,17 @@ function LeavePage() {
     searchQuery: "",
   });
 
-  const filteredByStatus = selectedStatus === "all"
-    ? filteredRequests
-    : filteredRequests.filter((r) => r.status === selectedStatus);
+  const filteredByStatus =
+    selectedStatus === "all"
+      ? filteredRequests
+      : filteredRequests.filter((r) => r.status === selectedStatus);
 
-  const pendingCount = filteredRequests.filter((r) => r.status === "pending").length;
-  const approvedCount = filteredRequests.filter((r) => r.status === "approved").length;
+  const pendingCount = filteredRequests.filter(
+    (r) => r.status === "pending",
+  ).length;
+  const approvedCount = filteredRequests.filter(
+    (r) => r.status === "approved",
+  ).length;
 
   const handleApprove = (id: string) => {
     toast.success(`Leave request ${id} approved`);
@@ -162,25 +161,52 @@ function LeavePage() {
   const handleExport = () => {
     const exportData = filteredByStatus.map((r) => ({
       "Request ID": r.id,
-      "Employee": r.employee,
-      "Type": r.type,
-      "From": r.from,
-      "To": r.to,
-      "Days": r.days,
-      "Reason": r.reason,
-      "Status": r.status,
+      Employee: r.employee,
+      Type: r.type,
+      From: r.from,
+      To: r.to,
+      Days: r.days,
+      Reason: r.reason,
+      Status: r.status,
       "Applied On": r.appliedOn,
     }));
 
-    exportToCSV(exportData, `leave-requests-${new Date().toISOString().split("T")[0]}`);
+    exportToCSV(
+      exportData,
+      `leave-requests-${new Date().toISOString().split("T")[0]}`,
+    );
     toast.success("Leave data exported");
   };
 
   const stats = [
-    { title: "Pending Requests", value: pendingCount.toString(), change: "Need approval", icon: Hourglass, color: "yellow" },
-    { title: "Approved Today", value: approvedCount.toString(), change: "Processed", icon: CheckCircle, color: "green" },
-    { title: "Avg Processing Time", value: "1.5 days", change: "Response time", icon: Clock, color: "blue" },
-    { title: "Leave Utilization", value: "78%", change: "This month", icon: TrendingUp, color: "purple" },
+    {
+      title: "Pending Requests",
+      value: pendingCount.toString(),
+      change: "Need approval",
+      icon: Hourglass,
+      color: "yellow",
+    },
+    {
+      title: "Approved Today",
+      value: approvedCount.toString(),
+      change: "Processed",
+      icon: CheckCircle,
+      color: "green",
+    },
+    {
+      title: "Avg Processing Time",
+      value: "1.5 days",
+      change: "Response time",
+      icon: Clock,
+      color: "blue",
+    },
+    {
+      title: "Leave Utilization",
+      value: "78%",
+      change: "This month",
+      icon: TrendingUp,
+      color: "purple",
+    },
   ];
 
   return (
@@ -188,8 +214,13 @@ function LeavePage() {
       {/* Header */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Leave Management</h1>
-          <p className="text-muted-foreground">Manage leave requests, track balances, and approve/reject applications.</p>
+          <h1 className="font-bold text-3xl tracking-tight">
+            Leave Management
+          </h1>
+          <p className="text-muted-foreground">
+            Manage leave requests, track balances, and approve/reject
+            applications.
+          </p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" onClick={handleExport}>
@@ -210,7 +241,7 @@ function LeavePage() {
             <a
               key={feature.name}
               href={feature.href}
-              className={`flex items-center gap-2 px-4 py-2 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
+              className={`flex items-center gap-2 whitespace-nowrap border-b-2 px-4 py-2 font-medium text-sm transition-colors ${
                 feature.active
                   ? "border-primary text-primary"
                   : "border-transparent text-muted-foreground hover:text-foreground"
@@ -228,14 +259,16 @@ function LeavePage() {
         {stats.map((stat) => (
           <Card key={stat.title}>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
-              <div className={`p-2 rounded-lg bg-${stat.color}-100`}>
+              <CardTitle className="font-medium text-sm">
+                {stat.title}
+              </CardTitle>
+              <div className={`rounded-lg p-2 bg-${stat.color}-100`}>
                 <stat.icon className={`h-4 w-4 text-${stat.color}-600`} />
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stat.value}</div>
-              <p className="text-xs text-muted-foreground">{stat.change}</p>
+              <div className="font-bold text-2xl">{stat.value}</div>
+              <p className="text-muted-foreground text-xs">{stat.change}</p>
             </CardContent>
           </Card>
         ))}
@@ -245,7 +278,7 @@ function LeavePage() {
       <div className="flex gap-2 border-b">
         <button
           onClick={() => setActiveTab("requests")}
-          className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+          className={`border-b-2 px-4 py-2 font-medium text-sm transition-colors ${
             activeTab === "requests"
               ? "border-primary text-primary"
               : "border-transparent text-muted-foreground hover:text-foreground"
@@ -255,7 +288,7 @@ function LeavePage() {
         </button>
         <button
           onClick={() => setActiveTab("balance")}
-          className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+          className={`border-b-2 px-4 py-2 font-medium text-sm transition-colors ${
             activeTab === "balance"
               ? "border-primary text-primary"
               : "border-transparent text-muted-foreground hover:text-foreground"
@@ -265,7 +298,7 @@ function LeavePage() {
         </button>
         <button
           onClick={() => setActiveTab("calendar")}
-          className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+          className={`border-b-2 px-4 py-2 font-medium text-sm transition-colors ${
             activeTab === "calendar"
               ? "border-primary text-primary"
               : "border-transparent text-muted-foreground hover:text-foreground"
@@ -281,16 +314,21 @@ function LeavePage() {
           {activeTab === "requests" && (
             <>
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Search className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
                 <Input
                   type="search"
                   placeholder="Search requests..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-9 w-[300px]"
+                  className="w-[300px] pl-9"
                 />
                 {hasActiveFilters && (
-                  <Button variant="ghost" size="sm" onClick={clearSearch} className="absolute right-2 top-1/2 -translate-y-1/2 h-6 px-2 text-xs">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={clearSearch}
+                    className="-translate-y-1/2 absolute top-1/2 right-2 h-6 px-2 text-xs"
+                  >
                     Clear
                   </Button>
                 )}
@@ -298,7 +336,7 @@ function LeavePage() {
               <select
                 value={selectedStatus}
                 onChange={(e) => setSelectedStatus(e.target.value)}
-                className="flex h-10 w-[150px] items-center justify-between rounded-lg border border-input bg-white px-3 py-2 text-sm"
+                className="flex h-10 w-[150px] items-center justify-between rounded-lg border border-input bg-card px-3 py-2 text-sm"
               >
                 <option value="all">All Status</option>
                 <option value="pending">Pending</option>
@@ -328,7 +366,7 @@ function LeavePage() {
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b text-left text-sm text-muted-foreground">
+                  <tr className="border-b text-left text-muted-foreground text-sm">
                     <th className="pb-3 font-medium">Request ID</th>
                     <th className="pb-3 font-medium">Employee</th>
                     <th className="pb-3 font-medium">Leave Type</th>
@@ -346,14 +384,20 @@ function LeavePage() {
                       <td className="py-3 text-sm">{request.id}</td>
                       <td className="py-3">
                         <div className="font-medium">{request.employee}</div>
-                        <div className="text-xs text-muted-foreground">{request.designation}</div>
+                        <div className="text-muted-foreground text-xs">
+                          {request.designation}
+                        </div>
                       </td>
                       <td className="py-3 text-sm">{request.type}</td>
                       <td className="py-3 text-sm">
                         {request.from} <br />
-                        <span className="text-muted-foreground">to {request.to}</span>
+                        <span className="text-muted-foreground">
+                          to {request.to}
+                        </span>
                       </td>
-                      <td className="py-3 text-sm font-medium">{request.days}</td>
+                      <td className="py-3 font-medium text-sm">
+                        {request.days}
+                      </td>
                       <td className="py-3 text-sm">{request.reason}</td>
                       <td className="py-3">
                         <Badge
@@ -361,8 +405,8 @@ function LeavePage() {
                             request.status === "approved"
                               ? "success"
                               : request.status === "pending"
-                              ? "default"
-                              : "destructive"
+                                ? "default"
+                                : "destructive"
                           }
                         >
                           {request.status}
@@ -371,15 +415,29 @@ function LeavePage() {
                       <td className="py-3 text-sm">{request.appliedOn}</td>
                       <td className="py-3">
                         <div className="flex gap-1">
-                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                          >
                             <Eye className="h-4 w-4" />
                           </Button>
                           {request.status === "pending" && (
                             <>
-                              <Button variant="ghost" size="icon" className="h-8 w-8 text-green-600" onClick={() => handleApprove(request.id)}>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8 text-success"
+                                onClick={() => handleApprove(request.id)}
+                              >
                                 <ThumbsUp className="h-4 w-4" />
                               </Button>
-                              <Button variant="ghost" size="icon" className="h-8 w-8 text-red-600" onClick={() => handleReject(request.id)}>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8 text-destructive"
+                                onClick={() => handleReject(request.id)}
+                              >
                                 <ThumbsDown className="h-4 w-4" />
                               </Button>
                             </>
@@ -397,7 +455,7 @@ function LeavePage() {
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b text-left text-sm text-muted-foreground">
+                  <tr className="border-b text-left text-muted-foreground text-sm">
                     <th className="pb-3 font-medium">Employee</th>
                     <th className="pb-3 font-medium">Casual Leave</th>
                     <th className="pb-3 font-medium">Sick Leave</th>
@@ -408,15 +466,20 @@ function LeavePage() {
                 </thead>
                 <tbody>
                   {leaveBalance.map((balance) => (
-                    <tr key={balance.employee} className="border-b last:border-0">
+                    <tr
+                      key={balance.employee}
+                      className="border-b last:border-0"
+                    >
                       <td className="py-3 font-medium">{balance.employee}</td>
                       <td className="py-3 text-sm">{balance.casual} days</td>
                       <td className="py-3 text-sm">{balance.sick} days</td>
                       <td className="py-3 text-sm">{balance.earned} days</td>
-                      <td className="py-3 text-sm font-medium">{balance.total} days</td>
+                      <td className="py-3 font-medium text-sm">
+                        {balance.total} days
+                      </td>
                       <td className="py-3">
                         <Button variant="ghost" size="sm">
-                          <Eye className="h-4 w-4 mr-1" />
+                          <Eye className="mr-1 h-4 w-4" />
                           View Details
                         </Button>
                       </td>
@@ -428,11 +491,12 @@ function LeavePage() {
           )}
 
           {activeTab === "calendar" && (
-            <div className="text-center py-12">
-              <CalendarDays className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">Leave Calendar</h3>
-              <p className="text-sm text-gray-600 mb-4">
-                View all approved leaves in a calendar format. Plan resources accordingly.
+            <div className="py-12 text-center">
+              <CalendarDays className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
+              <h3 className="mb-2 font-semibold text-lg">Leave Calendar</h3>
+              <p className="mb-4 text-muted-foreground text-sm">
+                View all approved leaves in a calendar format. Plan resources
+                accordingly.
               </p>
               <Button>
                 <CalendarDays className="mr-2 h-4 w-4" />

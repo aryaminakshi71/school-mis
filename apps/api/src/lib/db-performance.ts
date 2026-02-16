@@ -1,6 +1,6 @@
 /**
  * Database Performance Monitoring
- * 
+ *
  * Provides query performance tracking and slow query logging.
  */
 
@@ -16,7 +16,7 @@ const MAX_METRICS = 1000;
 
 export async function trackQuery<T>(
   queryName: string,
-  queryFn: () => Promise<T>
+  queryFn: () => Promise<T>,
 ): Promise<T> {
   const startTime = Date.now();
   let error: string | undefined;
@@ -103,7 +103,10 @@ export function clearMetrics(): void {
   queryMetrics.length = 0;
 }
 
-export function getMetricsByQuery(): Record<string, ReturnType<typeof getQueryStats>> {
+export function getMetricsByQuery(): Record<
+  string,
+  ReturnType<typeof getQueryStats>
+> {
   const queryNames = new Set(queryMetrics.map((m) => m.name));
   const summary: Record<string, ReturnType<typeof getQueryStats>> = {};
 

@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/app/transport/tracking")({
   component: TrackingPage,
@@ -84,12 +84,14 @@ function TrackingPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="font-bold text-2xl text-foreground">
             Live GPS Tracking
           </h1>
-          <p className="text-gray-600">Real-time vehicle tracking with GPS</p>
+          <p className="text-muted-foreground">
+            Real-time vehicle tracking with GPS
+          </p>
         </div>
         <div className="flex gap-2">
           <select
@@ -97,52 +99,56 @@ function TrackingPage() {
             onChange={(e) =>
               setMapType(e.target.value as "street" | "satellite")
             }
-            className="px-4 py-2 border rounded-lg"
+            className="rounded-lg border px-4 py-2"
           >
             <option value="street">Street View</option>
             <option value="satellite">Satellite</option>
           </select>
-          <button className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
+          <button className="rounded-lg bg-success px-4 py-2 text-success-foreground hover:bg-success">
             Refresh
           </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-4 gap-4 mb-6">
-        <div className="bg-blue-100 p-4 rounded-lg">
-          <p className="text-blue-700 text-sm font-medium">Total Vehicles</p>
-          <p className="text-2xl font-bold text-blue-800">{stats.total}</p>
+      <div className="mb-6 grid grid-cols-4 gap-4">
+        <div className="rounded-lg bg-primary/10 p-4">
+          <p className="font-medium text-primary text-sm">Total Vehicles</p>
+          <p className="font-bold text-2xl text-primary">{stats.total}</p>
         </div>
-        <div className="bg-green-100 p-4 rounded-lg">
-          <p className="text-green-700 text-sm font-medium">On Time</p>
-          <p className="text-2xl font-bold text-green-800">{stats.onTime}</p>
+        <div className="rounded-lg bg-success/15 p-4">
+          <p className="font-medium text-sm text-success">On Time</p>
+          <p className="font-bold text-2xl text-success">{stats.onTime}</p>
         </div>
-        <div className="bg-yellow-100 p-4 rounded-lg">
-          <p className="text-yellow-700 text-sm font-medium">Delayed</p>
-          <p className="text-2xl font-bold text-yellow-800">{stats.delayed}</p>
+        <div className="rounded-lg bg-warning/15 p-4">
+          <p className="font-medium text-sm text-warning">Delayed</p>
+          <p className="font-bold text-2xl text-warning">{stats.delayed}</p>
         </div>
-        <div className="bg-gray-100 p-4 rounded-lg">
-          <p className="text-gray-700 text-sm font-medium">Stopped</p>
-          <p className="text-2xl font-bold text-gray-800">{stats.stopped}</p>
+        <div className="rounded-lg bg-muted p-4">
+          <p className="font-medium text-foreground text-sm">Stopped</p>
+          <p className="font-bold text-2xl text-foreground">{stats.stopped}</p>
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 bg-white rounded-lg border overflow-hidden shadow-sm">
-          <div className="p-4 border-b bg-gray-50">
-            <h2 className="font-bold text-gray-900">Live Map</h2>
-            <p className="text-sm text-gray-600">Real-time vehicle locations</p>
+      <div className="grid gap-6 lg:grid-cols-3">
+        <div className="overflow-hidden rounded-lg border bg-card shadow-sm lg:col-span-2">
+          <div className="border-b bg-muted p-4">
+            <h2 className="font-bold text-foreground">Live Map</h2>
+            <p className="text-muted-foreground text-sm">
+              Real-time vehicle locations
+            </p>
           </div>
-          <div className="relative h-96 bg-gray-100">
+          <div className="relative h-96 bg-muted">
             {/* Map placeholder - in production, integrate with Google Maps or Mapbox */}
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="text-center">
-                <div className="text-6xl mb-4">🗺️</div>
-                <p className="text-gray-500 font-medium">Interactive Map</p>
-                <p className="text-sm text-gray-400">
+                <div className="mb-4 text-6xl">🗺️</div>
+                <p className="font-medium text-muted-foreground">
+                  Interactive Map
+                </p>
+                <p className="text-muted-foreground text-sm">
                   Google Maps / Mapbox Integration
                 </p>
-                <p className="text-xs text-gray-400 mt-2">
+                <p className="mt-2 text-muted-foreground text-xs">
                   Coordinates: {vehicles[0]?.latitude.toFixed(4)},{" "}
                   {vehicles[0]?.longitude.toFixed(4)}
                 </p>
@@ -153,7 +159,7 @@ function TrackingPage() {
             {vehicles.map((vehicle) => (
               <div
                 key={vehicle.id}
-                className="absolute cursor-pointer transform -translate-x-1/2 -translate-y-1/2"
+                className="-translate-x-1/2 -translate-y-1/2 absolute transform cursor-pointer"
                 style={{
                   left: `${((vehicle.longitude - 77.2) / 0.05) * 100}%`,
                   top: `${((28.65 - vehicle.latitude) / 0.05) * 100}%`,
@@ -161,12 +167,12 @@ function TrackingPage() {
                 onClick={() => setSelectedVehicle(vehicle.id)}
               >
                 <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-lg ${
+                  className={`flex h-8 w-8 items-center justify-center rounded-full font-bold text-background text-sm shadow-lg ${
                     vehicle.status === "on-time"
-                      ? "bg-green-500"
+                      ? "bg-success"
                       : vehicle.status === "delayed"
-                        ? "bg-yellow-500"
-                        : "bg-gray-500"
+                        ? "bg-warning"
+                        : "bg-foreground"
                   }`}
                 >
                   🚌
@@ -176,31 +182,33 @@ function TrackingPage() {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg border shadow-sm">
-          <div className="p-4 border-b bg-gray-50">
-            <h2 className="font-bold text-gray-900">Vehicles</h2>
-            <p className="text-sm text-gray-600">Click to view details</p>
+        <div className="rounded-lg border bg-card shadow-sm">
+          <div className="border-b bg-muted p-4">
+            <h2 className="font-bold text-foreground">Vehicles</h2>
+            <p className="text-muted-foreground text-sm">
+              Click to view details
+            </p>
           </div>
-          <div className="divide-y max-h-96 overflow-auto">
+          <div className="max-h-96 divide-y overflow-auto">
             {vehicles.map((vehicle) => (
               <div
                 key={vehicle.id}
                 onClick={() => setSelectedVehicle(vehicle.id)}
-                className={`p-4 cursor-pointer hover:bg-gray-50 transition-colors ${
+                className={`cursor-pointer p-4 transition-colors hover:bg-muted ${
                   selectedVehicle === vehicle.id
-                    ? "bg-blue-50 border-l-4 border-blue-500"
+                    ? "border-primary border-l-4 bg-primary/5"
                     : ""
                 }`}
               >
-                <div className="flex items-center justify-between mb-2">
+                <div className="mb-2 flex items-center justify-between">
                   <span className="font-medium">{vehicle.vehicleNumber}</span>
                   <span
-                    className={`px-2 py-1 rounded-full text-xs font-medium ${
+                    className={`rounded-full px-2 py-1 font-medium text-xs ${
                       vehicle.status === "on-time"
-                        ? "bg-green-100 text-green-700"
+                        ? "bg-success/15 text-success"
                         : vehicle.status === "delayed"
-                          ? "bg-yellow-100 text-yellow-700"
-                          : "bg-gray-100 text-gray-700"
+                          ? "bg-warning/15 text-warning"
+                          : "bg-muted text-foreground"
                     }`}
                   >
                     {vehicle.status === "on-time"
@@ -210,7 +218,7 @@ function TrackingPage() {
                         : "Stopped"}
                   </span>
                 </div>
-                <div className="text-sm text-gray-600">
+                <div className="text-muted-foreground text-sm">
                   <p>Driver: {vehicle.driver}</p>
                   <p>Route: {vehicle.route}</p>
                   <p className="mt-1">Speed: {vehicle.speed} km/h</p>
@@ -222,38 +230,40 @@ function TrackingPage() {
       </div>
 
       {selectedVehicle && (
-        <div className="mt-6 bg-white rounded-lg border p-6 shadow-sm">
-          <h2 className="font-bold text-gray-900 mb-4">Vehicle Details</h2>
+        <div className="mt-6 rounded-lg border bg-card p-6 shadow-sm">
+          <h2 className="mb-4 font-bold text-foreground">Vehicle Details</h2>
           {(() => {
             const vehicle = vehicles.find((v) => v.id === selectedVehicle);
             if (!vehicle) return null;
             return (
-              <div className="grid md:grid-cols-3 gap-6">
+              <div className="grid gap-6 md:grid-cols-3">
                 <div>
-                  <p className="text-sm text-gray-500">Vehicle Number</p>
+                  <p className="text-muted-foreground text-sm">
+                    Vehicle Number
+                  </p>
                   <p className="font-medium text-lg">{vehicle.vehicleNumber}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Driver</p>
+                  <p className="text-muted-foreground text-sm">Driver</p>
                   <p className="font-medium text-lg">{vehicle.driver}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Current Speed</p>
+                  <p className="text-muted-foreground text-sm">Current Speed</p>
                   <p className="font-medium text-lg">{vehicle.speed} km/h</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Location</p>
+                  <p className="text-muted-foreground text-sm">Location</p>
                   <p className="font-medium">
                     {vehicle.latitude.toFixed(6)},{" "}
                     {vehicle.longitude.toFixed(6)}
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Route</p>
+                  <p className="text-muted-foreground text-sm">Route</p>
                   <p className="font-medium">{vehicle.route}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Last Update</p>
+                  <p className="text-muted-foreground text-sm">Last Update</p>
                   <p className="font-medium">
                     {new Date(vehicle.lastUpdate).toLocaleTimeString()}
                   </p>

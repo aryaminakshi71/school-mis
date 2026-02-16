@@ -1,32 +1,28 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useAuth } from "../lib/auth-context";
-import { useState } from "react";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import {
-  User,
-  DollarSign,
-  Calendar,
-  Clock,
-  FileText,
-  TrendingUp,
-  Users,
-  Phone,
-  Mail,
   Award,
   Briefcase,
-  BookOpen,
-  MessageSquare,
-  Download,
+  Calendar,
   CheckCircle,
+  Clock,
+  DollarSign,
+  Download,
+  FileText,
+  MessageSquare,
+  TrendingUp,
+  User,
   XCircle,
 } from "lucide-react";
+import { useState } from "react";
+import { Badge } from "../components/ui/badge";
+import { Button } from "../components/ui/button";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
-import { Button } from "../components/ui/button";
-import { Badge } from "../components/ui/badge";
+import { useAuth } from "../lib/auth-context";
 
 export const Route = createFileRoute("/app/staff-portal")({
   component: StaffPortal,
@@ -38,13 +34,13 @@ function StaffPortal() {
 
   if (!hasRole(["teacher", "staff", "accountant", "librarian", "admin"])) {
     return (
-      <div className="flex items-center justify-center h-96">
+      <div className="flex h-96 items-center justify-center">
         <div className="text-center">
-          <User className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-          <h2 className="text-xl font-bold text-gray-900 mb-2">
+          <User className="mx-auto mb-4 h-16 w-16 text-muted-foreground" />
+          <h2 className="mb-2 font-bold text-foreground text-xl">
             Access Denied
           </h2>
-          <p className="text-gray-600">
+          <p className="text-muted-foreground">
             This portal is only available for staff members.
           </p>
         </div>
@@ -221,31 +217,33 @@ function StaffPortal() {
       <div className="flex flex-col gap-4">
         <Link
           to="/app"
-          className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-blue-600 transition-colors w-fit group"
+          className="group inline-flex w-fit items-center gap-2 text-muted-foreground text-sm transition-colors hover:text-primary"
         >
-          <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
+          <ArrowLeft className="group-hover:-translate-x-1 h-4 w-4 transition-transform" />
           Back to Dashboard
         </Link>
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Staff Portal</h1>
-          <p className="text-gray-600 text-lg">
+          <h1 className="mb-2 font-bold text-3xl text-foreground">
+            Staff Portal
+          </h1>
+          <p className="text-lg text-muted-foreground">
             View your personal information, payroll, attendance, and performance
           </p>
         </div>
       </div>
 
-      <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
+      <div className="mb-6 flex gap-2 overflow-x-auto pb-2">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg whitespace-nowrap transition-colors ${
+            className={`flex items-center gap-2 whitespace-nowrap rounded-lg px-4 py-2 transition-colors ${
               activeTab === tab.id
-                ? "bg-blue-100 border-2 border-blue-500"
-                : "bg-gray-50 border-2 border-transparent hover:bg-gray-100"
+                ? "border-2 border-primary bg-primary/10"
+                : "border-2 border-transparent bg-muted hover:bg-muted"
             }`}
           >
-            <tab.icon className="w-4 h-4" />
+            <tab.icon className="h-4 w-4" />
             {tab.label}
           </button>
         ))}
@@ -253,49 +251,57 @@ function StaffPortal() {
 
       {activeTab === "overview" && (
         <>
-          <div className="grid lg:grid-cols-3 gap-6 mb-6">
+          <div className="mb-6 grid gap-6 lg:grid-cols-3">
             <Card className="lg:col-span-2">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <User className="w-5 h-5" />
+                  <User className="h-5 w-5" />
                   Profile Information
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex items-start gap-4">
-                  <div className="w-20 h-20 rounded-full bg-green-600 flex items-center justify-center text-white text-2xl font-bold">
+                  <div className="flex h-20 w-20 items-center justify-center rounded-full bg-success font-bold text-2xl text-success-foreground">
                     {mockStaff.name.charAt(0)}
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-xl font-bold text-gray-900">
+                    <h3 className="font-bold text-foreground text-xl">
                       {mockStaff.name}
                     </h3>
-                    <p className="text-gray-600">
+                    <p className="text-muted-foreground">
                       {mockStaff.role} - {mockStaff.department}
                     </p>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
+                    <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-3">
                       <div>
-                        <p className="text-sm text-gray-500">Employee ID</p>
+                        <p className="text-muted-foreground text-sm">
+                          Employee ID
+                        </p>
                         <p className="font-medium">{mockStaff.id}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-500">Qualification</p>
+                        <p className="text-muted-foreground text-sm">
+                          Qualification
+                        </p>
                         <p className="font-medium">{mockStaff.qualification}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-500">Experience</p>
+                        <p className="text-muted-foreground text-sm">
+                          Experience
+                        </p>
                         <p className="font-medium">{mockStaff.experience}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-500">Join Date</p>
+                        <p className="text-muted-foreground text-sm">
+                          Join Date
+                        </p>
                         <p className="font-medium">{mockStaff.joinDate}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-500">Email</p>
+                        <p className="text-muted-foreground text-sm">Email</p>
                         <p className="font-medium text-sm">{mockStaff.email}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-500">Phone</p>
+                        <p className="text-muted-foreground text-sm">Phone</p>
                         <p className="font-medium">{mockStaff.phone}</p>
                       </div>
                     </div>
@@ -307,32 +313,36 @@ function StaffPortal() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <TrendingUp className="w-5 h-5" />
+                  <TrendingUp className="h-5 w-5" />
                   Quick Stats
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="text-center p-4 bg-green-50 rounded-lg">
-                    <p className="text-2xl font-bold text-green-600">₹71,450</p>
-                    <p className="text-sm text-gray-600">Net Salary</p>
+                  <div className="rounded-lg bg-success/15 p-4 text-center">
+                    <p className="font-bold text-2xl text-success">₹71,450</p>
+                    <p className="text-muted-foreground text-sm">Net Salary</p>
                   </div>
                   <div className="grid grid-cols-2 gap-2">
-                    <div className="text-center p-2 bg-blue-50 rounded-lg">
-                      <p className="text-lg font-bold text-blue-600">88.9%</p>
-                      <p className="text-xs text-gray-600">Attendance</p>
+                    <div className="rounded-lg bg-primary/5 p-2 text-center">
+                      <p className="font-bold text-lg text-primary">88.9%</p>
+                      <p className="text-muted-foreground text-xs">
+                        Attendance
+                      </p>
                     </div>
-                    <div className="text-center p-2 bg-purple-50 rounded-lg">
-                      <p className="text-lg font-bold text-purple-600">4.2/5</p>
-                      <p className="text-xs text-gray-600">Rating</p>
+                    <div className="rounded-lg bg-primary/5 p-2 text-center">
+                      <p className="font-bold text-lg text-primary">4.2/5</p>
+                      <p className="text-muted-foreground text-xs">Rating</p>
                     </div>
-                    <div className="text-center p-2 bg-yellow-50 rounded-lg">
-                      <p className="text-lg font-bold text-yellow-600">27</p>
-                      <p className="text-xs text-gray-600">Leave Left</p>
+                    <div className="rounded-lg bg-warning/15 p-2 text-center">
+                      <p className="font-bold text-lg text-warning">27</p>
+                      <p className="text-muted-foreground text-xs">
+                        Leave Left
+                      </p>
                     </div>
-                    <div className="text-center p-2 bg-red-50 rounded-lg">
-                      <p className="text-lg font-bold text-red-600">1</p>
-                      <p className="text-xs text-gray-600">Pending</p>
+                    <div className="rounded-lg bg-destructive/10 p-2 text-center">
+                      <p className="font-bold text-destructive text-lg">1</p>
+                      <p className="text-muted-foreground text-xs">Pending</p>
                     </div>
                   </div>
                 </div>
@@ -340,11 +350,11 @@ function StaffPortal() {
             </Card>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-6">
+          <div className="grid gap-6 lg:grid-cols-2">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Calendar className="w-5 h-5" />
+                  <Calendar className="h-5 w-5" />
                   Today&apos;s Timetable
                 </CardTitle>
               </CardHeader>
@@ -353,25 +363,25 @@ function StaffPortal() {
                   {mockTimetable.map((period, i) => (
                     <div
                       key={i}
-                      className={`flex items-center gap-3 p-2 rounded-lg ${
+                      className={`flex items-center gap-3 rounded-lg p-2 ${
                         period.period === "Break" || period.period === "Lunch"
-                          ? "bg-gray-100"
-                          : "bg-green-50"
+                          ? "bg-muted"
+                          : "bg-success/15"
                       }`}
                     >
-                      <span className="text-sm font-medium text-gray-600 w-20">
+                      <span className="w-20 font-medium text-muted-foreground text-sm">
                         {period.time}
                       </span>
                       <div className="flex-1">
                         <span className="font-medium">{period.period}</span>
                         {period.subject && (
-                          <span className="text-sm text-gray-500 ml-2">
+                          <span className="ml-2 text-muted-foreground text-sm">
                             - {period.subject}
                           </span>
                         )}
                       </div>
                       {period.room && (
-                        <span className="text-sm text-gray-500">
+                        <span className="text-muted-foreground text-sm">
                           {period.room}
                         </span>
                       )}
@@ -384,7 +394,7 @@ function StaffPortal() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <MessageSquare className="w-5 h-5" />
+                  <MessageSquare className="h-5 w-5" />
                   Notices
                 </CardTitle>
               </CardHeader>
@@ -393,13 +403,15 @@ function StaffPortal() {
                   {mockNotices.map((notice) => (
                     <div
                       key={notice.id}
-                      className="p-3 bg-blue-50 rounded-lg border-l-4 border-blue-500"
+                      className="rounded-lg border-primary border-l-4 bg-primary/5 p-3"
                     >
                       <p className="font-medium text-sm">{notice.title}</p>
-                      <p className="text-xs text-gray-500 mb-1">
+                      <p className="mb-1 text-muted-foreground text-xs">
                         {notice.date}
                       </p>
-                      <p className="text-sm text-gray-600">{notice.message}</p>
+                      <p className="text-muted-foreground text-sm">
+                        {notice.message}
+                      </p>
                     </div>
                   ))}
                 </div>
@@ -411,39 +423,39 @@ function StaffPortal() {
 
       {activeTab === "payroll" && (
         <>
-          <div className="grid lg:grid-cols-4 gap-6 mb-6">
+          <div className="mb-6 grid gap-6 lg:grid-cols-4">
             <Card>
               <CardHeader>
-                <CardTitle className="text-sm font-medium">
+                <CardTitle className="font-medium text-sm">
                   Basic Salary
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-2xl font-bold text-gray-900">
+                <p className="font-bold text-2xl text-foreground">
                   ₹{mockPayroll.basicSalary.toLocaleString()}
                 </p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader>
-                <CardTitle className="text-sm font-medium">
+                <CardTitle className="font-medium text-sm">
                   Gross Salary
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-2xl font-bold text-green-600">
+                <p className="font-bold text-2xl text-success">
                   ₹{mockPayroll.grossSalary.toLocaleString()}
                 </p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader>
-                <CardTitle className="text-sm font-medium">
+                <CardTitle className="font-medium text-sm">
                   Total Deductions
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-2xl font-bold text-red-600">
+                <p className="font-bold text-2xl text-destructive">
                   ₹
                   {(
                     mockPayroll.deductions.pf +
@@ -455,68 +467,72 @@ function StaffPortal() {
             </Card>
             <Card>
               <CardHeader>
-                <CardTitle className="text-sm font-medium">
+                <CardTitle className="font-medium text-sm">
                   Net Salary
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-2xl font-bold text-blue-600">
+                <p className="font-bold text-2xl text-primary">
                   ₹{mockPayroll.netSalary.toLocaleString()}
                 </p>
               </CardContent>
             </Card>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-6 mb-6">
+          <div className="mb-6 grid gap-6 lg:grid-cols-2">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <DollarSign className="w-5 h-5" />
+                  <DollarSign className="h-5 w-5" />
                   Salary Slip - January 2026
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   <div>
-                    <h4 className="font-medium mb-2">Earnings</h4>
+                    <h4 className="mb-2 font-medium">Earnings</h4>
                     <div className="space-y-2">
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Basic Salary</span>
+                        <span className="text-muted-foreground">
+                          Basic Salary
+                        </span>
                         <span>₹{mockPayroll.basicSalary.toLocaleString()}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-600">
+                        <span className="text-muted-foreground">
                           Dearness Allowance (DA)
                         </span>
                         <span>₹{mockPayroll.da.toLocaleString()}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-600">
+                        <span className="text-muted-foreground">
                           House Rent Allowance (HRA)
                         </span>
                         <span>₹{mockPayroll.hra.toLocaleString()}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Medical Allowance</span>
+                        <span className="text-muted-foreground">
+                          Medical Allowance
+                        </span>
                         <span>₹{mockPayroll.medical.toLocaleString()}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-600">
+                        <span className="text-muted-foreground">
                           Transport Allowance
                         </span>
                         <span>₹{mockPayroll.transport.toLocaleString()}</span>
                       </div>
-                      <div className="flex justify-between font-bold pt-2 border-t">
+                      <div className="flex justify-between border-t pt-2 font-bold">
                         <span>Gross Earnings</span>
                         <span>₹{mockPayroll.grossSalary.toLocaleString()}</span>
                       </div>
                     </div>
                   </div>
                   <div>
-                    <h4 className="font-medium mb-2">Deductions</h4>
+                    <h4 className="mb-2 font-medium">Deductions</h4>
                     <div className="space-y-2">
                       <div className="flex justify-between">
-                        <span className="text-gray-600">
+                        <span className="text-muted-foreground">
                           Provident Fund (PF)
                         </span>
                         <span>
@@ -524,7 +540,7 @@ function StaffPortal() {
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-600">
+                        <span className="text-muted-foreground">
                           Tax Deducted at Source (TDS)
                         </span>
                         <span>
@@ -532,12 +548,12 @@ function StaffPortal() {
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Insurance</span>
+                        <span className="text-muted-foreground">Insurance</span>
                         <span>
                           ₹{mockPayroll.deductions.insurance.toLocaleString()}
                         </span>
                       </div>
-                      <div className="flex justify-between font-bold pt-2 border-t">
+                      <div className="flex justify-between border-t pt-2 font-bold">
                         <span>Total Deductions</span>
                         <span>
                           ₹
@@ -550,10 +566,10 @@ function StaffPortal() {
                       </div>
                     </div>
                   </div>
-                  <div className="pt-4 border-t">
+                  <div className="border-t pt-4">
                     <div className="flex justify-between font-bold text-lg">
                       <span>Net Pay</span>
-                      <span className="text-green-600">
+                      <span className="text-success">
                         ₹{mockPayroll.netSalary.toLocaleString()}
                       </span>
                     </div>
@@ -565,31 +581,33 @@ function StaffPortal() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Briefcase className="w-5 h-5" />
+                  <Briefcase className="h-5 w-5" />
                   Bank & PF Details
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="p-3 bg-gray-50 rounded-lg">
-                    <p className="text-sm text-gray-500">Bank Name</p>
+                  <div className="rounded-lg bg-muted p-3">
+                    <p className="text-muted-foreground text-sm">Bank Name</p>
                     <p className="font-medium">{mockStaff.bankName}</p>
                   </div>
-                  <div className="p-3 bg-gray-50 rounded-lg">
-                    <p className="text-sm text-gray-500">Account Number</p>
+                  <div className="rounded-lg bg-muted p-3">
+                    <p className="text-muted-foreground text-sm">
+                      Account Number
+                    </p>
                     <p className="font-medium">{mockStaff.accountNumber}</p>
                   </div>
-                  <div className="p-3 bg-gray-50 rounded-lg">
-                    <p className="text-sm text-gray-500">IFSC Code</p>
+                  <div className="rounded-lg bg-muted p-3">
+                    <p className="text-muted-foreground text-sm">IFSC Code</p>
                     <p className="font-medium">{mockStaff.ifscCode}</p>
                   </div>
-                  <div className="p-3 bg-blue-50 rounded-lg">
-                    <p className="text-sm text-gray-500">PF Number</p>
+                  <div className="rounded-lg bg-primary/5 p-3">
+                    <p className="text-muted-foreground text-sm">PF Number</p>
                     <p className="font-medium">{mockStaff.pfNumber}</p>
                   </div>
                 </div>
-                <Button className="w-full mt-4">
-                  <Download className="w-4 h-4 mr-2" />
+                <Button className="mt-4 w-full">
+                  <Download className="mr-2 h-4 w-4" />
                   Download Salary Slip
                 </Button>
               </CardContent>
@@ -599,7 +617,7 @@ function StaffPortal() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Clock className="w-5 h-5" />
+                <Clock className="h-5 w-5" />
                 Salary History
               </CardTitle>
             </CardHeader>
@@ -607,7 +625,7 @@ function StaffPortal() {
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b text-left text-sm text-gray-500">
+                    <tr className="border-b text-left text-muted-foreground text-sm">
                       <th className="pb-3 font-medium">Month</th>
                       <th className="pb-3 font-medium">Amount</th>
                       <th className="pb-3 font-medium">Status</th>
@@ -626,7 +644,7 @@ function StaffPortal() {
                         </td>
                         <td className="py-3">
                           <Button variant="ghost" size="sm">
-                            <Download className="w-4 h-4" />
+                            <Download className="h-4 w-4" />
                           </Button>
                         </td>
                       </tr>
@@ -641,45 +659,45 @@ function StaffPortal() {
 
       {activeTab === "attendance" && (
         <>
-          <div className="grid lg:grid-cols-4 gap-6 mb-6">
+          <div className="mb-6 grid gap-6 lg:grid-cols-4">
             <Card>
               <CardHeader>
-                <CardTitle className="text-sm font-medium">Present</CardTitle>
+                <CardTitle className="font-medium text-sm">Present</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-3xl font-bold text-green-600">
+                <p className="font-bold text-3xl text-success">
                   {mockAttendance.present}
                 </p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader>
-                <CardTitle className="text-sm font-medium">Absent</CardTitle>
+                <CardTitle className="font-medium text-sm">Absent</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-3xl font-bold text-red-600">
+                <p className="font-bold text-3xl text-destructive">
                   {mockAttendance.absent}
                 </p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader>
-                <CardTitle className="text-sm font-medium">On Leave</CardTitle>
+                <CardTitle className="font-medium text-sm">On Leave</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-3xl font-bold text-yellow-600">
+                <p className="font-bold text-3xl text-warning">
                   {mockAttendance.leave}
                 </p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader>
-                <CardTitle className="text-sm font-medium">
+                <CardTitle className="font-medium text-sm">
                   Attendance Rate
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-3xl font-bold text-blue-600">
+                <p className="font-bold text-3xl text-primary">
                   {mockAttendance.percentage}%
                 </p>
               </CardContent>
@@ -689,7 +707,7 @@ function StaffPortal() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Calendar className="w-5 h-5" />
+                <Calendar className="h-5 w-5" />
                 Monthly Attendance
               </CardTitle>
             </CardHeader>
@@ -697,15 +715,13 @@ function StaffPortal() {
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b text-left text-sm text-gray-500">
+                    <tr className="border-b text-left text-muted-foreground text-sm">
                       <th className="pb-3 font-medium">Month</th>
-                      <th className="pb-3 font-medium text-green-600">
-                        Present
+                      <th className="pb-3 font-medium text-success">Present</th>
+                      <th className="pb-3 font-medium text-destructive">
+                        Absent
                       </th>
-                      <th className="pb-3 font-medium text-red-600">Absent</th>
-                      <th className="pb-3 font-medium text-yellow-600">
-                        Leave
-                      </th>
+                      <th className="pb-3 font-medium text-warning">Leave</th>
                       <th className="pb-3 font-medium">Total Days</th>
                       <th className="pb-3 font-medium">Percentage</th>
                     </tr>
@@ -720,13 +736,11 @@ function StaffPortal() {
                       return (
                         <tr key={i} className="border-b last:border-0">
                           <td className="py-3 font-medium">{month.month}</td>
-                          <td className="py-3 text-green-600">
-                            {month.present}
+                          <td className="py-3 text-success">{month.present}</td>
+                          <td className="py-3 text-destructive">
+                            {month.absent}
                           </td>
-                          <td className="py-3 text-red-600">{month.absent}</td>
-                          <td className="py-3 text-yellow-600">
-                            {month.leave}
-                          </td>
+                          <td className="py-3 text-warning">{month.leave}</td>
                           <td className="py-3">{total}</td>
                           <td className="py-3">
                             <Badge
@@ -752,29 +766,29 @@ function StaffPortal() {
 
       {activeTab === "leave" && (
         <>
-          <div className="grid md:grid-cols-3 gap-6 mb-6">
+          <div className="mb-6 grid gap-6 md:grid-cols-3">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <CheckCircle className="w-5 h-5 text-green-500" />
+                  <CheckCircle className="h-5 w-5 text-success" />
                   Casual Leave
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-center mb-4">
-                  <p className="text-3xl font-bold text-green-600">
+                <div className="mb-4 text-center">
+                  <p className="font-bold text-3xl text-success">
                     {mockLeave.casual.remaining}
                   </p>
-                  <p className="text-gray-500">Days Remaining</p>
+                  <p className="text-muted-foreground">Days Remaining</p>
                 </div>
-                <div className="text-sm text-gray-600">
-                  <div className="flex justify-between mb-1">
+                <div className="text-muted-foreground text-sm">
+                  <div className="mb-1 flex justify-between">
                     <span>Used: {mockLeave.casual.used}</span>
                     <span>Total: {mockLeave.casual.total}</span>
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div className="h-2 w-full rounded-full bg-muted">
                     <div
-                      className="bg-green-500 h-2 rounded-full"
+                      className="h-2 rounded-full bg-success"
                       style={{
                         width: `${(mockLeave.casual.used / mockLeave.casual.total) * 100}%`,
                       }}
@@ -786,25 +800,25 @@ function StaffPortal() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <CheckCircle className="w-5 h-5 text-blue-500" />
+                  <CheckCircle className="h-5 w-5 text-primary" />
                   Sick Leave
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-center mb-4">
-                  <p className="text-3xl font-bold text-blue-600">
+                <div className="mb-4 text-center">
+                  <p className="font-bold text-3xl text-primary">
                     {mockLeave.sick.remaining}
                   </p>
-                  <p className="text-gray-500">Days Remaining</p>
+                  <p className="text-muted-foreground">Days Remaining</p>
                 </div>
-                <div className="text-sm text-gray-600">
-                  <div className="flex justify-between mb-1">
+                <div className="text-muted-foreground text-sm">
+                  <div className="mb-1 flex justify-between">
                     <span>Used: {mockLeave.sick.used}</span>
                     <span>Total: {mockLeave.sick.total}</span>
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div className="h-2 w-full rounded-full bg-muted">
                     <div
-                      className="bg-blue-500 h-2 rounded-full"
+                      className="h-2 rounded-full bg-primary"
                       style={{
                         width: `${(mockLeave.sick.used / mockLeave.sick.total) * 100}%`,
                       }}
@@ -816,25 +830,25 @@ function StaffPortal() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <CheckCircle className="w-5 h-5 text-purple-500" />
+                  <CheckCircle className="h-5 w-5 text-primary" />
                   Earned Leave
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-center mb-4">
-                  <p className="text-3xl font-bold text-purple-600">
+                <div className="mb-4 text-center">
+                  <p className="font-bold text-3xl text-primary">
                     {mockLeave.earned.remaining}
                   </p>
-                  <p className="text-gray-500">Days Remaining</p>
+                  <p className="text-muted-foreground">Days Remaining</p>
                 </div>
-                <div className="text-sm text-gray-600">
-                  <div className="flex justify-between mb-1">
+                <div className="text-muted-foreground text-sm">
+                  <div className="mb-1 flex justify-between">
                     <span>Used: {mockLeave.earned.used}</span>
                     <span>Total: {mockLeave.earned.total}</span>
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div className="h-2 w-full rounded-full bg-muted">
                     <div
-                      className="bg-purple-500 h-2 rounded-full"
+                      className="h-2 rounded-full bg-primary"
                       style={{
                         width: `${(mockLeave.earned.used / mockLeave.earned.total) * 100}%`,
                       }}
@@ -845,11 +859,11 @@ function StaffPortal() {
             </Card>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-6">
+          <div className="grid gap-6 lg:grid-cols-2">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Clock className="w-5 h-5 text-yellow-500" />
+                  <Clock className="h-5 w-5 text-warning" />
                   Pending Requests
                 </CardTitle>
               </CardHeader>
@@ -859,15 +873,15 @@ function StaffPortal() {
                     {mockLeave.pendingRequests.map((request) => (
                       <div
                         key={request.id}
-                        className="p-3 bg-yellow-50 rounded-lg border-l-4 border-yellow-500"
+                        className="rounded-lg border-warning/30 border-l-4 bg-warning/15 p-3"
                       >
                         <div className="flex items-start justify-between">
                           <div>
                             <p className="font-medium">{request.type}</p>
-                            <p className="text-sm text-gray-500">
+                            <p className="text-muted-foreground text-sm">
                               {request.fromDate} to {request.toDate}
                             </p>
-                            <p className="text-sm text-gray-600 mt-1">
+                            <p className="mt-1 text-muted-foreground text-sm">
                               {request.reason}
                             </p>
                           </div>
@@ -877,7 +891,7 @@ function StaffPortal() {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-gray-500 text-center py-4">
+                  <p className="py-4 text-center text-muted-foreground">
                     No pending requests
                   </p>
                 )}
@@ -887,7 +901,7 @@ function StaffPortal() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <CheckCircle className="w-5 h-5 text-green-500" />
+                  <CheckCircle className="h-5 w-5 text-success" />
                   Recently Approved
                 </CardTitle>
               </CardHeader>
@@ -897,15 +911,15 @@ function StaffPortal() {
                     {mockLeave.recentApprovals.map((approval) => (
                       <div
                         key={approval.id}
-                        className="p-3 bg-green-50 rounded-lg border-l-4 border-green-500"
+                        className="rounded-lg border-success/30 border-l-4 bg-success/15 p-3"
                       >
                         <div className="flex items-start justify-between">
                           <div>
                             <p className="font-medium">{approval.type}</p>
-                            <p className="text-sm text-gray-500">
+                            <p className="text-muted-foreground text-sm">
                               {approval.fromDate} to {approval.toDate}
                             </p>
-                            <p className="text-sm text-gray-600 mt-1">
+                            <p className="mt-1 text-muted-foreground text-sm">
                               {approval.reason}
                             </p>
                           </div>
@@ -915,7 +929,7 @@ function StaffPortal() {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-gray-500 text-center py-4">
+                  <p className="py-4 text-center text-muted-foreground">
                     No recent approvals
                   </p>
                 )}
@@ -927,25 +941,25 @@ function StaffPortal() {
 
       {activeTab === "performance" && (
         <>
-          <div className="grid lg:grid-cols-3 gap-6 mb-6">
+          <div className="mb-6 grid gap-6 lg:grid-cols-3">
             <Card className="lg:col-span-1">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Award className="w-5 h-5" />
+                  <Award className="h-5 w-5" />
                   Overall Rating
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-center">
-                  <div className="text-5xl font-bold text-blue-600 mb-2">
+                  <div className="mb-2 font-bold text-5xl text-primary">
                     {mockPerformance.overallRating}
                   </div>
-                  <p className="text-gray-500 mb-4">out of 5.0</p>
+                  <p className="mb-4 text-muted-foreground">out of 5.0</p>
                   <div className="flex justify-center gap-1">
                     {[1, 2, 3, 4, 5].map((star) => (
                       <span
                         key={star}
-                        className={`text-2xl ${star <= Math.round(mockPerformance.overallRating) ? "text-yellow-400" : "text-gray-300"}`}
+                        className={`text-2xl ${star <= Math.round(mockPerformance.overallRating) ? "text-warning" : "text-muted-foreground"}`}
                       >
                         ★
                       </span>
@@ -958,7 +972,7 @@ function StaffPortal() {
             <Card className="lg:col-span-2">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <TrendingUp className="w-5 h-5" />
+                  <TrendingUp className="h-5 w-5" />
                   Category Ratings
                 </CardTitle>
               </CardHeader>
@@ -966,17 +980,17 @@ function StaffPortal() {
                 <div className="space-y-4">
                   {mockPerformance.categories.map((category) => (
                     <div key={category.name}>
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="text-sm font-medium">
+                      <div className="mb-1 flex items-center justify-between">
+                        <span className="font-medium text-sm">
                           {category.name}
                         </span>
-                        <span className="text-sm text-gray-600">
+                        <span className="text-muted-foreground text-sm">
                           {category.rating}/5
                         </span>
                       </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div className="h-2 w-full rounded-full bg-muted">
                         <div
-                          className="bg-blue-600 h-2 rounded-full"
+                          className="h-2 rounded-full bg-primary"
                           style={{ width: `${(category.rating / 5) * 100}%` }}
                         />
                       </div>
@@ -987,11 +1001,11 @@ function StaffPortal() {
             </Card>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-6">
+          <div className="grid gap-6 lg:grid-cols-2">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Award className="w-5 h-5" />
+                  <Award className="h-5 w-5" />
                   Achievements
                 </CardTitle>
               </CardHeader>
@@ -1000,9 +1014,9 @@ function StaffPortal() {
                   {mockPerformance.achievements.map((achievement, i) => (
                     <div
                       key={i}
-                      className="flex items-center gap-3 p-3 bg-yellow-50 rounded-lg border-l-4 border-yellow-500"
+                      className="flex items-center gap-3 rounded-lg border-warning/30 border-l-4 bg-warning/15 p-3"
                     >
-                      <Award className="w-5 h-5 text-yellow-600" />
+                      <Award className="h-5 w-5 text-warning" />
                       <span className="font-medium">{achievement}</span>
                     </div>
                   ))}
@@ -1013,7 +1027,7 @@ function StaffPortal() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <FileText className="w-5 h-5" />
+                  <FileText className="h-5 w-5" />
                   Goals & Objectives
                 </CardTitle>
               </CardHeader>
@@ -1021,14 +1035,14 @@ function StaffPortal() {
                 <div className="space-y-4">
                   {mockPerformance.goals.map((goal, i) => (
                     <div key={i}>
-                      <div className="flex items-center justify-between mb-2">
+                      <div className="mb-2 flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           {goal.status === "Completed" ? (
-                            <CheckCircle className="w-4 h-4 text-green-500" />
+                            <CheckCircle className="h-4 w-4 text-success" />
                           ) : goal.status === "In Progress" ? (
-                            <Clock className="w-4 h-4 text-blue-500" />
+                            <Clock className="h-4 w-4 text-primary" />
                           ) : (
-                            <XCircle className="w-4 h-4 text-gray-400" />
+                            <XCircle className="h-4 w-4 text-muted-foreground" />
                           )}
                           <span className="font-medium">{goal.goal}</span>
                         </div>
@@ -1044,14 +1058,14 @@ function StaffPortal() {
                           {goal.status}
                         </Badge>
                       </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2 ml-6">
+                      <div className="ml-6 h-2 w-full rounded-full bg-muted">
                         <div
                           className={`h-2 rounded-full ${
                             goal.status === "Completed"
-                              ? "bg-green-500"
+                              ? "bg-success"
                               : goal.status === "In Progress"
-                                ? "bg-blue-500"
-                                : "bg-gray-400"
+                                ? "bg-primary"
+                                : "bg-muted"
                           }`}
                           style={{ width: `${goal.progress}%` }}
                         />

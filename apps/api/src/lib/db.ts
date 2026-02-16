@@ -12,19 +12,24 @@
  * - Use connectionString parameter or DATABASE_URL env var
  */
 
+import * as schema from "@school/storage";
 import { drizzle as drizzleNeon } from "drizzle-orm/neon-serverless";
 import { drizzle as drizzlePostgres } from "drizzle-orm/postgres-js";
-import { neonConfig } from "@neondatabase/serverless";
 import postgres from "postgres";
-import * as schema from "@school/storage";
 
-let dbInstance: ReturnType<typeof drizzleNeon> | ReturnType<typeof drizzlePostgres> | null = null;
+let dbInstance:
+  | ReturnType<typeof drizzleNeon>
+  | ReturnType<typeof drizzlePostgres>
+  | null = null;
 
 /**
  * Get database connection
  * Supports Hyperdrive connection string from Cloudflare env or direct DATABASE_URL
  */
-export function getDb(env?: { DATABASE?: { connectionString: string }; DATABASE_URL?: string }) {
+export function getDb(env?: {
+  DATABASE?: { connectionString: string };
+  DATABASE_URL?: string;
+}) {
   // Check for Hyperdrive connection string from Cloudflare env
   const connectionString =
     env?.DATABASE?.connectionString ||
@@ -33,7 +38,8 @@ export function getDb(env?: { DATABASE?: { connectionString: string }; DATABASE_
     "postgresql://postgres@localhost:5432/school_mis";
 
   // Determine if we're in local development
-  const isLocal = connectionString.includes("localhost") ||
+  const isLocal =
+    connectionString.includes("localhost") ||
     connectionString.includes("127.0.0.1") ||
     process.env.NODE_ENV === "development";
 

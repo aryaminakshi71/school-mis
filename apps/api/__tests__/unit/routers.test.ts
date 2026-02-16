@@ -1,4 +1,4 @@
-import { describe, it, expect } from "bun:test";
+import { describe, expect, it } from "bun:test";
 
 describe("Health Check API - Unit Tests", () => {
   it("should validate health response structure", () => {

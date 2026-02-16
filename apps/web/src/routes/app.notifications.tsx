@@ -1,21 +1,18 @@
-import { useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
-import { toast } from "sonner";
-import {
-  MessageSquare,
-  Send,
-  Phone,
-  Clock,
-  CheckCircle,
-  XCircle,
-  AlertCircle,
-  FileText,
-  Users,
-  Calendar,
-} from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { createFileRoute } from "@tanstack/react-router";
+import {
+  CheckCircle,
+  Clock,
+  FileText,
+  MessageSquare,
+  Phone,
+  Send,
+  Users,
+  XCircle,
+} from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 import { useAuth } from "../lib/auth-context";
 
 export const Route = createFileRoute("/app/notifications")({
@@ -150,22 +147,22 @@ function NotificationsPage() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Notifications</h1>
-        <p className="text-gray-600">
+        <h1 className="font-bold text-2xl text-foreground">Notifications</h1>
+        <p className="text-muted-foreground">
           Send SMS, WhatsApp, and email notifications
         </p>
       </div>
 
-      <div className="grid grid-cols-4 gap-4 mb-6">
+      <div className="mb-6 grid grid-cols-4 gap-4">
         <Card>
           <CardContent className="pt-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
-                <Send className="w-5 h-5 text-blue-600" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                <Send className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <p className="text-sm text-gray-600">Total Sent</p>
-                <p className="text-2xl font-bold">{stats.totalSent}</p>
+                <p className="text-muted-foreground text-sm">Total Sent</p>
+                <p className="font-bold text-2xl">{stats.totalSent}</p>
               </div>
             </div>
           </CardContent>
@@ -173,12 +170,12 @@ function NotificationsPage() {
         <Card>
           <CardContent className="pt-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-yellow-100 flex items-center justify-center">
-                <Clock className="w-5 h-5 text-yellow-600" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-warning/15">
+                <Clock className="h-5 w-5 text-warning" />
               </div>
               <div>
-                <p className="text-sm text-gray-600">Scheduled</p>
-                <p className="text-2xl font-bold">{stats.scheduled}</p>
+                <p className="text-muted-foreground text-sm">Scheduled</p>
+                <p className="font-bold text-2xl">{stats.scheduled}</p>
               </div>
             </div>
           </CardContent>
@@ -186,12 +183,12 @@ function NotificationsPage() {
         <Card>
           <CardContent className="pt-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center">
-                <XCircle className="w-5 h-5 text-red-600" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-destructive/10">
+                <XCircle className="h-5 w-5 text-destructive" />
               </div>
               <div>
-                <p className="text-sm text-gray-600">Failed</p>
-                <p className="text-2xl font-bold">{stats.failed}</p>
+                <p className="text-muted-foreground text-sm">Failed</p>
+                <p className="font-bold text-2xl">{stats.failed}</p>
               </div>
             </div>
           </CardContent>
@@ -199,83 +196,83 @@ function NotificationsPage() {
         <Card>
           <CardContent className="pt-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
-                <CheckCircle className="w-5 h-5 text-green-600" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-success/15">
+                <CheckCircle className="h-5 w-5 text-success" />
               </div>
               <div>
-                <p className="text-sm text-gray-600">Success Rate</p>
-                <p className="text-2xl font-bold">94%</p>
+                <p className="text-muted-foreground text-sm">Success Rate</p>
+                <p className="font-bold text-2xl">94%</p>
               </div>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      <div className="bg-white rounded-lg border overflow-hidden shadow-sm mb-6">
-        <div className="border-b flex">
+      <div className="mb-6 overflow-hidden rounded-lg border bg-card shadow-sm">
+        <div className="flex border-b">
           <button
             onClick={() => setActiveTab("send")}
-            className={`flex items-center gap-2 px-6 py-3 text-sm font-medium ${
+            className={`flex items-center gap-2 px-6 py-3 font-medium text-sm ${
               activeTab === "send"
-                ? "border-b-2 border-blue-600 text-blue-600"
-                : "text-gray-600 hover:text-gray-900"
+                ? "border-primary border-b-2 text-primary"
+                : "text-muted-foreground hover:text-foreground"
             }`}
           >
-            <Send className="w-4 h-4" />
+            <Send className="h-4 w-4" />
             Send
           </button>
           <button
             onClick={() => setActiveTab("history")}
-            className={`flex items-center gap-2 px-6 py-3 text-sm font-medium ${
+            className={`flex items-center gap-2 px-6 py-3 font-medium text-sm ${
               activeTab === "history"
-                ? "border-b-2 border-blue-600 text-blue-600"
-                : "text-gray-600 hover:text-gray-900"
+                ? "border-primary border-b-2 text-primary"
+                : "text-muted-foreground hover:text-foreground"
             }`}
           >
-            <Clock className="w-4 h-4" />
+            <Clock className="h-4 w-4" />
             History
           </button>
           <button
             onClick={() => setActiveTab("templates")}
-            className={`flex items-center gap-2 px-6 py-3 text-sm font-medium ${
+            className={`flex items-center gap-2 px-6 py-3 font-medium text-sm ${
               activeTab === "templates"
-                ? "border-b-2 border-blue-600 text-blue-600"
-                : "text-gray-600 hover:text-gray-900"
+                ? "border-primary border-b-2 text-primary"
+                : "text-muted-foreground hover:text-foreground"
             }`}
           >
-            <FileText className="w-4 h-4" />
+            <FileText className="h-4 w-4" />
             Templates
           </button>
         </div>
 
         {activeTab === "send" && (
           <div className="p-6">
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid gap-6 md:grid-cols-2">
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="mb-1 block font-medium text-foreground text-sm">
                     Channel
                   </label>
                   <div className="flex gap-2">
-                    <button className="flex-1 py-2 px-4 bg-green-100 text-green-700 rounded-lg font-medium flex items-center justify-center gap-2">
-                      <MessageSquare className="w-4 h-4" />
+                    <button className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-success/15 px-4 py-2 font-medium text-success">
+                      <MessageSquare className="h-4 w-4" />
                       WhatsApp
                     </button>
-                    <button className="flex-1 py-2 px-4 bg-blue-100 text-blue-700 rounded-lg font-medium flex items-center justify-center gap-2">
-                      <Phone className="w-4 h-4" />
+                    <button className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-primary/10 px-4 py-2 font-medium text-primary">
+                      <Phone className="h-4 w-4" />
                       SMS
                     </button>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="mb-1 block font-medium text-foreground text-sm">
                     Send To
                   </label>
                   <select
                     value={sendingTo}
                     onChange={(e) => setSendingTo(e.target.value)}
-                    className="w-full px-4 py-2 border rounded-lg"
+                    className="w-full rounded-lg border px-4 py-2"
                   >
                     <option value="all">All Parents</option>
                     <option value="class">By Class</option>
@@ -285,7 +282,7 @@ function NotificationsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="mb-1 block font-medium text-foreground text-sm">
                     Template (Optional)
                   </label>
                   <select
@@ -299,7 +296,7 @@ function NotificationsPage() {
                         setMessage(template.preview);
                       }
                     }}
-                    className="w-full px-4 py-2 border rounded-lg"
+                    className="w-full rounded-lg border px-4 py-2"
                   >
                     <option value="">Select a template</option>
                     {templates.map((t) => (
@@ -313,17 +310,17 @@ function NotificationsPage() {
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="mb-1 block font-medium text-foreground text-sm">
                     Message
                   </label>
                   <textarea
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     rows={6}
-                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full rounded-lg border px-4 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
                     placeholder="Enter your message..."
                   />
-                  <p className="text-sm text-gray-500 mt-1">
+                  <p className="mt-1 text-muted-foreground text-sm">
                     {message.length}/160 characters
                   </p>
                 </div>
@@ -331,9 +328,9 @@ function NotificationsPage() {
                 <Button
                   onClick={handleSend}
                   disabled={!canSend}
-                  className="w-full flex items-center justify-center gap-2"
+                  className="flex w-full items-center justify-center gap-2"
                 >
-                  <Send className="w-4 h-4" />
+                  <Send className="h-4 w-4" />
                   Send Notification
                 </Button>
               </div>
@@ -344,37 +341,37 @@ function NotificationsPage() {
         {activeTab === "history" && (
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50">
+              <thead className="bg-muted">
                 <tr>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
+                  <th className="px-4 py-3 text-left font-medium text-muted-foreground text-sm">
                     Type
                   </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
+                  <th className="px-4 py-3 text-left font-medium text-muted-foreground text-sm">
                     Template
                   </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
+                  <th className="px-4 py-3 text-left font-medium text-muted-foreground text-sm">
                     Recipients
                   </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
+                  <th className="px-4 py-3 text-left font-medium text-muted-foreground text-sm">
                     Message Preview
                   </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
+                  <th className="px-4 py-3 text-left font-medium text-muted-foreground text-sm">
                     Status
                   </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
+                  <th className="px-4 py-3 text-left font-medium text-muted-foreground text-sm">
                     Sent At
                   </th>
                 </tr>
               </thead>
               <tbody>
                 {mockHistory.map((log) => (
-                  <tr key={log.id} className="border-t hover:bg-gray-50">
+                  <tr key={log.id} className="border-t hover:bg-muted">
                     <td className="px-4 py-3">
                       <span
-                        className={`px-2 py-1 rounded-full text-xs font-medium ${
+                        className={`rounded-full px-2 py-1 font-medium text-xs ${
                           log.type === "whatsapp"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-blue-100 text-blue-700"
+                            ? "bg-success/15 text-success"
+                            : "bg-primary/10 text-primary"
                         }`}
                       >
                         {log.type.toUpperCase()}
@@ -385,28 +382,28 @@ function NotificationsPage() {
                     </td>
                     <td className="px-4 py-3 text-sm">
                       <span className="flex items-center gap-1">
-                        <Users className="w-4 h-4" />
+                        <Users className="h-4 w-4" />
                         {log.recipients}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-sm text-gray-600 max-w-xs truncate">
+                    <td className="max-w-xs truncate px-4 py-3 text-muted-foreground text-sm">
                       {log.messagePreview}
                     </td>
                     <td className="px-4 py-3">
                       <span
-                        className={`px-2 py-1 rounded-full text-xs font-medium ${
+                        className={`rounded-full px-2 py-1 font-medium text-xs ${
                           log.status === "sent"
-                            ? "bg-green-100 text-green-700"
+                            ? "bg-success/15 text-success"
                             : log.status === "scheduled"
-                              ? "bg-yellow-100 text-yellow-700"
-                              : "bg-red-100 text-red-700"
+                              ? "bg-warning/15 text-warning"
+                              : "bg-destructive/10 text-destructive"
                         }`}
                       >
                         {log.status.charAt(0).toUpperCase() +
                           log.status.slice(1)}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-sm text-gray-600">
+                    <td className="px-4 py-3 text-muted-foreground text-sm">
                       {log.sentAt}
                     </td>
                   </tr>
@@ -418,27 +415,27 @@ function NotificationsPage() {
 
         {activeTab === "templates" && (
           <div className="p-6">
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid gap-4 md:grid-cols-2">
               {templates.map((template) => (
                 <div
                   key={template.id}
-                  className="p-4 border rounded-lg hover:border-blue-300 transition-colors cursor-pointer"
+                  className="cursor-pointer rounded-lg border p-4 transition-colors hover:border-primary/30"
                   onClick={() => {
                     setSelectedTemplate(template.id);
                     setMessage(template.preview);
                     setActiveTab("send");
                   }}
                 >
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-medium text-gray-900">
+                  <div className="mb-2 flex items-center justify-between">
+                    <h3 className="font-medium text-foreground">
                       {template.name}
                     </h3>
-                    <FileText className="w-4 h-4 text-gray-400" />
+                    <FileText className="h-4 w-4 text-muted-foreground" />
                   </div>
-                  <p className="text-sm text-gray-600 bg-gray-50 p-2 rounded">
+                  <p className="rounded bg-muted p-2 text-muted-foreground text-sm">
                     {template.preview}
                   </p>
-                  <p className="text-xs text-gray-500 mt-2">
+                  <p className="mt-2 text-muted-foreground text-xs">
                     Variables: {template.variables.join(", ")}
                   </p>
                 </div>

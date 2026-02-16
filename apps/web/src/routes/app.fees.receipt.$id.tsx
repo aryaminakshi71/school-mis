@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 
 export const Route = createFileRoute("/app/fees/receipt/$id")({
@@ -31,15 +31,15 @@ function ReceiptPage() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="mx-auto max-w-2xl">
       <div className="mb-6 flex items-center justify-between">
-        <Link to="/app/fees" className="text-blue-600 hover:underline">
+        <Link to="/app/fees" className="text-primary hover:underline">
           ← Back to Fees
         </Link>
         <button
           onClick={handlePrint}
           disabled={isGenerating}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+          className="rounded-lg bg-primary px-4 py-2 text-primary-foreground transition-colors hover:bg-primary/90"
         >
           {isGenerating ? "Generating..." : "🖨️ Print Receipt"}
         </button>
@@ -47,58 +47,58 @@ function ReceiptPage() {
 
       <div
         id="receipt"
-        className="bg-white border p-8 rounded-lg shadow-lg print:shadow-none print:border-none"
+        className="rounded-lg border bg-card p-8 shadow-lg print:border-none print:shadow-none"
       >
-        <div className="text-center border-b pb-6 mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">
+        <div className="mb-6 border-b pb-6 text-center">
+          <h1 className="font-bold text-2xl text-foreground">
             {receiptData.schoolName}
           </h1>
-          <p className="text-gray-600">{receiptData.schoolAddress}</p>
-          <div className="mt-2 inline-block bg-blue-100 text-blue-800 px-4 py-1 rounded-full text-sm font-medium">
+          <p className="text-muted-foreground">{receiptData.schoolAddress}</p>
+          <div className="mt-2 inline-block rounded-full bg-primary/10 px-4 py-1 font-medium text-primary text-sm">
             Fee Receipt
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 mb-6">
+        <div className="mb-6 grid grid-cols-2 gap-4">
           <div>
-            <p className="text-sm text-gray-500">Receipt No.</p>
+            <p className="text-muted-foreground text-sm">Receipt No.</p>
             <p className="font-medium">{receiptData.receiptNumber}</p>
           </div>
           <div className="text-right">
-            <p className="text-sm text-gray-500">Date</p>
+            <p className="text-muted-foreground text-sm">Date</p>
             <p className="font-medium">{receiptData.date}</p>
           </div>
         </div>
 
-        <div className="bg-gray-50 p-4 rounded-lg mb-6">
-          <h3 className="font-medium text-gray-900 mb-3">Student Details</h3>
+        <div className="mb-6 rounded-lg bg-muted p-4">
+          <h3 className="mb-3 font-medium text-foreground">Student Details</h3>
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
-              <p className="text-gray-500">Name</p>
+              <p className="text-muted-foreground">Name</p>
               <p className="font-medium">{receiptData.studentName}</p>
             </div>
             <div>
-              <p className="text-gray-500">Class</p>
+              <p className="text-muted-foreground">Class</p>
               <p className="font-medium">{receiptData.class}</p>
             </div>
             <div>
-              <p className="text-gray-500">Father Name</p>
+              <p className="text-muted-foreground">Father Name</p>
               <p className="font-medium">{receiptData.fatherName}</p>
             </div>
             <div>
-              <p className="text-gray-500">Payment Method</p>
+              <p className="text-muted-foreground">Payment Method</p>
               <p className="font-medium">{receiptData.paymentMethod}</p>
             </div>
           </div>
         </div>
 
-        <table className="w-full mb-6">
+        <table className="mb-6 w-full">
           <thead>
             <tr className="border-b">
-              <th className="text-left py-2 text-sm font-medium text-gray-600">
+              <th className="py-2 text-left font-medium text-muted-foreground text-sm">
                 Particulars
               </th>
-              <th className="text-right py-2 text-sm font-medium text-gray-600">
+              <th className="py-2 text-right font-medium text-muted-foreground text-sm">
                 Amount
               </th>
             </tr>
@@ -121,9 +121,11 @@ function ReceiptPage() {
           </tfoot>
         </table>
 
-        <div className="text-center pt-6 border-t">
-          <p className="text-sm text-gray-500">Thank you for your payment!</p>
-          <p className="text-xs text-gray-400 mt-2">
+        <div className="border-t pt-6 text-center">
+          <p className="text-muted-foreground text-sm">
+            Thank you for your payment!
+          </p>
+          <p className="mt-2 text-muted-foreground text-xs">
             This is a computer-generated receipt.
           </p>
         </div>

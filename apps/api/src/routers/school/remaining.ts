@@ -5,7 +5,7 @@
  */
 
 import { z } from "zod";
-import { pub, orgAuthed } from "../../procedures/index.js";
+import { orgAuthed, pub } from "../../procedures/index.js";
 
 export const birthdaysRouter = {
   list: pub

@@ -1,14 +1,14 @@
 /**
  * Global Error Boundary
- * 
+ *
  * Catches React errors and displays a user-friendly error page
  */
 
-import React, { Component, ErrorInfo, ReactNode } from "react";
-import { AlertTriangle, RefreshCw, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getErrorDetails } from "@/lib/error-handler";
+import { AlertTriangle, Home, RefreshCw } from "lucide-react";
+import React, { Component, ErrorInfo, ReactNode } from "react";
 
 interface Props {
   children: ReactNode;
@@ -85,33 +85,33 @@ export class ErrorBoundary extends Component<Props, State> {
       const isDevelopment = process.env.NODE_ENV === "development";
 
       return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 via-white to-gray-50 p-4">
-          <Card className="max-w-2xl w-full shadow-lg">
-            <CardHeader className="text-center pb-4">
-              <div className="flex justify-center mb-4">
-                <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center">
-                  <AlertTriangle className="w-8 h-8 text-red-600" />
+        <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-muted via-background to-muted p-4">
+          <Card className="w-full max-w-2xl shadow-lg">
+            <CardHeader className="pb-4 text-center">
+              <div className="mb-4 flex justify-center">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-destructive/10">
+                  <AlertTriangle className="h-8 w-8 text-destructive" />
                 </div>
               </div>
-              <CardTitle className="text-2xl text-gray-900">
+              <CardTitle className="text-2xl text-foreground">
                 Something went wrong
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <p className="text-gray-600 text-center">
-                We're sorry, but something unexpected happened. Our team has been
-                notified and is working on a fix.
+              <p className="text-center text-muted-foreground">
+                We're sorry, but something unexpected happened. Our team has
+                been notified and is working on a fix.
               </p>
 
               {isDevelopment && error && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                  <p className="text-sm font-semibold text-red-900 mb-2">
+                <div className="rounded-lg border border-destructive/30 bg-destructive/10 p-4">
+                  <p className="mb-2 font-semibold text-destructive text-sm">
                     Error Details (Development Only):
                   </p>
-                  <pre className="text-xs text-red-800 overflow-auto max-h-48">
+                  <pre className="max-h-48 overflow-auto text-destructive text-xs">
                     {error.toString()}
                     {this.state.errorInfo?.componentStack && (
-                      <div className="mt-2 pt-2 border-t border-red-200">
+                      <div className="mt-2 border-destructive/30 border-t pt-2">
                         {this.state.errorInfo.componentStack}
                       </div>
                     )}
@@ -119,13 +119,13 @@ export class ErrorBoundary extends Component<Props, State> {
                 </div>
               )}
 
-              <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
+              <div className="flex flex-col justify-center gap-3 pt-4 sm:flex-row">
                 <Button
                   onClick={this.handleReset}
                   variant="outline"
                   className="flex items-center gap-2"
                 >
-                  <RefreshCw className="w-4 h-4" />
+                  <RefreshCw className="h-4 w-4" />
                   Try Again
                 </Button>
                 <Button
@@ -133,21 +133,21 @@ export class ErrorBoundary extends Component<Props, State> {
                   variant="outline"
                   className="flex items-center gap-2"
                 >
-                  <RefreshCw className="w-4 h-4" />
+                  <RefreshCw className="h-4 w-4" />
                   Reload Page
                 </Button>
                 <Button
                   onClick={this.handleGoHome}
-                  className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
+                  className="flex items-center gap-2 bg-primary hover:bg-primary/90"
                 >
-                  <Home className="w-4 h-4" />
+                  <Home className="h-4 w-4" />
                   Go to Dashboard
                 </Button>
               </div>
 
               {isDevelopment && (
-                <div className="mt-4 pt-4 border-t text-center">
-                  <p className="text-xs text-gray-500">
+                <div className="mt-4 border-t pt-4 text-center">
+                  <p className="text-muted-foreground text-xs">
                     This error boundary is only visible in development mode.
                   </p>
                 </div>
@@ -167,7 +167,7 @@ export class ErrorBoundary extends Component<Props, State> {
  */
 export function withErrorBoundary<P extends object>(
   Component: React.ComponentType<P>,
-  fallback?: ReactNode
+  fallback?: ReactNode,
 ) {
   return function WithErrorBoundaryComponent(props: P) {
     return (

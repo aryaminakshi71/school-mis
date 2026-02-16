@@ -5,9 +5,9 @@
  */
 
 import { z } from "zod";
-import { pub } from "../procedures";
 import { getDb } from "../lib/db";
 import { getQueryStats, getSlowQueries } from "../lib/db-performance";
+import { pub } from "../procedures";
 
 const startTime = Date.now();
 
@@ -30,18 +30,22 @@ export const healthRouter = {
             responseTime: z.number().optional(),
             error: z.string().optional(),
           }),
-          cache: z.object({
-            status: z.enum(["healthy", "unhealthy", "unknown"]),
-            responseTime: z.number().optional(),
-            error: z.string().optional(),
-          }).optional(),
+          cache: z
+            .object({
+              status: z.enum(["healthy", "unhealthy", "unknown"]),
+              responseTime: z.number().optional(),
+              error: z.string().optional(),
+            })
+            .optional(),
         }),
         uptime: z.number().optional(),
-        performance: z.object({
-          avgQueryTime: z.number().optional(),
-          slowQueries: z.number().optional(),
-          errorRate: z.number().optional(),
-        }).optional(),
+        performance: z
+          .object({
+            avgQueryTime: z.number().optional(),
+            slowQueries: z.number().optional(),
+            errorRate: z.number().optional(),
+          })
+          .optional(),
       }),
     )
     .handler(async ({ context }) => {
@@ -92,7 +96,8 @@ export const healthRouter = {
       // Check cache (if Redis is configured)
       try {
         const cacheStart = Date.now();
-        const redisUrl = (context.env as any)?.REDIS_URL || process.env.REDIS_URL;
+        const redisUrl =
+          (context.env as any)?.REDIS_URL || process.env.REDIS_URL;
         if (redisUrl) {
           checks.cache = {
             status: "healthy",
@@ -115,7 +120,8 @@ export const healthRouter = {
       // Determine overall status
       const overallStatus =
         checks.database.status === "healthy" &&
-          (checks.cache?.status === "healthy" || checks.cache?.status === "unknown")
+        (checks.cache?.status === "healthy" ||
+          checks.cache?.status === "unknown")
           ? "ok"
           : checks.database.status === "unhealthy"
             ? "error"

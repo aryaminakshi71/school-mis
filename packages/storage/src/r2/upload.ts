@@ -1,25 +1,25 @@
 /**
  * R2 Upload Helpers
- * 
+ *
  * Utilities for uploading files to Cloudflare R2
  */
 
-import type { R2Bucket } from '@cloudflare/workers-types'
+import type { R2Bucket } from "@cloudflare/workers-types";
 
 export interface UploadOptions {
-  folder?: string
-  ticketId?: string
-  commentId?: string
-  maxSize?: number // in bytes
-  allowedMimeTypes?: string[]
+  folder?: string;
+  ticketId?: string;
+  commentId?: string;
+  maxSize?: number; // in bytes
+  allowedMimeTypes?: string[];
 }
 
 export interface UploadResult {
-  key: string
-  fileName: string
-  fileSize: number
-  mimeType: string
-  url?: string // Public URL if bucket is public
+  key: string;
+  fileName: string;
+  fileSize: number;
+  mimeType: string;
+  url?: string; // Public URL if bucket is public
 }
 
 /**
@@ -32,46 +32,46 @@ export async function uploadToR2(
   options: UploadOptions = {},
 ): Promise<UploadResult> {
   const {
-    folder = 'uploads',
+    folder = "uploads",
     ticketId,
     commentId,
     maxSize = 10 * 1024 * 1024, // 10MB default
     allowedMimeTypes,
-  } = options
+  } = options;
 
   // Validate file size
   if (file.size > maxSize) {
-    throw new Error(`File size exceeds maximum of ${maxSize / 1024 / 1024}MB`)
+    throw new Error(`File size exceeds maximum of ${maxSize / 1024 / 1024}MB`);
   }
 
   // Validate MIME type
   if (allowedMimeTypes && file.type) {
     if (!allowedMimeTypes.includes(file.type)) {
       throw new Error(
-        `File type not allowed. Allowed types: ${allowedMimeTypes.join(', ')}`,
-      )
+        `File type not allowed. Allowed types: ${allowedMimeTypes.join(", ")}`,
+      );
     }
   }
 
   // Generate file key
-  const timestamp = Date.now()
-  const randomId = crypto.randomUUID().slice(0, 8)
-  const sanitizedFileName = fileName.replace(/[^a-zA-Z0-9.-]/g, '_')
-  const extension = fileName.split('.').pop() || 'bin'
+  const timestamp = Date.now();
+  const randomId = crypto.randomUUID().slice(0, 8);
+  const sanitizedFileName = fileName.replace(/[^a-zA-Z0-9.-]/g, "_");
+  const extension = fileName.split(".").pop() || "bin";
 
-  let key = `${folder}`
+  let key = `${folder}`;
   if (ticketId) {
-    key += `/tickets/${ticketId}`
+    key += `/tickets/${ticketId}`;
   }
   if (commentId) {
-    key += `/comments/${commentId}`
+    key += `/comments/${commentId}`;
   }
-  key += `/${timestamp}-${randomId}-${sanitizedFileName}`
+  key += `/${timestamp}-${randomId}-${sanitizedFileName}`;
 
   // Upload to R2
   await bucket.put(key, file, {
     httpMetadata: {
-      contentType: file.type || 'application/octet-stream',
+      contentType: file.type || "application/octet-stream",
       contentDisposition: `attachment; filename="${fileName}"`,
     },
     customMetadata: {
@@ -80,14 +80,14 @@ export async function uploadToR2(
       ...(ticketId && { ticketId }),
       ...(commentId && { commentId }),
     },
-  })
+  });
 
   return {
     key,
     fileName,
     fileSize: file.size,
-    mimeType: file.type || 'application/octet-stream',
-  }
+    mimeType: file.type || "application/octet-stream",
+  };
 }
 
 /**
@@ -97,7 +97,7 @@ export async function deleteFromR2(
   bucket: R2Bucket,
   key: string,
 ): Promise<void> {
-  await bucket.delete(key)
+  await bucket.delete(key);
 }
 
 /**
@@ -106,14 +106,14 @@ export async function deleteFromR2(
 export async function getFromR2(
   bucket: R2Bucket,
   key: string,
-): Promise<import('@cloudflare/workers-types').R2ObjectBody | null> {
-  const object = await bucket.get(key)
-  return object
+): Promise<import("@cloudflare/workers-types").R2ObjectBody | null> {
+  const object = await bucket.get(key);
+  return object;
 }
 
 /**
  * Generate presigned URL for file access (if needed)
- * 
+ *
  * Note: R2 doesn't have built-in presigned URLs like S3.
  * This implementation uses public URLs if available, or provides
  * a worker endpoint pattern for secure access.
@@ -125,7 +125,7 @@ export async function getPresignedUrl(
   options?: {
     publicUrl?: string;
     workerEndpoint?: string;
-  }
+  },
 ): Promise<string> {
   // If public URL is configured, return public URL
   if (options?.publicUrl) {
@@ -147,9 +147,9 @@ export async function getPresignedUrl(
   }
 
   throw new Error(
-    'Presigned URLs require either:\n' +
-    '1. R2_PUBLIC_URL or R2_CUSTOM_DOMAIN environment variable set\n' +
-    '2. A Cloudflare Worker endpoint configured for secure file access\n' +
-    '3. Public bucket access with custom domain configured in Cloudflare dashboard'
+    "Presigned URLs require either:\n" +
+      "1. R2_PUBLIC_URL or R2_CUSTOM_DOMAIN environment variable set\n" +
+      "2. A Cloudflare Worker endpoint configured for secure file access\n" +
+      "3. Public bucket access with custom domain configured in Cloudflare dashboard",
   );
 }

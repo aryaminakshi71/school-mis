@@ -1,6 +1,6 @@
 /**
  * Export Utilities
- * 
+ *
  * Functions for exporting data to various formats (CSV, Excel, PDF)
  */
 
@@ -10,7 +10,7 @@
 export function exportToCSV<T extends Record<string, unknown>>(
   data: T[],
   filename: string = "export",
-  headers?: Record<string, string>
+  headers?: Record<string, string>,
 ): void {
   if (data.length === 0) {
     console.warn("No data to export");
@@ -37,7 +37,7 @@ export function exportToCSV<T extends Record<string, unknown>>(
           }
           return stringValue;
         })
-        .join(",")
+        .join(","),
     ),
   ].join("\n");
 
@@ -57,10 +57,7 @@ export function exportToCSV<T extends Record<string, unknown>>(
 /**
  * Export data to JSON
  */
-export function exportToJSON<T>(
-  data: T[],
-  filename: string = "export"
-): void {
+export function exportToJSON<T>(data: T[], filename: string = "export"): void {
   const jsonContent = JSON.stringify(data, null, 2);
   const blob = new Blob([jsonContent], { type: "application/json" });
   const link = document.createElement("a");
@@ -82,12 +79,12 @@ export async function exportToExcel<T extends Record<string, unknown>>(
   data: T[],
   filename: string = "export",
   sheetName: string = "Sheet1",
-  headers?: Record<string, string>
+  headers?: Record<string, string>,
 ): Promise<void> {
   try {
     // Dynamic import to avoid bundling if not used
     const XLSX = await import("xlsx");
-    
+
     if (data.length === 0) {
       console.warn("No data to export");
       return;
@@ -119,7 +116,7 @@ export async function exportToExcel<T extends Record<string, unknown>>(
  */
 export function downloadTemplate(
   headers: string[],
-  filename: string = "template"
+  filename: string = "template",
 ): void {
   const csvContent = headers.join(",");
   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
@@ -174,7 +171,7 @@ export function parseCSV(file: File): Promise<Record<string, string>[]> {
  */
 export function formatDataForExport<T extends Record<string, unknown>>(
   data: T[],
-  formatters?: Record<string, (value: unknown) => string>
+  formatters?: Record<string, (value: unknown) => string>,
 ): Record<string, string>[] {
   return data.map((row) => {
     const formatted: Record<string, string> = {};
@@ -182,7 +179,8 @@ export function formatDataForExport<T extends Record<string, unknown>>(
       if (formatters?.[key]) {
         formatted[key] = formatters[key](value);
       } else {
-        formatted[key] = value === null || value === undefined ? "" : String(value);
+        formatted[key] =
+          value === null || value === undefined ? "" : String(value);
       }
     });
     return formatted;

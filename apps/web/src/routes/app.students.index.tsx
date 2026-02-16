@@ -3,44 +3,37 @@
  * All sub-features for student lifecycle management
  */
 
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
-import { api, type Student } from "@/lib/api";
-import { useState } from "react";
-import {
-  Users,
-  UserPlus,
-  FileText,
-  Calendar,
-  Award,
-  AlertCircle,
-  GraduationCap,
-  Search,
-  Filter,
-  Download,
-  Upload,
-  MoreVertical,
-  Eye,
-  Edit,
-  Trash,
-  Mail,
-  Phone,
-  MapPin,
-  Building,
-  Clock,
-  TrendingUp,
-} from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { useSearch, useDebounce } from "@/lib/search-utils";
-import { exportToCSV, exportToExcel } from "@/lib/export-utils";
-import { useListPageShortcuts } from "@/lib/keyboard-shortcuts";
-import { Skeleton, SkeletonTable } from "@/components/ui/skeleton";
 import { useConfirmDialog } from "@/components/ui/confirm-dialog";
-import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
+import { SkeletonTable } from "@/components/ui/skeleton";
+import { type Student, api } from "@/lib/api";
 import { handleError } from "@/lib/error-handler";
+import { exportToCSV } from "@/lib/export-utils";
+import { useListPageShortcuts } from "@/lib/keyboard-shortcuts";
+import { useDebounce, useSearch } from "@/lib/search-utils";
+import { useQuery } from "@tanstack/react-query";
+import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
+import {
+  AlertCircle,
+  Calendar,
+  Download,
+  Edit,
+  Eye,
+  FileText,
+  Filter,
+  GraduationCap,
+  MoreVertical,
+  Search,
+  TrendingUp,
+  Upload,
+  UserPlus,
+  Users,
+} from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/app/students/")({
   component: StudentsPage,
@@ -60,14 +53,16 @@ const subFeatures = [
 // Mock data
 // Mock data removed in favor of api.students.list()
 
-
-
 function StudentsPage() {
   const navigate = useNavigate();
   const [selectedClass, setSelectedClass] = useState("all");
   const { confirm, dialog } = useConfirmDialog();
 
-  const { data: students = [], isLoading, error } = useQuery<Student[]>({
+  const {
+    data: students = [],
+    isLoading,
+    error,
+  } = useQuery<Student[]>({
     queryKey: ["students"],
     queryFn: async () => {
       try {
@@ -90,22 +85,30 @@ function StudentsPage() {
     clearSearch,
   } = useSearch<Student>({
     data: students,
-    searchFields: ["firstName", "lastName", "admissionNumber", "className", "email", "phone"],
+    searchFields: [
+      "firstName",
+      "lastName",
+      "admissionNumber",
+      "className",
+      "email",
+      "phone",
+    ],
     searchQuery: "",
   });
 
   const debouncedSearch = useDebounce(searchQuery, 300);
 
   // Apply class filter
-  const finalFilteredStudents = selectedClass === "all"
-    ? filteredStudents
-    : filteredStudents.filter((s) => s.className === selectedClass);
+  const finalFilteredStudents =
+    selectedClass === "all"
+      ? filteredStudents
+      : filteredStudents.filter((s) => s.className === selectedClass);
 
   // Keyboard shortcuts
   useListPageShortcuts(
     () => navigate({ to: "/app/students", search: { action: "new" } }),
     () => window.location.reload(),
-    () => handleExport()
+    () => handleExport(),
   );
 
   // Export functionality
@@ -115,27 +118,31 @@ function StudentsPage() {
         "Admission Number": s.admissionNumber,
         "First Name": s.firstName,
         "Last Name": s.lastName,
-        "Class": s.className,
+        Class: s.className,
         "Roll Number": s.rollNumber,
-        "Email": s.email || "",
-        "Phone": s.phone || "",
+        Email: s.email || "",
+        Phone: s.phone || "",
         "Father Name": s.fatherName || "",
-        "Attendance": `${s.attendance}%`,
-        "Status": s.status,
+        Attendance: `${s.attendance}%`,
+        Status: s.status,
       }));
 
-      exportToCSV(exportData, `students-export-${new Date().toISOString().split("T")[0]}`, {
-        "Admission Number": "Admission Number",
-        "First Name": "First Name",
-        "Last Name": "Last Name",
-        "Class": "Class",
-        "Roll Number": "Roll Number",
-        "Email": "Email",
-        "Phone": "Phone",
-        "Father Name": "Father Name",
-        "Attendance": "Attendance %",
-        "Status": "Status",
-      });
+      exportToCSV(
+        exportData,
+        `students-export-${new Date().toISOString().split("T")[0]}`,
+        {
+          "Admission Number": "Admission Number",
+          "First Name": "First Name",
+          "Last Name": "Last Name",
+          Class: "Class",
+          "Roll Number": "Roll Number",
+          Email: "Email",
+          Phone: "Phone",
+          "Father Name": "Father Name",
+          Attendance: "Attendance %",
+          Status: "Status",
+        },
+      );
       toast.success("Students exported successfully");
     } catch (err) {
       toast.error(handleError(err));
@@ -144,13 +151,17 @@ function StudentsPage() {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-96">
+      <div className="flex h-96 items-center justify-center">
         <Card className="max-w-md">
           <CardContent className="pt-6">
             <div className="text-center">
-              <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">Error Loading Students</h3>
-              <p className="text-sm text-gray-600 mb-4">{handleError(error)}</p>
+              <AlertCircle className="mx-auto mb-4 h-12 w-12 text-destructive" />
+              <h3 className="mb-2 font-semibold text-lg">
+                Error Loading Students
+              </h3>
+              <p className="mb-4 text-muted-foreground text-sm">
+                {handleError(error)}
+              </p>
               <Button onClick={() => window.location.reload()}>Retry</Button>
             </div>
           </CardContent>
@@ -176,7 +187,11 @@ function StudentsPage() {
     },
     {
       title: "Avg Attendance",
-      value: Math.round(students.reduce((acc, s) => acc + (Number(s.attendance) || 0), 0) / (students.length || 1)) + "%",
+      value:
+        Math.round(
+          students.reduce((acc, s) => acc + (Number(s.attendance) || 0), 0) /
+            (students.length || 1),
+        ) + "%",
       change: "+2.1%",
       icon: Calendar,
       color: "purple",
@@ -195,7 +210,7 @@ function StudentsPage() {
       {/* Header */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">
+          <h1 className="font-bold text-3xl tracking-tight">
             Student Management
           </h1>
           <p className="text-muted-foreground">
@@ -212,7 +227,11 @@ function StudentsPage() {
             <Download className="mr-2 h-4 w-4" />
             Export ({finalFilteredStudents.length})
           </Button>
-          <Button onClick={() => navigate({ to: "/app/students", search: { action: "new" } })}>
+          <Button
+            onClick={() =>
+              navigate({ to: "/app/students", search: { action: "new" } })
+            }
+          >
             <UserPlus className="mr-2 h-4 w-4" />
             New Admission
           </Button>
@@ -226,10 +245,11 @@ function StudentsPage() {
             <a
               key={feature.name}
               href={feature.href}
-              className={`flex items-center gap-2 px-4 py-2 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${feature.active
-                ? "border-primary text-primary"
-                : "border-transparent text-muted-foreground hover:text-foreground"
-                }`}
+              className={`flex items-center gap-2 whitespace-nowrap border-b-2 px-4 py-2 font-medium text-sm transition-colors ${
+                feature.active
+                  ? "border-primary text-primary"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
+              }`}
             >
               <feature.icon className="h-4 w-4" />
               {feature.name}
@@ -243,39 +263,41 @@ function StudentsPage() {
         {stats.map((stat) => (
           <Card key={stat.title}>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">
+              <CardTitle className="font-medium text-sm">
                 {stat.title}
               </CardTitle>
               <div
-                className={`p-2 rounded-lg ${stat.color === "blue"
-                  ? "bg-blue-100"
-                  : stat.color === "green"
-                    ? "bg-green-100"
-                    : stat.color === "purple"
-                      ? "bg-purple-100"
-                      : "bg-red-100"
-                  }`}
+                className={`rounded-lg p-2 ${
+                  stat.color === "blue"
+                    ? "bg-primary/10"
+                    : stat.color === "green"
+                      ? "bg-success/15"
+                      : stat.color === "purple"
+                        ? "bg-primary/10"
+                        : "bg-destructive/10"
+                }`}
               >
                 <stat.icon
-                  className={`h-4 w-4 ${stat.color === "blue"
-                    ? "text-blue-600"
-                    : stat.color === "green"
-                      ? "text-green-600"
-                      : stat.color === "purple"
-                        ? "text-purple-600"
-                        : "text-red-600"
-                    }`}
+                  className={`h-4 w-4 ${
+                    stat.color === "blue"
+                      ? "text-primary"
+                      : stat.color === "green"
+                        ? "text-success"
+                        : stat.color === "purple"
+                          ? "text-primary"
+                          : "text-destructive"
+                  }`}
                 />
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stat.value}</div>
-              <p className="text-xs text-muted-foreground">
+              <div className="font-bold text-2xl">{stat.value}</div>
+              <p className="text-muted-foreground text-xs">
                 <span
                   className={
                     stat.change.startsWith("+")
-                      ? "text-green-600"
-                      : "text-red-600"
+                      ? "text-success"
+                      : "text-destructive"
                   }
                 >
                   {stat.change}
@@ -291,20 +313,20 @@ function StudentsPage() {
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="flex gap-2">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Search className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
               placeholder="Search students... (Press / to focus)"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 w-[300px]"
+              className="w-[300px] pl-9"
             />
             {hasActiveFilters && (
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={clearSearch}
-                className="absolute right-2 top-1/2 -translate-y-1/2 h-6 px-2 text-xs"
+                className="-translate-y-1/2 absolute top-1/2 right-2 h-6 px-2 text-xs"
               >
                 Clear
               </Button>
@@ -313,7 +335,7 @@ function StudentsPage() {
           <select
             value={selectedClass}
             onChange={(e) => setSelectedClass(e.target.value)}
-            className="flex h-10 w-[150px] items-center justify-between rounded-lg border border-input bg-white px-3 py-2 text-sm"
+            className="flex h-10 w-[150px] items-center justify-between rounded-lg border border-input bg-card px-3 py-2 text-sm"
           >
             <option value="all">All Classes</option>
             <option value="10-A">Class 10-A</option>
@@ -349,12 +371,12 @@ function StudentsPage() {
           {isLoading ? (
             <SkeletonTable rows={5} cols={10} />
           ) : finalFilteredStudents.length === 0 ? (
-            <div className="text-center py-12">
-              <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">
+            <div className="py-12 text-center">
+              <Users className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
+              <h3 className="mb-2 font-semibold text-lg">
                 {hasActiveFilters ? "No students found" : "No students yet"}
               </h3>
-              <p className="text-sm text-gray-600 mb-4">
+              <p className="mb-4 text-muted-foreground text-sm">
                 {hasActiveFilters
                   ? "Try adjusting your search or filters"
                   : "Get started by adding your first student"}
@@ -364,7 +386,11 @@ function StudentsPage() {
                   Clear Filters
                 </Button>
               ) : (
-                <Button onClick={() => navigate({ to: "/app/students", search: { action: "new" } })}>
+                <Button
+                  onClick={() =>
+                    navigate({ to: "/app/students", search: { action: "new" } })
+                  }
+                >
                   <UserPlus className="mr-2 h-4 w-4" />
                   Add First Student
                 </Button>
@@ -374,7 +400,7 @@ function StudentsPage() {
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b text-left text-sm text-muted-foreground">
+                  <tr className="border-b text-left text-muted-foreground text-sm">
                     <th className="pb-3 font-medium">Student ID</th>
                     <th className="pb-3 font-medium">Name</th>
                     <th className="pb-3 font-medium">Class</th>
@@ -390,16 +416,24 @@ function StudentsPage() {
                 <tbody>
                   {finalFilteredStudents.map((student) => (
                     <tr key={student.id} className="border-b last:border-0">
-                      <td className="py-3 text-sm">{student.admissionNumber}</td>
+                      <td className="py-3 text-sm">
+                        {student.admissionNumber}
+                      </td>
                       <td className="py-3">
                         <div className="flex items-center gap-2">
-                          <Link to={`/app/students/${student.id}`} className="flex items-center gap-2 hover:underline">
-                            <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-                              <span className="text-xs font-medium text-primary">
-                                {student.firstName[0]}{student.lastName[0]}
+                          <Link
+                            to={`/app/students/${student.id}`}
+                            className="flex items-center gap-2 hover:underline"
+                          >
+                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
+                              <span className="font-medium text-primary text-xs">
+                                {student.firstName[0]}
+                                {student.lastName[0]}
                               </span>
                             </div>
-                            <span className="font-medium">{student.firstName} {student.lastName}</span>
+                            <span className="font-medium">
+                              {student.firstName} {student.lastName}
+                            </span>
                           </Link>
                         </div>
                       </td>
@@ -408,10 +442,10 @@ function StudentsPage() {
                       <td className="py-3 text-sm">{student.fatherName}</td>
                       <td className="py-3 text-sm">
                         <div className="flex flex-col">
-                          <span className="text-xs text-muted-foreground">
+                          <span className="text-muted-foreground text-xs">
                             {student.phone}
                           </span>
-                          <span className="text-xs text-muted-foreground">
+                          <span className="text-muted-foreground text-xs">
                             {student.email}
                           </span>
                         </div>
@@ -438,14 +472,26 @@ function StudentsPage() {
                       <td className="py-3">
                         <div className="flex gap-1">
                           <Link to={`/app/students/${student.id}`}>
-                            <Button variant="ghost" size="icon" className="h-8 w-8">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8"
+                            >
                               <Eye className="h-4 w-4" />
                             </Button>
                           </Link>
-                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                          >
                             <Edit className="h-4 w-4" />
                           </Button>
-                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                          >
                             <MoreVertical className="h-4 w-4" />
                           </Button>
                         </div>
@@ -459,10 +505,12 @@ function StudentsPage() {
 
           {/* Pagination */}
           {!isLoading && finalFilteredStudents.length > 0 && (
-            <div className="flex items-center justify-between pt-4 border-t">
-              <p className="text-sm text-muted-foreground">
-                Showing 1-{finalFilteredStudents.length} of {students.length} students
-                {hasActiveFilters && ` (filtered from ${students.length} total)`}
+            <div className="flex items-center justify-between border-t pt-4">
+              <p className="text-muted-foreground text-sm">
+                Showing 1-{finalFilteredStudents.length} of {students.length}{" "}
+                students
+                {hasActiveFilters &&
+                  ` (filtered from ${students.length} total)`}
               </p>
               <div className="flex gap-2">
                 <Button variant="outline" size="sm" disabled>
@@ -480,40 +528,40 @@ function StudentsPage() {
 
       {/* Quick Actions */}
       <div className="grid gap-4 md:grid-cols-3">
-        <Card className="cursor-pointer hover:shadow-md transition-shadow">
+        <Card className="cursor-pointer transition-shadow hover:shadow-md">
           <CardContent className="flex items-center gap-4 p-4">
-            <div className="p-3 rounded-lg bg-green-100">
-              <UserPlus className="h-5 w-5 text-green-600" />
+            <div className="rounded-lg bg-success/15 p-3">
+              <UserPlus className="h-5 w-5 text-success" />
             </div>
             <div>
               <p className="font-medium">Quick Admission</p>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-muted-foreground text-sm">
                 Enroll new student
               </p>
             </div>
           </CardContent>
         </Card>
-        <Card className="cursor-pointer hover:shadow-md transition-shadow">
+        <Card className="cursor-pointer transition-shadow hover:shadow-md">
           <CardContent className="flex items-center gap-4 p-4">
-            <div className="p-3 rounded-lg bg-blue-100">
-              <FileText className="h-5 w-5 text-blue-600" />
+            <div className="rounded-lg bg-primary/10 p-3">
+              <FileText className="h-5 w-5 text-primary" />
             </div>
             <div>
               <p className="font-medium">Generate TC</p>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-muted-foreground text-sm">
                 Transfer certificate
               </p>
             </div>
           </CardContent>
         </Card>
-        <Card className="cursor-pointer hover:shadow-md transition-shadow">
+        <Card className="cursor-pointer transition-shadow hover:shadow-md">
           <CardContent className="flex items-center gap-4 p-4">
-            <div className="p-3 rounded-lg bg-purple-100">
-              <GraduationCap className="h-5 w-5 text-purple-600" />
+            <div className="rounded-lg bg-primary/10 p-3">
+              <GraduationCap className="h-5 w-5 text-primary" />
             </div>
             <div>
               <p className="font-medium">Generate ID Cards</p>
-              <p className="text-sm text-muted-foreground">Print student IDs</p>
+              <p className="text-muted-foreground text-sm">Print student IDs</p>
             </div>
           </CardContent>
         </Card>

@@ -1,6 +1,6 @@
 /**
  * Security Utilities
- * 
+ *
  * Provides security helpers for the School-MIS API.
  */
 
@@ -14,11 +14,11 @@ export function setSecurityHeaders(headers: Headers): void {
   headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
   headers.set(
     "Strict-Transport-Security",
-    "max-age=31536000; includeSubDomains; preload"
+    "max-age=31536000; includeSubDomains; preload",
   );
   headers.set(
     "Content-Security-Policy",
-    "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:;"
+    "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:;",
   );
   headers.set("Permissions-Policy", "geolocation=(), microphone=(), camera=()");
 }
@@ -38,7 +38,7 @@ export function sanitizeInput(input: string): string {
  */
 export async function validateCSRF(
   request: Request,
-  token: string | null
+  token: string | null,
 ): Promise<boolean> {
   const csrfToken = request.headers.get("X-CSRF-Token");
   return csrfToken === token;

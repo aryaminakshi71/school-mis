@@ -3,37 +3,33 @@
  * All sub-features for fee collection, expenses, payroll, and budgeting
  */
 
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
-import {
-  DollarSign,
-  Receipt,
-  CreditCard,
-  TrendingUp,
-  TrendingDown,
-  Building,
-  FileText,
-  Calculator,
-  PieChart,
-  ArrowUpRight,
-  ArrowDownRight,
-  Download,
-  Plus,
-  Search,
-  Filter,
-  Calendar,
-} from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { useSearch } from "@/lib/search-utils";
+import { api } from "@/lib/api";
+import { handleError } from "@/lib/error-handler";
 import { exportToCSV } from "@/lib/export-utils";
 import { useListPageShortcuts } from "@/lib/keyboard-shortcuts";
-import { SkeletonTable } from "@/components/ui/skeleton";
+import { useSearch } from "@/lib/search-utils";
+import { Link, createFileRoute } from "@tanstack/react-router";
+import {
+  ArrowDownRight,
+  ArrowUpRight,
+  Building,
+  Calculator,
+  CreditCard,
+  DollarSign,
+  Download,
+  FileText,
+  PieChart,
+  Plus,
+  Receipt,
+  Search,
+  TrendingUp,
+} from "lucide-react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { handleError } from "@/lib/error-handler";
-import { api } from "@/lib/api";
 
 export const Route = createFileRoute("/app/fees/")({
   component: FeesPage,
@@ -138,7 +134,10 @@ function FeesPage() {
           amount: `₹${fee.amount.toLocaleString()}`,
           mode: "Online", // Defaulting as API doesn't return mode yet
           date: new Date(fee.createdAt).toLocaleDateString(),
-          status: fee.status === "completed" ? "Paid" : fee.status.charAt(0).toUpperCase() + fee.status.slice(1),
+          status:
+            fee.status === "completed"
+              ? "Paid"
+              : fee.status.charAt(0).toUpperCase() + fee.status.slice(1),
         }));
 
         setFeeCollections(formattedFees);
@@ -201,15 +200,18 @@ function FeesPage() {
     try {
       const exportData = feeCollections.map((c) => ({
         "Receipt ID": c.id,
-        "Student": c.student,
-        "Class": c.class,
-        "Amount": c.amount,
+        Student: c.student,
+        Class: c.class,
+        Amount: c.amount,
         "Payment Mode": c.mode,
-        "Date": c.date,
-        "Status": c.status,
+        Date: c.date,
+        Status: c.status,
       }));
 
-      exportToCSV(exportData, `fee-collections-export-${new Date().toISOString().split("T")[0]}`);
+      exportToCSV(
+        exportData,
+        `fee-collections-export-${new Date().toISOString().split("T")[0]}`,
+      );
       toast.success("Fee collections exported successfully");
     } catch (err) {
       toast.error(handleError(err));
@@ -223,7 +225,7 @@ function FeesPage() {
       toast.info("Collect Fee feature coming soon");
     },
     () => window.location.reload(),
-    () => handleExport()
+    () => handleExport(),
   );
 
   return (
@@ -231,7 +233,7 @@ function FeesPage() {
       {/* Header */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Fees & Finance</h1>
+          <h1 className="font-bold text-3xl tracking-tight">Fees & Finance</h1>
           <p className="text-muted-foreground">
             Manage fee collection, expenses, payroll, budgeting, and financial
             reports.
@@ -260,10 +262,11 @@ function FeesPage() {
             <Link
               key={feature.name}
               to={feature.href}
-              className={`flex items-center gap-2 px-4 py-2 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${feature.active
-                ? "border-primary text-primary"
-                : "border-transparent text-muted-foreground hover:text-foreground"
-                }`}
+              className={`flex items-center gap-2 whitespace-nowrap border-b-2 px-4 py-2 font-medium text-sm transition-colors ${
+                feature.active
+                  ? "border-primary text-primary"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
+              }`}
             >
               <feature.icon className="h-4 w-4" />
               {feature.name}
@@ -277,35 +280,37 @@ function FeesPage() {
         {stats.map((stat) => (
           <Card key={stat.title}>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">
+              <CardTitle className="font-medium text-sm">
                 {stat.title}
               </CardTitle>
               <div
-                className={`p-2 rounded-lg ${stat.color === "green"
-                  ? "bg-green-100"
-                  : stat.color === "yellow"
-                    ? "bg-yellow-100"
-                    : stat.color === "red"
-                      ? "bg-red-100"
-                      : "bg-blue-100"
-                  }`}
+                className={`rounded-lg p-2 ${
+                  stat.color === "green"
+                    ? "bg-success/15"
+                    : stat.color === "yellow"
+                      ? "bg-warning/15"
+                      : stat.color === "red"
+                        ? "bg-destructive/10"
+                        : "bg-primary/10"
+                }`}
               >
                 <stat.icon
-                  className={`h-4 w-4 ${stat.color === "green"
-                    ? "text-green-600"
-                    : stat.color === "yellow"
-                      ? "text-yellow-600"
-                      : stat.color === "red"
-                        ? "text-red-600"
-                        : "text-blue-600"
-                    }`}
+                  className={`h-4 w-4 ${
+                    stat.color === "green"
+                      ? "text-success"
+                      : stat.color === "yellow"
+                        ? "text-warning"
+                        : stat.color === "red"
+                          ? "text-destructive"
+                          : "text-primary"
+                  }`}
                 />
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stat.value}</div>
-              <p className="text-xs text-muted-foreground">
-                <span className="text-green-600">{stat.change}</span> from last
+              <div className="font-bold text-2xl">{stat.value}</div>
+              <p className="text-muted-foreground text-xs">
+                <span className="text-success">{stat.change}</span> from last
                 month
               </p>
             </CardContent>
@@ -334,7 +339,7 @@ function FeesPage() {
             {/* Search */}
             <div className="mb-4">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Search className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
                 <Input
                   type="search"
                   placeholder="Search collections... (Press / to focus)"
@@ -346,13 +351,20 @@ function FeesPage() {
             </div>
             <div className="space-y-4">
               {filteredCollections.length === 0 ? (
-                <div className="text-center py-8">
-                  <Receipt className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-                  <p className="text-sm text-gray-600">
-                    {hasActiveFilters ? "No collections found" : "No collections yet"}
+                <div className="py-8 text-center">
+                  <Receipt className="mx-auto mb-2 h-8 w-8 text-muted-foreground" />
+                  <p className="text-muted-foreground text-sm">
+                    {hasActiveFilters
+                      ? "No collections found"
+                      : "No collections yet"}
                   </p>
                   {hasActiveFilters && (
-                    <Button variant="outline" size="sm" onClick={clearSearch} className="mt-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={clearSearch}
+                      className="mt-2"
+                    >
                       Clear Filters
                     </Button>
                   )}
@@ -364,14 +376,14 @@ function FeesPage() {
                     className="flex items-center justify-between"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="p-2 rounded-full bg-green-100">
-                        <DollarSign className="h-4 w-4 text-green-600" />
+                      <div className="rounded-full bg-success/15 p-2">
+                        <DollarSign className="h-4 w-4 text-success" />
                       </div>
                       <div>
-                        <p className="text-sm font-medium">
+                        <p className="font-medium text-sm">
                           {collection.student}
                         </p>
-                        <p className="text-xs text-muted-foreground">
+                        <p className="text-muted-foreground text-xs">
                           {collection.class}
                         </p>
                       </div>
@@ -413,19 +425,21 @@ function FeesPage() {
                   className="flex items-center justify-between"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-full bg-red-100">
-                      <ArrowDownRight className="h-4 w-4 text-red-600" />
+                    <div className="rounded-full bg-destructive/10 p-2">
+                      <ArrowDownRight className="h-4 w-4 text-destructive" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium">
+                      <p className="font-medium text-sm">
                         {expense.description}
                       </p>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-muted-foreground text-xs">
                         {expense.category} • {expense.date}
                       </p>
                     </div>
                   </div>
-                  <p className="font-medium text-red-600">-{expense.amount}</p>
+                  <p className="font-medium text-destructive">
+                    -{expense.amount}
+                  </p>
                 </div>
               ))}
             </div>
@@ -440,25 +454,25 @@ function FeesPage() {
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 md:grid-cols-4">
-            <div className="p-4 rounded-lg bg-blue-50 border">
-              <p className="text-sm text-muted-foreground">Tuition Fee</p>
-              <p className="text-2xl font-bold">₹35,000</p>
-              <p className="text-xs text-muted-foreground">Per Year</p>
+            <div className="rounded-lg border bg-primary/5 p-4">
+              <p className="text-muted-foreground text-sm">Tuition Fee</p>
+              <p className="font-bold text-2xl">₹35,000</p>
+              <p className="text-muted-foreground text-xs">Per Year</p>
             </div>
-            <div className="p-4 rounded-lg bg-green-50 border">
-              <p className="text-sm text-muted-foreground">Transport Fee</p>
-              <p className="text-2xl font-bold">₹12,000</p>
-              <p className="text-xs text-muted-foreground">Per Year</p>
+            <div className="rounded-lg border bg-success/15 p-4">
+              <p className="text-muted-foreground text-sm">Transport Fee</p>
+              <p className="font-bold text-2xl">₹12,000</p>
+              <p className="text-muted-foreground text-xs">Per Year</p>
             </div>
-            <div className="p-4 rounded-lg bg-yellow-50 border">
-              <p className="text-sm text-muted-foreground">Hostel Fee</p>
-              <p className="text-2xl font-bold">₹45,000</p>
-              <p className="text-xs text-muted-foreground">Per Year</p>
+            <div className="rounded-lg border bg-warning/15 p-4">
+              <p className="text-muted-foreground text-sm">Hostel Fee</p>
+              <p className="font-bold text-2xl">₹45,000</p>
+              <p className="text-muted-foreground text-xs">Per Year</p>
             </div>
-            <div className="p-4 rounded-lg bg-purple-50 border">
-              <p className="text-sm text-muted-foreground">Other Charges</p>
-              <p className="text-2xl font-bold">₹8,000</p>
-              <p className="text-xs text-muted-foreground">Per Year</p>
+            <div className="rounded-lg border bg-primary/5 p-4">
+              <p className="text-muted-foreground text-sm">Other Charges</p>
+              <p className="font-bold text-2xl">₹8,000</p>
+              <p className="text-muted-foreground text-xs">Per Year</p>
             </div>
           </div>
         </CardContent>
@@ -466,49 +480,49 @@ function FeesPage() {
 
       {/* Quick Actions */}
       <div className="grid gap-4 md:grid-cols-4">
-        <Card className="cursor-pointer hover:shadow-md transition-shadow">
+        <Card className="cursor-pointer transition-shadow hover:shadow-md">
           <CardContent className="flex items-center gap-4 p-4">
-            <div className="p-3 rounded-lg bg-green-100">
-              <Receipt className="h-5 w-5 text-green-600" />
+            <div className="rounded-lg bg-success/15 p-3">
+              <Receipt className="h-5 w-5 text-success" />
             </div>
             <div>
               <p className="font-medium">Collect Fee</p>
-              <p className="text-sm text-muted-foreground">Manual collection</p>
+              <p className="text-muted-foreground text-sm">Manual collection</p>
             </div>
           </CardContent>
         </Card>
-        <Card className="cursor-pointer hover:shadow-md transition-shadow">
+        <Card className="cursor-pointer transition-shadow hover:shadow-md">
           <CardContent className="flex items-center gap-4 p-4">
-            <div className="p-3 rounded-lg bg-blue-100">
-              <CreditCard className="h-5 w-5 text-blue-600" />
+            <div className="rounded-lg bg-primary/10 p-3">
+              <CreditCard className="h-5 w-5 text-primary" />
             </div>
             <div>
               <p className="font-medium">Payment Gateway</p>
-              <p className="text-sm text-muted-foreground">Online settings</p>
+              <p className="text-muted-foreground text-sm">Online settings</p>
             </div>
           </CardContent>
         </Card>
-        <Card className="cursor-pointer hover:shadow-md transition-shadow">
+        <Card className="cursor-pointer transition-shadow hover:shadow-md">
           <CardContent className="flex items-center gap-4 p-4">
-            <div className="p-3 rounded-lg bg-yellow-100">
-              <Calculator className="h-5 w-5 text-yellow-600" />
+            <div className="rounded-lg bg-warning/15 p-3">
+              <Calculator className="h-5 w-5 text-warning" />
             </div>
             <div>
               <p className="font-medium">Salary Disbursement</p>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-muted-foreground text-sm">
                 Payroll processing
               </p>
             </div>
           </CardContent>
         </Card>
-        <Card className="cursor-pointer hover:shadow-md transition-shadow">
+        <Card className="cursor-pointer transition-shadow hover:shadow-md">
           <CardContent className="flex items-center gap-4 p-4">
-            <div className="p-3 rounded-lg bg-purple-100">
-              <FileText className="h-5 w-5 text-purple-600" />
+            <div className="rounded-lg bg-primary/10 p-3">
+              <FileText className="h-5 w-5 text-primary" />
             </div>
             <div>
               <p className="font-medium">Generate Report</p>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-muted-foreground text-sm">
                 Financial statements
               </p>
             </div>

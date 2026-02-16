@@ -1,11 +1,11 @@
 /**
  * Keyboard Shortcuts Utilities
- * 
+ *
  * Global keyboard shortcuts for the application
  */
 
-import { useEffect, useCallback } from "react";
 import { useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
 
 export interface KeyboardShortcut {
   key: string;
@@ -22,7 +22,7 @@ export interface KeyboardShortcut {
  */
 export function useKeyboardShortcut(
   shortcuts: KeyboardShortcut[],
-  enabled: boolean = true
+  enabled: boolean = true,
 ) {
   useEffect(() => {
     if (!enabled) return;
@@ -95,7 +95,7 @@ export function useGlobalShortcuts() {
       action: () => {
         // Focus search input if available
         const searchInput = document.querySelector<HTMLInputElement>(
-          'input[type="search"], input[placeholder*="Search"]'
+          'input[type="search"], input[placeholder*="Search"]',
         );
         if (searchInput) {
           searchInput.focus();
@@ -112,7 +112,7 @@ export function useGlobalShortcuts() {
 export function useListPageShortcuts(
   onCreateNew?: () => void,
   onRefresh?: () => void,
-  onExport?: () => void
+  onExport?: () => void,
 ) {
   useKeyboardShortcut([
     {
@@ -142,10 +142,7 @@ export function useListPageShortcuts(
 /**
  * Shortcuts for forms
  */
-export function useFormShortcuts(
-  onSubmit?: () => void,
-  onCancel?: () => void
-) {
+export function useFormShortcuts(onSubmit?: () => void, onCancel?: () => void) {
   useKeyboardShortcut([
     {
       key: "s",

@@ -1,17 +1,9 @@
 /**
  * Confirmation Dialog Component
- * 
+ *
  * Reusable confirmation dialog for destructive actions
  */
 
-import {
-  AlertTriangle,
-  Trash2,
-  X,
-  CheckCircle,
-  Info,
-  AlertCircle,
-} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -21,6 +13,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { AlertTriangle, CheckCircle, Info, Trash2 } from "lucide-react";
+import React, { useCallback, useState } from "react";
 
 export type ConfirmDialogVariant = "danger" | "warning" | "info" | "success";
 
@@ -47,23 +41,25 @@ const variantConfig: Record<
 > = {
   danger: {
     icon: Trash2,
-    confirmButtonClass: "bg-red-600 hover:bg-red-700 text-white",
-    iconColor: "text-red-600",
+    confirmButtonClass:
+      "bg-destructive hover:bg-destructive  text-destructive-foreground",
+    iconColor: "text-destructive",
   },
   warning: {
     icon: AlertTriangle,
-    confirmButtonClass: "bg-yellow-600 hover:bg-yellow-700 text-white",
-    iconColor: "text-yellow-600",
+    confirmButtonClass: "bg-warning hover:bg-warning  text-warning-foreground",
+    iconColor: "text-warning",
   },
   info: {
     icon: Info,
-    confirmButtonClass: "bg-blue-600 hover:bg-blue-700 text-white",
-    iconColor: "text-blue-600",
+    confirmButtonClass:
+      "bg-primary hover:bg-primary/90 text-primary-foreground",
+    iconColor: "text-primary",
   },
   success: {
     icon: CheckCircle,
-    confirmButtonClass: "bg-green-600 hover:bg-green-700 text-white",
-    iconColor: "text-green-600",
+    confirmButtonClass: "bg-success hover:bg-success  text-success-foreground",
+    iconColor: "text-success",
   },
 };
 
@@ -98,11 +94,11 @@ export function ConfirmDialog({
         <DialogHeader>
           <div className="flex items-center gap-3">
             <div className={`flex-shrink-0 ${config.iconColor}`}>
-              <Icon className="w-6 h-6" />
+              <Icon className="h-6 w-6" />
             </div>
-            <DialogTitle className="text-lg font-semibold">{title}</DialogTitle>
+            <DialogTitle className="font-semibold text-lg">{title}</DialogTitle>
           </div>
-          <DialogDescription className="pt-2 text-gray-600">
+          <DialogDescription className="pt-2 text-muted-foreground">
             {description}
           </DialogDescription>
         </DialogHeader>
@@ -121,7 +117,7 @@ export function ConfirmDialog({
           >
             {isLoading ? (
               <>
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-border border-t-transparent" />
                 Processing...
               </>
             ) : (
@@ -138,16 +134,16 @@ export function ConfirmDialog({
  * Hook for using confirmation dialog
  */
 export function useConfirmDialog() {
-  const [open, setOpen] = React.useState(false);
-  const [config, setConfig] = React.useState<Omit<
+  const [open, setOpen] = useState(false);
+  const [config, setConfig] = useState<Omit<
     ConfirmDialogProps,
     "open" | "onOpenChange"
   > | null>(null);
-  const [resolvePromise, setResolvePromise] = React.useState<
+  const [resolvePromise, setResolvePromise] = useState<
     ((value: boolean) => void) | null
   >(null);
 
-  const confirm = React.useCallback(
+  const confirm = useCallback(
     (
       title: string,
       description: string,
@@ -156,7 +152,7 @@ export function useConfirmDialog() {
         confirmText?: string;
         cancelText?: string;
         icon?: React.ReactNode;
-      }
+      },
     ): Promise<boolean> => {
       return new Promise((resolve) => {
         setConfig({
@@ -175,7 +171,7 @@ export function useConfirmDialog() {
         setOpen(true);
       });
     },
-    []
+    [],
   );
 
   const handleCancel = () => {
@@ -200,6 +196,3 @@ export function useConfirmDialog() {
 
   return { confirm, dialog };
 }
-
-// Add React import for the hook
-import React from "react";

@@ -1,10 +1,10 @@
 /**
  * Search Utilities
- * 
+ *
  * Common search functionality for list pages
  */
 
-import React, { useMemo, useState, useCallback, useEffect } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 export interface SearchConfig<T> {
   data: T[];
@@ -16,9 +16,7 @@ export interface SearchConfig<T> {
 /**
  * Generic search hook
  */
-export function useSearch<T>(
-  config: SearchConfig<T>
-) {
+export function useSearch<T>(config: SearchConfig<T>) {
   const [searchQuery, setSearchQuery] = useState(config.searchQuery || "");
   const [filters, setFilters] = useState(config.filters || {});
 
@@ -31,10 +29,8 @@ export function useSearch<T>(
       result = result.filter((item) =>
         config.searchFields.some((field) => {
           const value = (item as Record<string, unknown>)[field as string];
-          return value
-            ? String(value).toLowerCase().includes(query)
-            : false;
-        })
+          return value ? String(value).toLowerCase().includes(query) : false;
+        }),
       );
     }
 

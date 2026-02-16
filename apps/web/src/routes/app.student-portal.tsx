@@ -1,31 +1,28 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useAuth } from "../lib/auth-context";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import {
-  User,
+  ArrowLeft,
+  Book,
   BookOpen,
+  Bus,
   Calendar,
   Clock,
-  FileText,
-  Award,
   DollarSign,
+  Download,
+  Edit,
+  ExternalLink,
+  FileText,
   Library,
   TrendingUp,
-  ChevronRight,
-  Book,
-  Bus,
-  Home,
-  Edit,
-  Download,
-  ArrowLeft,
-  ExternalLink,
+  User,
 } from "lucide-react";
+import { Button } from "../components/ui/button";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
-import { Button } from "../components/ui/button";
+import { useAuth } from "../lib/auth-context";
 
 export const Route = createFileRoute("/app/student-portal")({
   component: StudentPortal,
@@ -36,13 +33,13 @@ function StudentPortal() {
 
   if (!hasRole(["student", "admin"])) {
     return (
-      <div className="flex items-center justify-center h-96">
+      <div className="flex h-96 items-center justify-center">
         <div className="text-center">
-          <User className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-          <h2 className="text-xl font-bold text-gray-900 mb-2">
+          <User className="mx-auto mb-4 h-16 w-16 text-muted-foreground" />
+          <h2 className="mb-2 font-bold text-foreground text-xl">
             Access Denied
           </h2>
-          <p className="text-gray-600">
+          <p className="text-muted-foreground">
             This portal is only available for students.
           </p>
         </div>
@@ -322,36 +319,42 @@ function StudentPortal() {
       <div className="flex flex-col gap-4">
         <Link
           to="/app"
-          className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-blue-600 transition-colors w-fit group"
+          className="group inline-flex w-fit items-center gap-2 text-muted-foreground text-sm transition-colors hover:text-primary"
         >
-          <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
+          <ArrowLeft className="group-hover:-translate-x-1 h-4 w-4 transition-transform" />
           Back to Dashboard
         </Link>
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Student Portal</h1>
-            <p className="text-gray-600 text-lg">
-              Welcome back, <span className="font-semibold text-gray-900">{studentData.personal.name}</span>!
+            <h1 className="mb-2 font-bold text-3xl text-foreground">
+              Student Portal
+            </h1>
+            <p className="text-lg text-muted-foreground">
+              Welcome back,{" "}
+              <span className="font-semibold text-foreground">
+                {studentData.personal.name}
+              </span>
+              !
             </p>
           </div>
 
           <Button
             size="sm"
-            className="bg-primary text-primary-foreground shadow-md hover:shadow-lg hover:bg-primary/90 transition-all"
+            className="bg-primary text-primary-foreground shadow-md transition-all hover:bg-primary/90 hover:shadow-lg"
           >
-            <Download className="w-4 h-4 mr-2" />
+            <Download className="mr-2 h-4 w-4" />
             Download Profile
           </Button>
         </div>
       </div>
 
       {/* Personal Info Card */}
-      <Card className="border-2 shadow-lg hover:shadow-xl transition-shadow">
-        <CardHeader className="pb-3 bg-gradient-to-r from-primary/10 to-primary/5 border-b">
+      <Card className="border-2 shadow-lg transition-shadow hover:shadow-xl">
+        <CardHeader className="border-b bg-gradient-to-r from-primary/10 to-primary/5 pb-3">
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2 text-xl">
-              <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center">
-                <User className="w-5 h-5 text-primary-foreground" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
+                <User className="h-5 w-5 text-primary-foreground" />
               </div>
               Personal Information
             </CardTitle>
@@ -359,137 +362,147 @@ function StudentPortal() {
             <Button
               variant="ghost"
               size="sm"
-              className="hover:bg-primary/10 text-primary"
+              className="text-primary hover:bg-primary/10"
             >
-              <Edit className="w-4 h-4 mr-1" />
+              <Edit className="mr-1 h-4 w-4" />
               Edit
             </Button>
           </div>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-col md:flex-row gap-6">
+          <div className="flex flex-col gap-6 md:flex-row">
             <div className="flex items-center gap-4">
-              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center text-primary-foreground text-2xl font-bold shadow-lg ring-4 ring-primary/20">
+              <div className="flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/80 font-bold text-2xl text-primary-foreground shadow-lg ring-4 ring-primary/20">
                 {studentData.personal.name
                   .split(" ")
                   .map((n) => n[0])
                   .join("")}
               </div>
               <div>
-                <h3 className="text-lg font-bold">
+                <h3 className="font-bold text-lg">
                   {studentData.personal.name}
                 </h3>
-                <p className="text-gray-600">
+                <p className="text-muted-foreground">
                   {studentData.personal.class} - Roll No:{" "}
                   {studentData.personal.rollNumber}
                 </p>
-                <p className="text-sm text-gray-500">
+                <p className="text-muted-foreground text-sm">
                   {studentData.personal.house} House
                 </p>
               </div>
             </div>
-            <div className="flex-1 grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid flex-1 grid-cols-2 gap-4 md:grid-cols-4">
               <div>
-                <p className="text-sm text-gray-500">Admission No.</p>
+                <p className="text-muted-foreground text-sm">Admission No.</p>
                 <p className="font-medium">
                   {studentData.personal.admissionNumber}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Blood Group</p>
+                <p className="text-muted-foreground text-sm">Blood Group</p>
                 <p className="font-medium">{studentData.personal.bloodGroup}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Phone</p>
+                <p className="text-muted-foreground text-sm">Phone</p>
                 <p className="font-medium">{studentData.personal.phone}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Email</p>
+                <p className="text-muted-foreground text-sm">Email</p>
                 <p className="font-medium">{studentData.personal.email}</p>
               </div>
             </div>
           </div>
         </CardContent>
-      </Card >
+      </Card>
 
       {/* Quick Stats */}
-      < div className="grid grid-cols-2 md:grid-cols-4 gap-4" >
-        <Card className="border-2 hover:shadow-lg transition-all cursor-pointer group hover:border-green-300">
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+        <Card className="group cursor-pointer border-2 transition-all hover:border-success/30 hover:shadow-lg">
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
-                <TrendingUp className="w-6 h-6 text-white" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-success to-success/90 shadow-md transition-transform group-hover:scale-110">
+                <TrendingUp className="h-6 w-6 text-background" />
               </div>
               <div>
-                <p className="text-3xl font-bold text-gray-900">{averageMarks.toFixed(1)}%</p>
-                <p className="text-sm font-medium text-gray-600">Average Marks</p>
+                <p className="font-bold text-3xl text-foreground">
+                  {averageMarks.toFixed(1)}%
+                </p>
+                <p className="font-medium text-muted-foreground text-sm">
+                  Average Marks
+                </p>
               </div>
             </div>
           </CardContent>
         </Card>
-        <Card className="border-2 hover:shadow-lg transition-all cursor-pointer group hover:border-blue-300">
+        <Card className="group cursor-pointer border-2 transition-all hover:border-primary/30 hover:shadow-lg">
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
-                <Calendar className="w-6 h-6 text-white" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/90 shadow-md transition-transform group-hover:scale-110">
+                <Calendar className="h-6 w-6 text-background" />
               </div>
               <div>
-                <p className="text-3xl font-bold text-gray-900">
+                <p className="font-bold text-3xl text-foreground">
                   {studentData.attendance.percentage}%
                 </p>
-                <p className="text-sm font-medium text-gray-600">Attendance</p>
+                <p className="font-medium text-muted-foreground text-sm">
+                  Attendance
+                </p>
               </div>
             </div>
           </CardContent>
         </Card>
-        <Card className="border-2 hover:shadow-lg transition-all cursor-pointer group hover:border-purple-300">
+        <Card className="group cursor-pointer border-2 transition-all hover:border-primary/30 hover:shadow-lg">
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
-                <Book className="w-6 h-6 text-white" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/90 shadow-md transition-transform group-hover:scale-110">
+                <Book className="h-6 w-6 text-background" />
               </div>
               <div>
-                <p className="text-3xl font-bold text-gray-900">
+                <p className="font-bold text-3xl text-foreground">
                   {studentData.libraryBooks.length}
                 </p>
-                <p className="text-sm font-medium text-gray-600">Library Books</p>
+                <p className="font-medium text-muted-foreground text-sm">
+                  Library Books
+                </p>
               </div>
             </div>
           </CardContent>
         </Card>
-        <Card className="border-2 hover:shadow-lg transition-all cursor-pointer group hover:border-orange-300">
+        <Card className="group cursor-pointer border-2 transition-all hover:border-warning/30 hover:shadow-lg">
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
-                <DollarSign className="w-6 h-6 text-white" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-warning to-warning/90 shadow-md transition-transform group-hover:scale-110">
+                <DollarSign className="h-6 w-6 text-background" />
               </div>
               <div>
-                <p className="text-3xl font-bold text-gray-900">
+                <p className="font-bold text-3xl text-foreground">
                   ₹{(paidFees / 1000).toFixed(1)}K
                 </p>
-                <p className="text-sm font-medium text-gray-600">Fees Paid</p>
+                <p className="font-medium text-muted-foreground text-sm">
+                  Fees Paid
+                </p>
               </div>
             </div>
           </CardContent>
         </Card>
-      </div >
+      </div>
 
-      <div className="grid lg:grid-cols-2 gap-6">
+      <div className="grid gap-6 lg:grid-cols-2">
         {/* Subjects & Performance */}
-        <Card className="border-2 shadow-md hover:shadow-xl transition-all">
-          <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b">
+        <Card className="border-2 shadow-md transition-all hover:shadow-xl">
+          <CardHeader className="border-b bg-gradient-to-r from-primary/5 to-primary/5">
             <div className="flex items-center justify-between">
               <CardTitle className="flex items-center gap-2 text-lg">
-                <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-                  <BookOpen className="w-4 h-4 text-primary-foreground" />
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
+                  <BookOpen className="h-4 w-4 text-primary-foreground" />
                 </div>
                 Subjects & Performance
               </CardTitle>
               <Link
                 to="/app/exams"
-                className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
+                className="flex items-center gap-1 font-medium text-primary text-sm hover:text-primary"
               >
-                View All <ExternalLink className="w-3 h-3" />
+                View All <ExternalLink className="h-3 w-3" />
               </Link>
             </div>
           </CardHeader>
@@ -498,25 +511,28 @@ function StudentPortal() {
               {studentData.subjects.map((subject, idx) => (
                 <div
                   key={idx}
-                  className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                  className="flex items-center justify-between rounded-lg bg-muted p-3"
                 >
                   <div>
                     <p className="font-medium">{subject.name}</p>
-                    <p className="text-sm text-gray-500">{subject.teacher}</p>
+                    <p className="text-muted-foreground text-sm">
+                      {subject.teacher}
+                    </p>
                   </div>
                   <div className="text-right">
                     <p className="font-bold">
                       {subject.marks}/{subject.maxMarks}
                     </p>
                     <span
-                      className={`px-2 py-0.5 rounded text-xs ${subject.marks >= 90
-                        ? "bg-green-100 text-green-700"
-                        : subject.marks >= 75
-                          ? "bg-blue-100 text-blue-700"
-                          : subject.marks >= 60
-                            ? "bg-yellow-100 text-yellow-700"
-                            : "bg-red-100 text-red-700"
-                        }`}
+                      className={`rounded px-2 py-0.5 text-xs ${
+                        subject.marks >= 90
+                          ? "bg-success/15 text-success"
+                          : subject.marks >= 75
+                            ? "bg-primary/10 text-primary"
+                            : subject.marks >= 60
+                              ? "bg-warning/15 text-warning"
+                              : "bg-destructive/10 text-destructive"
+                      }`}
                     >
                       {subject.grade}
                     </span>
@@ -528,20 +544,20 @@ function StudentPortal() {
         </Card>
 
         {/* Today's Timetable */}
-        <Card className="border-2 shadow-md hover:shadow-xl transition-all">
-          <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50 border-b">
+        <Card className="border-2 shadow-md transition-all hover:shadow-xl">
+          <CardHeader className="border-b bg-gradient-to-r from-primary/5 to-primary/5">
             <div className="flex items-center justify-between">
               <CardTitle className="flex items-center gap-2 text-lg">
-                <div className="w-8 h-8 rounded-lg bg-purple-600 flex items-center justify-center">
-                  <Clock className="w-4 h-4 text-white" />
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
+                  <Clock className="h-4 w-4 text-background" />
                 </div>
                 Today&apos;s Timetable
               </CardTitle>
               <Link
                 to="/app/schedule"
-                className="text-sm text-purple-600 hover:text-purple-700 font-medium flex items-center gap-1"
+                className="flex items-center gap-1 font-medium text-primary text-sm hover:text-primary"
               >
-                Full Schedule <ExternalLink className="w-3 h-3" />
+                Full Schedule <ExternalLink className="h-3 w-3" />
               </Link>
             </div>
           </CardHeader>
@@ -550,17 +566,20 @@ function StudentPortal() {
               {studentData.timetable.map((period, idx) => (
                 <div
                   key={idx}
-                  className={`flex items-center gap-3 p-2 rounded-lg ${["Assembly", "Break", "Lunch"].includes(period.period)
-                    ? "bg-gray-100"
-                    : "bg-blue-50"
-                    }`}
+                  className={`flex items-center gap-3 rounded-lg p-2 ${
+                    ["Assembly", "Break", "Lunch"].includes(period.period)
+                      ? "bg-muted"
+                      : "bg-primary/5"
+                  }`}
                 >
-                  <span className="text-sm font-medium text-gray-600 w-20">
+                  <span className="w-20 font-medium text-muted-foreground text-sm">
                     {period.time}
                   </span>
                   <span className="flex-1 font-medium">{period.period}</span>
                   {period.room !== "-" && (
-                    <span className="text-sm text-gray-500">{period.room}</span>
+                    <span className="text-muted-foreground text-sm">
+                      {period.room}
+                    </span>
                   )}
                 </div>
               ))}
@@ -569,20 +588,20 @@ function StudentPortal() {
         </Card>
 
         {/* Pending Homework */}
-        <Card className="border-2 shadow-md hover:shadow-xl transition-all">
-          <CardHeader className="bg-gradient-to-r from-amber-50 to-orange-50 border-b">
+        <Card className="border-2 shadow-md transition-all hover:shadow-xl">
+          <CardHeader className="border-b bg-gradient-to-r from-warning to-warning/90">
             <div className="flex items-center justify-between">
               <CardTitle className="flex items-center gap-2 text-lg">
-                <div className="w-8 h-8 rounded-lg bg-amber-600 flex items-center justify-center">
-                  <FileText className="w-4 h-4 text-white" />
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-warning">
+                  <FileText className="h-4 w-4 text-background" />
                 </div>
                 Homework & Assignments
               </CardTitle>
               <Link
                 to="/app/gradebook"
-                className="text-sm text-amber-600 hover:text-amber-700 font-medium flex items-center gap-1"
+                className="flex items-center gap-1 font-medium text-sm text-warning hover:text-warning"
               >
-                View All <ExternalLink className="w-3 h-3" />
+                View All <ExternalLink className="h-3 w-3" />
               </Link>
             </div>
           </CardHeader>
@@ -591,19 +610,20 @@ function StudentPortal() {
               {studentData.homework.map((hw, idx) => (
                 <div
                   key={idx}
-                  className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                  className="flex items-center justify-between rounded-lg bg-muted p-3"
                 >
                   <div>
                     <p className="font-medium">{hw.title}</p>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-muted-foreground text-sm">
                       {hw.subject} • Due: {hw.dueDate}
                     </p>
                   </div>
                   <span
-                    className={`px-2 py-0.5 rounded text-xs ${hw.status === "submitted"
-                      ? "bg-green-100 text-green-700"
-                      : "bg-yellow-100 text-yellow-700"
-                      }`}
+                    className={`rounded px-2 py-0.5 text-xs ${
+                      hw.status === "submitted"
+                        ? "bg-success/15 text-success"
+                        : "bg-warning/15 text-warning"
+                    }`}
                   >
                     {hw.status}
                   </span>
@@ -614,32 +634,32 @@ function StudentPortal() {
         </Card>
 
         {/* Fee Status */}
-        <Card className="border-2 shadow-md hover:shadow-xl transition-all">
-          <CardHeader className="bg-gradient-to-r from-emerald-50 to-teal-50 border-b">
+        <Card className="border-2 shadow-md transition-all hover:shadow-xl">
+          <CardHeader className="border-b bg-gradient-to-r from-primary/15 to-card">
             <div className="flex items-center justify-between">
               <CardTitle className="flex items-center gap-2 text-lg">
-                <div className="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center">
-                  <DollarSign className="w-4 h-4 text-white" />
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
+                  <DollarSign className="h-4 w-4 text-background" />
                 </div>
                 Fee Status
               </CardTitle>
               <Link
                 to="/app/fees"
-                className="text-sm text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1"
+                className="flex items-center gap-1 font-medium text-primary text-sm hover:text-primary"
               >
-                Pay Fees <ExternalLink className="w-3 h-3" />
+                Pay Fees <ExternalLink className="h-3 w-3" />
               </Link>
             </div>
           </CardHeader>
           <CardContent>
             <div className="mb-4">
-              <div className="flex justify-between text-sm mb-1">
+              <div className="mb-1 flex justify-between text-sm">
                 <span>Paid: ₹{paidFees.toLocaleString()}</span>
                 <span>Total: ₹{totalFees.toLocaleString()}</span>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
+              <div className="h-2 w-full rounded-full bg-muted">
                 <div
-                  className="bg-green-600 h-2 rounded-full"
+                  className="h-2 rounded-full bg-success"
                   style={{ width: `${(paidFees / totalFees) * 100}%` }}
                 />
               </div>
@@ -648,14 +668,15 @@ function StudentPortal() {
               {studentData.fees.map((fee, idx) => (
                 <div
                   key={idx}
-                  className="flex items-center justify-between p-2 bg-gray-50 rounded-lg"
+                  className="flex items-center justify-between rounded-lg bg-muted p-2"
                 >
                   <span>{fee.type}</span>
                   <span
-                    className={`px-2 py-0.5 rounded text-xs ${fee.status === "paid"
-                      ? "bg-green-100 text-green-700"
-                      : "bg-red-100 text-red-700"
-                      }`}
+                    className={`rounded px-2 py-0.5 text-xs ${
+                      fee.status === "paid"
+                        ? "bg-success/15 text-success"
+                        : "bg-destructive/10 text-destructive"
+                    }`}
                   >
                     {fee.status === "paid"
                       ? `₹${fee.amount.toLocaleString()} (Paid)`
@@ -668,20 +689,20 @@ function StudentPortal() {
         </Card>
 
         {/* Library Books */}
-        <Card className="border-2 shadow-md hover:shadow-xl transition-all">
-          <CardHeader className="bg-gradient-to-r from-violet-50 to-purple-50 border-b">
+        <Card className="border-2 shadow-md transition-all hover:shadow-xl">
+          <CardHeader className="border-b bg-gradient-to-r from-primary/5 to-primary/5">
             <div className="flex items-center justify-between">
               <CardTitle className="flex items-center gap-2 text-lg">
-                <div className="w-8 h-8 rounded-lg bg-violet-600 flex items-center justify-center">
-                  <Library className="w-4 h-4 text-white" />
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
+                  <Library className="h-4 w-4 text-background" />
                 </div>
                 Library Books
               </CardTitle>
               <Link
                 to="/app/library"
-                className="text-sm text-violet-600 hover:text-violet-700 font-medium flex items-center gap-1"
+                className="flex items-center gap-1 font-medium text-primary text-sm hover:text-primary"
               >
-                Browse Library <ExternalLink className="w-3 h-3" />
+                Browse Library <ExternalLink className="h-3 w-3" />
               </Link>
             </div>
           </CardHeader>
@@ -690,13 +711,15 @@ function StudentPortal() {
               {studentData.libraryBooks.map((book, idx) => (
                 <div
                   key={idx}
-                  className="p-3 bg-amber-50 border-l-4 border-amber-500 rounded-r-lg"
+                  className="rounded-r-lg border-warning/30 border-l-4 bg-warning/15 p-3"
                 >
                   <p className="font-medium">{book.title}</p>
-                  <p className="text-sm text-gray-600">{book.author}</p>
-                  <div className="flex justify-between mt-2 text-sm">
-                    <span className="text-gray-500">Due: {book.dueDate}</span>
-                    <span className="text-amber-600 font-medium">
+                  <p className="text-muted-foreground text-sm">{book.author}</p>
+                  <div className="mt-2 flex justify-between text-sm">
+                    <span className="text-muted-foreground">
+                      Due: {book.dueDate}
+                    </span>
+                    <span className="font-medium text-warning">
                       {book.status}
                     </span>
                   </div>
@@ -707,51 +730,51 @@ function StudentPortal() {
         </Card>
 
         {/* Transport Info */}
-        <Card className="border-2 shadow-md hover:shadow-xl transition-all">
-          <CardHeader className="bg-gradient-to-r from-cyan-50 to-blue-50 border-b">
+        <Card className="border-2 shadow-md transition-all hover:shadow-xl">
+          <CardHeader className="border-b bg-gradient-to-r from-primary/5 to-primary/5">
             <div className="flex items-center justify-between">
               <CardTitle className="flex items-center gap-2 text-lg">
-                <div className="w-8 h-8 rounded-lg bg-cyan-600 flex items-center justify-center">
-                  <Bus className="w-4 h-4 text-white" />
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
+                  <Bus className="h-4 w-4 text-background" />
                 </div>
                 Transport Details
               </CardTitle>
               <Link
                 to="/app/transport"
-                className="text-sm text-cyan-600 hover:text-cyan-700 font-medium flex items-center gap-1"
+                className="flex items-center gap-1 font-medium text-primary text-sm hover:text-primary"
               >
-                Track Bus <ExternalLink className="w-3 h-3" />
+                Track Bus <ExternalLink className="h-3 w-3" />
               </Link>
             </div>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-sm text-gray-500">Route</p>
+                <p className="text-muted-foreground text-sm">Route</p>
                 <p className="font-medium">{studentData.transport.route}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Stop</p>
+                <p className="text-muted-foreground text-sm">Stop</p>
                 <p className="font-medium">{studentData.transport.stop}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Pickup Time</p>
+                <p className="text-muted-foreground text-sm">Pickup Time</p>
                 <p className="font-medium">
                   {studentData.transport.pickupTime}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Drop Time</p>
+                <p className="text-muted-foreground text-sm">Drop Time</p>
                 <p className="font-medium">{studentData.transport.dropTime}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Driver</p>
+                <p className="text-muted-foreground text-sm">Driver</p>
                 <p className="font-medium">
                   {studentData.transport.driverName}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Vehicle</p>
+                <p className="text-muted-foreground text-sm">Vehicle</p>
                 <p className="font-medium">
                   {studentData.transport.vehicleNumber}
                 </p>
@@ -760,6 +783,6 @@ function StudentPortal() {
           </CardContent>
         </Card>
       </div>
-    </div >
+    </div>
   );
 }

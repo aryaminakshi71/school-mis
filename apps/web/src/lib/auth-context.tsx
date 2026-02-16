@@ -1,10 +1,10 @@
 import {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
   ReactNode,
+  createContext,
   useCallback,
+  useContext,
+  useEffect,
+  useState,
 } from "react";
 
 export type UserRole =
@@ -212,27 +212,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
 
       if (!response.ok) {
-        const error = await response.json().catch(() => ({ error: "Login failed" }));
+        const error = await response
+          .json()
+          .catch(() => ({ error: "Login failed" }));
         throw new Error(error.error || "Invalid credentials");
       }
 
       const userData = await response.json();
-      
+
       const user: User = {
         id: userData.id || "user-id",
         name: userData.name || "User",
         email: userData.email || email,
         role: userData.role || "admin",
-        avatar: userData.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${userData.email}`,
+        avatar:
+          userData.avatar ||
+          `https://api.dicebear.com/7.x/avataaars/svg?seed=${userData.email}`,
       };
 
       // Set user state and persist to localStorage
       setUser(user);
       localStorage.setItem("school_mis_user", JSON.stringify(user));
-      
+
       // Wait a bit to ensure state is updated
       await new Promise((resolve) => setTimeout(resolve, 50));
-      
+
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);

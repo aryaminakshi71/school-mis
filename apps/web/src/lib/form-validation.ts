@@ -1,6 +1,6 @@
 /**
  * Form Validation Utilities
- * 
+ *
  * Shared Zod schemas and validation helpers
  */
 
@@ -10,7 +10,10 @@ import { z } from "zod";
 export const emailSchema = z.string().email("Invalid email address");
 export const phoneSchema = z
   .string()
-  .regex(/^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,9}$/, "Invalid phone number");
+  .regex(
+    /^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,9}$/,
+    "Invalid phone number",
+  );
 export const passwordSchema = z
   .string()
   .min(8, "Password must be at least 8 characters")
@@ -101,25 +104,29 @@ export const loginSchema = z.object({
   password: z.string().min(1, "Password is required"),
 });
 
-export const registerSchema = z.object({
-  name: z.string().min(1, "Name is required").max(100),
-  email: emailSchema,
-  password: passwordSchema,
-  confirmPassword: z.string(),
-  role: z.enum(["admin", "teacher", "staff", "parent", "student"]).optional(),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
-});
+export const registerSchema = z
+  .object({
+    name: z.string().min(1, "Name is required").max(100),
+    email: emailSchema,
+    password: passwordSchema,
+    confirmPassword: z.string(),
+    role: z.enum(["admin", "teacher", "staff", "parent", "student"]).optional(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
 
-export const changePasswordSchema = z.object({
-  currentPassword: z.string().min(1, "Current password is required"),
-  newPassword: passwordSchema,
-  confirmPassword: z.string(),
-}).refine((data) => data.newPassword === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
-});
+export const changePasswordSchema = z
+  .object({
+    currentPassword: z.string().min(1, "Current password is required"),
+    newPassword: passwordSchema,
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
 
 // Search schema
 export const searchSchema = z.object({
@@ -142,20 +149,22 @@ export type RegisterFormData = z.infer<typeof registerSchema>;
  */
 export function validateForm<T>(
   schema: z.ZodSchema<T>,
-  data: unknown
-): { success: true; data: T } | { success: false; errors: Record<string, string> } {
+  data: unknown,
+):
+  | { success: true; data: T }
+  | { success: false; errors: Record<string, string> } {
   const result = schema.safeParse(data);
-  
+
   if (result.success) {
     return { success: true, data: result.data };
   }
-  
+
   const errors: Record<string, string> = {};
   result.error.errors.forEach((error) => {
     const path = error.path.join(".");
     errors[path] = error.message;
   });
-  
+
   return { success: false, errors };
 }
 
@@ -164,7 +173,7 @@ export function validateForm<T>(
  */
 export function getFieldError(
   errors: Record<string, string>,
-  field: string
+  field: string,
 ): string | undefined {
   return errors[field];
 }

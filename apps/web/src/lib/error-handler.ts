@@ -1,6 +1,6 @@
 /**
  * Error Handling Utilities
- * 
+ *
  * Provides standardized error handling across the application
  */
 
@@ -10,10 +10,10 @@ export class AppError extends Error {
     public code: string,
     public statusCode: number = 500,
     public userMessage?: string,
-    public details?: Record<string, unknown>
+    public details?: Record<string, unknown>,
   ) {
     super(message);
-    this.name = 'AppError';
+    this.name = "AppError";
     Object.setPrototypeOf(this, AppError.prototype);
   }
 
@@ -32,42 +32,52 @@ export class AppError extends Error {
 export class ValidationError extends AppError {
   constructor(
     message: string,
-    public fields?: Record<string, string[]>
+    public fields?: Record<string, string[]>,
   ) {
-    super(message, 'VALIDATION_ERROR', 400, message);
-    this.name = 'ValidationError';
+    super(message, "VALIDATION_ERROR", 400, message);
+    this.name = "ValidationError";
     Object.setPrototypeOf(this, ValidationError.prototype);
   }
 }
 
 export class AuthenticationError extends AppError {
-  constructor(message: string = 'Authentication required') {
-    super(message, 'AUTHENTICATION_ERROR', 401, 'Please log in to continue');
-    this.name = 'AuthenticationError';
+  constructor(message: string = "Authentication required") {
+    super(message, "AUTHENTICATION_ERROR", 401, "Please log in to continue");
+    this.name = "AuthenticationError";
     Object.setPrototypeOf(this, AuthenticationError.prototype);
   }
 }
 
 export class AuthorizationError extends AppError {
-  constructor(message: string = 'Insufficient permissions') {
-    super(message, 'AUTHORIZATION_ERROR', 403, 'You do not have permission to perform this action');
-    this.name = 'AuthorizationError';
+  constructor(message: string = "Insufficient permissions") {
+    super(
+      message,
+      "AUTHORIZATION_ERROR",
+      403,
+      "You do not have permission to perform this action",
+    );
+    this.name = "AuthorizationError";
     Object.setPrototypeOf(this, AuthorizationError.prototype);
   }
 }
 
 export class NotFoundError extends AppError {
-  constructor(resource: string = 'Resource') {
-    super(`${resource} not found`, 'NOT_FOUND', 404, `${resource} not found`);
-    this.name = 'NotFoundError';
+  constructor(resource: string = "Resource") {
+    super(`${resource} not found`, "NOT_FOUND", 404, `${resource} not found`);
+    this.name = "NotFoundError";
     Object.setPrototypeOf(this, NotFoundError.prototype);
   }
 }
 
 export class NetworkError extends AppError {
-  constructor(message: string = 'Network request failed') {
-    super(message, 'NETWORK_ERROR', 0, 'Unable to connect. Please check your internet connection.');
-    this.name = 'NetworkError';
+  constructor(message: string = "Network request failed") {
+    super(
+      message,
+      "NETWORK_ERROR",
+      0,
+      "Unable to connect. Please check your internet connection.",
+    );
+    this.name = "NetworkError";
     Object.setPrototypeOf(this, NetworkError.prototype);
   }
 }
@@ -79,14 +89,14 @@ export const handleError = (error: unknown): string => {
   if (error instanceof AppError) {
     return error.userMessage || error.message;
   }
-  
+
   if (error instanceof Error) {
     // Log unexpected errors for debugging
-    console.error('Unexpected error:', error);
-    return error.message || 'An unexpected error occurred';
+    console.error("Unexpected error:", error);
+    return error.message || "An unexpected error occurred";
   }
-  
-  return 'An unexpected error occurred. Please try again.';
+
+  return "An unexpected error occurred. Please try again.";
 };
 
 /**
@@ -103,7 +113,7 @@ export const getErrorDetails = (error: unknown): Record<string, unknown> => {
       stack: error.stack,
     };
   }
-  
+
   if (error instanceof Error) {
     return {
       name: error.name,
@@ -111,7 +121,7 @@ export const getErrorDetails = (error: unknown): Record<string, unknown> => {
       stack: error.stack,
     };
   }
-  
+
   return {
     error: String(error),
   };
@@ -124,12 +134,12 @@ export const isRetryableError = (error: unknown): boolean => {
   if (error instanceof NetworkError) {
     return true;
   }
-  
+
   if (error instanceof AppError) {
     // 5xx errors are usually retryable
     return error.statusCode >= 500 && error.statusCode < 600;
   }
-  
+
   return false;
 };
 
@@ -139,12 +149,12 @@ export const isRetryableError = (error: unknown): boolean => {
 export const parseApiError = (response: Response, data?: unknown): AppError => {
   const statusCode = response.status;
   const errorData = data as { message?: string; error?: string; code?: string };
-  
+
   switch (statusCode) {
     case 400:
       return new ValidationError(
-        errorData?.message || errorData?.error || 'Invalid request',
-        errorData as Record<string, string[]>
+        errorData?.message || errorData?.error || "Invalid request",
+        errorData as Record<string, string[]>,
       );
     case 401:
       return new AuthenticationError(errorData?.message || errorData?.error);
@@ -154,27 +164,27 @@ export const parseApiError = (response: Response, data?: unknown): AppError => {
       return new NotFoundError(errorData?.message || errorData?.error);
     case 429:
       return new AppError(
-        errorData?.message || 'Too many requests',
-        'RATE_LIMIT_ERROR',
+        errorData?.message || "Too many requests",
+        "RATE_LIMIT_ERROR",
         429,
-        'Too many requests. Please try again later.'
+        "Too many requests. Please try again later.",
       );
     case 500:
     case 502:
     case 503:
     case 504:
       return new AppError(
-        errorData?.message || 'Server error',
-        'SERVER_ERROR',
+        errorData?.message || "Server error",
+        "SERVER_ERROR",
         statusCode,
-        'Server error. Please try again later.'
+        "Server error. Please try again later.",
       );
     default:
       return new AppError(
-        errorData?.message || errorData?.error || 'Request failed',
-        errorData?.code || 'UNKNOWN_ERROR',
+        errorData?.message || errorData?.error || "Request failed",
+        errorData?.code || "UNKNOWN_ERROR",
         statusCode,
-        'An error occurred. Please try again.'
+        "An error occurred. Please try again.",
       );
   }
 };

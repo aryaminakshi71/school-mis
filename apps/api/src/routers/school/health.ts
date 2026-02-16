@@ -4,10 +4,10 @@
  * API routes for student health records
  */
 
+import { and, desc, eq, sql } from "drizzle-orm";
 import { z } from "zod";
-import { eq, and, desc, sql } from "drizzle-orm";
-import { orgAuthed } from "../../procedures";
 import { getDb, schema } from "../../lib/db";
+import { orgAuthed } from "../../procedures";
 
 export const healthRouter = {
   /**

@@ -1,13 +1,4 @@
 import { toast } from "sonner";
-import {
-  Bell,
-  Check,
-  X,
-  Info,
-  AlertTriangle,
-  CheckCircle,
-  AlertCircle,
-} from "lucide-react";
 
 export type NotificationType = "info" | "success" | "warning" | "error";
 

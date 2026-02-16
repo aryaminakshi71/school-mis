@@ -19,13 +19,6 @@
       "@school/storage/*": ["../../packages/storage/src/*"]
     }
   },
-  "include": [
-    "src/**/*",
-    "__tests__/**/*",
-    "*.test.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "../web"
-  ]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "../web", "src/__tests__", "**/*.test.ts"]
 }

@@ -2,30 +2,28 @@
  * Dashboard - Complete Overview with Data from API
  */
 
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { api } from "@/lib/api";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import {
-  Users,
-  GraduationCap,
+  BarChart,
   BookOpen,
-  Calendar,
-  DollarSign,
   Bus,
+  Calendar,
+  ChevronRight,
+  Clock,
+  DollarSign,
+  Download,
   FileText,
+  GraduationCap,
   MessageSquare,
   Package,
-  BarChart,
-  Clock,
-  TrendingUp,
-  ArrowUpRight,
-  ChevronRight,
   Plus,
-  Download,
+  Users,
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { api } from "@/lib/api";
+import { useEffect, useState } from "react";
 
 // All modules with sub-features
 const allModules = [
@@ -248,13 +246,13 @@ export default function DashboardHome() {
       {/* Header */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-gray-500 mt-1">
+          <h1 className="font-bold text-3xl text-foreground">Dashboard</h1>
+          <p className="mt-1 text-muted-foreground">
             Welcome back! Here's what's happening at your school today.
           </p>
         </div>
         <div className="flex gap-3">
-          <Button variant="outline" className="border-gray-300">
+          <Button variant="outline" className="border-border">
             <Download className="mr-2 h-4 w-4" />
             Export Report
           </Button>
@@ -267,77 +265,76 @@ export default function DashboardHome() {
 
       {/* Quick Stats */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="border-gray-200 shadow-sm">
+        <Card className="border-border shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">
+            <CardTitle className="font-medium text-muted-foreground text-sm">
               Total Students
             </CardTitle>
-            <div className="p-2 rounded-lg bg-primary-light/20">
+            <div className="rounded-lg bg-primary-light/20 p-2">
               <Users className="h-4 w-4 text-primary" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-gray-900">
+            <div className="font-bold text-2xl text-foreground">
               {stats.totalStudents.toLocaleString()}
             </div>
-            <p className="text-xs text-gray-500 mt-1">
-              <span className="text-green-600 font-medium">+12%</span> from last
+            <p className="mt-1 text-muted-foreground text-xs">
+              <span className="font-medium text-success">+12%</span> from last
               month
             </p>
           </CardContent>
         </Card>
-        <Card className="border-gray-200 shadow-sm">
+        <Card className="border-border shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">
+            <CardTitle className="font-medium text-muted-foreground text-sm">
               Today's Attendance
             </CardTitle>
-            <div className="p-2 rounded-lg bg-green-100">
-              <Calendar className="h-4 w-4 text-green-600" />
+            <div className="rounded-lg bg-success/15 p-2">
+              <Calendar className="h-4 w-4 text-success" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-gray-900">
+            <div className="font-bold text-2xl text-foreground">
               {stats.todayAttendance}%
             </div>
-            <p className="text-xs text-gray-500 mt-1">
-              <span className="text-green-600 font-medium">+2.1%</span> from
+            <p className="mt-1 text-muted-foreground text-xs">
+              <span className="font-medium text-success">+2.1%</span> from
               yesterday
             </p>
           </CardContent>
         </Card>
-        <Card className="border-gray-200 shadow-sm">
+        <Card className="border-border shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">
+            <CardTitle className="font-medium text-muted-foreground text-sm">
               Fee Collection
             </CardTitle>
-            <div className="p-2 rounded-lg bg-yellow-100">
-              <DollarSign className="h-4 w-4 text-yellow-600" />
+            <div className="rounded-lg bg-warning/15 p-2">
+              <DollarSign className="h-4 w-4 text-warning" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-gray-900">
+            <div className="font-bold text-2xl text-foreground">
               ₹{(stats.monthlyFeeCollection / 100000).toFixed(1)}L
             </div>
-            <p className="text-xs text-gray-500 mt-1">
-              <span className="text-green-600 font-medium">+₹2.3L</span> this
-              week
+            <p className="mt-1 text-muted-foreground text-xs">
+              <span className="font-medium text-success">+₹2.3L</span> this week
             </p>
           </CardContent>
         </Card>
-        <Card className="border-gray-200 shadow-sm">
+        <Card className="border-border shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">
+            <CardTitle className="font-medium text-muted-foreground text-sm">
               Pending Tasks
             </CardTitle>
-            <div className="p-2 rounded-lg bg-red-100">
-              <Clock className="h-4 w-4 text-red-600" />
+            <div className="rounded-lg bg-destructive/10 p-2">
+              <Clock className="h-4 w-4 text-destructive" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-gray-900">
+            <div className="font-bold text-2xl text-foreground">
               {stats.pendingFeePayments}
             </div>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="mt-1 text-muted-foreground text-xs">
               5 urgent, 13 normal priority
             </p>
           </CardContent>
@@ -346,7 +343,7 @@ export default function DashboardHome() {
 
       {/* All Modules Grid */}
       <div>
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">
+        <h2 className="mb-4 font-semibold text-foreground text-xl">
           School Management Modules
         </h2>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -354,68 +351,70 @@ export default function DashboardHome() {
             <Link
               key={module.name}
               to={module.href}
-              className="group relative overflow-hidden rounded-xl border border-gray-200 bg-white p-4 hover:shadow-lg hover:border-primary-light transition-all"
+              className="group relative overflow-hidden rounded-xl border border-border bg-card p-4 transition-all hover:border-primary-light hover:shadow-lg"
             >
-              <div className="flex items-start justify-between mb-3">
+              <div className="mb-3 flex items-start justify-between">
                 <div
-                  className={`p-3 rounded-lg ${module.color === "blue"
-                    ? "bg-primary-light/20"
-                    : module.color === "purple"
-                      ? "bg-purple-100"
-                      : module.color === "green"
-                        ? "bg-green-100"
-                        : module.color === "orange"
-                          ? "bg-orange-100"
-                          : module.color === "red"
-                            ? "bg-red-100"
-                            : module.color === "yellow"
-                              ? "bg-yellow-100"
-                              : module.color === "indigo"
-                                ? "bg-indigo-100"
-                                : module.color === "pink"
-                                  ? "bg-pink-100"
-                                  : module.color === "cyan"
-                                    ? "bg-cyan-100"
-                                    : module.color === "teal"
-                                      ? "bg-teal-100"
-                                      : module.color === "amber"
-                                        ? "bg-amber-100"
-                                        : "bg-rose-100"
-                    }`}
+                  className={`rounded-lg p-3 ${
+                    module.color === "blue"
+                      ? "bg-primary-light/20"
+                      : module.color === "purple"
+                        ? "bg-primary/10"
+                        : module.color === "green"
+                          ? "bg-success/15"
+                          : module.color === "orange"
+                            ? "bg-warning/15"
+                            : module.color === "red"
+                              ? "bg-destructive/10"
+                              : module.color === "yellow"
+                                ? "bg-warning/15"
+                                : module.color === "indigo"
+                                  ? "bg-primary/10"
+                                  : module.color === "pink"
+                                    ? "bg-primary/10"
+                                    : module.color === "cyan"
+                                      ? "bg-primary/10"
+                                      : module.color === "teal"
+                                        ? "bg-primary/10"
+                                        : module.color === "amber"
+                                          ? "bg-warning/15"
+                                          : "bg-destructive/10"
+                  }`}
                 >
                   <module.icon
-                    className={`h-5 w-5 ${module.color === "blue"
-                      ? "text-primary"
-                      : module.color === "purple"
-                        ? "text-purple-600"
-                        : module.color === "green"
-                          ? "text-green-600"
-                          : module.color === "orange"
-                            ? "text-orange-600"
-                            : module.color === "red"
-                              ? "text-red-600"
-                              : module.color === "yellow"
-                                ? "text-yellow-600"
-                                : module.color === "indigo"
-                                  ? "text-indigo-600"
-                                  : module.color === "pink"
-                                    ? "text-pink-600"
-                                    : module.color === "cyan"
-                                      ? "text-cyan-600"
-                                      : module.color === "teal"
-                                        ? "text-teal-600"
-                                        : module.color === "amber"
-                                          ? "text-amber-600"
-                                          : "text-rose-600"
-                      }`}
+                    className={`h-5 w-5 ${
+                      module.color === "blue"
+                        ? "text-primary"
+                        : module.color === "purple"
+                          ? "text-primary"
+                          : module.color === "green"
+                            ? "text-success"
+                            : module.color === "orange"
+                              ? "text-warning"
+                              : module.color === "red"
+                                ? "text-destructive"
+                                : module.color === "yellow"
+                                  ? "text-warning"
+                                  : module.color === "indigo"
+                                    ? "text-primary"
+                                    : module.color === "pink"
+                                      ? "text-primary"
+                                      : module.color === "cyan"
+                                        ? "text-primary"
+                                        : module.color === "teal"
+                                          ? "text-primary"
+                                          : module.color === "amber"
+                                            ? "text-warning"
+                                            : "text-destructive"
+                    }`}
                   />
                 </div>
-                <ChevronRight className="h-5 w-5 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <ChevronRight className="h-5 w-5 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-1">
+              <h3 className="mb-1 font-semibold text-foreground">
                 {module.name}
               </h3>
-              <p className="text-sm text-gray-500 mb-3">
+              <p className="mb-3 text-muted-foreground text-sm">
                 {module.count ||
                   module.collection ||
                   module.books ||
@@ -437,7 +436,7 @@ export default function DashboardHome() {
                   <Badge
                     key={feature}
                     variant="secondary"
-                    className="text-xs bg-gray-100 text-gray-600"
+                    className="bg-muted text-muted-foreground text-xs"
                   >
                     {feature}
                   </Badge>
@@ -455,10 +454,10 @@ export default function DashboardHome() {
 
       {/* Recent Activity & Upcoming Events */}
       <div className="grid gap-6 lg:grid-cols-2">
-        <Card className="border-gray-200 shadow-sm">
+        <Card className="border-border shadow-sm">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-gray-900">
-              <Clock className="h-5 w-5 text-gray-400" />
+            <CardTitle className="flex items-center gap-2 text-foreground">
+              <Clock className="h-5 w-5 text-muted-foreground" />
               Recent Activity
             </CardTitle>
           </CardHeader>
@@ -466,30 +465,37 @@ export default function DashboardHome() {
             <div className="space-y-4">
               {recentActivities.map((activity, index) => (
                 <div key={index} className="flex items-start gap-4">
-                  <div className="p-2 rounded-full bg-gray-100">
-                    <activity.icon className="h-4 w-4 text-gray-500" />
+                  <div className="rounded-full bg-muted p-2">
+                    <activity.icon className="h-4 w-4 text-muted-foreground" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-900">
+                    <p className="font-medium text-foreground text-sm">
                       {activity.action}
                     </p>
-                    <p className="text-sm text-gray-500">{activity.name}</p>
+                    <p className="text-muted-foreground text-sm">
+                      {activity.name}
+                    </p>
                   </div>
-                  <span className="text-xs text-gray-400">{activity.time}</span>
+                  <span className="text-muted-foreground text-xs">
+                    {activity.time}
+                  </span>
                 </div>
               ))}
             </div>
-            <Button variant="ghost" className="w-full mt-4 text-gray-600">
+            <Button
+              variant="ghost"
+              className="mt-4 w-full text-muted-foreground"
+            >
               View All Activity
               <ChevronRight className="ml-2 h-4 w-4" />
             </Button>
           </CardContent>
         </Card>
 
-        <Card className="border-gray-200 shadow-sm">
+        <Card className="border-border shadow-sm">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-gray-900">
-              <Calendar className="h-5 w-5 text-gray-400" />
+            <CardTitle className="flex items-center gap-2 text-foreground">
+              <Calendar className="h-5 w-5 text-muted-foreground" />
               Upcoming Events
             </CardTitle>
           </CardHeader>
@@ -497,28 +503,29 @@ export default function DashboardHome() {
             <div className="space-y-4">
               {upcomingEvents.map((event, index) => (
                 <div key={index} className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-lg bg-primary-light/20 flex flex-col items-center justify-center">
-                    <span className="text-xs text-gray-500">
+                  <div className="flex h-12 w-12 flex-col items-center justify-center rounded-lg bg-primary-light/20">
+                    <span className="text-muted-foreground text-xs">
                       {event.date.split(" ")[0]}
                     </span>
-                    <span className="text-sm font-bold text-primary">
+                    <span className="font-bold text-primary text-sm">
                       {event.date.split(" ")[1].replace(",", "")}
                     </span>
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-900">
+                    <p className="font-medium text-foreground text-sm">
                       {event.title}
                     </p>
                     <Badge
                       variant="outline"
-                      className={`mt-1 ${event.type === "exam"
-                        ? "text-red-600 border-red-200"
-                        : event.type === "meeting"
-                          ? "text-primary border-primary/20"
-                          : event.type === "event"
-                            ? "text-green-600 border-green-200"
-                            : "text-yellow-600 border-yellow-200"
-                        }`}
+                      className={`mt-1 ${
+                        event.type === "exam"
+                          ? "border-destructive/30 text-destructive"
+                          : event.type === "meeting"
+                            ? "border-primary/20 text-primary"
+                            : event.type === "event"
+                              ? "border-success/30 text-success"
+                              : "border-warning/30 text-warning"
+                      }`}
                     >
                       {event.type.charAt(0).toUpperCase() + event.type.slice(1)}
                     </Badge>
@@ -526,7 +533,10 @@ export default function DashboardHome() {
                 </div>
               ))}
             </div>
-            <Button variant="ghost" className="w-full mt-4 text-gray-600">
+            <Button
+              variant="ghost"
+              className="mt-4 w-full text-muted-foreground"
+            >
               View Calendar
               <ChevronRight className="ml-2 h-4 w-4" />
             </Button>
@@ -536,51 +546,53 @@ export default function DashboardHome() {
 
       {/* Quick Actions */}
       <div>
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">
+        <h2 className="mb-4 font-semibold text-foreground text-xl">
           Quick Actions
         </h2>
         <div className="grid gap-4 md:grid-cols-4">
-          <Card className="cursor-pointer hover:shadow-md transition-all border-gray-200 hover:border-blue-200">
+          <Card className="cursor-pointer border-border transition-all hover:border-primary/20 hover:shadow-md">
             <CardContent className="flex items-center gap-4 p-4">
-              <div className="p-3 rounded-lg bg-green-100">
-                <Users className="h-5 w-5 text-green-600" />
+              <div className="rounded-lg bg-success/15 p-3">
+                <Users className="h-5 w-5 text-success" />
               </div>
               <div>
-                <p className="font-medium text-gray-900">New Admission</p>
-                <p className="text-sm text-gray-500">Enroll student</p>
+                <p className="font-medium text-foreground">New Admission</p>
+                <p className="text-muted-foreground text-sm">Enroll student</p>
               </div>
             </CardContent>
           </Card>
-          <Card className="cursor-pointer hover:shadow-md transition-all border-gray-200 hover:border-primary/20">
+          <Card className="cursor-pointer border-border transition-all hover:border-primary/20 hover:shadow-md">
             <CardContent className="flex items-center gap-4 p-4">
-              <div className="p-3 rounded-lg bg-primary-light/20">
+              <div className="rounded-lg bg-primary-light/20 p-3">
                 <Calendar className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <p className="font-medium text-gray-900">Mark Attendance</p>
-                <p className="text-sm text-gray-500">Daily attendance</p>
+                <p className="font-medium text-foreground">Mark Attendance</p>
+                <p className="text-muted-foreground text-sm">
+                  Daily attendance
+                </p>
               </div>
             </CardContent>
           </Card>
-          <Card className="cursor-pointer hover:shadow-md transition-all border-gray-200 hover:border-blue-200">
+          <Card className="cursor-pointer border-border transition-all hover:border-primary/20 hover:shadow-md">
             <CardContent className="flex items-center gap-4 p-4">
-              <div className="p-3 rounded-lg bg-yellow-100">
-                <DollarSign className="h-5 w-5 text-yellow-600" />
+              <div className="rounded-lg bg-warning/15 p-3">
+                <DollarSign className="h-5 w-5 text-warning" />
               </div>
               <div>
-                <p className="font-medium text-gray-900">Collect Fees</p>
-                <p className="text-sm text-gray-500">Fee collection</p>
+                <p className="font-medium text-foreground">Collect Fees</p>
+                <p className="text-muted-foreground text-sm">Fee collection</p>
               </div>
             </CardContent>
           </Card>
-          <Card className="cursor-pointer hover:shadow-md transition-all border-gray-200 hover:border-blue-200">
+          <Card className="cursor-pointer border-border transition-all hover:border-primary/20 hover:shadow-md">
             <CardContent className="flex items-center gap-4 p-4">
-              <div className="p-3 rounded-lg bg-purple-100">
-                <MessageSquare className="h-5 w-5 text-purple-600" />
+              <div className="rounded-lg bg-primary/10 p-3">
+                <MessageSquare className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <p className="font-medium text-gray-900">Send Notification</p>
-                <p className="text-sm text-gray-500">SMS/WhatsApp</p>
+                <p className="font-medium text-foreground">Send Notification</p>
+                <p className="text-muted-foreground text-sm">SMS/WhatsApp</p>
               </div>
             </CardContent>
           </Card>

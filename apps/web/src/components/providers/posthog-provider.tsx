@@ -3,7 +3,7 @@
 import { env } from "@school/env/client";
 import posthog from "posthog-js";
 import { PostHogProvider as PHProvider } from "posthog-js/react";
-import { useEffect, type ReactNode } from "react";
+import { type ReactNode, useEffect } from "react";
 
 export function PostHogProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
@@ -45,7 +45,7 @@ export function identifyUser(
     name?: string;
     createdAt?: Date | string;
     [key: string]: unknown;
-  }
+  },
 ) {
   if (typeof window !== "undefined" && env.VITE_PUBLIC_POSTHOG_KEY) {
     posthog.identify(userId, properties);
@@ -59,7 +59,7 @@ export function setOrganization(
     slug?: string;
     createdAt?: Date | string;
     [key: string]: unknown;
-  }
+  },
 ) {
   if (typeof window !== "undefined" && env.VITE_PUBLIC_POSTHOG_KEY) {
     posthog.group("organization", orgId, properties);

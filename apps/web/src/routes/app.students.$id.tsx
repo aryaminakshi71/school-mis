@@ -1,6 +1,6 @@
-import { createFileRoute, Link, useLocation } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
+import { useQuery } from "@tanstack/react-query";
+import { Link, createFileRoute, useLocation } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/app/students/$id")({
   component: StudentDetailPage,
@@ -33,23 +33,23 @@ function StudentDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full"></div>
+      <div className="flex h-64 items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
       </div>
     );
   }
 
   if (error || !student) {
     return (
-      <div className="text-center py-12">
-        <div className="text-4xl mb-4">❌</div>
-        <h2 className="text-xl font-bold text-gray-900">
+      <div className="py-12 text-center">
+        <div className="mb-4 text-4xl">❌</div>
+        <h2 className="font-bold text-foreground text-xl">
           Error loading student
         </h2>
-        <p className="text-gray-600">The student could not be found.</p>
+        <p className="text-muted-foreground">The student could not be found.</p>
         <Link
           to="/app/students"
-          className="mt-4 inline-block text-blue-600 hover:underline"
+          className="mt-4 inline-block text-primary hover:underline"
         >
           ← Back to Students
         </Link>
@@ -62,83 +62,83 @@ function StudentDetailPage() {
       <div className="mb-6">
         <Link
           to="/app/students"
-          className="text-blue-600 hover:underline mb-4 inline-block"
+          className="mb-4 inline-block text-primary hover:underline"
         >
           ← Back to Students
         </Link>
         <div className="flex items-center gap-4">
-          <div className="w-20 h-20 rounded-full bg-blue-600 flex items-center justify-center text-white text-2xl font-bold">
+          <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary font-bold text-2xl text-primary-foreground">
             {student.firstName?.charAt(0)}
             {student.lastName?.charAt(0)}
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="font-bold text-2xl text-foreground">
               {student.firstName} {student.lastName}
             </h1>
-            <p className="text-gray-600">
+            <p className="text-muted-foreground">
               Admission No: {student.admissionNumber || "N/A"}
             </p>
           </div>
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-6">
-          <div className="bg-white rounded-lg border p-6">
-            <h2 className="text-lg font-bold text-gray-900 mb-4">
+      <div className="grid gap-6 lg:grid-cols-3">
+        <div className="space-y-6 lg:col-span-2">
+          <div className="rounded-lg border bg-card p-6">
+            <h2 className="mb-4 font-bold text-foreground text-lg">
               Student Information
             </h2>
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid gap-4 md:grid-cols-2">
               <div>
-                <p className="text-sm text-gray-500">Email</p>
+                <p className="text-muted-foreground text-sm">Email</p>
                 <p className="font-medium">{student.email || "N/A"}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Phone</p>
+                <p className="text-muted-foreground text-sm">Phone</p>
                 <p className="font-medium">{student.phone || "N/A"}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Gender</p>
+                <p className="text-muted-foreground text-sm">Gender</p>
                 <p className="font-medium">{student.gender || "N/A"}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Date of Birth</p>
+                <p className="text-muted-foreground text-sm">Date of Birth</p>
                 <p className="font-medium">{student.dateOfBirth || "N/A"}</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg border p-6">
-            <h2 className="text-lg font-bold text-gray-900 mb-4">
+          <div className="rounded-lg border bg-card p-6">
+            <h2 className="mb-4 font-bold text-foreground text-lg">
               Parent Information
             </h2>
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid gap-4 md:grid-cols-2">
               <div>
-                <p className="text-sm text-gray-500">Father Name</p>
+                <p className="text-muted-foreground text-sm">Father Name</p>
                 <p className="font-medium">{student.fatherName || "N/A"}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Father Phone</p>
+                <p className="text-muted-foreground text-sm">Father Phone</p>
                 <p className="font-medium">{student.fatherPhone || "N/A"}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Mother Name</p>
+                <p className="text-muted-foreground text-sm">Mother Name</p>
                 <p className="font-medium">{student.motherName || "N/A"}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Mother Phone</p>
+                <p className="text-muted-foreground text-sm">Mother Phone</p>
                 <p className="font-medium">{student.motherPhone || "N/A"}</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg border p-6">
-            <h2 className="text-lg font-bold text-gray-900 mb-4">Address</h2>
-            <p className="text-gray-600">
+          <div className="rounded-lg border bg-card p-6">
+            <h2 className="mb-4 font-bold text-foreground text-lg">Address</h2>
+            <p className="text-muted-foreground">
               {student.address || "No address provided"}
             </p>
             {student.city && (
-              <p className="text-gray-600">
+              <p className="text-muted-foreground">
                 {student.city}, {student.state} {student.pincode}
               </p>
             )}
@@ -146,39 +146,39 @@ function StudentDetailPage() {
         </div>
 
         <div className="space-y-6">
-          <div className="bg-white rounded-lg border p-6">
-            <h2 className="text-lg font-bold text-gray-900 mb-4">
+          <div className="rounded-lg border bg-card p-6">
+            <h2 className="mb-4 font-bold text-foreground text-lg">
               Quick Stats
             </h2>
             <div className="space-y-4">
               <div className="flex justify-between">
-                <span className="text-gray-600">Attendance</span>
-                <span className="font-medium text-green-600">94.5%</span>
+                <span className="text-muted-foreground">Attendance</span>
+                <span className="font-medium text-success">94.5%</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">Fees Paid</span>
-                <span className="font-medium text-green-600">₹15,000</span>
+                <span className="text-muted-foreground">Fees Paid</span>
+                <span className="font-medium text-success">₹15,000</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">Exams Taken</span>
+                <span className="text-muted-foreground">Exams Taken</span>
                 <span className="font-medium">3</span>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg border p-6">
-            <h2 className="text-lg font-bold text-gray-900 mb-4">Actions</h2>
+          <div className="rounded-lg border bg-card p-6">
+            <h2 className="mb-4 font-bold text-foreground text-lg">Actions</h2>
             <div className="space-y-2">
-              <button className="w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+              <button className="w-full rounded-lg bg-primary px-4 py-2 text-primary-foreground transition-colors hover:bg-primary/90">
                 Edit Student
               </button>
-              <button className="w-full py-2 px-4 border rounded-lg hover:bg-gray-50 transition-colors">
+              <button className="w-full rounded-lg border px-4 py-2 transition-colors hover:bg-muted">
                 View Attendance
               </button>
-              <button className="w-full py-2 px-4 border rounded-lg hover:bg-gray-50 transition-colors">
+              <button className="w-full rounded-lg border px-4 py-2 transition-colors hover:bg-muted">
                 View Fees
               </button>
-              <button className="w-full py-2 px-4 border border-red-200 text-red-600 rounded-lg hover:bg-red-50 transition-colors">
+              <button className="w-full rounded-lg border border-destructive/30 px-4 py-2 text-destructive transition-colors hover:bg-destructive/10">
                 Delete Student
               </button>
             </div>

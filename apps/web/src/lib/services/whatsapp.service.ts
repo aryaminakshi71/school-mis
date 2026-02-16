@@ -162,9 +162,7 @@ Date: {{date}}
     });
   },
 
-  async sendBulk(
-    payloads: NotificationPayload[],
-  ): Promise<{
+  async sendBulk(payloads: NotificationPayload[]): Promise<{
     success: number;
     failed: number;
     results: NotificationResult[];

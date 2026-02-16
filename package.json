@@ -5,22 +5,25 @@
   "private": true,
   "type": "module",
   "packageManager": "bun@1.3.5",
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
+  "workspaces": ["apps/*", "packages/*"],
   "scripts": {
     "dev": "bun run --filter '@school/web' dev",
     "build": "bun run --filter '@school/api' build && bun run --filter '@school/web' build",
     "test": "bun run --filter '@school/api' test",
     "test:unit": "bun run --filter '@school/api' test:unit",
     "test:integration": "bun run --filter '@school/api' test:integration",
-    "test:e2e": "bun run --filter '@school/web' test:e2e",
-    "test:e2e:ui": "bun run --filter '@school/web' test:e2e:ui",
+    "test:e2e": "E2E_TEST=1 SENTRY_DSN=https://examplePublicKey@o0.ingest.sentry.io/0 bun run --filter '@school/web' test:e2e",
+    "test:e2e:ui": "E2E_TEST=1 SENTRY_DSN=https://examplePublicKey@o0.ingest.sentry.io/0 bun run --filter '@school/web' test:e2e:ui",
     "test:e2e:install": "bun run --filter '@school/web' test:e2e:install",
-    "typecheck": "bun run --filter '@school/api' typecheck && bun run --filter '@school/web' typecheck"
+    "typecheck": "bun run --filter '@school/api' typecheck",
+    "typecheck:web": "bun run --filter '@school/web' typecheck",
+    "lint": "biome check .",
+    "format": "biome format --write ."
   },
   "dependencies": {
     "vite": "7.3.1"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4"
   }
 }

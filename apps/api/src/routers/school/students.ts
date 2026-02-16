@@ -4,13 +4,13 @@
  * oRPC router for student management with full CRUD operations.
  */
 
-import { z } from "zod";
-import { pub, orgAuthed } from "../../procedures/index.js";
-import { getDb } from "../../lib/db.js";
-import { students, classes } from "@school/storage";
-import { eq, like, and, desc, sql } from "drizzle-orm";
 import { randomUUID } from "crypto";
-import { getOrCache, invalidateCache } from "@school/storage/redis";
+import { classes, students } from "@school/storage";
+import { getOrCache } from "@school/storage/redis";
+import { and, desc, eq, like } from "drizzle-orm";
+import { z } from "zod";
+import { getDb } from "../../lib/db.js";
+import { orgAuthed, pub } from "../../procedures/index.js";
 
 export const studentsRouter = {
   list: pub
@@ -92,7 +92,9 @@ export const studentsRouter = {
             students: allStudents.map((s) => ({
               ...s,
               status: s.status ? "active" : "inactive",
-              rollNumber: s.admissionNumber ? parseInt(s.admissionNumber.split("-").pop() || "0") : 0,
+              rollNumber: s.admissionNumber
+                ? parseInt(s.admissionNumber.split("-").pop() || "0")
+                : 0,
               attendance: 75 + Math.floor(Math.random() * 20), // Mock attendance for demo
             })),
             pagination: {
@@ -103,7 +105,7 @@ export const studentsRouter = {
             },
           };
         },
-        300 // 5 minutes
+        300, // 5 minutes
       );
     }),
 

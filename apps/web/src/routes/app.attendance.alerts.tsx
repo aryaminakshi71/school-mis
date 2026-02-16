@@ -2,28 +2,27 @@
  * Attendance Alerts - Low attendance notifications and parent alerts
  */
 
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
 import {
-  Users,
-  Calendar,
-  Clock,
-  FileText,
   AlertTriangle,
   Bell,
+  Calendar,
+  CheckCircle,
+  Clock,
+  Eye,
+  FileText,
+  Filter,
   Mail,
   MessageSquare,
   Send,
-  CheckCircle,
-  XCircle,
-  Download,
-  Eye,
   Settings,
-  Filter,
+  Users,
+  XCircle,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { useState } from "react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/app/attendance/alerts")({
@@ -36,7 +35,12 @@ const subFeatures = [
   { name: "Staff Attendance", href: "/app/attendance/staff", icon: Users },
   { name: "Reports", href: "/app/attendance/reports", icon: FileText },
   { name: "Leave Requests", href: "/app/attendance/leave", icon: Clock },
-  { name: "Alerts", href: "/app/attendance/alerts", icon: AlertTriangle, active: true },
+  {
+    name: "Alerts",
+    href: "/app/attendance/alerts",
+    icon: AlertTriangle,
+    active: true,
+  },
 ];
 
 // Mock data for alerts
@@ -100,9 +104,30 @@ const alerts = [
 
 // Mock data for notification history
 const notificationHistory = [
-  { id: "NT-001", type: "SMS", recipient: "Parents of Rahul Kumar", message: "Your ward is absent today", sent: "2026-01-27 09:00", status: "delivered" },
-  { id: "NT-002", type: "Email", recipient: "Parents of Vikram Singh", message: "Low attendance alert", sent: "2026-01-26 14:30", status: "delivered" },
-  { id: "NT-003", type: "App", recipient: "Parents of Ananya Gupta", message: "Daily attendance summary", sent: "2026-01-26 16:00", status: "read" },
+  {
+    id: "NT-001",
+    type: "SMS",
+    recipient: "Parents of Rahul Kumar",
+    message: "Your ward is absent today",
+    sent: "2026-01-27 09:00",
+    status: "delivered",
+  },
+  {
+    id: "NT-002",
+    type: "Email",
+    recipient: "Parents of Vikram Singh",
+    message: "Low attendance alert",
+    sent: "2026-01-26 14:30",
+    status: "delivered",
+  },
+  {
+    id: "NT-003",
+    type: "App",
+    recipient: "Parents of Ananya Gupta",
+    message: "Daily attendance summary",
+    sent: "2026-01-26 16:00",
+    status: "read",
+  },
 ];
 
 function AttendanceAlertsPage() {
@@ -122,13 +147,13 @@ function AttendanceAlertsPage() {
   const getSeverityColor = (severity: string) => {
     switch (severity) {
       case "high":
-        return "bg-red-100 text-red-600";
+        return "bg-destructive/10 text-destructive";
       case "medium":
-        return "bg-yellow-100 text-yellow-600";
+        return "bg-warning/15 text-warning";
       case "low":
-        return "bg-blue-100 text-blue-600";
+        return "bg-primary/10 text-primary";
       default:
-        return "bg-gray-100 text-gray-600";
+        return "bg-muted text-muted-foreground";
     }
   };
 
@@ -150,8 +175,12 @@ function AttendanceAlertsPage() {
       {/* Header */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Attendance Alerts</h1>
-          <p className="text-muted-foreground">Manage attendance alerts and send notifications to parents.</p>
+          <h1 className="font-bold text-3xl tracking-tight">
+            Attendance Alerts
+          </h1>
+          <p className="text-muted-foreground">
+            Manage attendance alerts and send notifications to parents.
+          </p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline">
@@ -172,7 +201,7 @@ function AttendanceAlertsPage() {
             <a
               key={feature.name}
               href={feature.href}
-              className={`flex items-center gap-2 px-4 py-2 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
+              className={`flex items-center gap-2 whitespace-nowrap border-b-2 px-4 py-2 font-medium text-sm transition-colors ${
                 feature.active
                   ? "border-primary text-primary"
                   : "border-transparent text-muted-foreground hover:text-foreground"
@@ -189,50 +218,52 @@ function AttendanceAlertsPage() {
       <div className="grid gap-4 md:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Unread Alerts</CardTitle>
-            <div className="p-2 rounded-lg bg-yellow-100">
-              <Bell className="h-4 w-4 text-yellow-600" />
+            <CardTitle className="font-medium text-sm">Unread Alerts</CardTitle>
+            <div className="rounded-lg bg-warning/15 p-2">
+              <Bell className="h-4 w-4 text-warning" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{unreadCount}</div>
-            <p className="text-xs text-muted-foreground">Require attention</p>
+            <div className="font-bold text-2xl">{unreadCount}</div>
+            <p className="text-muted-foreground text-xs">Require attention</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">High Priority</CardTitle>
-            <div className="p-2 rounded-lg bg-red-100">
-              <AlertTriangle className="h-4 w-4 text-red-600" />
+            <CardTitle className="font-medium text-sm">High Priority</CardTitle>
+            <div className="rounded-lg bg-destructive/10 p-2">
+              <AlertTriangle className="h-4 w-4 text-destructive" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{highSeverityCount}</div>
-            <p className="text-xs text-muted-foreground">Critical alerts</p>
+            <div className="font-bold text-2xl">{highSeverityCount}</div>
+            <p className="text-muted-foreground text-xs">Critical alerts</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">SMS Sent Today</CardTitle>
-            <div className="p-2 rounded-lg bg-blue-100">
-              <MessageSquare className="h-4 w-4 text-blue-600" />
+            <CardTitle className="font-medium text-sm">
+              SMS Sent Today
+            </CardTitle>
+            <div className="rounded-lg bg-primary/10 p-2">
+              <MessageSquare className="h-4 w-4 text-primary" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">45</div>
-            <p className="text-xs text-muted-foreground">Delivered</p>
+            <div className="font-bold text-2xl">45</div>
+            <p className="text-muted-foreground text-xs">Delivered</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Emails Sent</CardTitle>
-            <div className="p-2 rounded-lg bg-green-100">
-              <Mail className="h-4 w-4 text-green-600" />
+            <CardTitle className="font-medium text-sm">Emails Sent</CardTitle>
+            <div className="rounded-lg bg-success/15 p-2">
+              <Mail className="h-4 w-4 text-success" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">28</div>
-            <p className="text-xs text-muted-foreground">Today</p>
+            <div className="font-bold text-2xl">28</div>
+            <p className="text-muted-foreground text-xs">Today</p>
           </CardContent>
         </Card>
       </div>
@@ -241,7 +272,7 @@ function AttendanceAlertsPage() {
       <div className="flex gap-2 border-b">
         <button
           onClick={() => setActiveTab("alerts")}
-          className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+          className={`border-b-2 px-4 py-2 font-medium text-sm transition-colors ${
             activeTab === "alerts"
               ? "border-primary text-primary"
               : "border-transparent text-muted-foreground hover:text-foreground"
@@ -251,7 +282,7 @@ function AttendanceAlertsPage() {
         </button>
         <button
           onClick={() => setActiveTab("history")}
-          className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+          className={`border-b-2 px-4 py-2 font-medium text-sm transition-colors ${
             activeTab === "history"
               ? "border-primary text-primary"
               : "border-transparent text-muted-foreground hover:text-foreground"
@@ -267,7 +298,7 @@ function AttendanceAlertsPage() {
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Attendance Alerts</CardTitle>
             <Button variant="outline" size="sm">
-              <Filter className="h-4 w-4 mr-1" />
+              <Filter className="mr-1 h-4 w-4" />
               Filter
             </Button>
           </CardHeader>
@@ -276,23 +307,33 @@ function AttendanceAlertsPage() {
               {alerts.map((alert) => (
                 <div
                   key={alert.id}
-                  className={`p-4 rounded-lg border ${alert.status === "unread" ? "bg-yellow-50 border-yellow-200" : "bg-gray-50"}`}
+                  className={`rounded-lg border p-4 ${alert.status === "unread" ? "border-warning/30 bg-warning/15" : "bg-muted"}`}
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex items-start gap-3">
-                      <div className={`p-2 rounded-lg ${getSeverityColor(alert.severity)}`}>
+                      <div
+                        className={`rounded-lg p-2 ${getSeverityColor(alert.severity)}`}
+                      >
                         {getTypeIcon(alert.type)}
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
                           <p className="font-medium">{alert.student}</p>
-                          <Badge variant="outline" className="text-xs">{alert.class}</Badge>
+                          <Badge variant="outline" className="text-xs">
+                            {alert.class}
+                          </Badge>
                           {alert.status === "unread" && (
-                            <Badge variant="default" className="text-xs">New</Badge>
+                            <Badge variant="default" className="text-xs">
+                              New
+                            </Badge>
                           )}
                         </div>
-                        <p className="text-sm text-muted-foreground mt-1">{alert.message}</p>
-                        <p className="text-xs text-muted-foreground mt-1">Alert ID: {alert.id} • {alert.date}</p>
+                        <p className="mt-1 text-muted-foreground text-sm">
+                          {alert.message}
+                        </p>
+                        <p className="mt-1 text-muted-foreground text-xs">
+                          Alert ID: {alert.id} • {alert.date}
+                        </p>
                       </div>
                     </div>
                     <div className="flex gap-2">
@@ -302,7 +343,7 @@ function AttendanceAlertsPage() {
                           variant="outline"
                           onClick={() => handleSendNotification(alert.id)}
                         >
-                          <Send className="h-4 w-4 mr-1" />
+                          <Send className="mr-1 h-4 w-4" />
                           Notify
                         </Button>
                       )}
@@ -312,7 +353,7 @@ function AttendanceAlertsPage() {
                           variant="ghost"
                           onClick={() => handleMarkAsRead(alert.id)}
                         >
-                          <CheckCircle className="h-4 w-4 mr-1" />
+                          <CheckCircle className="mr-1 h-4 w-4" />
                           Mark Read
                         </Button>
                       )}
@@ -334,7 +375,7 @@ function AttendanceAlertsPage() {
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b text-left text-sm text-muted-foreground">
+                  <tr className="border-b text-left text-muted-foreground text-sm">
                     <th className="pb-3 font-medium">Notification ID</th>
                     <th className="pb-3 font-medium">Type</th>
                     <th className="pb-3 font-medium">Recipient</th>
@@ -346,10 +387,21 @@ function AttendanceAlertsPage() {
                 </thead>
                 <tbody>
                   {notificationHistory.map((notification) => (
-                    <tr key={notification.id} className="border-b last:border-0">
+                    <tr
+                      key={notification.id}
+                      className="border-b last:border-0"
+                    >
                       <td className="py-3 text-sm">{notification.id}</td>
                       <td className="py-3">
-                        <Badge variant={notification.type === "SMS" ? "default" : notification.type === "Email" ? "outline" : "secondary"}>
+                        <Badge
+                          variant={
+                            notification.type === "SMS"
+                              ? "default"
+                              : notification.type === "Email"
+                                ? "outline"
+                                : "secondary"
+                          }
+                        >
                           {notification.type}
                         </Badge>
                       </td>
@@ -357,7 +409,15 @@ function AttendanceAlertsPage() {
                       <td className="py-3 text-sm">{notification.message}</td>
                       <td className="py-3 text-sm">{notification.sent}</td>
                       <td className="py-3">
-                        <Badge variant={notification.status === "delivered" ? "success" : notification.status === "read" ? "default" : "outline"}>
+                        <Badge
+                          variant={
+                            notification.status === "delivered"
+                              ? "success"
+                              : notification.status === "read"
+                                ? "default"
+                                : "outline"
+                          }
+                        >
                           {notification.status}
                         </Badge>
                       </td>

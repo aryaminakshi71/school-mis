@@ -1,41 +1,39 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useAuth } from "@/lib/auth-context";
-import { useTheme, Theme } from "@/lib/services/theme.service";
-import { useLanguage, languages, Language } from "@/lib/services/i18n.service";
-import { useNotifications } from "@/lib/services/notification.service";
-import {
-  useWidgetConfig,
-  availableWidgets,
-  WidgetConfig,
-} from "@/lib/services/widget.service.tsx";
-import { useState, useEffect } from "react";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
-  CardDescription,
 } from "@/components/ui/card";
+import { useAuth } from "@/lib/auth-context";
+import { Language, useLanguage } from "@/lib/services/i18n.service";
+import { useNotifications } from "@/lib/services/notification.service";
+import { Theme, useTheme } from "@/lib/services/theme.service";
 import {
-  Settings,
-  User,
+  WidgetConfig,
+  availableWidgets,
+  useWidgetConfig,
+} from "@/lib/services/widget.service.tsx";
+import { createFileRoute } from "@tanstack/react-router";
+import {
   Bell,
-  Shield,
-  Palette,
-  Globe,
-  LayoutGrid,
-  Moon,
-  Sun,
-  Monitor,
   Check,
-  ChevronRight,
-  Plus,
-  X,
   Eye,
   EyeOff,
+  Globe,
+  LayoutGrid,
+  Monitor,
+  Moon,
+  Palette,
+  Plus,
+  Shield,
+  Sun,
+  User,
+  X,
 } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/app/settings")({
   component: SettingsPage,
@@ -82,29 +80,29 @@ function SettingsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
+        <h1 className="font-bold text-3xl tracking-tight">Settings</h1>
         <p className="text-muted-foreground">
           Manage your account and application preferences.
         </p>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-6">
-        <div className="w-full md:w-64 flex-shrink-0">
+      <div className="flex flex-col gap-6 md:flex-row">
+        <div className="w-full flex-shrink-0 md:w-64">
           <nav className="space-y-1">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                className={`flex w-full items-center gap-3 rounded-lg px-4 py-2.5 font-medium text-sm transition-colors ${
                   activeTab === tab.id
-                    ? "bg-blue-100 text-blue-700"
-                    : "text-gray-600 hover:bg-gray-100"
+                    ? "bg-primary/10 text-primary"
+                    : "text-muted-foreground hover:bg-muted"
                 }`}
               >
-                <tab.icon className="w-5 h-5" />
+                <tab.icon className="h-5 w-5" />
                 {tab.label}
                 {tab.id === "notifications" && unreadCount > 0 && (
-                  <span className="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
+                  <span className="ml-auto rounded-full bg-destructive px-2 py-0.5 text-destructive-foreground text-xs">
                     {unreadCount}
                   </span>
                 )}
@@ -170,36 +168,36 @@ function ProfileSettings({ user }: { user: any }) {
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid gap-2">
-          <label className="text-sm font-medium">Full Name</label>
+          <label className="font-medium text-sm">Full Name</label>
           <input
             type="text"
             defaultValue={user?.name || ""}
-            className="flex h-10 w-full rounded-lg border border-input bg-white px-3 py-2 text-sm"
+            className="flex h-10 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm"
           />
         </div>
         <div className="grid gap-2">
-          <label className="text-sm font-medium">Email Address</label>
+          <label className="font-medium text-sm">Email Address</label>
           <input
             type="email"
             defaultValue={user?.email || ""}
-            className="flex h-10 w-full rounded-lg border border-input bg-white px-3 py-2 text-sm"
+            className="flex h-10 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm"
           />
         </div>
         <div className="grid gap-2">
-          <label className="text-sm font-medium">Phone Number</label>
+          <label className="font-medium text-sm">Phone Number</label>
           <input
             type="tel"
             defaultValue="+91 98765 43210"
-            className="flex h-10 w-full rounded-lg border border-input bg-white px-3 py-2 text-sm"
+            className="flex h-10 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm"
           />
         </div>
         <div className="grid gap-2">
-          <label className="text-sm font-medium">Role</label>
+          <label className="font-medium text-sm">Role</label>
           <input
             type="text"
             value={user?.role || "Student"}
             disabled
-            className="flex h-10 w-full rounded-lg border border-input bg-gray-100 px-3 py-2 text-sm capitalize"
+            className="flex h-10 w-full rounded-lg border border-input bg-muted px-3 py-2 text-sm capitalize"
           />
         </div>
         <Button onClick={() => toast.success("Profile updated successfully")}>
@@ -234,46 +232,46 @@ function AppearanceSettings({
       </CardHeader>
       <CardContent className="space-y-6">
         <div>
-          <label className="text-sm font-medium mb-3 block">Theme Mode</label>
+          <label className="mb-3 block font-medium text-sm">Theme Mode</label>
           <div className="grid grid-cols-3 gap-3">
             {(["light", "dark", "system"] as Theme[]).map((t) => (
               <button
                 key={t}
                 onClick={() => setTheme(t)}
-                className={`flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-colors ${
+                className={`flex flex-col items-center gap-2 rounded-lg border-2 p-4 transition-colors ${
                   theme === t
-                    ? "border-blue-500 bg-blue-50"
-                    : "border-gray-200 hover:border-gray-300"
+                    ? "border-primary bg-primary/5"
+                    : "border-border hover:border-border"
                 }`}
               >
                 {t === "light" ? (
-                  <Sun className="w-6 h-6" />
+                  <Sun className="h-6 w-6" />
                 ) : t === "dark" ? (
-                  <Moon className="w-6 h-6" />
+                  <Moon className="h-6 w-6" />
                 ) : (
-                  <Monitor className="w-6 h-6" />
+                  <Monitor className="h-6 w-6" />
                 )}
-                <span className="text-sm font-medium capitalize">{t}</span>
-                {theme === t && <Check className="w-4 h-4 text-blue-500" />}
+                <span className="font-medium text-sm capitalize">{t}</span>
+                {theme === t && <Check className="h-4 w-4 text-primary" />}
               </button>
             ))}
           </div>
         </div>
 
         <div>
-          <label className="text-sm font-medium mb-3 block">Quick Toggle</label>
+          <label className="mb-3 block font-medium text-sm">Quick Toggle</label>
           <Button variant="outline" onClick={toggleTheme} className="w-full">
             {isDark ? (
-              <Sun className="w-4 h-4 mr-2" />
+              <Sun className="mr-2 h-4 w-4" />
             ) : (
-              <Moon className="w-4 h-4 mr-2" />
+              <Moon className="mr-2 h-4 w-4" />
             )}
             Switch to {isDark ? "Light" : "Dark"} Mode
           </Button>
         </div>
 
-        <div className="pt-4 border-t">
-          <p className="text-sm text-gray-500">
+        <div className="border-t pt-4">
+          <p className="text-muted-foreground text-sm">
             Current theme:{" "}
             <span className="font-medium capitalize">{theme}</span>
             {theme === "system" && (
@@ -324,30 +322,30 @@ function LanguageSettings({
           placeholder="Search languages..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="flex h-10 w-full rounded-lg border border-input bg-white px-3 py-2 text-sm"
+          className="flex h-10 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm"
         />
 
-        <div className="space-y-2 max-h-96 overflow-y-auto">
+        <div className="max-h-96 space-y-2 overflow-y-auto">
           {filteredLanguages.map((lang) => (
             <button
               key={lang.code}
               onClick={() => setLang(lang.code)}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg border-2 transition-colors ${
+              className={`flex w-full items-center gap-3 rounded-lg border-2 px-4 py-3 transition-colors ${
                 currentLang === lang.code
-                  ? "border-blue-500 bg-blue-50"
-                  : "border-gray-200 hover:border-gray-300"
+                  ? "border-primary bg-primary/5"
+                  : "border-border hover:border-border"
               }`}
             >
               <span className="text-xl">{lang.flag}</span>
               <div className="flex-1 text-left">
                 <p className="font-medium">{lang.nativeName}</p>
-                <p className="text-sm text-gray-500">{lang.name}</p>
+                <p className="text-muted-foreground text-sm">{lang.name}</p>
               </div>
               {currentLang === lang.code && (
-                <Check className="w-5 h-5 text-blue-500" />
+                <Check className="h-5 w-5 text-primary" />
               )}
               {lang.direction === "rtl" && (
-                <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded">
+                <span className="rounded bg-warning/15 px-2 py-1 text-warning text-xs">
                   RTL
                 </span>
               )}
@@ -355,13 +353,13 @@ function LanguageSettings({
           ))}
         </div>
 
-        <div className="pt-4 border-t">
-          <p className="text-sm text-gray-500">
+        <div className="border-t pt-4">
+          <p className="text-muted-foreground text-sm">
             Current language:{" "}
             <span className="font-medium">{currentLanguage?.nativeName}</span>
             <span className="ml-1">({currentLanguage?.name})</span>
             {isRTL && (
-              <span className="ml-2 text-yellow-600">(Right-to-Left)</span>
+              <span className="ml-2 text-warning">(Right-to-Left)</span>
             )}
           </p>
         </div>
@@ -403,12 +401,12 @@ function NotificationSettings({
       </CardHeader>
       <CardContent className="space-y-6">
         <div>
-          <h4 className="font-medium mb-3">Notification Channels</h4>
+          <h4 className="mb-3 font-medium">Notification Channels</h4>
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div>
                 <p className="font-medium">Email Notifications</p>
-                <p className="text-sm text-gray-500">
+                <p className="text-muted-foreground text-sm">
                   Receive notifications via email
                 </p>
               </div>
@@ -424,7 +422,7 @@ function NotificationSettings({
             <div className="flex items-center justify-between">
               <div>
                 <p className="font-medium">SMS Notifications</p>
-                <p className="text-sm text-gray-500">
+                <p className="text-muted-foreground text-sm">
                   Receive notifications via SMS
                 </p>
               </div>
@@ -440,7 +438,7 @@ function NotificationSettings({
             <div className="flex items-center justify-between">
               <div>
                 <p className="font-medium">Push Notifications</p>
-                <p className="text-sm text-gray-500">
+                <p className="text-muted-foreground text-sm">
                   Browser push notifications
                 </p>
               </div>
@@ -462,8 +460,8 @@ function NotificationSettings({
           </div>
         </div>
 
-        <div className="pt-4 border-t">
-          <h4 className="font-medium mb-3">Notification Types</h4>
+        <div className="border-t pt-4">
+          <h4 className="mb-3 font-medium">Notification Types</h4>
           <div className="grid grid-cols-2 gap-3">
             {[
               { key: "attendance", label: "Attendance Alerts" },
@@ -474,7 +472,7 @@ function NotificationSettings({
             ].map(({ key, label }) => (
               <div
                 key={key}
-                className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                className="flex items-center justify-between rounded-lg bg-muted p-3"
               >
                 <span className="text-sm">{label}</span>
                 <input
@@ -490,11 +488,11 @@ function NotificationSettings({
           </div>
         </div>
 
-        <div className="pt-4 border-t">
+        <div className="border-t pt-4">
           <div className="flex items-center justify-between">
             <div>
               <p className="font-medium">Recent Notifications</p>
-              <p className="text-sm text-gray-500">
+              <p className="text-muted-foreground text-sm">
                 {notifications.length} notifications
               </p>
             </div>
@@ -547,7 +545,7 @@ function WidgetSettings({
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="flex items-center justify-between">
-          <p className="text-sm text-gray-500">
+          <p className="text-muted-foreground text-sm">
             Showing {visibleWidgets.length} of {allWidgets.length} widgets
           </p>
           <div className="flex gap-2">
@@ -556,7 +554,7 @@ function WidgetSettings({
               size="sm"
               onClick={() => setShowAddWidget(true)}
             >
-              <Plus className="w-4 h-4 mr-1" />
+              <Plus className="mr-1 h-4 w-4" />
               Add Widget
             </Button>
             <Button variant="outline" size="sm" onClick={resetWidgets}>
@@ -569,21 +567,21 @@ function WidgetSettings({
           {allWidgets.map((widget) => (
             <div
               key={widget.id}
-              className={`flex items-center justify-between p-4 rounded-lg border ${
+              className={`flex items-center justify-between rounded-lg border p-4 ${
                 widget.visible
-                  ? "bg-white border-gray-200"
-                  : "bg-gray-50 border-gray-100"
+                  ? "border-border bg-card"
+                  : "border-border bg-muted"
               }`}
             >
               <div className="flex items-center gap-3">
                 <span className="font-medium">{widget.title}</span>
                 <span
-                  className={`text-xs px-2 py-1 rounded ${
+                  className={`rounded px-2 py-1 text-xs ${
                     widget.size === "large"
-                      ? "bg-purple-100 text-purple-700"
+                      ? "bg-primary/10 text-primary"
                       : widget.size === "medium"
-                        ? "bg-blue-100 text-blue-700"
-                        : "bg-green-100 text-green-700"
+                        ? "bg-primary/10 text-primary"
+                        : "bg-success/15 text-success"
                   }`}
                 >
                   {widget.size}
@@ -592,21 +590,21 @@ function WidgetSettings({
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => toggleVisibility(widget.id)}
-                  className="p-2 rounded hover:bg-gray-100"
+                  className="rounded p-2 hover:bg-muted"
                   title={widget.visible ? "Hide" : "Show"}
                 >
                   {widget.visible ? (
-                    <Eye className="w-4 h-4" />
+                    <Eye className="h-4 w-4" />
                   ) : (
-                    <EyeOff className="w-4 h-4" />
+                    <EyeOff className="h-4 w-4" />
                   )}
                 </button>
                 <button
                   onClick={() => removeWidget(widget.id)}
-                  className="p-2 rounded hover:bg-red-100 text-gray-400 hover:text-red-600"
+                  className="rounded p-2 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
                   title="Remove"
                 >
-                  <X className="w-4 h-4" />
+                  <X className="h-4 w-4" />
                 </button>
               </div>
             </div>
@@ -614,8 +612,8 @@ function WidgetSettings({
         </div>
 
         {showAddWidget && (
-          <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-            <h4 className="font-medium mb-3">Add Widget</h4>
+          <div className="rounded-lg border border-border bg-muted p-4">
+            <h4 className="mb-3 font-medium">Add Widget</h4>
             <div className="grid grid-cols-2 gap-2">
               {availableWidgets
                 .filter((w) => !allWidgets.find((aw) => aw.type === w.type))
@@ -627,10 +625,10 @@ function WidgetSettings({
                       setShowAddWidget(false);
                       toast.success(`${widget.title} widget added`);
                     }}
-                    className="flex items-center gap-2 p-3 bg-white rounded-lg border border-gray-200 hover:border-blue-500 hover:bg-blue-50 transition-colors"
+                    className="flex items-center gap-2 rounded-lg border border-border bg-card p-3 transition-colors hover:border-primary hover:bg-primary/5"
                   >
                     <span className="font-medium text-sm">{widget.title}</span>
-                    <Plus className="w-4 h-4 ml-auto" />
+                    <Plus className="ml-auto h-4 w-4" />
                   </button>
                 ))}
             </div>
@@ -662,37 +660,37 @@ function SecuritySettings() {
       <CardContent className="space-y-6">
         <div className="space-y-4">
           <div>
-            <label className="text-sm font-medium">Current Password</label>
+            <label className="font-medium text-sm">Current Password</label>
             <input
               type="password"
               placeholder="Enter current password"
-              className="flex h-10 w-full rounded-lg border border-input bg-white px-3 py-2 text-sm mt-1"
+              className="mt-1 flex h-10 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm"
             />
           </div>
           <div>
-            <label className="text-sm font-medium">New Password</label>
+            <label className="font-medium text-sm">New Password</label>
             <input
               type="password"
               placeholder="Enter new password"
-              className="flex h-10 w-full rounded-lg border border-input bg-white px-3 py-2 text-sm mt-1"
+              className="mt-1 flex h-10 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm"
             />
           </div>
           <div>
-            <label className="text-sm font-medium">Confirm New Password</label>
+            <label className="font-medium text-sm">Confirm New Password</label>
             <input
               type="password"
               placeholder="Confirm new password"
-              className="flex h-10 w-full rounded-lg border border-input bg-white px-3 py-2 text-sm mt-1"
+              className="mt-1 flex h-10 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm"
             />
           </div>
           <Button variant="outline">Change Password</Button>
         </div>
 
-        <div className="pt-4 border-t">
+        <div className="border-t pt-4">
           <div className="flex items-center justify-between">
             <div>
               <p className="font-medium">Two-Factor Authentication</p>
-              <p className="text-sm text-gray-500">
+              <p className="text-muted-foreground text-sm">
                 Add an extra layer of security
               </p>
             </div>
@@ -702,11 +700,11 @@ function SecuritySettings() {
           </div>
         </div>
 
-        <div className="pt-4 border-t">
+        <div className="border-t pt-4">
           <div className="flex items-center justify-between">
             <div>
               <p className="font-medium">Active Sessions</p>
-              <p className="text-sm text-gray-500">
+              <p className="text-muted-foreground text-sm">
                 Manage your logged-in devices
               </p>
             </div>

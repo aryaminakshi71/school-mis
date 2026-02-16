@@ -5,6 +5,7 @@
  */
 
 export * from "./db/schema/school/school.schema";
+export * from "./db/schema/audit-logs.schema";
 export { db, type Database } from "./db";
 export {
   eq,

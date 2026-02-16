@@ -4,7 +4,7 @@
  * Simple request logging for development.
  */
 
-import type { Context } from 'hono';
+import type { Context } from "hono";
 
 export async function loggerMiddleware(c: Context, next: () => Promise<void>) {
   const start = Date.now();

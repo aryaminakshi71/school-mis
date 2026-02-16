@@ -4,10 +4,10 @@
  * API routes for gate pass management
  */
 
+import { and, desc, eq, sql } from "drizzle-orm";
 import { z } from "zod";
-import { eq, and, desc, asc, sql } from "drizzle-orm";
-import { orgAuthed } from "../../procedures";
 import { getDb, schema } from "../../lib/db";
+import { orgAuthed } from "../../procedures";
 
 export const gatePassRouter = {
   /**

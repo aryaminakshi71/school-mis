@@ -1,12 +1,9 @@
+import { smsLogs, smsTemplates } from "@school/storage";
+import { db } from "@school/storage";
 import type {
   NotificationPayload,
   NotificationResult,
 } from "./notification-templates";
-import {
-  smsLogs,
-  smsTemplates,
-} from "@school/storage";
-import { db } from "@school/storage";
 
 interface TwilioConfig {
   accountSid: string;
@@ -111,9 +108,7 @@ export const smsService = {
     };
   },
 
-  async sendBulk(
-    payloads: NotificationPayload[],
-  ): Promise<{
+  async sendBulk(payloads: NotificationPayload[]): Promise<{
     success: number;
     failed: number;
     results: NotificationResult[];

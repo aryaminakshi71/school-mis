@@ -8,1139 +8,1279 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from './routes/__root'
-import { Route as SignupRouteImport } from './routes/signup'
-import { Route as PricingRouteImport } from './routes/pricing'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as AppIndexRouteImport } from './routes/app/index'
-import { Route as SitemapXmlRouteImport } from './routes/sitemap.xml'
-import { Route as AppTransportRouteImport } from './routes/app.transport'
-import { Route as AppTeachersRouteImport } from './routes/app.teachers'
-import { Route as AppTeacherPortalRouteImport } from './routes/app.teacher-portal'
-import { Route as AppStudentsRouteImport } from './routes/app.students'
-import { Route as AppStudentPortalRouteImport } from './routes/app.student-portal'
-import { Route as AppStaffPortalRouteImport } from './routes/app.staff-portal'
-import { Route as AppSettingsRouteImport } from './routes/app.settings'
-import { Route as AppScheduleRouteImport } from './routes/app.schedule'
-import { Route as AppReportsRouteImport } from './routes/app.reports'
-import { Route as AppProfileRouteImport } from './routes/app.profile'
-import { Route as AppParentPortalRouteImport } from './routes/app.parent-portal'
-import { Route as AppNotificationsRouteImport } from './routes/app.notifications'
-import { Route as AppLibraryRouteImport } from './routes/app.library'
-import { Route as AppInventoryRouteImport } from './routes/app.inventory'
-import { Route as AppGradebookRouteImport } from './routes/app.gradebook'
-import { Route as AppFeesRouteImport } from './routes/app.fees'
-import { Route as AppExamsRouteImport } from './routes/app.exams'
-import { Route as AppClassesRouteImport } from './routes/app.classes'
-import { Route as AppBillingRouteImport } from './routes/app/billing'
-import { Route as AppAttendanceRouteImport } from './routes/app.attendance'
-import { Route as AppTransportIndexRouteImport } from './routes/app.transport.index'
-import { Route as AppTeachersIndexRouteImport } from './routes/app.teachers.index'
-import { Route as AppStudentsIndexRouteImport } from './routes/app.students.index'
-import { Route as AppFeesIndexRouteImport } from './routes/app.fees.index'
-import { Route as AppAttendanceIndexRouteImport } from './routes/app.attendance.index'
-import { Route as AppTransportTrackingRouteImport } from './routes/app.transport.tracking'
-import { Route as AppTeachersTrainingRouteImport } from './routes/app.teachers.training'
-import { Route as AppTeachersRecruitmentRouteImport } from './routes/app.teachers.recruitment'
-import { Route as AppTeachersPerformanceRouteImport } from './routes/app.teachers.performance'
-import { Route as AppTeachersPayrollRouteImport } from './routes/app.teachers.payroll'
-import { Route as AppTeachersLeaveRouteImport } from './routes/app.teachers.leave'
-import { Route as AppTeachersAttendanceRouteImport } from './routes/app.teachers.attendance'
-import { Route as AppStudentsTransferRouteImport } from './routes/app.students.transfer'
-import { Route as AppStudentsPerformanceRouteImport } from './routes/app.students.performance'
-import { Route as AppStudentsDisciplineRouteImport } from './routes/app.students.discipline'
-import { Route as AppStudentsAttendanceRouteImport } from './routes/app.students.attendance'
-import { Route as AppStudentsAlumniRouteImport } from './routes/app.students.alumni'
-import { Route as AppStudentsAdmissionRouteImport } from './routes/app.students.admission'
-import { Route as AppStudentsIdRouteImport } from './routes/app.students.$id'
-import { Route as AppFeesStructureRouteImport } from './routes/app.fees.structure'
-import { Route as AppFeesSalaryRouteImport } from './routes/app.fees.salary'
-import { Route as AppFeesReportsRouteImport } from './routes/app.fees.reports'
-import { Route as AppFeesPaymentRouteImport } from './routes/app.fees.payment'
-import { Route as AppFeesExpensesRouteImport } from './routes/app.fees.expenses'
-import { Route as AppFeesBudgetRouteImport } from './routes/app.fees.budget'
-import { Route as AppAttendanceStudentsRouteImport } from './routes/app.attendance.students'
-import { Route as AppAttendanceStaffRouteImport } from './routes/app.attendance.staff'
-import { Route as AppAttendanceReportsRouteImport } from './routes/app.attendance.reports'
-import { Route as AppAttendanceLeaveRouteImport } from './routes/app.attendance.leave'
-import { Route as AppAttendanceAlertsRouteImport } from './routes/app.attendance.alerts'
-import { Route as AppFeesReceiptIdRouteImport } from './routes/app.fees.receipt.$id'
+import { Route as rootRouteImport } from "./routes/__root";
+import { Route as AppAttendanceRouteImport } from "./routes/app.attendance";
+import { Route as AppAttendanceAlertsRouteImport } from "./routes/app.attendance.alerts";
+import { Route as AppAttendanceIndexRouteImport } from "./routes/app.attendance.index";
+import { Route as AppAttendanceLeaveRouteImport } from "./routes/app.attendance.leave";
+import { Route as AppAttendanceReportsRouteImport } from "./routes/app.attendance.reports";
+import { Route as AppAttendanceStaffRouteImport } from "./routes/app.attendance.staff";
+import { Route as AppAttendanceStudentsRouteImport } from "./routes/app.attendance.students";
+import { Route as AppClassesRouteImport } from "./routes/app.classes";
+import { Route as AppExamsRouteImport } from "./routes/app.exams";
+import { Route as AppFeesRouteImport } from "./routes/app.fees";
+import { Route as AppFeesBudgetRouteImport } from "./routes/app.fees.budget";
+import { Route as AppFeesExpensesRouteImport } from "./routes/app.fees.expenses";
+import { Route as AppFeesIndexRouteImport } from "./routes/app.fees.index";
+import { Route as AppFeesPaymentRouteImport } from "./routes/app.fees.payment";
+import { Route as AppFeesReceiptIdRouteImport } from "./routes/app.fees.receipt.$id";
+import { Route as AppFeesReportsRouteImport } from "./routes/app.fees.reports";
+import { Route as AppFeesSalaryRouteImport } from "./routes/app.fees.salary";
+import { Route as AppFeesStructureRouteImport } from "./routes/app.fees.structure";
+import { Route as AppGradebookRouteImport } from "./routes/app.gradebook";
+import { Route as AppInventoryRouteImport } from "./routes/app.inventory";
+import { Route as AppLibraryRouteImport } from "./routes/app.library";
+import { Route as AppNotificationsRouteImport } from "./routes/app.notifications";
+import { Route as AppParentPortalRouteImport } from "./routes/app.parent-portal";
+import { Route as AppProfileRouteImport } from "./routes/app.profile";
+import { Route as AppReportsRouteImport } from "./routes/app.reports";
+import { Route as AppScheduleRouteImport } from "./routes/app.schedule";
+import { Route as AppSettingsRouteImport } from "./routes/app.settings";
+import { Route as AppStaffPortalRouteImport } from "./routes/app.staff-portal";
+import { Route as AppStudentPortalRouteImport } from "./routes/app.student-portal";
+import { Route as AppStudentsRouteImport } from "./routes/app.students";
+import { Route as AppStudentsIdRouteImport } from "./routes/app.students.$id";
+import { Route as AppStudentsAdmissionRouteImport } from "./routes/app.students.admission";
+import { Route as AppStudentsAlumniRouteImport } from "./routes/app.students.alumni";
+import { Route as AppStudentsAttendanceRouteImport } from "./routes/app.students.attendance";
+import { Route as AppStudentsDisciplineRouteImport } from "./routes/app.students.discipline";
+import { Route as AppStudentsIndexRouteImport } from "./routes/app.students.index";
+import { Route as AppStudentsPerformanceRouteImport } from "./routes/app.students.performance";
+import { Route as AppStudentsTransferRouteImport } from "./routes/app.students.transfer";
+import { Route as AppTeacherPortalRouteImport } from "./routes/app.teacher-portal";
+import { Route as AppTeachersRouteImport } from "./routes/app.teachers";
+import { Route as AppTeachersAttendanceRouteImport } from "./routes/app.teachers.attendance";
+import { Route as AppTeachersIndexRouteImport } from "./routes/app.teachers.index";
+import { Route as AppTeachersLeaveRouteImport } from "./routes/app.teachers.leave";
+import { Route as AppTeachersPayrollRouteImport } from "./routes/app.teachers.payroll";
+import { Route as AppTeachersPerformanceRouteImport } from "./routes/app.teachers.performance";
+import { Route as AppTeachersRecruitmentRouteImport } from "./routes/app.teachers.recruitment";
+import { Route as AppTeachersTrainingRouteImport } from "./routes/app.teachers.training";
+import { Route as AppTransportRouteImport } from "./routes/app.transport";
+import { Route as AppTransportIndexRouteImport } from "./routes/app.transport.index";
+import { Route as AppTransportTrackingRouteImport } from "./routes/app.transport.tracking";
+import { Route as AppBillingRouteImport } from "./routes/app/billing";
+import { Route as AppIndexRouteImport } from "./routes/app/index";
+import { Route as DemoRouteImport } from "./routes/demo";
+import { Route as IndexRouteImport } from "./routes/index";
+import { Route as IngestSplatRouteImport } from "./routes/ingest.$";
+import { Route as LoginRouteImport } from "./routes/login";
+import { Route as PricingRouteImport } from "./routes/pricing";
+import { Route as PrivacyRouteImport } from "./routes/privacy";
+import { Route as RegisterRouteImport } from "./routes/register";
+import { Route as SecurityRouteImport } from "./routes/security";
+import { Route as SignupRouteImport } from "./routes/signup";
+import { Route as SitemapXmlRouteImport } from "./routes/sitemap.xml";
+import { Route as StatusRouteImport } from "./routes/status";
+import { Route as TermsRouteImport } from "./routes/terms";
 
+const TermsRoute = TermsRouteImport.update({
+  id: "/terms",
+  path: "/terms",
+  getParentRoute: () => rootRouteImport,
+} as any);
+const StatusRoute = StatusRouteImport.update({
+  id: "/status",
+  path: "/status",
+  getParentRoute: () => rootRouteImport,
+} as any);
 const SignupRoute = SignupRouteImport.update({
-  id: '/signup',
-  path: '/signup',
+  id: "/signup",
+  path: "/signup",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
+const SecurityRoute = SecurityRouteImport.update({
+  id: "/security",
+  path: "/security",
+  getParentRoute: () => rootRouteImport,
+} as any);
+const RegisterRoute = RegisterRouteImport.update({
+  id: "/register",
+  path: "/register",
+  getParentRoute: () => rootRouteImport,
+} as any);
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: "/privacy",
+  path: "/privacy",
+  getParentRoute: () => rootRouteImport,
+} as any);
 const PricingRoute = PricingRouteImport.update({
-  id: '/pricing',
-  path: '/pricing',
+  id: "/pricing",
+  path: "/pricing",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
+  id: "/login",
+  path: "/login",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
+const DemoRoute = DemoRouteImport.update({
+  id: "/demo",
+  path: "/demo",
+  getParentRoute: () => rootRouteImport,
+} as any);
 const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+  id: "/",
+  path: "/",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AppIndexRoute = AppIndexRouteImport.update({
-  id: '/app/',
-  path: '/app/',
+  id: "/app/",
+  path: "/app/",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const SitemapXmlRoute = SitemapXmlRouteImport.update({
-  id: '/sitemap/xml',
-  path: '/sitemap/xml',
+  id: "/sitemap/xml",
+  path: "/sitemap/xml",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
+const IngestSplatRoute = IngestSplatRouteImport.update({
+  id: "/ingest/$",
+  path: "/ingest/$",
+  getParentRoute: () => rootRouteImport,
+} as any);
 const AppTransportRoute = AppTransportRouteImport.update({
-  id: '/app/transport',
-  path: '/app/transport',
+  id: "/app/transport",
+  path: "/app/transport",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AppTeachersRoute = AppTeachersRouteImport.update({
-  id: '/app/teachers',
-  path: '/app/teachers',
+  id: "/app/teachers",
+  path: "/app/teachers",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AppTeacherPortalRoute = AppTeacherPortalRouteImport.update({
-  id: '/app/teacher-portal',
-  path: '/app/teacher-portal',
+  id: "/app/teacher-portal",
+  path: "/app/teacher-portal",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AppStudentsRoute = AppStudentsRouteImport.update({
-  id: '/app/students',
-  path: '/app/students',
+  id: "/app/students",
+  path: "/app/students",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AppStudentPortalRoute = AppStudentPortalRouteImport.update({
-  id: '/app/student-portal',
-  path: '/app/student-portal',
+  id: "/app/student-portal",
+  path: "/app/student-portal",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AppStaffPortalRoute = AppStaffPortalRouteImport.update({
-  id: '/app/staff-portal',
-  path: '/app/staff-portal',
+  id: "/app/staff-portal",
+  path: "/app/staff-portal",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AppSettingsRoute = AppSettingsRouteImport.update({
-  id: '/app/settings',
-  path: '/app/settings',
+  id: "/app/settings",
+  path: "/app/settings",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AppScheduleRoute = AppScheduleRouteImport.update({
-  id: '/app/schedule',
-  path: '/app/schedule',
+  id: "/app/schedule",
+  path: "/app/schedule",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AppReportsRoute = AppReportsRouteImport.update({
-  id: '/app/reports',
-  path: '/app/reports',
+  id: "/app/reports",
+  path: "/app/reports",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AppProfileRoute = AppProfileRouteImport.update({
-  id: '/app/profile',
-  path: '/app/profile',
+  id: "/app/profile",
+  path: "/app/profile",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AppParentPortalRoute = AppParentPortalRouteImport.update({
-  id: '/app/parent-portal',
-  path: '/app/parent-portal',
+  id: "/app/parent-portal",
+  path: "/app/parent-portal",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AppNotificationsRoute = AppNotificationsRouteImport.update({
-  id: '/app/notifications',
-  path: '/app/notifications',
+  id: "/app/notifications",
+  path: "/app/notifications",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AppLibraryRoute = AppLibraryRouteImport.update({
-  id: '/app/library',
-  path: '/app/library',
+  id: "/app/library",
+  path: "/app/library",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AppInventoryRoute = AppInventoryRouteImport.update({
-  id: '/app/inventory',
-  path: '/app/inventory',
+  id: "/app/inventory",
+  path: "/app/inventory",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AppGradebookRoute = AppGradebookRouteImport.update({
-  id: '/app/gradebook',
-  path: '/app/gradebook',
+  id: "/app/gradebook",
+  path: "/app/gradebook",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AppFeesRoute = AppFeesRouteImport.update({
-  id: '/app/fees',
-  path: '/app/fees',
+  id: "/app/fees",
+  path: "/app/fees",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AppExamsRoute = AppExamsRouteImport.update({
-  id: '/app/exams',
-  path: '/app/exams',
+  id: "/app/exams",
+  path: "/app/exams",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AppClassesRoute = AppClassesRouteImport.update({
-  id: '/app/classes',
-  path: '/app/classes',
+  id: "/app/classes",
+  path: "/app/classes",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AppBillingRoute = AppBillingRouteImport.update({
-  id: '/app/billing',
-  path: '/app/billing',
+  id: "/app/billing",
+  path: "/app/billing",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AppAttendanceRoute = AppAttendanceRouteImport.update({
-  id: '/app/attendance',
-  path: '/app/attendance',
+  id: "/app/attendance",
+  path: "/app/attendance",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AppTransportIndexRoute = AppTransportIndexRouteImport.update({
-  id: '/',
-  path: '/',
+  id: "/",
+  path: "/",
   getParentRoute: () => AppTransportRoute,
-} as any)
+} as any);
 const AppTeachersIndexRoute = AppTeachersIndexRouteImport.update({
-  id: '/',
-  path: '/',
+  id: "/",
+  path: "/",
   getParentRoute: () => AppTeachersRoute,
-} as any)
+} as any);
 const AppStudentsIndexRoute = AppStudentsIndexRouteImport.update({
-  id: '/',
-  path: '/',
+  id: "/",
+  path: "/",
   getParentRoute: () => AppStudentsRoute,
-} as any)
+} as any);
 const AppFeesIndexRoute = AppFeesIndexRouteImport.update({
-  id: '/',
-  path: '/',
+  id: "/",
+  path: "/",
   getParentRoute: () => AppFeesRoute,
-} as any)
+} as any);
 const AppAttendanceIndexRoute = AppAttendanceIndexRouteImport.update({
-  id: '/',
-  path: '/',
+  id: "/",
+  path: "/",
   getParentRoute: () => AppAttendanceRoute,
-} as any)
+} as any);
 const AppTransportTrackingRoute = AppTransportTrackingRouteImport.update({
-  id: '/tracking',
-  path: '/tracking',
+  id: "/tracking",
+  path: "/tracking",
   getParentRoute: () => AppTransportRoute,
-} as any)
+} as any);
 const AppTeachersTrainingRoute = AppTeachersTrainingRouteImport.update({
-  id: '/training',
-  path: '/training',
+  id: "/training",
+  path: "/training",
   getParentRoute: () => AppTeachersRoute,
-} as any)
+} as any);
 const AppTeachersRecruitmentRoute = AppTeachersRecruitmentRouteImport.update({
-  id: '/recruitment',
-  path: '/recruitment',
+  id: "/recruitment",
+  path: "/recruitment",
   getParentRoute: () => AppTeachersRoute,
-} as any)
+} as any);
 const AppTeachersPerformanceRoute = AppTeachersPerformanceRouteImport.update({
-  id: '/performance',
-  path: '/performance',
+  id: "/performance",
+  path: "/performance",
   getParentRoute: () => AppTeachersRoute,
-} as any)
+} as any);
 const AppTeachersPayrollRoute = AppTeachersPayrollRouteImport.update({
-  id: '/payroll',
-  path: '/payroll',
+  id: "/payroll",
+  path: "/payroll",
   getParentRoute: () => AppTeachersRoute,
-} as any)
+} as any);
 const AppTeachersLeaveRoute = AppTeachersLeaveRouteImport.update({
-  id: '/leave',
-  path: '/leave',
+  id: "/leave",
+  path: "/leave",
   getParentRoute: () => AppTeachersRoute,
-} as any)
+} as any);
 const AppTeachersAttendanceRoute = AppTeachersAttendanceRouteImport.update({
-  id: '/attendance',
-  path: '/attendance',
+  id: "/attendance",
+  path: "/attendance",
   getParentRoute: () => AppTeachersRoute,
-} as any)
+} as any);
 const AppStudentsTransferRoute = AppStudentsTransferRouteImport.update({
-  id: '/transfer',
-  path: '/transfer',
+  id: "/transfer",
+  path: "/transfer",
   getParentRoute: () => AppStudentsRoute,
-} as any)
+} as any);
 const AppStudentsPerformanceRoute = AppStudentsPerformanceRouteImport.update({
-  id: '/performance',
-  path: '/performance',
+  id: "/performance",
+  path: "/performance",
   getParentRoute: () => AppStudentsRoute,
-} as any)
+} as any);
 const AppStudentsDisciplineRoute = AppStudentsDisciplineRouteImport.update({
-  id: '/discipline',
-  path: '/discipline',
+  id: "/discipline",
+  path: "/discipline",
   getParentRoute: () => AppStudentsRoute,
-} as any)
+} as any);
 const AppStudentsAttendanceRoute = AppStudentsAttendanceRouteImport.update({
-  id: '/attendance',
-  path: '/attendance',
+  id: "/attendance",
+  path: "/attendance",
   getParentRoute: () => AppStudentsRoute,
-} as any)
+} as any);
 const AppStudentsAlumniRoute = AppStudentsAlumniRouteImport.update({
-  id: '/alumni',
-  path: '/alumni',
+  id: "/alumni",
+  path: "/alumni",
   getParentRoute: () => AppStudentsRoute,
-} as any)
+} as any);
 const AppStudentsAdmissionRoute = AppStudentsAdmissionRouteImport.update({
-  id: '/admission',
-  path: '/admission',
+  id: "/admission",
+  path: "/admission",
   getParentRoute: () => AppStudentsRoute,
-} as any)
+} as any);
 const AppStudentsIdRoute = AppStudentsIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
+  id: "/$id",
+  path: "/$id",
   getParentRoute: () => AppStudentsRoute,
-} as any)
+} as any);
 const AppFeesStructureRoute = AppFeesStructureRouteImport.update({
-  id: '/structure',
-  path: '/structure',
+  id: "/structure",
+  path: "/structure",
   getParentRoute: () => AppFeesRoute,
-} as any)
+} as any);
 const AppFeesSalaryRoute = AppFeesSalaryRouteImport.update({
-  id: '/salary',
-  path: '/salary',
+  id: "/salary",
+  path: "/salary",
   getParentRoute: () => AppFeesRoute,
-} as any)
+} as any);
 const AppFeesReportsRoute = AppFeesReportsRouteImport.update({
-  id: '/reports',
-  path: '/reports',
+  id: "/reports",
+  path: "/reports",
   getParentRoute: () => AppFeesRoute,
-} as any)
+} as any);
 const AppFeesPaymentRoute = AppFeesPaymentRouteImport.update({
-  id: '/payment',
-  path: '/payment',
+  id: "/payment",
+  path: "/payment",
   getParentRoute: () => AppFeesRoute,
-} as any)
+} as any);
 const AppFeesExpensesRoute = AppFeesExpensesRouteImport.update({
-  id: '/expenses',
-  path: '/expenses',
+  id: "/expenses",
+  path: "/expenses",
   getParentRoute: () => AppFeesRoute,
-} as any)
+} as any);
 const AppFeesBudgetRoute = AppFeesBudgetRouteImport.update({
-  id: '/budget',
-  path: '/budget',
+  id: "/budget",
+  path: "/budget",
   getParentRoute: () => AppFeesRoute,
-} as any)
+} as any);
 const AppAttendanceStudentsRoute = AppAttendanceStudentsRouteImport.update({
-  id: '/students',
-  path: '/students',
+  id: "/students",
+  path: "/students",
   getParentRoute: () => AppAttendanceRoute,
-} as any)
+} as any);
 const AppAttendanceStaffRoute = AppAttendanceStaffRouteImport.update({
-  id: '/staff',
-  path: '/staff',
+  id: "/staff",
+  path: "/staff",
   getParentRoute: () => AppAttendanceRoute,
-} as any)
+} as any);
 const AppAttendanceReportsRoute = AppAttendanceReportsRouteImport.update({
-  id: '/reports',
-  path: '/reports',
+  id: "/reports",
+  path: "/reports",
   getParentRoute: () => AppAttendanceRoute,
-} as any)
+} as any);
 const AppAttendanceLeaveRoute = AppAttendanceLeaveRouteImport.update({
-  id: '/leave',
-  path: '/leave',
+  id: "/leave",
+  path: "/leave",
   getParentRoute: () => AppAttendanceRoute,
-} as any)
+} as any);
 const AppAttendanceAlertsRoute = AppAttendanceAlertsRouteImport.update({
-  id: '/alerts',
-  path: '/alerts',
+  id: "/alerts",
+  path: "/alerts",
   getParentRoute: () => AppAttendanceRoute,
-} as any)
+} as any);
 const AppFeesReceiptIdRoute = AppFeesReceiptIdRouteImport.update({
-  id: '/receipt/$id',
-  path: '/receipt/$id',
+  id: "/receipt/$id",
+  path: "/receipt/$id",
   getParentRoute: () => AppFeesRoute,
-} as any)
+} as any);
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/login': typeof LoginRoute
-  '/pricing': typeof PricingRoute
-  '/signup': typeof SignupRoute
-  '/app/attendance': typeof AppAttendanceRouteWithChildren
-  '/app/billing': typeof AppBillingRoute
-  '/app/classes': typeof AppClassesRoute
-  '/app/exams': typeof AppExamsRoute
-  '/app/fees': typeof AppFeesRouteWithChildren
-  '/app/gradebook': typeof AppGradebookRoute
-  '/app/inventory': typeof AppInventoryRoute
-  '/app/library': typeof AppLibraryRoute
-  '/app/notifications': typeof AppNotificationsRoute
-  '/app/parent-portal': typeof AppParentPortalRoute
-  '/app/profile': typeof AppProfileRoute
-  '/app/reports': typeof AppReportsRoute
-  '/app/schedule': typeof AppScheduleRoute
-  '/app/settings': typeof AppSettingsRoute
-  '/app/staff-portal': typeof AppStaffPortalRoute
-  '/app/student-portal': typeof AppStudentPortalRoute
-  '/app/students': typeof AppStudentsRouteWithChildren
-  '/app/teacher-portal': typeof AppTeacherPortalRoute
-  '/app/teachers': typeof AppTeachersRouteWithChildren
-  '/app/transport': typeof AppTransportRouteWithChildren
-  '/sitemap/xml': typeof SitemapXmlRoute
-  '/app/': typeof AppIndexRoute
-  '/app/attendance/alerts': typeof AppAttendanceAlertsRoute
-  '/app/attendance/leave': typeof AppAttendanceLeaveRoute
-  '/app/attendance/reports': typeof AppAttendanceReportsRoute
-  '/app/attendance/staff': typeof AppAttendanceStaffRoute
-  '/app/attendance/students': typeof AppAttendanceStudentsRoute
-  '/app/fees/budget': typeof AppFeesBudgetRoute
-  '/app/fees/expenses': typeof AppFeesExpensesRoute
-  '/app/fees/payment': typeof AppFeesPaymentRoute
-  '/app/fees/reports': typeof AppFeesReportsRoute
-  '/app/fees/salary': typeof AppFeesSalaryRoute
-  '/app/fees/structure': typeof AppFeesStructureRoute
-  '/app/students/$id': typeof AppStudentsIdRoute
-  '/app/students/admission': typeof AppStudentsAdmissionRoute
-  '/app/students/alumni': typeof AppStudentsAlumniRoute
-  '/app/students/attendance': typeof AppStudentsAttendanceRoute
-  '/app/students/discipline': typeof AppStudentsDisciplineRoute
-  '/app/students/performance': typeof AppStudentsPerformanceRoute
-  '/app/students/transfer': typeof AppStudentsTransferRoute
-  '/app/teachers/attendance': typeof AppTeachersAttendanceRoute
-  '/app/teachers/leave': typeof AppTeachersLeaveRoute
-  '/app/teachers/payroll': typeof AppTeachersPayrollRoute
-  '/app/teachers/performance': typeof AppTeachersPerformanceRoute
-  '/app/teachers/recruitment': typeof AppTeachersRecruitmentRoute
-  '/app/teachers/training': typeof AppTeachersTrainingRoute
-  '/app/transport/tracking': typeof AppTransportTrackingRoute
-  '/app/attendance/': typeof AppAttendanceIndexRoute
-  '/app/fees/': typeof AppFeesIndexRoute
-  '/app/students/': typeof AppStudentsIndexRoute
-  '/app/teachers/': typeof AppTeachersIndexRoute
-  '/app/transport/': typeof AppTransportIndexRoute
-  '/app/fees/receipt/$id': typeof AppFeesReceiptIdRoute
+  "/": typeof IndexRoute;
+  "/demo": typeof DemoRoute;
+  "/login": typeof LoginRoute;
+  "/pricing": typeof PricingRoute;
+  "/privacy": typeof PrivacyRoute;
+  "/register": typeof RegisterRoute;
+  "/security": typeof SecurityRoute;
+  "/signup": typeof SignupRoute;
+  "/status": typeof StatusRoute;
+  "/terms": typeof TermsRoute;
+  "/app/attendance": typeof AppAttendanceRouteWithChildren;
+  "/app/billing": typeof AppBillingRoute;
+  "/app/classes": typeof AppClassesRoute;
+  "/app/exams": typeof AppExamsRoute;
+  "/app/fees": typeof AppFeesRouteWithChildren;
+  "/app/gradebook": typeof AppGradebookRoute;
+  "/app/inventory": typeof AppInventoryRoute;
+  "/app/library": typeof AppLibraryRoute;
+  "/app/notifications": typeof AppNotificationsRoute;
+  "/app/parent-portal": typeof AppParentPortalRoute;
+  "/app/profile": typeof AppProfileRoute;
+  "/app/reports": typeof AppReportsRoute;
+  "/app/schedule": typeof AppScheduleRoute;
+  "/app/settings": typeof AppSettingsRoute;
+  "/app/staff-portal": typeof AppStaffPortalRoute;
+  "/app/student-portal": typeof AppStudentPortalRoute;
+  "/app/students": typeof AppStudentsRouteWithChildren;
+  "/app/teacher-portal": typeof AppTeacherPortalRoute;
+  "/app/teachers": typeof AppTeachersRouteWithChildren;
+  "/app/transport": typeof AppTransportRouteWithChildren;
+  "/ingest/$": typeof IngestSplatRoute;
+  "/sitemap/xml": typeof SitemapXmlRoute;
+  "/app/": typeof AppIndexRoute;
+  "/app/attendance/alerts": typeof AppAttendanceAlertsRoute;
+  "/app/attendance/leave": typeof AppAttendanceLeaveRoute;
+  "/app/attendance/reports": typeof AppAttendanceReportsRoute;
+  "/app/attendance/staff": typeof AppAttendanceStaffRoute;
+  "/app/attendance/students": typeof AppAttendanceStudentsRoute;
+  "/app/fees/budget": typeof AppFeesBudgetRoute;
+  "/app/fees/expenses": typeof AppFeesExpensesRoute;
+  "/app/fees/payment": typeof AppFeesPaymentRoute;
+  "/app/fees/reports": typeof AppFeesReportsRoute;
+  "/app/fees/salary": typeof AppFeesSalaryRoute;
+  "/app/fees/structure": typeof AppFeesStructureRoute;
+  "/app/students/$id": typeof AppStudentsIdRoute;
+  "/app/students/admission": typeof AppStudentsAdmissionRoute;
+  "/app/students/alumni": typeof AppStudentsAlumniRoute;
+  "/app/students/attendance": typeof AppStudentsAttendanceRoute;
+  "/app/students/discipline": typeof AppStudentsDisciplineRoute;
+  "/app/students/performance": typeof AppStudentsPerformanceRoute;
+  "/app/students/transfer": typeof AppStudentsTransferRoute;
+  "/app/teachers/attendance": typeof AppTeachersAttendanceRoute;
+  "/app/teachers/leave": typeof AppTeachersLeaveRoute;
+  "/app/teachers/payroll": typeof AppTeachersPayrollRoute;
+  "/app/teachers/performance": typeof AppTeachersPerformanceRoute;
+  "/app/teachers/recruitment": typeof AppTeachersRecruitmentRoute;
+  "/app/teachers/training": typeof AppTeachersTrainingRoute;
+  "/app/transport/tracking": typeof AppTransportTrackingRoute;
+  "/app/attendance/": typeof AppAttendanceIndexRoute;
+  "/app/fees/": typeof AppFeesIndexRoute;
+  "/app/students/": typeof AppStudentsIndexRoute;
+  "/app/teachers/": typeof AppTeachersIndexRoute;
+  "/app/transport/": typeof AppTransportIndexRoute;
+  "/app/fees/receipt/$id": typeof AppFeesReceiptIdRoute;
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/login': typeof LoginRoute
-  '/pricing': typeof PricingRoute
-  '/signup': typeof SignupRoute
-  '/app/billing': typeof AppBillingRoute
-  '/app/classes': typeof AppClassesRoute
-  '/app/exams': typeof AppExamsRoute
-  '/app/gradebook': typeof AppGradebookRoute
-  '/app/inventory': typeof AppInventoryRoute
-  '/app/library': typeof AppLibraryRoute
-  '/app/notifications': typeof AppNotificationsRoute
-  '/app/parent-portal': typeof AppParentPortalRoute
-  '/app/profile': typeof AppProfileRoute
-  '/app/reports': typeof AppReportsRoute
-  '/app/schedule': typeof AppScheduleRoute
-  '/app/settings': typeof AppSettingsRoute
-  '/app/staff-portal': typeof AppStaffPortalRoute
-  '/app/student-portal': typeof AppStudentPortalRoute
-  '/app/teacher-portal': typeof AppTeacherPortalRoute
-  '/sitemap/xml': typeof SitemapXmlRoute
-  '/app': typeof AppIndexRoute
-  '/app/attendance/alerts': typeof AppAttendanceAlertsRoute
-  '/app/attendance/leave': typeof AppAttendanceLeaveRoute
-  '/app/attendance/reports': typeof AppAttendanceReportsRoute
-  '/app/attendance/staff': typeof AppAttendanceStaffRoute
-  '/app/attendance/students': typeof AppAttendanceStudentsRoute
-  '/app/fees/budget': typeof AppFeesBudgetRoute
-  '/app/fees/expenses': typeof AppFeesExpensesRoute
-  '/app/fees/payment': typeof AppFeesPaymentRoute
-  '/app/fees/reports': typeof AppFeesReportsRoute
-  '/app/fees/salary': typeof AppFeesSalaryRoute
-  '/app/fees/structure': typeof AppFeesStructureRoute
-  '/app/students/$id': typeof AppStudentsIdRoute
-  '/app/students/admission': typeof AppStudentsAdmissionRoute
-  '/app/students/alumni': typeof AppStudentsAlumniRoute
-  '/app/students/attendance': typeof AppStudentsAttendanceRoute
-  '/app/students/discipline': typeof AppStudentsDisciplineRoute
-  '/app/students/performance': typeof AppStudentsPerformanceRoute
-  '/app/students/transfer': typeof AppStudentsTransferRoute
-  '/app/teachers/attendance': typeof AppTeachersAttendanceRoute
-  '/app/teachers/leave': typeof AppTeachersLeaveRoute
-  '/app/teachers/payroll': typeof AppTeachersPayrollRoute
-  '/app/teachers/performance': typeof AppTeachersPerformanceRoute
-  '/app/teachers/recruitment': typeof AppTeachersRecruitmentRoute
-  '/app/teachers/training': typeof AppTeachersTrainingRoute
-  '/app/transport/tracking': typeof AppTransportTrackingRoute
-  '/app/attendance': typeof AppAttendanceIndexRoute
-  '/app/fees': typeof AppFeesIndexRoute
-  '/app/students': typeof AppStudentsIndexRoute
-  '/app/teachers': typeof AppTeachersIndexRoute
-  '/app/transport': typeof AppTransportIndexRoute
-  '/app/fees/receipt/$id': typeof AppFeesReceiptIdRoute
+  "/": typeof IndexRoute;
+  "/demo": typeof DemoRoute;
+  "/login": typeof LoginRoute;
+  "/pricing": typeof PricingRoute;
+  "/privacy": typeof PrivacyRoute;
+  "/register": typeof RegisterRoute;
+  "/security": typeof SecurityRoute;
+  "/signup": typeof SignupRoute;
+  "/status": typeof StatusRoute;
+  "/terms": typeof TermsRoute;
+  "/app/billing": typeof AppBillingRoute;
+  "/app/classes": typeof AppClassesRoute;
+  "/app/exams": typeof AppExamsRoute;
+  "/app/gradebook": typeof AppGradebookRoute;
+  "/app/inventory": typeof AppInventoryRoute;
+  "/app/library": typeof AppLibraryRoute;
+  "/app/notifications": typeof AppNotificationsRoute;
+  "/app/parent-portal": typeof AppParentPortalRoute;
+  "/app/profile": typeof AppProfileRoute;
+  "/app/reports": typeof AppReportsRoute;
+  "/app/schedule": typeof AppScheduleRoute;
+  "/app/settings": typeof AppSettingsRoute;
+  "/app/staff-portal": typeof AppStaffPortalRoute;
+  "/app/student-portal": typeof AppStudentPortalRoute;
+  "/app/teacher-portal": typeof AppTeacherPortalRoute;
+  "/ingest/$": typeof IngestSplatRoute;
+  "/sitemap/xml": typeof SitemapXmlRoute;
+  "/app": typeof AppIndexRoute;
+  "/app/attendance/alerts": typeof AppAttendanceAlertsRoute;
+  "/app/attendance/leave": typeof AppAttendanceLeaveRoute;
+  "/app/attendance/reports": typeof AppAttendanceReportsRoute;
+  "/app/attendance/staff": typeof AppAttendanceStaffRoute;
+  "/app/attendance/students": typeof AppAttendanceStudentsRoute;
+  "/app/fees/budget": typeof AppFeesBudgetRoute;
+  "/app/fees/expenses": typeof AppFeesExpensesRoute;
+  "/app/fees/payment": typeof AppFeesPaymentRoute;
+  "/app/fees/reports": typeof AppFeesReportsRoute;
+  "/app/fees/salary": typeof AppFeesSalaryRoute;
+  "/app/fees/structure": typeof AppFeesStructureRoute;
+  "/app/students/$id": typeof AppStudentsIdRoute;
+  "/app/students/admission": typeof AppStudentsAdmissionRoute;
+  "/app/students/alumni": typeof AppStudentsAlumniRoute;
+  "/app/students/attendance": typeof AppStudentsAttendanceRoute;
+  "/app/students/discipline": typeof AppStudentsDisciplineRoute;
+  "/app/students/performance": typeof AppStudentsPerformanceRoute;
+  "/app/students/transfer": typeof AppStudentsTransferRoute;
+  "/app/teachers/attendance": typeof AppTeachersAttendanceRoute;
+  "/app/teachers/leave": typeof AppTeachersLeaveRoute;
+  "/app/teachers/payroll": typeof AppTeachersPayrollRoute;
+  "/app/teachers/performance": typeof AppTeachersPerformanceRoute;
+  "/app/teachers/recruitment": typeof AppTeachersRecruitmentRoute;
+  "/app/teachers/training": typeof AppTeachersTrainingRoute;
+  "/app/transport/tracking": typeof AppTransportTrackingRoute;
+  "/app/attendance": typeof AppAttendanceIndexRoute;
+  "/app/fees": typeof AppFeesIndexRoute;
+  "/app/students": typeof AppStudentsIndexRoute;
+  "/app/teachers": typeof AppTeachersIndexRoute;
+  "/app/transport": typeof AppTransportIndexRoute;
+  "/app/fees/receipt/$id": typeof AppFeesReceiptIdRoute;
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/login': typeof LoginRoute
-  '/pricing': typeof PricingRoute
-  '/signup': typeof SignupRoute
-  '/app/attendance': typeof AppAttendanceRouteWithChildren
-  '/app/billing': typeof AppBillingRoute
-  '/app/classes': typeof AppClassesRoute
-  '/app/exams': typeof AppExamsRoute
-  '/app/fees': typeof AppFeesRouteWithChildren
-  '/app/gradebook': typeof AppGradebookRoute
-  '/app/inventory': typeof AppInventoryRoute
-  '/app/library': typeof AppLibraryRoute
-  '/app/notifications': typeof AppNotificationsRoute
-  '/app/parent-portal': typeof AppParentPortalRoute
-  '/app/profile': typeof AppProfileRoute
-  '/app/reports': typeof AppReportsRoute
-  '/app/schedule': typeof AppScheduleRoute
-  '/app/settings': typeof AppSettingsRoute
-  '/app/staff-portal': typeof AppStaffPortalRoute
-  '/app/student-portal': typeof AppStudentPortalRoute
-  '/app/students': typeof AppStudentsRouteWithChildren
-  '/app/teacher-portal': typeof AppTeacherPortalRoute
-  '/app/teachers': typeof AppTeachersRouteWithChildren
-  '/app/transport': typeof AppTransportRouteWithChildren
-  '/sitemap/xml': typeof SitemapXmlRoute
-  '/app/': typeof AppIndexRoute
-  '/app/attendance/alerts': typeof AppAttendanceAlertsRoute
-  '/app/attendance/leave': typeof AppAttendanceLeaveRoute
-  '/app/attendance/reports': typeof AppAttendanceReportsRoute
-  '/app/attendance/staff': typeof AppAttendanceStaffRoute
-  '/app/attendance/students': typeof AppAttendanceStudentsRoute
-  '/app/fees/budget': typeof AppFeesBudgetRoute
-  '/app/fees/expenses': typeof AppFeesExpensesRoute
-  '/app/fees/payment': typeof AppFeesPaymentRoute
-  '/app/fees/reports': typeof AppFeesReportsRoute
-  '/app/fees/salary': typeof AppFeesSalaryRoute
-  '/app/fees/structure': typeof AppFeesStructureRoute
-  '/app/students/$id': typeof AppStudentsIdRoute
-  '/app/students/admission': typeof AppStudentsAdmissionRoute
-  '/app/students/alumni': typeof AppStudentsAlumniRoute
-  '/app/students/attendance': typeof AppStudentsAttendanceRoute
-  '/app/students/discipline': typeof AppStudentsDisciplineRoute
-  '/app/students/performance': typeof AppStudentsPerformanceRoute
-  '/app/students/transfer': typeof AppStudentsTransferRoute
-  '/app/teachers/attendance': typeof AppTeachersAttendanceRoute
-  '/app/teachers/leave': typeof AppTeachersLeaveRoute
-  '/app/teachers/payroll': typeof AppTeachersPayrollRoute
-  '/app/teachers/performance': typeof AppTeachersPerformanceRoute
-  '/app/teachers/recruitment': typeof AppTeachersRecruitmentRoute
-  '/app/teachers/training': typeof AppTeachersTrainingRoute
-  '/app/transport/tracking': typeof AppTransportTrackingRoute
-  '/app/attendance/': typeof AppAttendanceIndexRoute
-  '/app/fees/': typeof AppFeesIndexRoute
-  '/app/students/': typeof AppStudentsIndexRoute
-  '/app/teachers/': typeof AppTeachersIndexRoute
-  '/app/transport/': typeof AppTransportIndexRoute
-  '/app/fees/receipt/$id': typeof AppFeesReceiptIdRoute
+  __root__: typeof rootRouteImport;
+  "/": typeof IndexRoute;
+  "/demo": typeof DemoRoute;
+  "/login": typeof LoginRoute;
+  "/pricing": typeof PricingRoute;
+  "/privacy": typeof PrivacyRoute;
+  "/register": typeof RegisterRoute;
+  "/security": typeof SecurityRoute;
+  "/signup": typeof SignupRoute;
+  "/status": typeof StatusRoute;
+  "/terms": typeof TermsRoute;
+  "/app/attendance": typeof AppAttendanceRouteWithChildren;
+  "/app/billing": typeof AppBillingRoute;
+  "/app/classes": typeof AppClassesRoute;
+  "/app/exams": typeof AppExamsRoute;
+  "/app/fees": typeof AppFeesRouteWithChildren;
+  "/app/gradebook": typeof AppGradebookRoute;
+  "/app/inventory": typeof AppInventoryRoute;
+  "/app/library": typeof AppLibraryRoute;
+  "/app/notifications": typeof AppNotificationsRoute;
+  "/app/parent-portal": typeof AppParentPortalRoute;
+  "/app/profile": typeof AppProfileRoute;
+  "/app/reports": typeof AppReportsRoute;
+  "/app/schedule": typeof AppScheduleRoute;
+  "/app/settings": typeof AppSettingsRoute;
+  "/app/staff-portal": typeof AppStaffPortalRoute;
+  "/app/student-portal": typeof AppStudentPortalRoute;
+  "/app/students": typeof AppStudentsRouteWithChildren;
+  "/app/teacher-portal": typeof AppTeacherPortalRoute;
+  "/app/teachers": typeof AppTeachersRouteWithChildren;
+  "/app/transport": typeof AppTransportRouteWithChildren;
+  "/ingest/$": typeof IngestSplatRoute;
+  "/sitemap/xml": typeof SitemapXmlRoute;
+  "/app/": typeof AppIndexRoute;
+  "/app/attendance/alerts": typeof AppAttendanceAlertsRoute;
+  "/app/attendance/leave": typeof AppAttendanceLeaveRoute;
+  "/app/attendance/reports": typeof AppAttendanceReportsRoute;
+  "/app/attendance/staff": typeof AppAttendanceStaffRoute;
+  "/app/attendance/students": typeof AppAttendanceStudentsRoute;
+  "/app/fees/budget": typeof AppFeesBudgetRoute;
+  "/app/fees/expenses": typeof AppFeesExpensesRoute;
+  "/app/fees/payment": typeof AppFeesPaymentRoute;
+  "/app/fees/reports": typeof AppFeesReportsRoute;
+  "/app/fees/salary": typeof AppFeesSalaryRoute;
+  "/app/fees/structure": typeof AppFeesStructureRoute;
+  "/app/students/$id": typeof AppStudentsIdRoute;
+  "/app/students/admission": typeof AppStudentsAdmissionRoute;
+  "/app/students/alumni": typeof AppStudentsAlumniRoute;
+  "/app/students/attendance": typeof AppStudentsAttendanceRoute;
+  "/app/students/discipline": typeof AppStudentsDisciplineRoute;
+  "/app/students/performance": typeof AppStudentsPerformanceRoute;
+  "/app/students/transfer": typeof AppStudentsTransferRoute;
+  "/app/teachers/attendance": typeof AppTeachersAttendanceRoute;
+  "/app/teachers/leave": typeof AppTeachersLeaveRoute;
+  "/app/teachers/payroll": typeof AppTeachersPayrollRoute;
+  "/app/teachers/performance": typeof AppTeachersPerformanceRoute;
+  "/app/teachers/recruitment": typeof AppTeachersRecruitmentRoute;
+  "/app/teachers/training": typeof AppTeachersTrainingRoute;
+  "/app/transport/tracking": typeof AppTransportTrackingRoute;
+  "/app/attendance/": typeof AppAttendanceIndexRoute;
+  "/app/fees/": typeof AppFeesIndexRoute;
+  "/app/students/": typeof AppStudentsIndexRoute;
+  "/app/teachers/": typeof AppTeachersIndexRoute;
+  "/app/transport/": typeof AppTransportIndexRoute;
+  "/app/fees/receipt/$id": typeof AppFeesReceiptIdRoute;
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
+  fileRoutesByFullPath: FileRoutesByFullPath;
   fullPaths:
-    | '/'
-    | '/login'
-    | '/pricing'
-    | '/signup'
-    | '/app/attendance'
-    | '/app/billing'
-    | '/app/classes'
-    | '/app/exams'
-    | '/app/fees'
-    | '/app/gradebook'
-    | '/app/inventory'
-    | '/app/library'
-    | '/app/notifications'
-    | '/app/parent-portal'
-    | '/app/profile'
-    | '/app/reports'
-    | '/app/schedule'
-    | '/app/settings'
-    | '/app/staff-portal'
-    | '/app/student-portal'
-    | '/app/students'
-    | '/app/teacher-portal'
-    | '/app/teachers'
-    | '/app/transport'
-    | '/sitemap/xml'
-    | '/app/'
-    | '/app/attendance/alerts'
-    | '/app/attendance/leave'
-    | '/app/attendance/reports'
-    | '/app/attendance/staff'
-    | '/app/attendance/students'
-    | '/app/fees/budget'
-    | '/app/fees/expenses'
-    | '/app/fees/payment'
-    | '/app/fees/reports'
-    | '/app/fees/salary'
-    | '/app/fees/structure'
-    | '/app/students/$id'
-    | '/app/students/admission'
-    | '/app/students/alumni'
-    | '/app/students/attendance'
-    | '/app/students/discipline'
-    | '/app/students/performance'
-    | '/app/students/transfer'
-    | '/app/teachers/attendance'
-    | '/app/teachers/leave'
-    | '/app/teachers/payroll'
-    | '/app/teachers/performance'
-    | '/app/teachers/recruitment'
-    | '/app/teachers/training'
-    | '/app/transport/tracking'
-    | '/app/attendance/'
-    | '/app/fees/'
-    | '/app/students/'
-    | '/app/teachers/'
-    | '/app/transport/'
-    | '/app/fees/receipt/$id'
-  fileRoutesByTo: FileRoutesByTo
+    | "/"
+    | "/demo"
+    | "/login"
+    | "/pricing"
+    | "/privacy"
+    | "/register"
+    | "/security"
+    | "/signup"
+    | "/status"
+    | "/terms"
+    | "/app/attendance"
+    | "/app/billing"
+    | "/app/classes"
+    | "/app/exams"
+    | "/app/fees"
+    | "/app/gradebook"
+    | "/app/inventory"
+    | "/app/library"
+    | "/app/notifications"
+    | "/app/parent-portal"
+    | "/app/profile"
+    | "/app/reports"
+    | "/app/schedule"
+    | "/app/settings"
+    | "/app/staff-portal"
+    | "/app/student-portal"
+    | "/app/students"
+    | "/app/teacher-portal"
+    | "/app/teachers"
+    | "/app/transport"
+    | "/ingest/$"
+    | "/sitemap/xml"
+    | "/app/"
+    | "/app/attendance/alerts"
+    | "/app/attendance/leave"
+    | "/app/attendance/reports"
+    | "/app/attendance/staff"
+    | "/app/attendance/students"
+    | "/app/fees/budget"
+    | "/app/fees/expenses"
+    | "/app/fees/payment"
+    | "/app/fees/reports"
+    | "/app/fees/salary"
+    | "/app/fees/structure"
+    | "/app/students/$id"
+    | "/app/students/admission"
+    | "/app/students/alumni"
+    | "/app/students/attendance"
+    | "/app/students/discipline"
+    | "/app/students/performance"
+    | "/app/students/transfer"
+    | "/app/teachers/attendance"
+    | "/app/teachers/leave"
+    | "/app/teachers/payroll"
+    | "/app/teachers/performance"
+    | "/app/teachers/recruitment"
+    | "/app/teachers/training"
+    | "/app/transport/tracking"
+    | "/app/attendance/"
+    | "/app/fees/"
+    | "/app/students/"
+    | "/app/teachers/"
+    | "/app/transport/"
+    | "/app/fees/receipt/$id";
+  fileRoutesByTo: FileRoutesByTo;
   to:
-    | '/'
-    | '/login'
-    | '/pricing'
-    | '/signup'
-    | '/app/billing'
-    | '/app/classes'
-    | '/app/exams'
-    | '/app/gradebook'
-    | '/app/inventory'
-    | '/app/library'
-    | '/app/notifications'
-    | '/app/parent-portal'
-    | '/app/profile'
-    | '/app/reports'
-    | '/app/schedule'
-    | '/app/settings'
-    | '/app/staff-portal'
-    | '/app/student-portal'
-    | '/app/teacher-portal'
-    | '/sitemap/xml'
-    | '/app'
-    | '/app/attendance/alerts'
-    | '/app/attendance/leave'
-    | '/app/attendance/reports'
-    | '/app/attendance/staff'
-    | '/app/attendance/students'
-    | '/app/fees/budget'
-    | '/app/fees/expenses'
-    | '/app/fees/payment'
-    | '/app/fees/reports'
-    | '/app/fees/salary'
-    | '/app/fees/structure'
-    | '/app/students/$id'
-    | '/app/students/admission'
-    | '/app/students/alumni'
-    | '/app/students/attendance'
-    | '/app/students/discipline'
-    | '/app/students/performance'
-    | '/app/students/transfer'
-    | '/app/teachers/attendance'
-    | '/app/teachers/leave'
-    | '/app/teachers/payroll'
-    | '/app/teachers/performance'
-    | '/app/teachers/recruitment'
-    | '/app/teachers/training'
-    | '/app/transport/tracking'
-    | '/app/attendance'
-    | '/app/fees'
-    | '/app/students'
-    | '/app/teachers'
-    | '/app/transport'
-    | '/app/fees/receipt/$id'
+    | "/"
+    | "/demo"
+    | "/login"
+    | "/pricing"
+    | "/privacy"
+    | "/register"
+    | "/security"
+    | "/signup"
+    | "/status"
+    | "/terms"
+    | "/app/billing"
+    | "/app/classes"
+    | "/app/exams"
+    | "/app/gradebook"
+    | "/app/inventory"
+    | "/app/library"
+    | "/app/notifications"
+    | "/app/parent-portal"
+    | "/app/profile"
+    | "/app/reports"
+    | "/app/schedule"
+    | "/app/settings"
+    | "/app/staff-portal"
+    | "/app/student-portal"
+    | "/app/teacher-portal"
+    | "/ingest/$"
+    | "/sitemap/xml"
+    | "/app"
+    | "/app/attendance/alerts"
+    | "/app/attendance/leave"
+    | "/app/attendance/reports"
+    | "/app/attendance/staff"
+    | "/app/attendance/students"
+    | "/app/fees/budget"
+    | "/app/fees/expenses"
+    | "/app/fees/payment"
+    | "/app/fees/reports"
+    | "/app/fees/salary"
+    | "/app/fees/structure"
+    | "/app/students/$id"
+    | "/app/students/admission"
+    | "/app/students/alumni"
+    | "/app/students/attendance"
+    | "/app/students/discipline"
+    | "/app/students/performance"
+    | "/app/students/transfer"
+    | "/app/teachers/attendance"
+    | "/app/teachers/leave"
+    | "/app/teachers/payroll"
+    | "/app/teachers/performance"
+    | "/app/teachers/recruitment"
+    | "/app/teachers/training"
+    | "/app/transport/tracking"
+    | "/app/attendance"
+    | "/app/fees"
+    | "/app/students"
+    | "/app/teachers"
+    | "/app/transport"
+    | "/app/fees/receipt/$id";
   id:
-    | '__root__'
-    | '/'
-    | '/login'
-    | '/pricing'
-    | '/signup'
-    | '/app/attendance'
-    | '/app/billing'
-    | '/app/classes'
-    | '/app/exams'
-    | '/app/fees'
-    | '/app/gradebook'
-    | '/app/inventory'
-    | '/app/library'
-    | '/app/notifications'
-    | '/app/parent-portal'
-    | '/app/profile'
-    | '/app/reports'
-    | '/app/schedule'
-    | '/app/settings'
-    | '/app/staff-portal'
-    | '/app/student-portal'
-    | '/app/students'
-    | '/app/teacher-portal'
-    | '/app/teachers'
-    | '/app/transport'
-    | '/sitemap/xml'
-    | '/app/'
-    | '/app/attendance/alerts'
-    | '/app/attendance/leave'
-    | '/app/attendance/reports'
-    | '/app/attendance/staff'
-    | '/app/attendance/students'
-    | '/app/fees/budget'
-    | '/app/fees/expenses'
-    | '/app/fees/payment'
-    | '/app/fees/reports'
-    | '/app/fees/salary'
-    | '/app/fees/structure'
-    | '/app/students/$id'
-    | '/app/students/admission'
-    | '/app/students/alumni'
-    | '/app/students/attendance'
-    | '/app/students/discipline'
-    | '/app/students/performance'
-    | '/app/students/transfer'
-    | '/app/teachers/attendance'
-    | '/app/teachers/leave'
-    | '/app/teachers/payroll'
-    | '/app/teachers/performance'
-    | '/app/teachers/recruitment'
-    | '/app/teachers/training'
-    | '/app/transport/tracking'
-    | '/app/attendance/'
-    | '/app/fees/'
-    | '/app/students/'
-    | '/app/teachers/'
-    | '/app/transport/'
-    | '/app/fees/receipt/$id'
-  fileRoutesById: FileRoutesById
+    | "__root__"
+    | "/"
+    | "/demo"
+    | "/login"
+    | "/pricing"
+    | "/privacy"
+    | "/register"
+    | "/security"
+    | "/signup"
+    | "/status"
+    | "/terms"
+    | "/app/attendance"
+    | "/app/billing"
+    | "/app/classes"
+    | "/app/exams"
+    | "/app/fees"
+    | "/app/gradebook"
+    | "/app/inventory"
+    | "/app/library"
+    | "/app/notifications"
+    | "/app/parent-portal"
+    | "/app/profile"
+    | "/app/reports"
+    | "/app/schedule"
+    | "/app/settings"
+    | "/app/staff-portal"
+    | "/app/student-portal"
+    | "/app/students"
+    | "/app/teacher-portal"
+    | "/app/teachers"
+    | "/app/transport"
+    | "/ingest/$"
+    | "/sitemap/xml"
+    | "/app/"
+    | "/app/attendance/alerts"
+    | "/app/attendance/leave"
+    | "/app/attendance/reports"
+    | "/app/attendance/staff"
+    | "/app/attendance/students"
+    | "/app/fees/budget"
+    | "/app/fees/expenses"
+    | "/app/fees/payment"
+    | "/app/fees/reports"
+    | "/app/fees/salary"
+    | "/app/fees/structure"
+    | "/app/students/$id"
+    | "/app/students/admission"
+    | "/app/students/alumni"
+    | "/app/students/attendance"
+    | "/app/students/discipline"
+    | "/app/students/performance"
+    | "/app/students/transfer"
+    | "/app/teachers/attendance"
+    | "/app/teachers/leave"
+    | "/app/teachers/payroll"
+    | "/app/teachers/performance"
+    | "/app/teachers/recruitment"
+    | "/app/teachers/training"
+    | "/app/transport/tracking"
+    | "/app/attendance/"
+    | "/app/fees/"
+    | "/app/students/"
+    | "/app/teachers/"
+    | "/app/transport/"
+    | "/app/fees/receipt/$id";
+  fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  LoginRoute: typeof LoginRoute
-  PricingRoute: typeof PricingRoute
-  SignupRoute: typeof SignupRoute
-  AppAttendanceRoute: typeof AppAttendanceRouteWithChildren
-  AppBillingRoute: typeof AppBillingRoute
-  AppClassesRoute: typeof AppClassesRoute
-  AppExamsRoute: typeof AppExamsRoute
-  AppFeesRoute: typeof AppFeesRouteWithChildren
-  AppGradebookRoute: typeof AppGradebookRoute
-  AppInventoryRoute: typeof AppInventoryRoute
-  AppLibraryRoute: typeof AppLibraryRoute
-  AppNotificationsRoute: typeof AppNotificationsRoute
-  AppParentPortalRoute: typeof AppParentPortalRoute
-  AppProfileRoute: typeof AppProfileRoute
-  AppReportsRoute: typeof AppReportsRoute
-  AppScheduleRoute: typeof AppScheduleRoute
-  AppSettingsRoute: typeof AppSettingsRoute
-  AppStaffPortalRoute: typeof AppStaffPortalRoute
-  AppStudentPortalRoute: typeof AppStudentPortalRoute
-  AppStudentsRoute: typeof AppStudentsRouteWithChildren
-  AppTeacherPortalRoute: typeof AppTeacherPortalRoute
-  AppTeachersRoute: typeof AppTeachersRouteWithChildren
-  AppTransportRoute: typeof AppTransportRouteWithChildren
-  SitemapXmlRoute: typeof SitemapXmlRoute
-  AppIndexRoute: typeof AppIndexRoute
+  IndexRoute: typeof IndexRoute;
+  DemoRoute: typeof DemoRoute;
+  LoginRoute: typeof LoginRoute;
+  PricingRoute: typeof PricingRoute;
+  PrivacyRoute: typeof PrivacyRoute;
+  RegisterRoute: typeof RegisterRoute;
+  SecurityRoute: typeof SecurityRoute;
+  SignupRoute: typeof SignupRoute;
+  StatusRoute: typeof StatusRoute;
+  TermsRoute: typeof TermsRoute;
+  AppAttendanceRoute: typeof AppAttendanceRouteWithChildren;
+  AppBillingRoute: typeof AppBillingRoute;
+  AppClassesRoute: typeof AppClassesRoute;
+  AppExamsRoute: typeof AppExamsRoute;
+  AppFeesRoute: typeof AppFeesRouteWithChildren;
+  AppGradebookRoute: typeof AppGradebookRoute;
+  AppInventoryRoute: typeof AppInventoryRoute;
+  AppLibraryRoute: typeof AppLibraryRoute;
+  AppNotificationsRoute: typeof AppNotificationsRoute;
+  AppParentPortalRoute: typeof AppParentPortalRoute;
+  AppProfileRoute: typeof AppProfileRoute;
+  AppReportsRoute: typeof AppReportsRoute;
+  AppScheduleRoute: typeof AppScheduleRoute;
+  AppSettingsRoute: typeof AppSettingsRoute;
+  AppStaffPortalRoute: typeof AppStaffPortalRoute;
+  AppStudentPortalRoute: typeof AppStudentPortalRoute;
+  AppStudentsRoute: typeof AppStudentsRouteWithChildren;
+  AppTeacherPortalRoute: typeof AppTeacherPortalRoute;
+  AppTeachersRoute: typeof AppTeachersRouteWithChildren;
+  AppTransportRoute: typeof AppTransportRouteWithChildren;
+  IngestSplatRoute: typeof IngestSplatRoute;
+  SitemapXmlRoute: typeof SitemapXmlRoute;
+  AppIndexRoute: typeof AppIndexRoute;
 }
 
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
-    '/signup': {
-      id: '/signup'
-      path: '/signup'
-      fullPath: '/signup'
-      preLoaderRoute: typeof SignupRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pricing': {
-      id: '/pricing'
-      path: '/pricing'
-      fullPath: '/pricing'
-      preLoaderRoute: typeof PricingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/app/': {
-      id: '/app/'
-      path: '/app'
-      fullPath: '/app/'
-      preLoaderRoute: typeof AppIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sitemap/xml': {
-      id: '/sitemap/xml'
-      path: '/sitemap/xml'
-      fullPath: '/sitemap/xml'
-      preLoaderRoute: typeof SitemapXmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/app/transport': {
-      id: '/app/transport'
-      path: '/app/transport'
-      fullPath: '/app/transport'
-      preLoaderRoute: typeof AppTransportRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/app/teachers': {
-      id: '/app/teachers'
-      path: '/app/teachers'
-      fullPath: '/app/teachers'
-      preLoaderRoute: typeof AppTeachersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/app/teacher-portal': {
-      id: '/app/teacher-portal'
-      path: '/app/teacher-portal'
-      fullPath: '/app/teacher-portal'
-      preLoaderRoute: typeof AppTeacherPortalRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/app/students': {
-      id: '/app/students'
-      path: '/app/students'
-      fullPath: '/app/students'
-      preLoaderRoute: typeof AppStudentsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/app/student-portal': {
-      id: '/app/student-portal'
-      path: '/app/student-portal'
-      fullPath: '/app/student-portal'
-      preLoaderRoute: typeof AppStudentPortalRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/app/staff-portal': {
-      id: '/app/staff-portal'
-      path: '/app/staff-portal'
-      fullPath: '/app/staff-portal'
-      preLoaderRoute: typeof AppStaffPortalRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/app/settings': {
-      id: '/app/settings'
-      path: '/app/settings'
-      fullPath: '/app/settings'
-      preLoaderRoute: typeof AppSettingsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/app/schedule': {
-      id: '/app/schedule'
-      path: '/app/schedule'
-      fullPath: '/app/schedule'
-      preLoaderRoute: typeof AppScheduleRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/app/reports': {
-      id: '/app/reports'
-      path: '/app/reports'
-      fullPath: '/app/reports'
-      preLoaderRoute: typeof AppReportsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/app/profile': {
-      id: '/app/profile'
-      path: '/app/profile'
-      fullPath: '/app/profile'
-      preLoaderRoute: typeof AppProfileRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/app/parent-portal': {
-      id: '/app/parent-portal'
-      path: '/app/parent-portal'
-      fullPath: '/app/parent-portal'
-      preLoaderRoute: typeof AppParentPortalRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/app/notifications': {
-      id: '/app/notifications'
-      path: '/app/notifications'
-      fullPath: '/app/notifications'
-      preLoaderRoute: typeof AppNotificationsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/app/library': {
-      id: '/app/library'
-      path: '/app/library'
-      fullPath: '/app/library'
-      preLoaderRoute: typeof AppLibraryRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/app/inventory': {
-      id: '/app/inventory'
-      path: '/app/inventory'
-      fullPath: '/app/inventory'
-      preLoaderRoute: typeof AppInventoryRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/app/gradebook': {
-      id: '/app/gradebook'
-      path: '/app/gradebook'
-      fullPath: '/app/gradebook'
-      preLoaderRoute: typeof AppGradebookRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/app/fees': {
-      id: '/app/fees'
-      path: '/app/fees'
-      fullPath: '/app/fees'
-      preLoaderRoute: typeof AppFeesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/app/exams': {
-      id: '/app/exams'
-      path: '/app/exams'
-      fullPath: '/app/exams'
-      preLoaderRoute: typeof AppExamsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/app/classes': {
-      id: '/app/classes'
-      path: '/app/classes'
-      fullPath: '/app/classes'
-      preLoaderRoute: typeof AppClassesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/app/billing': {
-      id: '/app/billing'
-      path: '/app/billing'
-      fullPath: '/app/billing'
-      preLoaderRoute: typeof AppBillingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/app/attendance': {
-      id: '/app/attendance'
-      path: '/app/attendance'
-      fullPath: '/app/attendance'
-      preLoaderRoute: typeof AppAttendanceRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/app/transport/': {
-      id: '/app/transport/'
-      path: '/'
-      fullPath: '/app/transport/'
-      preLoaderRoute: typeof AppTransportIndexRouteImport
-      parentRoute: typeof AppTransportRoute
-    }
-    '/app/teachers/': {
-      id: '/app/teachers/'
-      path: '/'
-      fullPath: '/app/teachers/'
-      preLoaderRoute: typeof AppTeachersIndexRouteImport
-      parentRoute: typeof AppTeachersRoute
-    }
-    '/app/students/': {
-      id: '/app/students/'
-      path: '/'
-      fullPath: '/app/students/'
-      preLoaderRoute: typeof AppStudentsIndexRouteImport
-      parentRoute: typeof AppStudentsRoute
-    }
-    '/app/fees/': {
-      id: '/app/fees/'
-      path: '/'
-      fullPath: '/app/fees/'
-      preLoaderRoute: typeof AppFeesIndexRouteImport
-      parentRoute: typeof AppFeesRoute
-    }
-    '/app/attendance/': {
-      id: '/app/attendance/'
-      path: '/'
-      fullPath: '/app/attendance/'
-      preLoaderRoute: typeof AppAttendanceIndexRouteImport
-      parentRoute: typeof AppAttendanceRoute
-    }
-    '/app/transport/tracking': {
-      id: '/app/transport/tracking'
-      path: '/tracking'
-      fullPath: '/app/transport/tracking'
-      preLoaderRoute: typeof AppTransportTrackingRouteImport
-      parentRoute: typeof AppTransportRoute
-    }
-    '/app/teachers/training': {
-      id: '/app/teachers/training'
-      path: '/training'
-      fullPath: '/app/teachers/training'
-      preLoaderRoute: typeof AppTeachersTrainingRouteImport
-      parentRoute: typeof AppTeachersRoute
-    }
-    '/app/teachers/recruitment': {
-      id: '/app/teachers/recruitment'
-      path: '/recruitment'
-      fullPath: '/app/teachers/recruitment'
-      preLoaderRoute: typeof AppTeachersRecruitmentRouteImport
-      parentRoute: typeof AppTeachersRoute
-    }
-    '/app/teachers/performance': {
-      id: '/app/teachers/performance'
-      path: '/performance'
-      fullPath: '/app/teachers/performance'
-      preLoaderRoute: typeof AppTeachersPerformanceRouteImport
-      parentRoute: typeof AppTeachersRoute
-    }
-    '/app/teachers/payroll': {
-      id: '/app/teachers/payroll'
-      path: '/payroll'
-      fullPath: '/app/teachers/payroll'
-      preLoaderRoute: typeof AppTeachersPayrollRouteImport
-      parentRoute: typeof AppTeachersRoute
-    }
-    '/app/teachers/leave': {
-      id: '/app/teachers/leave'
-      path: '/leave'
-      fullPath: '/app/teachers/leave'
-      preLoaderRoute: typeof AppTeachersLeaveRouteImport
-      parentRoute: typeof AppTeachersRoute
-    }
-    '/app/teachers/attendance': {
-      id: '/app/teachers/attendance'
-      path: '/attendance'
-      fullPath: '/app/teachers/attendance'
-      preLoaderRoute: typeof AppTeachersAttendanceRouteImport
-      parentRoute: typeof AppTeachersRoute
-    }
-    '/app/students/transfer': {
-      id: '/app/students/transfer'
-      path: '/transfer'
-      fullPath: '/app/students/transfer'
-      preLoaderRoute: typeof AppStudentsTransferRouteImport
-      parentRoute: typeof AppStudentsRoute
-    }
-    '/app/students/performance': {
-      id: '/app/students/performance'
-      path: '/performance'
-      fullPath: '/app/students/performance'
-      preLoaderRoute: typeof AppStudentsPerformanceRouteImport
-      parentRoute: typeof AppStudentsRoute
-    }
-    '/app/students/discipline': {
-      id: '/app/students/discipline'
-      path: '/discipline'
-      fullPath: '/app/students/discipline'
-      preLoaderRoute: typeof AppStudentsDisciplineRouteImport
-      parentRoute: typeof AppStudentsRoute
-    }
-    '/app/students/attendance': {
-      id: '/app/students/attendance'
-      path: '/attendance'
-      fullPath: '/app/students/attendance'
-      preLoaderRoute: typeof AppStudentsAttendanceRouteImport
-      parentRoute: typeof AppStudentsRoute
-    }
-    '/app/students/alumni': {
-      id: '/app/students/alumni'
-      path: '/alumni'
-      fullPath: '/app/students/alumni'
-      preLoaderRoute: typeof AppStudentsAlumniRouteImport
-      parentRoute: typeof AppStudentsRoute
-    }
-    '/app/students/admission': {
-      id: '/app/students/admission'
-      path: '/admission'
-      fullPath: '/app/students/admission'
-      preLoaderRoute: typeof AppStudentsAdmissionRouteImport
-      parentRoute: typeof AppStudentsRoute
-    }
-    '/app/students/$id': {
-      id: '/app/students/$id'
-      path: '/$id'
-      fullPath: '/app/students/$id'
-      preLoaderRoute: typeof AppStudentsIdRouteImport
-      parentRoute: typeof AppStudentsRoute
-    }
-    '/app/fees/structure': {
-      id: '/app/fees/structure'
-      path: '/structure'
-      fullPath: '/app/fees/structure'
-      preLoaderRoute: typeof AppFeesStructureRouteImport
-      parentRoute: typeof AppFeesRoute
-    }
-    '/app/fees/salary': {
-      id: '/app/fees/salary'
-      path: '/salary'
-      fullPath: '/app/fees/salary'
-      preLoaderRoute: typeof AppFeesSalaryRouteImport
-      parentRoute: typeof AppFeesRoute
-    }
-    '/app/fees/reports': {
-      id: '/app/fees/reports'
-      path: '/reports'
-      fullPath: '/app/fees/reports'
-      preLoaderRoute: typeof AppFeesReportsRouteImport
-      parentRoute: typeof AppFeesRoute
-    }
-    '/app/fees/payment': {
-      id: '/app/fees/payment'
-      path: '/payment'
-      fullPath: '/app/fees/payment'
-      preLoaderRoute: typeof AppFeesPaymentRouteImport
-      parentRoute: typeof AppFeesRoute
-    }
-    '/app/fees/expenses': {
-      id: '/app/fees/expenses'
-      path: '/expenses'
-      fullPath: '/app/fees/expenses'
-      preLoaderRoute: typeof AppFeesExpensesRouteImport
-      parentRoute: typeof AppFeesRoute
-    }
-    '/app/fees/budget': {
-      id: '/app/fees/budget'
-      path: '/budget'
-      fullPath: '/app/fees/budget'
-      preLoaderRoute: typeof AppFeesBudgetRouteImport
-      parentRoute: typeof AppFeesRoute
-    }
-    '/app/attendance/students': {
-      id: '/app/attendance/students'
-      path: '/students'
-      fullPath: '/app/attendance/students'
-      preLoaderRoute: typeof AppAttendanceStudentsRouteImport
-      parentRoute: typeof AppAttendanceRoute
-    }
-    '/app/attendance/staff': {
-      id: '/app/attendance/staff'
-      path: '/staff'
-      fullPath: '/app/attendance/staff'
-      preLoaderRoute: typeof AppAttendanceStaffRouteImport
-      parentRoute: typeof AppAttendanceRoute
-    }
-    '/app/attendance/reports': {
-      id: '/app/attendance/reports'
-      path: '/reports'
-      fullPath: '/app/attendance/reports'
-      preLoaderRoute: typeof AppAttendanceReportsRouteImport
-      parentRoute: typeof AppAttendanceRoute
-    }
-    '/app/attendance/leave': {
-      id: '/app/attendance/leave'
-      path: '/leave'
-      fullPath: '/app/attendance/leave'
-      preLoaderRoute: typeof AppAttendanceLeaveRouteImport
-      parentRoute: typeof AppAttendanceRoute
-    }
-    '/app/attendance/alerts': {
-      id: '/app/attendance/alerts'
-      path: '/alerts'
-      fullPath: '/app/attendance/alerts'
-      preLoaderRoute: typeof AppAttendanceAlertsRouteImport
-      parentRoute: typeof AppAttendanceRoute
-    }
-    '/app/fees/receipt/$id': {
-      id: '/app/fees/receipt/$id'
-      path: '/receipt/$id'
-      fullPath: '/app/fees/receipt/$id'
-      preLoaderRoute: typeof AppFeesReceiptIdRouteImport
-      parentRoute: typeof AppFeesRoute
-    }
+    "/terms": {
+      id: "/terms";
+      path: "/terms";
+      fullPath: "/terms";
+      preLoaderRoute: typeof TermsRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/status": {
+      id: "/status";
+      path: "/status";
+      fullPath: "/status";
+      preLoaderRoute: typeof StatusRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/signup": {
+      id: "/signup";
+      path: "/signup";
+      fullPath: "/signup";
+      preLoaderRoute: typeof SignupRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/security": {
+      id: "/security";
+      path: "/security";
+      fullPath: "/security";
+      preLoaderRoute: typeof SecurityRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/register": {
+      id: "/register";
+      path: "/register";
+      fullPath: "/register";
+      preLoaderRoute: typeof RegisterRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/privacy": {
+      id: "/privacy";
+      path: "/privacy";
+      fullPath: "/privacy";
+      preLoaderRoute: typeof PrivacyRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/pricing": {
+      id: "/pricing";
+      path: "/pricing";
+      fullPath: "/pricing";
+      preLoaderRoute: typeof PricingRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/login": {
+      id: "/login";
+      path: "/login";
+      fullPath: "/login";
+      preLoaderRoute: typeof LoginRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/demo": {
+      id: "/demo";
+      path: "/demo";
+      fullPath: "/demo";
+      preLoaderRoute: typeof DemoRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/": {
+      id: "/";
+      path: "/";
+      fullPath: "/";
+      preLoaderRoute: typeof IndexRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/app/": {
+      id: "/app/";
+      path: "/app";
+      fullPath: "/app/";
+      preLoaderRoute: typeof AppIndexRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/sitemap/xml": {
+      id: "/sitemap/xml";
+      path: "/sitemap/xml";
+      fullPath: "/sitemap/xml";
+      preLoaderRoute: typeof SitemapXmlRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/ingest/$": {
+      id: "/ingest/$";
+      path: "/ingest/$";
+      fullPath: "/ingest/$";
+      preLoaderRoute: typeof IngestSplatRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/app/transport": {
+      id: "/app/transport";
+      path: "/app/transport";
+      fullPath: "/app/transport";
+      preLoaderRoute: typeof AppTransportRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/app/teachers": {
+      id: "/app/teachers";
+      path: "/app/teachers";
+      fullPath: "/app/teachers";
+      preLoaderRoute: typeof AppTeachersRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/app/teacher-portal": {
+      id: "/app/teacher-portal";
+      path: "/app/teacher-portal";
+      fullPath: "/app/teacher-portal";
+      preLoaderRoute: typeof AppTeacherPortalRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/app/students": {
+      id: "/app/students";
+      path: "/app/students";
+      fullPath: "/app/students";
+      preLoaderRoute: typeof AppStudentsRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/app/student-portal": {
+      id: "/app/student-portal";
+      path: "/app/student-portal";
+      fullPath: "/app/student-portal";
+      preLoaderRoute: typeof AppStudentPortalRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/app/staff-portal": {
+      id: "/app/staff-portal";
+      path: "/app/staff-portal";
+      fullPath: "/app/staff-portal";
+      preLoaderRoute: typeof AppStaffPortalRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/app/settings": {
+      id: "/app/settings";
+      path: "/app/settings";
+      fullPath: "/app/settings";
+      preLoaderRoute: typeof AppSettingsRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/app/schedule": {
+      id: "/app/schedule";
+      path: "/app/schedule";
+      fullPath: "/app/schedule";
+      preLoaderRoute: typeof AppScheduleRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/app/reports": {
+      id: "/app/reports";
+      path: "/app/reports";
+      fullPath: "/app/reports";
+      preLoaderRoute: typeof AppReportsRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/app/profile": {
+      id: "/app/profile";
+      path: "/app/profile";
+      fullPath: "/app/profile";
+      preLoaderRoute: typeof AppProfileRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/app/parent-portal": {
+      id: "/app/parent-portal";
+      path: "/app/parent-portal";
+      fullPath: "/app/parent-portal";
+      preLoaderRoute: typeof AppParentPortalRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/app/notifications": {
+      id: "/app/notifications";
+      path: "/app/notifications";
+      fullPath: "/app/notifications";
+      preLoaderRoute: typeof AppNotificationsRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/app/library": {
+      id: "/app/library";
+      path: "/app/library";
+      fullPath: "/app/library";
+      preLoaderRoute: typeof AppLibraryRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/app/inventory": {
+      id: "/app/inventory";
+      path: "/app/inventory";
+      fullPath: "/app/inventory";
+      preLoaderRoute: typeof AppInventoryRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/app/gradebook": {
+      id: "/app/gradebook";
+      path: "/app/gradebook";
+      fullPath: "/app/gradebook";
+      preLoaderRoute: typeof AppGradebookRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/app/fees": {
+      id: "/app/fees";
+      path: "/app/fees";
+      fullPath: "/app/fees";
+      preLoaderRoute: typeof AppFeesRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/app/exams": {
+      id: "/app/exams";
+      path: "/app/exams";
+      fullPath: "/app/exams";
+      preLoaderRoute: typeof AppExamsRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/app/classes": {
+      id: "/app/classes";
+      path: "/app/classes";
+      fullPath: "/app/classes";
+      preLoaderRoute: typeof AppClassesRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/app/billing": {
+      id: "/app/billing";
+      path: "/app/billing";
+      fullPath: "/app/billing";
+      preLoaderRoute: typeof AppBillingRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/app/attendance": {
+      id: "/app/attendance";
+      path: "/app/attendance";
+      fullPath: "/app/attendance";
+      preLoaderRoute: typeof AppAttendanceRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/app/transport/": {
+      id: "/app/transport/";
+      path: "/";
+      fullPath: "/app/transport/";
+      preLoaderRoute: typeof AppTransportIndexRouteImport;
+      parentRoute: typeof AppTransportRoute;
+    };
+    "/app/teachers/": {
+      id: "/app/teachers/";
+      path: "/";
+      fullPath: "/app/teachers/";
+      preLoaderRoute: typeof AppTeachersIndexRouteImport;
+      parentRoute: typeof AppTeachersRoute;
+    };
+    "/app/students/": {
+      id: "/app/students/";
+      path: "/";
+      fullPath: "/app/students/";
+      preLoaderRoute: typeof AppStudentsIndexRouteImport;
+      parentRoute: typeof AppStudentsRoute;
+    };
+    "/app/fees/": {
+      id: "/app/fees/";
+      path: "/";
+      fullPath: "/app/fees/";
+      preLoaderRoute: typeof AppFeesIndexRouteImport;
+      parentRoute: typeof AppFeesRoute;
+    };
+    "/app/attendance/": {
+      id: "/app/attendance/";
+      path: "/";
+      fullPath: "/app/attendance/";
+      preLoaderRoute: typeof AppAttendanceIndexRouteImport;
+      parentRoute: typeof AppAttendanceRoute;
+    };
+    "/app/transport/tracking": {
+      id: "/app/transport/tracking";
+      path: "/tracking";
+      fullPath: "/app/transport/tracking";
+      preLoaderRoute: typeof AppTransportTrackingRouteImport;
+      parentRoute: typeof AppTransportRoute;
+    };
+    "/app/teachers/training": {
+      id: "/app/teachers/training";
+      path: "/training";
+      fullPath: "/app/teachers/training";
+      preLoaderRoute: typeof AppTeachersTrainingRouteImport;
+      parentRoute: typeof AppTeachersRoute;
+    };
+    "/app/teachers/recruitment": {
+      id: "/app/teachers/recruitment";
+      path: "/recruitment";
+      fullPath: "/app/teachers/recruitment";
+      preLoaderRoute: typeof AppTeachersRecruitmentRouteImport;
+      parentRoute: typeof AppTeachersRoute;
+    };
+    "/app/teachers/performance": {
+      id: "/app/teachers/performance";
+      path: "/performance";
+      fullPath: "/app/teachers/performance";
+      preLoaderRoute: typeof AppTeachersPerformanceRouteImport;
+      parentRoute: typeof AppTeachersRoute;
+    };
+    "/app/teachers/payroll": {
+      id: "/app/teachers/payroll";
+      path: "/payroll";
+      fullPath: "/app/teachers/payroll";
+      preLoaderRoute: typeof AppTeachersPayrollRouteImport;
+      parentRoute: typeof AppTeachersRoute;
+    };
+    "/app/teachers/leave": {
+      id: "/app/teachers/leave";
+      path: "/leave";
+      fullPath: "/app/teachers/leave";
+      preLoaderRoute: typeof AppTeachersLeaveRouteImport;
+      parentRoute: typeof AppTeachersRoute;
+    };
+    "/app/teachers/attendance": {
+      id: "/app/teachers/attendance";
+      path: "/attendance";
+      fullPath: "/app/teachers/attendance";
+      preLoaderRoute: typeof AppTeachersAttendanceRouteImport;
+      parentRoute: typeof AppTeachersRoute;
+    };
+    "/app/students/transfer": {
+      id: "/app/students/transfer";
+      path: "/transfer";
+      fullPath: "/app/students/transfer";
+      preLoaderRoute: typeof AppStudentsTransferRouteImport;
+      parentRoute: typeof AppStudentsRoute;
+    };
+    "/app/students/performance": {
+      id: "/app/students/performance";
+      path: "/performance";
+      fullPath: "/app/students/performance";
+      preLoaderRoute: typeof AppStudentsPerformanceRouteImport;
+      parentRoute: typeof AppStudentsRoute;
+    };
+    "/app/students/discipline": {
+      id: "/app/students/discipline";
+      path: "/discipline";
+      fullPath: "/app/students/discipline";
+      preLoaderRoute: typeof AppStudentsDisciplineRouteImport;
+      parentRoute: typeof AppStudentsRoute;
+    };
+    "/app/students/attendance": {
+      id: "/app/students/attendance";
+      path: "/attendance";
+      fullPath: "/app/students/attendance";
+      preLoaderRoute: typeof AppStudentsAttendanceRouteImport;
+      parentRoute: typeof AppStudentsRoute;
+    };
+    "/app/students/alumni": {
+      id: "/app/students/alumni";
+      path: "/alumni";
+      fullPath: "/app/students/alumni";
+      preLoaderRoute: typeof AppStudentsAlumniRouteImport;
+      parentRoute: typeof AppStudentsRoute;
+    };
+    "/app/students/admission": {
+      id: "/app/students/admission";
+      path: "/admission";
+      fullPath: "/app/students/admission";
+      preLoaderRoute: typeof AppStudentsAdmissionRouteImport;
+      parentRoute: typeof AppStudentsRoute;
+    };
+    "/app/students/$id": {
+      id: "/app/students/$id";
+      path: "/$id";
+      fullPath: "/app/students/$id";
+      preLoaderRoute: typeof AppStudentsIdRouteImport;
+      parentRoute: typeof AppStudentsRoute;
+    };
+    "/app/fees/structure": {
+      id: "/app/fees/structure";
+      path: "/structure";
+      fullPath: "/app/fees/structure";
+      preLoaderRoute: typeof AppFeesStructureRouteImport;
+      parentRoute: typeof AppFeesRoute;
+    };
+    "/app/fees/salary": {
+      id: "/app/fees/salary";
+      path: "/salary";
+      fullPath: "/app/fees/salary";
+      preLoaderRoute: typeof AppFeesSalaryRouteImport;
+      parentRoute: typeof AppFeesRoute;
+    };
+    "/app/fees/reports": {
+      id: "/app/fees/reports";
+      path: "/reports";
+      fullPath: "/app/fees/reports";
+      preLoaderRoute: typeof AppFeesReportsRouteImport;
+      parentRoute: typeof AppFeesRoute;
+    };
+    "/app/fees/payment": {
+      id: "/app/fees/payment";
+      path: "/payment";
+      fullPath: "/app/fees/payment";
+      preLoaderRoute: typeof AppFeesPaymentRouteImport;
+      parentRoute: typeof AppFeesRoute;
+    };
+    "/app/fees/expenses": {
+      id: "/app/fees/expenses";
+      path: "/expenses";
+      fullPath: "/app/fees/expenses";
+      preLoaderRoute: typeof AppFeesExpensesRouteImport;
+      parentRoute: typeof AppFeesRoute;
+    };
+    "/app/fees/budget": {
+      id: "/app/fees/budget";
+      path: "/budget";
+      fullPath: "/app/fees/budget";
+      preLoaderRoute: typeof AppFeesBudgetRouteImport;
+      parentRoute: typeof AppFeesRoute;
+    };
+    "/app/attendance/students": {
+      id: "/app/attendance/students";
+      path: "/students";
+      fullPath: "/app/attendance/students";
+      preLoaderRoute: typeof AppAttendanceStudentsRouteImport;
+      parentRoute: typeof AppAttendanceRoute;
+    };
+    "/app/attendance/staff": {
+      id: "/app/attendance/staff";
+      path: "/staff";
+      fullPath: "/app/attendance/staff";
+      preLoaderRoute: typeof AppAttendanceStaffRouteImport;
+      parentRoute: typeof AppAttendanceRoute;
+    };
+    "/app/attendance/reports": {
+      id: "/app/attendance/reports";
+      path: "/reports";
+      fullPath: "/app/attendance/reports";
+      preLoaderRoute: typeof AppAttendanceReportsRouteImport;
+      parentRoute: typeof AppAttendanceRoute;
+    };
+    "/app/attendance/leave": {
+      id: "/app/attendance/leave";
+      path: "/leave";
+      fullPath: "/app/attendance/leave";
+      preLoaderRoute: typeof AppAttendanceLeaveRouteImport;
+      parentRoute: typeof AppAttendanceRoute;
+    };
+    "/app/attendance/alerts": {
+      id: "/app/attendance/alerts";
+      path: "/alerts";
+      fullPath: "/app/attendance/alerts";
+      preLoaderRoute: typeof AppAttendanceAlertsRouteImport;
+      parentRoute: typeof AppAttendanceRoute;
+    };
+    "/app/fees/receipt/$id": {
+      id: "/app/fees/receipt/$id";
+      path: "/receipt/$id";
+      fullPath: "/app/fees/receipt/$id";
+      preLoaderRoute: typeof AppFeesReceiptIdRouteImport;
+      parentRoute: typeof AppFeesRoute;
+    };
   }
 }
 
 interface AppAttendanceRouteChildren {
-  AppAttendanceAlertsRoute: typeof AppAttendanceAlertsRoute
-  AppAttendanceLeaveRoute: typeof AppAttendanceLeaveRoute
-  AppAttendanceReportsRoute: typeof AppAttendanceReportsRoute
-  AppAttendanceStaffRoute: typeof AppAttendanceStaffRoute
-  AppAttendanceStudentsRoute: typeof AppAttendanceStudentsRoute
-  AppAttendanceIndexRoute: typeof AppAttendanceIndexRoute
+  AppAttendanceAlertsRoute: typeof AppAttendanceAlertsRoute;
+  AppAttendanceLeaveRoute: typeof AppAttendanceLeaveRoute;
+  AppAttendanceReportsRoute: typeof AppAttendanceReportsRoute;
+  AppAttendanceStaffRoute: typeof AppAttendanceStaffRoute;
+  AppAttendanceStudentsRoute: typeof AppAttendanceStudentsRoute;
+  AppAttendanceIndexRoute: typeof AppAttendanceIndexRoute;
 }
 
 const AppAttendanceRouteChildren: AppAttendanceRouteChildren = {
@@ -1150,21 +1290,21 @@ const AppAttendanceRouteChildren: AppAttendanceRouteChildren = {
   AppAttendanceStaffRoute: AppAttendanceStaffRoute,
   AppAttendanceStudentsRoute: AppAttendanceStudentsRoute,
   AppAttendanceIndexRoute: AppAttendanceIndexRoute,
-}
+};
 
 const AppAttendanceRouteWithChildren = AppAttendanceRoute._addFileChildren(
   AppAttendanceRouteChildren,
-)
+);
 
 interface AppFeesRouteChildren {
-  AppFeesBudgetRoute: typeof AppFeesBudgetRoute
-  AppFeesExpensesRoute: typeof AppFeesExpensesRoute
-  AppFeesPaymentRoute: typeof AppFeesPaymentRoute
-  AppFeesReportsRoute: typeof AppFeesReportsRoute
-  AppFeesSalaryRoute: typeof AppFeesSalaryRoute
-  AppFeesStructureRoute: typeof AppFeesStructureRoute
-  AppFeesIndexRoute: typeof AppFeesIndexRoute
-  AppFeesReceiptIdRoute: typeof AppFeesReceiptIdRoute
+  AppFeesBudgetRoute: typeof AppFeesBudgetRoute;
+  AppFeesExpensesRoute: typeof AppFeesExpensesRoute;
+  AppFeesPaymentRoute: typeof AppFeesPaymentRoute;
+  AppFeesReportsRoute: typeof AppFeesReportsRoute;
+  AppFeesSalaryRoute: typeof AppFeesSalaryRoute;
+  AppFeesStructureRoute: typeof AppFeesStructureRoute;
+  AppFeesIndexRoute: typeof AppFeesIndexRoute;
+  AppFeesReceiptIdRoute: typeof AppFeesReceiptIdRoute;
 }
 
 const AppFeesRouteChildren: AppFeesRouteChildren = {
@@ -1176,20 +1316,20 @@ const AppFeesRouteChildren: AppFeesRouteChildren = {
   AppFeesStructureRoute: AppFeesStructureRoute,
   AppFeesIndexRoute: AppFeesIndexRoute,
   AppFeesReceiptIdRoute: AppFeesReceiptIdRoute,
-}
+};
 
 const AppFeesRouteWithChildren =
-  AppFeesRoute._addFileChildren(AppFeesRouteChildren)
+  AppFeesRoute._addFileChildren(AppFeesRouteChildren);
 
 interface AppStudentsRouteChildren {
-  AppStudentsIdRoute: typeof AppStudentsIdRoute
-  AppStudentsAdmissionRoute: typeof AppStudentsAdmissionRoute
-  AppStudentsAlumniRoute: typeof AppStudentsAlumniRoute
-  AppStudentsAttendanceRoute: typeof AppStudentsAttendanceRoute
-  AppStudentsDisciplineRoute: typeof AppStudentsDisciplineRoute
-  AppStudentsPerformanceRoute: typeof AppStudentsPerformanceRoute
-  AppStudentsTransferRoute: typeof AppStudentsTransferRoute
-  AppStudentsIndexRoute: typeof AppStudentsIndexRoute
+  AppStudentsIdRoute: typeof AppStudentsIdRoute;
+  AppStudentsAdmissionRoute: typeof AppStudentsAdmissionRoute;
+  AppStudentsAlumniRoute: typeof AppStudentsAlumniRoute;
+  AppStudentsAttendanceRoute: typeof AppStudentsAttendanceRoute;
+  AppStudentsDisciplineRoute: typeof AppStudentsDisciplineRoute;
+  AppStudentsPerformanceRoute: typeof AppStudentsPerformanceRoute;
+  AppStudentsTransferRoute: typeof AppStudentsTransferRoute;
+  AppStudentsIndexRoute: typeof AppStudentsIndexRoute;
 }
 
 const AppStudentsRouteChildren: AppStudentsRouteChildren = {
@@ -1201,20 +1341,20 @@ const AppStudentsRouteChildren: AppStudentsRouteChildren = {
   AppStudentsPerformanceRoute: AppStudentsPerformanceRoute,
   AppStudentsTransferRoute: AppStudentsTransferRoute,
   AppStudentsIndexRoute: AppStudentsIndexRoute,
-}
+};
 
 const AppStudentsRouteWithChildren = AppStudentsRoute._addFileChildren(
   AppStudentsRouteChildren,
-)
+);
 
 interface AppTeachersRouteChildren {
-  AppTeachersAttendanceRoute: typeof AppTeachersAttendanceRoute
-  AppTeachersLeaveRoute: typeof AppTeachersLeaveRoute
-  AppTeachersPayrollRoute: typeof AppTeachersPayrollRoute
-  AppTeachersPerformanceRoute: typeof AppTeachersPerformanceRoute
-  AppTeachersRecruitmentRoute: typeof AppTeachersRecruitmentRoute
-  AppTeachersTrainingRoute: typeof AppTeachersTrainingRoute
-  AppTeachersIndexRoute: typeof AppTeachersIndexRoute
+  AppTeachersAttendanceRoute: typeof AppTeachersAttendanceRoute;
+  AppTeachersLeaveRoute: typeof AppTeachersLeaveRoute;
+  AppTeachersPayrollRoute: typeof AppTeachersPayrollRoute;
+  AppTeachersPerformanceRoute: typeof AppTeachersPerformanceRoute;
+  AppTeachersRecruitmentRoute: typeof AppTeachersRecruitmentRoute;
+  AppTeachersTrainingRoute: typeof AppTeachersTrainingRoute;
+  AppTeachersIndexRoute: typeof AppTeachersIndexRoute;
 }
 
 const AppTeachersRouteChildren: AppTeachersRouteChildren = {
@@ -1225,31 +1365,37 @@ const AppTeachersRouteChildren: AppTeachersRouteChildren = {
   AppTeachersRecruitmentRoute: AppTeachersRecruitmentRoute,
   AppTeachersTrainingRoute: AppTeachersTrainingRoute,
   AppTeachersIndexRoute: AppTeachersIndexRoute,
-}
+};
 
 const AppTeachersRouteWithChildren = AppTeachersRoute._addFileChildren(
   AppTeachersRouteChildren,
-)
+);
 
 interface AppTransportRouteChildren {
-  AppTransportTrackingRoute: typeof AppTransportTrackingRoute
-  AppTransportIndexRoute: typeof AppTransportIndexRoute
+  AppTransportTrackingRoute: typeof AppTransportTrackingRoute;
+  AppTransportIndexRoute: typeof AppTransportIndexRoute;
 }
 
 const AppTransportRouteChildren: AppTransportRouteChildren = {
   AppTransportTrackingRoute: AppTransportTrackingRoute,
   AppTransportIndexRoute: AppTransportIndexRoute,
-}
+};
 
 const AppTransportRouteWithChildren = AppTransportRoute._addFileChildren(
   AppTransportRouteChildren,
-)
+);
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DemoRoute: DemoRoute,
   LoginRoute: LoginRoute,
   PricingRoute: PricingRoute,
+  PrivacyRoute: PrivacyRoute,
+  RegisterRoute: RegisterRoute,
+  SecurityRoute: SecurityRoute,
   SignupRoute: SignupRoute,
+  StatusRoute: StatusRoute,
+  TermsRoute: TermsRoute,
   AppAttendanceRoute: AppAttendanceRouteWithChildren,
   AppBillingRoute: AppBillingRoute,
   AppClassesRoute: AppClassesRoute,
@@ -1270,19 +1416,20 @@ const rootRouteChildren: RootRouteChildren = {
   AppTeacherPortalRoute: AppTeacherPortalRoute,
   AppTeachersRoute: AppTeachersRouteWithChildren,
   AppTransportRoute: AppTransportRouteWithChildren,
+  IngestSplatRoute: IngestSplatRoute,
   SitemapXmlRoute: SitemapXmlRoute,
   AppIndexRoute: AppIndexRoute,
-}
+};
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+  ._addFileTypes<FileRouteTypes>();
 
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.tsx'
-declare module '@tanstack/react-start' {
+import type { getRouter } from "./router.tsx";
+import type { startInstance } from "./start.tsx";
+declare module "@tanstack/react-start" {
   interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+    ssr: true;
+    router: Awaited<ReturnType<typeof getRouter>>;
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>;
   }
 }

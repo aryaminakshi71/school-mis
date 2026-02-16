@@ -2,27 +2,7 @@
  * Library Management - Books and Transactions with Real Data
  */
 
-import { useState, useEffect } from "react";
-import { createFileRoute } from "@tanstack/react-router";
-import { toast } from "sonner";
-import {
-  BookOpen,
-  Plus,
-  Book,
-  Clock,
-  AlertCircle,
-  BookCheck,
-  Edit,
-  Send,
-  Search,
-  Download,
-  Loader2,
-  Undo2,
-} from "lucide-react";
-import { exportToCSV } from "@/lib/export-utils";
-import { handleError } from "@/lib/error-handler";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
@@ -32,6 +12,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -41,6 +22,24 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { api } from "@/lib/api";
+import { handleError } from "@/lib/error-handler";
+import { exportToCSV } from "@/lib/export-utils";
+import { createFileRoute } from "@tanstack/react-router";
+import {
+  AlertCircle,
+  Book,
+  BookCheck,
+  BookOpen,
+  Clock,
+  Download,
+  Loader2,
+  Plus,
+  Search,
+  Send,
+  Undo2,
+} from "lucide-react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/app/library")({
   component: LibraryPage,
@@ -98,10 +97,11 @@ function LibraryPage() {
     fetchData();
   }, []);
 
-  const filteredBooks = books.filter((book) =>
-    book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    book.author?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    book.isbn?.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredBooks = books.filter(
+    (book) =>
+      book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      book.author?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      book.isbn?.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const activeTransactions = transactions.filter((t) => t.status === "issued");
@@ -126,7 +126,15 @@ function LibraryPage() {
       });
       toast.success("Book added successfully");
       setIsAddBookOpen(false);
-      setBookForm({ title: "", author: "", isbn: "", category: "Textbook", publisher: "", totalCopies: "1", location: "" });
+      setBookForm({
+        title: "",
+        author: "",
+        isbn: "",
+        category: "Textbook",
+        publisher: "",
+        totalCopies: "1",
+        location: "",
+      });
       fetchData();
     } catch (error) {
       toast.error("Failed to add book");
@@ -174,14 +182,17 @@ function LibraryPage() {
     try {
       if (activeTab === "books") {
         const exportData = books.map((b) => ({
-          "Title": b.title,
-          "Author": b.author || "",
-          "ISBN": b.isbn || "",
-          "Category": b.category || "",
-          "Available": String(b.availableCopies),
-          "Total": String(b.totalCopies),
+          Title: b.title,
+          Author: b.author || "",
+          ISBN: b.isbn || "",
+          Category: b.category || "",
+          Available: String(b.availableCopies),
+          Total: String(b.totalCopies),
         }));
-        exportToCSV(exportData, `library-books-export-${new Date().toISOString().split("T")[0]}`);
+        exportToCSV(
+          exportData,
+          `library-books-export-${new Date().toISOString().split("T")[0]}`,
+        );
         toast.success("Books exported successfully");
       } else {
         const exportData = transactions.map((t) => ({
@@ -190,9 +201,12 @@ function LibraryPage() {
           "Issue Date": t.issueDate,
           "Due Date": t.dueDate,
           "Return Date": t.returnDate || "",
-          "Status": t.status,
+          Status: t.status,
         }));
-        exportToCSV(exportData, `library-issues-export-${new Date().toISOString().split("T")[0]}`);
+        exportToCSV(
+          exportData,
+          `library-issues-export-${new Date().toISOString().split("T")[0]}`,
+        );
         toast.success("Issues exported successfully");
       }
     } catch (err) {
@@ -216,16 +230,20 @@ function LibraryPage() {
   }
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500">
+    <div className="fade-in animate-in space-y-6 duration-500">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">
+          <h1 className="font-bold text-3xl text-foreground tracking-tight">
             Library Management
           </h1>
           <p className="text-muted-foreground">Manage books and book issues</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={handleExport} disabled={books.length === 0}>
+          <Button
+            variant="outline"
+            onClick={handleExport}
+            disabled={books.length === 0}
+          >
             <Download className="mr-2 h-4 w-4" />
             Export
           </Button>
@@ -239,24 +257,30 @@ function LibraryPage() {
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Issue Book</DialogTitle>
-                <DialogDescription>Issue a book to a student.</DialogDescription>
+                <DialogDescription>
+                  Issue a book to a student.
+                </DialogDescription>
               </DialogHeader>
               <form onSubmit={handleIssueBook} className="space-y-4 py-4">
                 <div className="space-y-2">
                   <Label>Select Book *</Label>
                   <Select
                     value={issueForm.bookId}
-                    onValueChange={(val) => setIssueForm({ ...issueForm, bookId: val })}
+                    onValueChange={(val) =>
+                      setIssueForm({ ...issueForm, bookId: val })
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Choose a book" />
                     </SelectTrigger>
                     <SelectContent>
-                      {books.filter((b) => b.availableCopies > 0).map((book) => (
-                        <SelectItem key={book.id} value={book.id}>
-                          {book.title} ({book.availableCopies} available)
-                        </SelectItem>
-                      ))}
+                      {books
+                        .filter((b) => b.availableCopies > 0)
+                        .map((book) => (
+                          <SelectItem key={book.id} value={book.id}>
+                            {book.title} ({book.availableCopies} available)
+                          </SelectItem>
+                        ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -264,7 +288,9 @@ function LibraryPage() {
                   <Label>Select Student *</Label>
                   <Select
                     value={issueForm.studentId}
-                    onValueChange={(val) => setIssueForm({ ...issueForm, studentId: val })}
+                    onValueChange={(val) =>
+                      setIssueForm({ ...issueForm, studentId: val })
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Choose a student" />
@@ -283,15 +309,23 @@ function LibraryPage() {
                   <Input
                     type="date"
                     value={issueForm.dueDate}
-                    onChange={(e) => setIssueForm({ ...issueForm, dueDate: e.target.value })}
+                    onChange={(e) =>
+                      setIssueForm({ ...issueForm, dueDate: e.target.value })
+                    }
                   />
                 </div>
                 <DialogFooter>
-                  <Button type="button" variant="outline" onClick={() => setIsIssueBookOpen(false)}>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setIsIssueBookOpen(false)}
+                  >
                     Cancel
                   </Button>
                   <Button type="submit" disabled={submitting}>
-                    {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    {submitting && (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    )}
                     Issue Book
                   </Button>
                 </DialogFooter>
@@ -308,7 +342,9 @@ function LibraryPage() {
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Add New Book</DialogTitle>
-                <DialogDescription>Add a book to the library catalog.</DialogDescription>
+                <DialogDescription>
+                  Add a book to the library catalog.
+                </DialogDescription>
               </DialogHeader>
               <form onSubmit={handleAddBook} className="space-y-4 py-4">
                 <div className="space-y-2">
@@ -316,7 +352,9 @@ function LibraryPage() {
                   <Input
                     placeholder="Book title"
                     value={bookForm.title}
-                    onChange={(e) => setBookForm({ ...bookForm, title: e.target.value })}
+                    onChange={(e) =>
+                      setBookForm({ ...bookForm, title: e.target.value })
+                    }
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
@@ -325,7 +363,9 @@ function LibraryPage() {
                     <Input
                       placeholder="Author name"
                       value={bookForm.author}
-                      onChange={(e) => setBookForm({ ...bookForm, author: e.target.value })}
+                      onChange={(e) =>
+                        setBookForm({ ...bookForm, author: e.target.value })
+                      }
                     />
                   </div>
                   <div className="space-y-2">
@@ -333,7 +373,9 @@ function LibraryPage() {
                     <Input
                       placeholder="ISBN number"
                       value={bookForm.isbn}
-                      onChange={(e) => setBookForm({ ...bookForm, isbn: e.target.value })}
+                      onChange={(e) =>
+                        setBookForm({ ...bookForm, isbn: e.target.value })
+                      }
                     />
                   </div>
                 </div>
@@ -342,7 +384,9 @@ function LibraryPage() {
                     <Label>Category</Label>
                     <Select
                       value={bookForm.category}
-                      onValueChange={(val) => setBookForm({ ...bookForm, category: val })}
+                      onValueChange={(val) =>
+                        setBookForm({ ...bookForm, category: val })
+                      }
                     >
                       <SelectTrigger>
                         <SelectValue />
@@ -362,7 +406,12 @@ function LibraryPage() {
                       type="number"
                       min="1"
                       value={bookForm.totalCopies}
-                      onChange={(e) => setBookForm({ ...bookForm, totalCopies: e.target.value })}
+                      onChange={(e) =>
+                        setBookForm({
+                          ...bookForm,
+                          totalCopies: e.target.value,
+                        })
+                      }
                     />
                   </div>
                 </div>
@@ -371,7 +420,9 @@ function LibraryPage() {
                   <Input
                     placeholder="Publisher name"
                     value={bookForm.publisher}
-                    onChange={(e) => setBookForm({ ...bookForm, publisher: e.target.value })}
+                    onChange={(e) =>
+                      setBookForm({ ...bookForm, publisher: e.target.value })
+                    }
                   />
                 </div>
                 <div className="space-y-2">
@@ -379,15 +430,23 @@ function LibraryPage() {
                   <Input
                     placeholder="e.g., Shelf A-12"
                     value={bookForm.location}
-                    onChange={(e) => setBookForm({ ...bookForm, location: e.target.value })}
+                    onChange={(e) =>
+                      setBookForm({ ...bookForm, location: e.target.value })
+                    }
                   />
                 </div>
                 <DialogFooter>
-                  <Button type="button" variant="outline" onClick={() => setIsAddBookOpen(false)}>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setIsAddBookOpen(false)}
+                  >
                     Cancel
                   </Button>
                   <Button type="submit" disabled={submitting}>
-                    {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    {submitting && (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    )}
                     Add Book
                   </Button>
                 </DialogFooter>
@@ -398,67 +457,67 @@ function LibraryPage() {
       </div>
 
       <div className="grid grid-cols-4 gap-4">
-        <div className="bg-card rounded-lg border p-4 shadow-sm">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
-              <Book className="w-5 h-5 text-blue-600" />
+        <div className="rounded-lg border bg-card p-4 shadow-sm">
+          <div className="mb-2 flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+              <Book className="h-5 w-5 text-primary" />
             </div>
-            <p className="text-blue-700 text-sm font-medium">Total Books</p>
+            <p className="font-medium text-primary text-sm">Total Books</p>
           </div>
-          <p className="text-2xl font-bold text-blue-800">{stats.totalBooks}</p>
+          <p className="font-bold text-2xl text-primary">{stats.totalBooks}</p>
         </div>
-        <div className="bg-card rounded-lg border p-4 shadow-sm">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
-              <BookOpen className="w-5 h-5 text-green-600" />
+        <div className="rounded-lg border bg-card p-4 shadow-sm">
+          <div className="mb-2 flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-success/15">
+              <BookOpen className="h-5 w-5 text-success" />
             </div>
-            <p className="text-green-700 text-sm font-medium">Available</p>
+            <p className="font-medium text-sm text-success">Available</p>
           </div>
-          <p className="text-2xl font-bold text-green-800">{stats.available}</p>
+          <p className="font-bold text-2xl text-success">{stats.available}</p>
         </div>
-        <div className="bg-card rounded-lg border p-4 shadow-sm">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 rounded-lg bg-yellow-100 flex items-center justify-center">
-              <BookCheck className="w-5 h-5 text-yellow-600" />
+        <div className="rounded-lg border bg-card p-4 shadow-sm">
+          <div className="mb-2 flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-warning/15">
+              <BookCheck className="h-5 w-5 text-warning" />
             </div>
-            <p className="text-yellow-700 text-sm font-medium">Issued</p>
+            <p className="font-medium text-sm text-warning">Issued</p>
           </div>
-          <p className="text-2xl font-bold text-yellow-800">{stats.issued}</p>
+          <p className="font-bold text-2xl text-warning">{stats.issued}</p>
         </div>
-        <div className="bg-card rounded-lg border p-4 shadow-sm">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center">
-              <AlertCircle className="w-5 h-5 text-red-600" />
+        <div className="rounded-lg border bg-card p-4 shadow-sm">
+          <div className="mb-2 flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-destructive/10">
+              <AlertCircle className="h-5 w-5 text-destructive" />
             </div>
-            <p className="text-red-700 text-sm font-medium">Overdue</p>
+            <p className="font-medium text-destructive text-sm">Overdue</p>
           </div>
-          <p className="text-2xl font-bold text-red-800">{stats.overdue}</p>
+          <p className="font-bold text-2xl text-destructive">{stats.overdue}</p>
         </div>
       </div>
 
-      <div className="bg-card rounded-lg border overflow-hidden shadow-sm">
-        <div className="border-b flex">
+      <div className="overflow-hidden rounded-lg border bg-card shadow-sm">
+        <div className="flex border-b">
           <button
             onClick={() => setActiveTab("books")}
-            className={`flex items-center gap-2 px-6 py-3 text-sm font-medium ${activeTab === "books" ? "border-b-2 border-primary text-primary" : "text-muted-foreground hover:text-foreground"}`}
+            className={`flex items-center gap-2 px-6 py-3 font-medium text-sm ${activeTab === "books" ? "border-primary border-b-2 text-primary" : "text-muted-foreground hover:text-foreground"}`}
           >
-            <Book className="w-4 h-4" />
+            <Book className="h-4 w-4" />
             All Books
           </button>
           <button
             onClick={() => setActiveTab("issues")}
-            className={`flex items-center gap-2 px-6 py-3 text-sm font-medium ${activeTab === "issues" ? "border-b-2 border-primary text-primary" : "text-muted-foreground hover:text-foreground"}`}
+            className={`flex items-center gap-2 px-6 py-3 font-medium text-sm ${activeTab === "issues" ? "border-primary border-b-2 text-primary" : "text-muted-foreground hover:text-foreground"}`}
           >
-            <Clock className="w-4 h-4" />
+            <Clock className="h-4 w-4" />
             Book Issues ({activeTransactions.length})
           </button>
         </div>
 
         {activeTab === "books" ? (
           <div>
-            <div className="p-4 border-b">
+            <div className="border-b p-4">
               <div className="relative max-w-md">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Search className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
                 <Input
                   type="search"
                   placeholder="Search books by title, author, or ISBN..."
@@ -469,8 +528,8 @@ function LibraryPage() {
               </div>
             </div>
             {filteredBooks.length === 0 ? (
-              <div className="text-center py-12 text-muted-foreground">
-                <Book className="mx-auto h-10 w-10 mb-3 opacity-20" />
+              <div className="py-12 text-center text-muted-foreground">
+                <Book className="mx-auto mb-3 h-10 w-10 opacity-20" />
                 <p>No books found.</p>
                 <p className="text-sm">Click "Add Book" to add one.</p>
               </div>
@@ -479,24 +538,44 @@ function LibraryPage() {
                 <table className="w-full">
                   <thead className="bg-muted/50">
                     <tr>
-                      <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Title</th>
-                      <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Author</th>
-                      <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Category</th>
-                      <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">ISBN</th>
-                      <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Available</th>
-                      <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Actions</th>
+                      <th className="px-4 py-3 text-left font-medium text-muted-foreground text-sm">
+                        Title
+                      </th>
+                      <th className="px-4 py-3 text-left font-medium text-muted-foreground text-sm">
+                        Author
+                      </th>
+                      <th className="px-4 py-3 text-left font-medium text-muted-foreground text-sm">
+                        Category
+                      </th>
+                      <th className="px-4 py-3 text-left font-medium text-muted-foreground text-sm">
+                        ISBN
+                      </th>
+                      <th className="px-4 py-3 text-left font-medium text-muted-foreground text-sm">
+                        Available
+                      </th>
+                      <th className="px-4 py-3 text-left font-medium text-muted-foreground text-sm">
+                        Actions
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
                     {filteredBooks.map((book) => (
                       <tr key={book.id} className="border-t hover:bg-muted/30">
-                        <td className="px-4 py-3 text-sm font-medium">{book.title}</td>
-                        <td className="px-4 py-3 text-sm text-muted-foreground">{book.author || "-"}</td>
-                        <td className="px-4 py-3 text-sm text-muted-foreground">{book.category || "-"}</td>
-                        <td className="px-4 py-3 text-sm text-muted-foreground font-mono">{book.isbn || "-"}</td>
+                        <td className="px-4 py-3 font-medium text-sm">
+                          {book.title}
+                        </td>
+                        <td className="px-4 py-3 text-muted-foreground text-sm">
+                          {book.author || "-"}
+                        </td>
+                        <td className="px-4 py-3 text-muted-foreground text-sm">
+                          {book.category || "-"}
+                        </td>
+                        <td className="px-4 py-3 font-mono text-muted-foreground text-sm">
+                          {book.isbn || "-"}
+                        </td>
                         <td className="px-4 py-3 text-sm">
                           <span
-                            className={`px-2 py-1 rounded-full text-xs font-medium ${book.availableCopies > 0 ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}
+                            className={`rounded-full px-2 py-1 font-medium text-xs ${book.availableCopies > 0 ? "bg-success/15 text-success" : "bg-destructive/10 text-destructive"}`}
                           >
                             {book.availableCopies} / {book.totalCopies}
                           </span>
@@ -513,7 +592,9 @@ function LibraryPage() {
                           >
                             Issue
                           </Button>
-                          <Button variant="ghost" size="sm">Edit</Button>
+                          <Button variant="ghost" size="sm">
+                            Edit
+                          </Button>
                         </td>
                       </tr>
                     ))}
@@ -525,8 +606,8 @@ function LibraryPage() {
         ) : (
           <div>
             {activeTransactions.length === 0 ? (
-              <div className="text-center py-12 text-muted-foreground">
-                <Clock className="mx-auto h-10 w-10 mb-3 opacity-20" />
+              <div className="py-12 text-center text-muted-foreground">
+                <Clock className="mx-auto mb-3 h-10 w-10 opacity-20" />
                 <p>No active book issues.</p>
               </div>
             ) : (
@@ -534,35 +615,56 @@ function LibraryPage() {
                 <table className="w-full">
                   <thead className="bg-muted/50">
                     <tr>
-                      <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Book</th>
-                      <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Student</th>
-                      <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Issue Date</th>
-                      <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Due Date</th>
-                      <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Status</th>
-                      <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Actions</th>
+                      <th className="px-4 py-3 text-left font-medium text-muted-foreground text-sm">
+                        Book
+                      </th>
+                      <th className="px-4 py-3 text-left font-medium text-muted-foreground text-sm">
+                        Student
+                      </th>
+                      <th className="px-4 py-3 text-left font-medium text-muted-foreground text-sm">
+                        Issue Date
+                      </th>
+                      <th className="px-4 py-3 text-left font-medium text-muted-foreground text-sm">
+                        Due Date
+                      </th>
+                      <th className="px-4 py-3 text-left font-medium text-muted-foreground text-sm">
+                        Status
+                      </th>
+                      <th className="px-4 py-3 text-left font-medium text-muted-foreground text-sm">
+                        Actions
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
                     {activeTransactions.map((issue) => {
                       const book = books.find((b) => b.id === issue.bookId);
-                      const student = students.find((s) => s.id === issue.studentId);
+                      const student = students.find(
+                        (s) => s.id === issue.studentId,
+                      );
                       const isOverdue = new Date(issue.dueDate) < new Date();
 
                       return (
-                        <tr key={issue.id} className="border-t hover:bg-muted/30">
-                          <td className="px-4 py-3 text-sm font-medium">{book?.title || "Unknown Book"}</td>
-                          <td className="px-4 py-3 text-sm text-muted-foreground">
-                            {student ? `${student.firstName} ${student.lastName}` : "Unknown Student"}
+                        <tr
+                          key={issue.id}
+                          className="border-t hover:bg-muted/30"
+                        >
+                          <td className="px-4 py-3 font-medium text-sm">
+                            {book?.title || "Unknown Book"}
                           </td>
-                          <td className="px-4 py-3 text-sm text-muted-foreground">
+                          <td className="px-4 py-3 text-muted-foreground text-sm">
+                            {student
+                              ? `${student.firstName} ${student.lastName}`
+                              : "Unknown Student"}
+                          </td>
+                          <td className="px-4 py-3 text-muted-foreground text-sm">
                             {new Date(issue.issueDate).toLocaleDateString()}
                           </td>
-                          <td className="px-4 py-3 text-sm text-muted-foreground">
+                          <td className="px-4 py-3 text-muted-foreground text-sm">
                             {new Date(issue.dueDate).toLocaleDateString()}
                           </td>
                           <td className="px-4 py-3">
                             <span
-                              className={`px-2 py-1 rounded-full text-xs font-medium ${isOverdue ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"}`}
+                              className={`rounded-full px-2 py-1 font-medium text-xs ${isOverdue ? "bg-destructive/10 text-destructive" : "bg-success/15 text-success"}`}
                             >
                               {isOverdue ? "Overdue" : "Active"}
                             </span>

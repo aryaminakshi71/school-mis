@@ -3,43 +3,37 @@
  * All sub-features for staff management including recruitment, payroll, etc.
  */
 
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
-import { api, type Teacher } from "@/lib/api";
-import { useState } from "react";
-import {
-  GraduationCap,
-  UserPlus,
-  DollarSign,
-  Calendar,
-  Award,
-  Users,
-  Search,
-  Filter,
-  Download,
-  Upload,
-  MoreVertical,
-  Eye,
-  Edit,
-  Trash,
-  Mail,
-  Phone,
-  FileText,
-  TrendingUp,
-  Clock,
-  AlertCircle,
-} from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { useSearch, useDebounce } from "@/lib/search-utils";
-import { exportToCSV, exportToExcel } from "@/lib/export-utils";
-import { useListPageShortcuts } from "@/lib/keyboard-shortcuts";
-import { Skeleton, SkeletonTable } from "@/components/ui/skeleton";
 import { useConfirmDialog } from "@/components/ui/confirm-dialog";
-import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
+import { SkeletonTable } from "@/components/ui/skeleton";
+import { type Teacher, api } from "@/lib/api";
 import { handleError } from "@/lib/error-handler";
+import { exportToCSV } from "@/lib/export-utils";
+import { useListPageShortcuts } from "@/lib/keyboard-shortcuts";
+import { useSearch } from "@/lib/search-utils";
+import { useQuery } from "@tanstack/react-query";
+import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
+import {
+  AlertCircle,
+  Award,
+  Calendar,
+  Clock,
+  DollarSign,
+  Download,
+  Edit,
+  Eye,
+  Filter,
+  GraduationCap,
+  Search,
+  TrendingUp,
+  UserPlus,
+  Users,
+} from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/app/teachers/")({
   component: TeachersPage,
@@ -58,13 +52,16 @@ const subFeatures = [
 
 // Mock data removed in favor of api.teachers.list()
 
-
 function TeachersPage() {
   const navigate = useNavigate();
   const [selectedDepartment, setSelectedDepartment] = useState("all");
   const { confirm, dialog } = useConfirmDialog();
 
-  const { data: staff = [], isLoading, error } = useQuery<Teacher[]>({
+  const {
+    data: staff = [],
+    isLoading,
+    error,
+  } = useQuery<Teacher[]>({
     queryKey: ["teachers"],
     queryFn: async () => {
       try {
@@ -86,20 +83,31 @@ function TeachersPage() {
     clearSearch,
   } = useSearch<Teacher>({
     data: staff,
-    searchFields: ["firstName", "lastName", "employeeId", "subject", "qualification", "email", "phone"],
+    searchFields: [
+      "firstName",
+      "lastName",
+      "employeeId",
+      "subject",
+      "qualification",
+      "email",
+      "phone",
+    ],
     searchQuery: "",
   });
 
   // Apply department filter
-  const finalFilteredStaff = selectedDepartment === "all"
-    ? filteredStaff
-    : filteredStaff.filter((s) => s.subject.toLowerCase() === selectedDepartment.toLowerCase());
+  const finalFilteredStaff =
+    selectedDepartment === "all"
+      ? filteredStaff
+      : filteredStaff.filter(
+          (s) => s.subject.toLowerCase() === selectedDepartment.toLowerCase(),
+        );
 
   // Keyboard shortcuts
   useListPageShortcuts(
     () => navigate({ to: "/app/teachers", search: { action: "new" } }),
     () => window.location.reload(),
-    () => handleExport()
+    () => handleExport(),
   );
 
   // Export functionality
@@ -109,16 +117,19 @@ function TeachersPage() {
         "Employee ID": s.employeeId,
         "First Name": s.firstName,
         "Last Name": s.lastName,
-        "Subject": s.subject,
-        "Qualification": s.qualification || "",
-        "Email": s.email || "",
-        "Phone": s.phone || "",
-        "Salary": s.salary?.toString() || "",
-        "Attendance": `${s.attendance}%`,
-        "Status": s.status,
+        Subject: s.subject,
+        Qualification: s.qualification || "",
+        Email: s.email || "",
+        Phone: s.phone || "",
+        Salary: s.salary?.toString() || "",
+        Attendance: `${s.attendance}%`,
+        Status: s.status,
       }));
 
-      exportToCSV(exportData, `staff-export-${new Date().toISOString().split("T")[0]}`);
+      exportToCSV(
+        exportData,
+        `staff-export-${new Date().toISOString().split("T")[0]}`,
+      );
       toast.success("Staff exported successfully");
     } catch (err) {
       toast.error(handleError(err));
@@ -127,13 +138,17 @@ function TeachersPage() {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-96">
+      <div className="flex h-96 items-center justify-center">
         <Card className="max-w-md">
           <CardContent className="pt-6">
             <div className="text-center">
-              <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">Error Loading Staff</h3>
-              <p className="text-sm text-gray-600 mb-4">{handleError(error)}</p>
+              <AlertCircle className="mx-auto mb-4 h-12 w-12 text-destructive" />
+              <h3 className="mb-2 font-semibold text-lg">
+                Error Loading Staff
+              </h3>
+              <p className="mb-4 text-muted-foreground text-sm">
+                {handleError(error)}
+              </p>
               <Button onClick={() => window.location.reload()}>Retry</Button>
             </div>
           </CardContent>
@@ -159,14 +174,22 @@ function TeachersPage() {
     },
     {
       title: "Monthly Payroll",
-      value: "₹" + staff.reduce((sum, s) => sum + (Number(s.salary) || 0), 0).toLocaleString(),
+      value:
+        "₹" +
+        staff
+          .reduce((sum, s) => sum + (Number(s.salary) || 0), 0)
+          .toLocaleString(),
       change: "+₹1.2L",
       icon: DollarSign,
       color: "yellow",
     },
     {
       title: "Avg Attendance",
-      value: Math.round(staff.reduce((sum, s) => sum + (Number(s.attendance) || 0), 0) / (staff.length || 1)) + "%",
+      value:
+        Math.round(
+          staff.reduce((sum, s) => sum + (Number(s.attendance) || 0), 0) /
+            (staff.length || 1),
+        ) + "%",
       change: "+1.2%",
       icon: Calendar,
       color: "purple",
@@ -178,7 +201,7 @@ function TeachersPage() {
       {/* Header */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">
+          <h1 className="font-bold text-3xl tracking-tight">
             Staff Management
           </h1>
           <p className="text-muted-foreground">
@@ -195,7 +218,11 @@ function TeachersPage() {
             <Download className="mr-2 h-4 w-4" />
             Export ({finalFilteredStaff.length})
           </Button>
-          <Button onClick={() => navigate({ to: "/app/teachers", search: { action: "new" } })}>
+          <Button
+            onClick={() =>
+              navigate({ to: "/app/teachers", search: { action: "new" } })
+            }
+          >
             <UserPlus className="mr-2 h-4 w-4" />
             Add Staff
           </Button>
@@ -209,10 +236,11 @@ function TeachersPage() {
             <Link
               key={feature.name}
               to={feature.href}
-              className={`flex items-center gap-2 px-4 py-2 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${feature.active
-                ? "border-primary text-primary"
-                : "border-transparent text-muted-foreground hover:text-foreground"
-                }`}
+              className={`flex items-center gap-2 whitespace-nowrap border-b-2 px-4 py-2 font-medium text-sm transition-colors ${
+                feature.active
+                  ? "border-primary text-primary"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
+              }`}
             >
               <feature.icon className="h-4 w-4" />
               {feature.name}
@@ -226,35 +254,37 @@ function TeachersPage() {
         {stats.map((stat) => (
           <Card key={stat.title}>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">
+              <CardTitle className="font-medium text-sm">
                 {stat.title}
               </CardTitle>
               <div
-                className={`p-2 rounded-lg ${stat.color === "blue"
-                  ? "bg-blue-100"
-                  : stat.color === "green"
-                    ? "bg-green-100"
-                    : stat.color === "yellow"
-                      ? "bg-yellow-100"
-                      : "bg-purple-100"
-                  }`}
+                className={`rounded-lg p-2 ${
+                  stat.color === "blue"
+                    ? "bg-primary/10"
+                    : stat.color === "green"
+                      ? "bg-success/15"
+                      : stat.color === "yellow"
+                        ? "bg-warning/15"
+                        : "bg-primary/10"
+                }`}
               >
                 <stat.icon
-                  className={`h-4 w-4 ${stat.color === "blue"
-                    ? "text-blue-600"
-                    : stat.color === "green"
-                      ? "text-green-600"
-                      : stat.color === "yellow"
-                        ? "text-yellow-600"
-                        : "text-purple-600"
-                    }`}
+                  className={`h-4 w-4 ${
+                    stat.color === "blue"
+                      ? "text-primary"
+                      : stat.color === "green"
+                        ? "text-success"
+                        : stat.color === "yellow"
+                          ? "text-warning"
+                          : "text-primary"
+                  }`}
                 />
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stat.value}</div>
-              <p className="text-xs text-muted-foreground">
-                <span className="text-green-600">{stat.change}</span> from last
+              <div className="font-bold text-2xl">{stat.value}</div>
+              <p className="text-muted-foreground text-xs">
+                <span className="text-success">{stat.change}</span> from last
                 month
               </p>
             </CardContent>
@@ -266,20 +296,20 @@ function TeachersPage() {
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="flex gap-2">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Search className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
               placeholder="Search staff... (Press / to focus)"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 w-[300px]"
+              className="w-[300px] pl-9"
             />
             {hasActiveFilters && (
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={clearSearch}
-                className="absolute right-2 top-1/2 -translate-y-1/2 h-6 px-2 text-xs"
+                className="-translate-y-1/2 absolute top-1/2 right-2 h-6 px-2 text-xs"
               >
                 Clear
               </Button>
@@ -288,7 +318,7 @@ function TeachersPage() {
           <select
             value={selectedDepartment}
             onChange={(e) => setSelectedDepartment(e.target.value)}
-            className="flex h-10 w-[180px] items-center justify-between rounded-lg border border-input bg-white px-3 py-2 text-sm"
+            className="flex h-10 w-[180px] items-center justify-between rounded-lg border border-input bg-card px-3 py-2 text-sm"
           >
             <option value="all">All Departments</option>
             <option value="mathematics">Mathematics</option>
@@ -319,12 +349,12 @@ function TeachersPage() {
           {isLoading ? (
             <SkeletonTable rows={5} cols={10} />
           ) : finalFilteredStaff.length === 0 ? (
-            <div className="text-center py-12">
-              <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">
+            <div className="py-12 text-center">
+              <Users className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
+              <h3 className="mb-2 font-semibold text-lg">
                 {hasActiveFilters ? "No staff found" : "No staff yet"}
               </h3>
-              <p className="text-sm text-gray-600 mb-4">
+              <p className="mb-4 text-muted-foreground text-sm">
                 {hasActiveFilters
                   ? "Try adjusting your search or filters"
                   : "Get started by adding your first staff member"}
@@ -334,7 +364,11 @@ function TeachersPage() {
                   Clear Filters
                 </Button>
               ) : (
-                <Button onClick={() => navigate({ to: "/app/teachers", search: { action: "new" } })}>
+                <Button
+                  onClick={() =>
+                    navigate({ to: "/app/teachers", search: { action: "new" } })
+                  }
+                >
                   <UserPlus className="mr-2 h-4 w-4" />
                   Add First Staff
                 </Button>
@@ -344,7 +378,7 @@ function TeachersPage() {
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b text-left text-sm text-muted-foreground">
+                  <tr className="border-b text-left text-muted-foreground text-sm">
                     <th className="pb-3 font-medium">Staff ID</th>
                     <th className="pb-3 font-medium">Name</th>
                     <th className="pb-3 font-medium">Role</th>
@@ -363,12 +397,15 @@ function TeachersPage() {
                       <td className="py-3 text-sm">{member.employeeId}</td>
                       <td className="py-3">
                         <div className="flex items-center gap-2">
-                          <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-                            <span className="text-xs font-medium text-primary">
-                              {member.firstName[0]}{member.lastName[0]}
+                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
+                            <span className="font-medium text-primary text-xs">
+                              {member.firstName[0]}
+                              {member.lastName[0]}
                             </span>
                           </div>
-                          <span className="font-medium">{member.firstName} {member.lastName}</span>
+                          <span className="font-medium">
+                            {member.firstName} {member.lastName}
+                          </span>
                         </div>
                       </td>
                       <td className="py-3 text-sm">Teacher</td>
@@ -376,15 +413,15 @@ function TeachersPage() {
                       <td className="py-3 text-sm">{member.qualification}</td>
                       <td className="py-3 text-sm">
                         <div className="flex flex-col">
-                          <span className="text-xs text-muted-foreground">
+                          <span className="text-muted-foreground text-xs">
                             {member.phone}
                           </span>
-                          <span className="text-xs text-muted-foreground">
+                          <span className="text-muted-foreground text-xs">
                             {member.email}
                           </span>
                         </div>
                       </td>
-                      <td className="py-3 text-sm font-medium">
+                      <td className="py-3 font-medium text-sm">
                         ₹{member.salary}
                       </td>
                       <td className="py-3">
@@ -411,13 +448,25 @@ function TeachersPage() {
                       </td>
                       <td className="py-3">
                         <div className="flex gap-1">
-                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                          >
                             <Eye className="h-4 w-4" />
                           </Button>
-                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                          >
                             <Edit className="h-4 w-4" />
                           </Button>
-                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                          >
                             <DollarSign className="h-4 w-4" />
                           </Button>
                         </div>
@@ -431,8 +480,8 @@ function TeachersPage() {
 
           {/* Pagination */}
           {!isLoading && finalFilteredStaff.length > 0 && (
-            <div className="flex items-center justify-between pt-4 border-t">
-              <p className="text-sm text-muted-foreground">
+            <div className="flex items-center justify-between border-t pt-4">
+              <p className="text-muted-foreground text-sm">
                 Showing 1-{finalFilteredStaff.length} of {staff.length} staff
                 {hasActiveFilters && ` (filtered from ${staff.length} total)`}
               </p>
@@ -452,49 +501,49 @@ function TeachersPage() {
 
       {/* Quick Actions */}
       <div className="grid gap-4 md:grid-cols-4">
-        <Card className="cursor-pointer hover:shadow-md transition-shadow">
+        <Card className="cursor-pointer transition-shadow hover:shadow-md">
           <CardContent className="flex items-center gap-4 p-4">
-            <div className="p-3 rounded-lg bg-green-100">
-              <UserPlus className="h-5 w-5 text-green-600" />
+            <div className="rounded-lg bg-success/15 p-3">
+              <UserPlus className="h-5 w-5 text-success" />
             </div>
             <div>
               <p className="font-medium">Recruitment</p>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-muted-foreground text-sm">
                 Post job, shortlist
               </p>
             </div>
           </CardContent>
         </Card>
-        <Card className="cursor-pointer hover:shadow-md transition-shadow">
+        <Card className="cursor-pointer transition-shadow hover:shadow-md">
           <CardContent className="flex items-center gap-4 p-4">
-            <div className="p-3 rounded-lg bg-yellow-100">
-              <DollarSign className="h-5 w-5 text-yellow-600" />
+            <div className="rounded-lg bg-warning/15 p-3">
+              <DollarSign className="h-5 w-5 text-warning" />
             </div>
             <div>
               <p className="font-medium">Generate Payslip</p>
-              <p className="text-sm text-muted-foreground">Monthly payroll</p>
+              <p className="text-muted-foreground text-sm">Monthly payroll</p>
             </div>
           </CardContent>
         </Card>
-        <Card className="cursor-pointer hover:shadow-md transition-shadow">
+        <Card className="cursor-pointer transition-shadow hover:shadow-md">
           <CardContent className="flex items-center gap-4 p-4">
-            <div className="p-3 rounded-lg bg-blue-100">
-              <Calendar className="h-5 w-5 text-blue-600" />
+            <div className="rounded-lg bg-primary/10 p-3">
+              <Calendar className="h-5 w-5 text-primary" />
             </div>
             <div>
               <p className="font-medium">Leave Approval</p>
-              <p className="text-sm text-muted-foreground">Pending requests</p>
+              <p className="text-muted-foreground text-sm">Pending requests</p>
             </div>
           </CardContent>
         </Card>
-        <Card className="cursor-pointer hover:shadow-md transition-shadow">
+        <Card className="cursor-pointer transition-shadow hover:shadow-md">
           <CardContent className="flex items-center gap-4 p-4">
-            <div className="p-3 rounded-lg bg-purple-100">
-              <Award className="h-5 w-5 text-purple-600" />
+            <div className="rounded-lg bg-primary/10 p-3">
+              <Award className="h-5 w-5 text-primary" />
             </div>
             <div>
               <p className="font-medium">Performance Review</p>
-              <p className="text-sm text-muted-foreground">Appraisal form</p>
+              <p className="text-muted-foreground text-sm">Appraisal form</p>
             </div>
           </CardContent>
         </Card>

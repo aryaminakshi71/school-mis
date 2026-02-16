@@ -2,6 +2,7 @@
 User-agent: *
 Allow: /
 Disallow: /api/
+Disallow: /ingest/
 Disallow: /admin/
 
-Sitemap: https://school-mis.your-domain.com/sitemap.xml
+Sitemap: /sitemap.xml

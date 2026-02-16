@@ -2,38 +2,34 @@
  * Staff Performance Management - Appraisals, evaluations, feedback
  */
 
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
-import {
-  Users,
-  UserPlus,
-  DollarSign,
-  Calendar,
-  Award,
-  Search,
-  Plus,
-  Star,
-  TrendingUp,
-  TrendingDown,
-  Download,
-  FileText,
-  CheckCircle,
-  AlertCircle,
-  Filter,
-  Target,
-  BarChart3,
-  MessageSquare,
-  MoreVertical,
-  Eye,
-  Edit,
-  Clock,
-} from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { useSearch } from "@/lib/search-utils";
 import { exportToCSV } from "@/lib/export-utils";
+import { useSearch } from "@/lib/search-utils";
+import { createFileRoute } from "@tanstack/react-router";
+import {
+  AlertCircle,
+  Award,
+  BarChart3,
+  Calendar,
+  Clock,
+  DollarSign,
+  Download,
+  Eye,
+  FileText,
+  Filter,
+  MessageSquare,
+  Plus,
+  Search,
+  Star,
+  Target,
+  TrendingUp,
+  UserPlus,
+  Users,
+} from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/app/teachers/performance")({
@@ -46,7 +42,12 @@ const subFeatures = [
   { name: "Payroll", href: "/app/teachers/payroll", icon: DollarSign },
   { name: "Attendance", href: "/app/teachers/attendance", icon: Calendar },
   { name: "Leave", href: "/app/teachers/leave", icon: Clock },
-  { name: "Performance", href: "/app/teachers/performance", icon: Award, active: true },
+  {
+    name: "Performance",
+    href: "/app/teachers/performance",
+    icon: Award,
+    active: true,
+  },
   { name: "Training", href: "/app/teachers/training", icon: Award },
 ];
 
@@ -121,9 +122,33 @@ const performanceData = [
 
 // Mock data for appraisal cycles
 const appraisalCycles = [
-  { id: "AP-2026-Q1", name: "Annual Appraisal 2026", startDate: "2026-01-01", endDate: "2026-03-31", status: "active", completed: 25, total: 50 },
-  { id: "AP-2025-Q4", name: "Quarterly Review Q4 2025", startDate: "2025-10-01", endDate: "2025-12-31", status: "completed", completed: 48, total: 48 },
-  { id: "AP-2025-Q3", name: "Quarterly Review Q3 2025", startDate: "2025-07-01", endDate: "2025-09-30", status: "completed", completed: 46, total: 46 },
+  {
+    id: "AP-2026-Q1",
+    name: "Annual Appraisal 2026",
+    startDate: "2026-01-01",
+    endDate: "2026-03-31",
+    status: "active",
+    completed: 25,
+    total: 50,
+  },
+  {
+    id: "AP-2025-Q4",
+    name: "Quarterly Review Q4 2025",
+    startDate: "2025-10-01",
+    endDate: "2025-12-31",
+    status: "completed",
+    completed: 48,
+    total: 48,
+  },
+  {
+    id: "AP-2025-Q3",
+    name: "Quarterly Review Q3 2025",
+    startDate: "2025-07-01",
+    endDate: "2025-09-30",
+    status: "completed",
+    completed: 46,
+    total: 46,
+  },
 ];
 
 function PerformancePage() {
@@ -142,38 +167,48 @@ function PerformancePage() {
     searchQuery: "",
   });
 
-  const filteredByRating = selectedRating === "all"
-    ? filteredPerformance
-    : filteredPerformance.filter((p) => p.status === selectedRating);
+  const filteredByRating =
+    selectedRating === "all"
+      ? filteredPerformance
+      : filteredPerformance.filter((p) => p.status === selectedRating);
 
-  const excellentCount = filteredPerformance.filter((p) => p.rating >= 4.5).length;
-  const needsImprovementCount = filteredPerformance.filter((p) => p.rating < 4.0).length;
-  const avgRating = filteredPerformance.reduce((sum, p) => sum + p.rating, 0) / (filteredPerformance.length || 1);
+  const excellentCount = filteredPerformance.filter(
+    (p) => p.rating >= 4.5,
+  ).length;
+  const needsImprovementCount = filteredPerformance.filter(
+    (p) => p.rating < 4.0,
+  ).length;
+  const avgRating =
+    filteredPerformance.reduce((sum, p) => sum + p.rating, 0) /
+    (filteredPerformance.length || 1);
 
   const handleExport = () => {
     const exportData = filteredByRating.map((p) => ({
       "Employee ID": p.id,
-      "Name": p.name,
-      "Designation": p.designation,
-      "Department": p.department,
+      Name: p.name,
+      Designation: p.designation,
+      Department: p.department,
       "Overall Rating": p.rating,
       "Student Feedback": p.studentsFeedback,
       "Peer Review": p.peerReview,
-      "Attendance": `${p.attendance}%`,
+      Attendance: `${p.attendance}%`,
       "Last Appraisal": p.lastAppraisal,
       "Next Appraisal": p.nextAppraisal,
-      "Status": p.status,
+      Status: p.status,
     }));
 
-    exportToCSV(exportData, `performance-evaluations-${new Date().toISOString().split("T")[0]}`);
+    exportToCSV(
+      exportData,
+      `performance-evaluations-${new Date().toISOString().split("T")[0]}`,
+    );
     toast.success("Performance data exported");
   };
 
   const getRatingColor = (rating: number) => {
-    if (rating >= 4.5) return "text-green-600";
-    if (rating >= 4.0) return "text-blue-600";
-    if (rating >= 3.5) return "text-yellow-600";
-    return "text-red-600";
+    if (rating >= 4.5) return "text-success";
+    if (rating >= 4.0) return "text-primary";
+    if (rating >= 3.5) return "text-warning";
+    return "text-destructive";
   };
 
   const getStatusBadge = (status: string) => {
@@ -192,10 +227,34 @@ function PerformancePage() {
   };
 
   const stats = [
-    { title: "Avg Rating", value: avgRating.toFixed(1), change: "Out of 5.0", icon: Star, color: "yellow" },
-    { title: "Top Performers", value: excellentCount.toString(), change: "Rating 4.5+", icon: TrendingUp, color: "green" },
-    { title: "Needs Attention", value: needsImprovementCount.toString(), change: "Below 4.0", icon: AlertCircle, color: "red" },
-    { title: "Pending Reviews", value: "12", change: "This quarter", icon: Clock, color: "blue" },
+    {
+      title: "Avg Rating",
+      value: avgRating.toFixed(1),
+      change: "Out of 5.0",
+      icon: Star,
+      color: "yellow",
+    },
+    {
+      title: "Top Performers",
+      value: excellentCount.toString(),
+      change: "Rating 4.5+",
+      icon: TrendingUp,
+      color: "green",
+    },
+    {
+      title: "Needs Attention",
+      value: needsImprovementCount.toString(),
+      change: "Below 4.0",
+      icon: AlertCircle,
+      color: "red",
+    },
+    {
+      title: "Pending Reviews",
+      value: "12",
+      change: "This quarter",
+      icon: Clock,
+      color: "blue",
+    },
   ];
 
   return (
@@ -203,8 +262,12 @@ function PerformancePage() {
       {/* Header */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Performance Management</h1>
-          <p className="text-muted-foreground">Track staff performance, conduct appraisals, and manage feedback.</p>
+          <h1 className="font-bold text-3xl tracking-tight">
+            Performance Management
+          </h1>
+          <p className="text-muted-foreground">
+            Track staff performance, conduct appraisals, and manage feedback.
+          </p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" onClick={handleExport}>
@@ -225,7 +288,7 @@ function PerformancePage() {
             <a
               key={feature.name}
               href={feature.href}
-              className={`flex items-center gap-2 px-4 py-2 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
+              className={`flex items-center gap-2 whitespace-nowrap border-b-2 px-4 py-2 font-medium text-sm transition-colors ${
                 feature.active
                   ? "border-primary text-primary"
                   : "border-transparent text-muted-foreground hover:text-foreground"
@@ -243,14 +306,16 @@ function PerformancePage() {
         {stats.map((stat) => (
           <Card key={stat.title}>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
-              <div className={`p-2 rounded-lg bg-${stat.color}-100`}>
+              <CardTitle className="font-medium text-sm">
+                {stat.title}
+              </CardTitle>
+              <div className={`rounded-lg p-2 bg-${stat.color}-100`}>
                 <stat.icon className={`h-4 w-4 text-${stat.color}-600`} />
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stat.value}</div>
-              <p className="text-xs text-muted-foreground">{stat.change}</p>
+              <div className="font-bold text-2xl">{stat.value}</div>
+              <p className="text-muted-foreground text-xs">{stat.change}</p>
             </CardContent>
           </Card>
         ))}
@@ -260,7 +325,7 @@ function PerformancePage() {
       <div className="flex gap-2 border-b">
         <button
           onClick={() => setActiveTab("evaluations")}
-          className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+          className={`border-b-2 px-4 py-2 font-medium text-sm transition-colors ${
             activeTab === "evaluations"
               ? "border-primary text-primary"
               : "border-transparent text-muted-foreground hover:text-foreground"
@@ -270,7 +335,7 @@ function PerformancePage() {
         </button>
         <button
           onClick={() => setActiveTab("appraisals")}
-          className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+          className={`border-b-2 px-4 py-2 font-medium text-sm transition-colors ${
             activeTab === "appraisals"
               ? "border-primary text-primary"
               : "border-transparent text-muted-foreground hover:text-foreground"
@@ -280,7 +345,7 @@ function PerformancePage() {
         </button>
         <button
           onClick={() => setActiveTab("feedback")}
-          className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+          className={`border-b-2 px-4 py-2 font-medium text-sm transition-colors ${
             activeTab === "feedback"
               ? "border-primary text-primary"
               : "border-transparent text-muted-foreground hover:text-foreground"
@@ -296,16 +361,21 @@ function PerformancePage() {
           {activeTab === "evaluations" && (
             <>
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Search className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
                 <Input
                   type="search"
                   placeholder="Search employees..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-9 w-[300px]"
+                  className="w-[300px] pl-9"
                 />
                 {hasActiveFilters && (
-                  <Button variant="ghost" size="sm" onClick={clearSearch} className="absolute right-2 top-1/2 -translate-y-1/2 h-6 px-2 text-xs">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={clearSearch}
+                    className="-translate-y-1/2 absolute top-1/2 right-2 h-6 px-2 text-xs"
+                  >
                     Clear
                   </Button>
                 )}
@@ -313,7 +383,7 @@ function PerformancePage() {
               <select
                 value={selectedRating}
                 onChange={(e) => setSelectedRating(e.target.value)}
-                className="flex h-10 w-[150px] items-center justify-between rounded-lg border border-input bg-white px-3 py-2 text-sm"
+                className="flex h-10 w-[150px] items-center justify-between rounded-lg border border-input bg-card px-3 py-2 text-sm"
               >
                 <option value="all">All Ratings</option>
                 <option value="excellent">Excellent (4.5+)</option>
@@ -344,7 +414,7 @@ function PerformancePage() {
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b text-left text-sm text-muted-foreground">
+                  <tr className="border-b text-left text-muted-foreground text-sm">
                     <th className="pb-3 font-medium">Employee ID</th>
                     <th className="pb-3 font-medium">Name</th>
                     <th className="pb-3 font-medium">Designation</th>
@@ -366,29 +436,58 @@ function PerformancePage() {
                       <td className="py-3 text-sm">{employee.designation}</td>
                       <td className="py-3 text-sm">{employee.department}</td>
                       <td className="py-3">
-                        <span className={`text-lg font-bold ${getRatingColor(employee.rating)}`}>
+                        <span
+                          className={`font-bold text-lg ${getRatingColor(employee.rating)}`}
+                        >
                           {employee.rating}
                         </span>
-                        <span className="text-xs text-muted-foreground"> / 5.0</span>
+                        <span className="text-muted-foreground text-xs">
+                          {" "}
+                          / 5.0
+                        </span>
                       </td>
-                      <td className="py-3 text-sm">{employee.studentsFeedback}</td>
+                      <td className="py-3 text-sm">
+                        {employee.studentsFeedback}
+                      </td>
                       <td className="py-3 text-sm">{employee.peerReview}</td>
                       <td className="py-3">
-                        <Badge variant={employee.attendance >= 95 ? "success" : employee.attendance >= 90 ? "default" : "warning"}>
+                        <Badge
+                          variant={
+                            employee.attendance >= 95
+                              ? "success"
+                              : employee.attendance >= 90
+                                ? "default"
+                                : "warning"
+                          }
+                        >
                           {employee.attendance}%
                         </Badge>
                       </td>
-                      <td className="py-3">{getStatusBadge(employee.status)}</td>
+                      <td className="py-3">
+                        {getStatusBadge(employee.status)}
+                      </td>
                       <td className="py-3 text-sm">{employee.nextAppraisal}</td>
                       <td className="py-3">
                         <div className="flex gap-1">
-                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                          >
                             <Eye className="h-4 w-4" />
                           </Button>
-                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                          >
                             <FileText className="h-4 w-4" />
                           </Button>
-                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                          >
                             <MessageSquare className="h-4 w-4" />
                           </Button>
                         </div>
@@ -404,7 +503,7 @@ function PerformancePage() {
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b text-left text-sm text-muted-foreground">
+                  <tr className="border-b text-left text-muted-foreground text-sm">
                     <th className="pb-3 font-medium">Cycle ID</th>
                     <th className="pb-3 font-medium">Name</th>
                     <th className="pb-3 font-medium">Start Date</th>
@@ -422,22 +521,27 @@ function PerformancePage() {
                       <td className="py-3 text-sm">{cycle.startDate}</td>
                       <td className="py-3 text-sm">{cycle.endDate}</td>
                       <td className="py-3">
-                        <Badge variant={cycle.status === "active" ? "success" : "outline"}>
+                        <Badge
+                          variant={
+                            cycle.status === "active" ? "success" : "outline"
+                          }
+                        >
                           {cycle.status}
                         </Badge>
                       </td>
                       <td className="py-3 text-sm">
-                        {cycle.completed}/{cycle.total} ({Math.round((cycle.completed / cycle.total) * 100)}%)
+                        {cycle.completed}/{cycle.total} (
+                        {Math.round((cycle.completed / cycle.total) * 100)}%)
                       </td>
                       <td className="py-3">
                         <div className="flex gap-1">
                           <Button variant="ghost" size="sm">
-                            <Eye className="h-4 w-4 mr-1" />
+                            <Eye className="mr-1 h-4 w-4" />
                             View
                           </Button>
                           {cycle.status === "active" && (
                             <Button variant="ghost" size="sm">
-                              <Target className="h-4 w-4 mr-1" />
+                              <Target className="mr-1 h-4 w-4" />
                               Set Goals
                             </Button>
                           )}
@@ -451,13 +555,14 @@ function PerformancePage() {
           )}
 
           {activeTab === "feedback" && (
-            <div className="text-center py-12">
-              <MessageSquare className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">360° Feedback</h3>
-              <p className="text-sm text-gray-600 mb-4">
-                Collect feedback from students, peers, and supervisors for comprehensive performance evaluation.
+            <div className="py-12 text-center">
+              <MessageSquare className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
+              <h3 className="mb-2 font-semibold text-lg">360° Feedback</h3>
+              <p className="mb-4 text-muted-foreground text-sm">
+                Collect feedback from students, peers, and supervisors for
+                comprehensive performance evaluation.
               </p>
-              <div className="flex gap-2 justify-center">
+              <div className="flex justify-center gap-2">
                 <Button>
                   <MessageSquare className="mr-2 h-4 w-4" />
                   Request Feedback

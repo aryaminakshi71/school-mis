@@ -1,4 +1,4 @@
-import { HeadContent, Scripts, Link } from '@tanstack/react-router'
+import { HeadContent, Link, Scripts } from "@tanstack/react-router";
 
 export function NotFoundPage() {
   return (
@@ -7,16 +7,18 @@ export function NotFoundPage() {
         <HeadContent />
       </head>
       <body>
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-          <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-6 text-center">
-            <h1 className="text-4xl font-bold text-gray-900 mb-2">404</h1>
-            <h2 className="text-xl font-semibold text-gray-700 mb-4">Page Not Found</h2>
-            <p className="text-gray-600 mb-6">
+        <div className="flex min-h-screen items-center justify-center bg-muted p-4">
+          <div className="w-full max-w-md rounded-lg bg-card p-6 text-center shadow-lg">
+            <h1 className="mb-2 font-bold text-4xl text-foreground">404</h1>
+            <h2 className="mb-4 font-semibold text-foreground text-xl">
+              Page Not Found
+            </h2>
+            <p className="mb-6 text-muted-foreground">
               The page you are looking for does not exist or has been moved.
             </p>
             <Link
               to="/"
-              className="inline-block px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium transition-colors"
+              className="inline-block rounded-lg bg-primary px-6 py-2 font-medium text-primary-foreground transition-colors hover:bg-primary/90"
             >
               Go Home
             </Link>
@@ -25,5 +27,5 @@ export function NotFoundPage() {
         <Scripts />
       </body>
     </html>
-  )
+  );
 }

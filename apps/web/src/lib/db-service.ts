@@ -7,23 +7,30 @@
 
 import { db } from "@school/storage";
 import {
+  attendance,
+  bookIssues,
+  classes,
+  examSchedules,
+  feePayments,
+  gpsTracking,
+  libraryBooks,
   students,
   teachers,
-  classes,
-  feePayments,
-  studentFeeAllocations,
-  attendance,
-  examSchedules,
-  sessions,
-  feeCategories,
-  feeStructures,
-  libraryBooks,
-  bookIssues,
   transportRoutes,
   vehicles,
-  gpsTracking,
 } from "@school/storage";
-import { eq, like, and, desc, asc, or, count, sql, gte, lte } from "drizzle-orm";
+import {
+  and,
+  asc,
+  count,
+  desc,
+  eq,
+  gte,
+  like,
+  lte,
+  or,
+  sql,
+} from "drizzle-orm";
 import { NotFoundError } from "./error-handler";
 
 export interface Student {
@@ -87,8 +94,11 @@ export interface ExamSchedule {
 export const studentsService = {
   async list(limit?: number, offset?: number): Promise<Student[]> {
     try {
-      const queryBuilder = db.select().from(students).orderBy(desc(students.createdAt));
-      
+      const queryBuilder = db
+        .select()
+        .from(students)
+        .orderBy(desc(students.createdAt));
+
       if (limit !== undefined && offset !== undefined) {
         const result = await queryBuilder.limit(limit).offset(offset);
         return result.map((s) => ({
@@ -104,7 +114,7 @@ export const studentsService = {
           createdAt: s.createdAt || new Date(),
         }));
       }
-      
+
       if (limit !== undefined) {
         const result = await queryBuilder.limit(limit);
         return result.map((s) => ({
@@ -120,7 +130,7 @@ export const studentsService = {
           createdAt: s.createdAt || new Date(),
         }));
       }
-      
+
       const result = await queryBuilder;
       return result.map((s) => ({
         id: s.id,
@@ -147,7 +157,7 @@ export const studentsService = {
         .from(students)
         .where(eq(students.id, id))
         .limit(1);
-      
+
       if (result.length === 0) {
         return null;
       }
@@ -221,8 +231,10 @@ export const studentsService = {
       if (data.email !== undefined) updateData.email = data.email;
       if (data.phone !== undefined) updateData.phone = data.phone;
       if (data.classId !== undefined) updateData.classId = data.classId;
-      if (data.fatherName !== undefined) updateData.fatherName = data.fatherName;
-      if (data.fatherPhone !== undefined) updateData.fatherPhone = data.fatherPhone;
+      if (data.fatherName !== undefined)
+        updateData.fatherName = data.fatherName;
+      if (data.fatherPhone !== undefined)
+        updateData.fatherPhone = data.fatherPhone;
 
       const result = await db
         .update(students)
@@ -265,9 +277,7 @@ export const studentsService = {
 
   async count(): Promise<number> {
     try {
-      const result = await db
-        .select({ count: count() })
-        .from(students);
+      const result = await db.select({ count: count() }).from(students);
       return Number(result[0]?.count || 0);
     } catch (error) {
       console.error("Error counting students:", error);
@@ -286,8 +296,8 @@ export const studentsService = {
             like(students.firstName, searchTerm),
             like(students.lastName, searchTerm),
             like(students.admissionNumber || sql`''`, searchTerm),
-            like(students.email || sql`''`, searchTerm)
-          )
+            like(students.email || sql`''`, searchTerm),
+          ),
         )
         .orderBy(desc(students.createdAt));
 
@@ -315,8 +325,11 @@ export const studentsService = {
 export const teachersService = {
   async list(limit?: number, offset?: number): Promise<Teacher[]> {
     try {
-      const queryBuilder = db.select().from(teachers).orderBy(desc(teachers.createdAt));
-      
+      const queryBuilder = db
+        .select()
+        .from(teachers)
+        .orderBy(desc(teachers.createdAt));
+
       if (limit !== undefined && offset !== undefined) {
         const result = await queryBuilder.limit(limit).offset(offset);
         return result.map((t) => ({
@@ -331,7 +344,7 @@ export const teachersService = {
           createdAt: t.createdAt || new Date(),
         }));
       }
-      
+
       if (limit !== undefined) {
         const result = await queryBuilder.limit(limit);
         return result.map((t) => ({
@@ -346,7 +359,7 @@ export const teachersService = {
           createdAt: t.createdAt || new Date(),
         }));
       }
-      
+
       const result = await queryBuilder;
       return result.map((t) => ({
         id: t.id,
@@ -372,7 +385,7 @@ export const teachersService = {
         .from(teachers)
         .where(eq(teachers.id, id))
         .limit(1);
-      
+
       if (result.length === 0) return null;
 
       const t = result[0];
@@ -440,8 +453,10 @@ export const teachersService = {
       if (data.lastName !== undefined) updateData.lastName = data.lastName;
       if (data.email !== undefined) updateData.email = data.email;
       if (data.phone !== undefined) updateData.phone = data.phone;
-      if (data.qualification !== undefined) updateData.qualification = data.qualification;
-      if (data.subjectSpecialization !== undefined) updateData.subjectSpecialization = data.subjectSpecialization;
+      if (data.qualification !== undefined)
+        updateData.qualification = data.qualification;
+      if (data.subjectSpecialization !== undefined)
+        updateData.subjectSpecialization = data.subjectSpecialization;
 
       const result = await db
         .update(teachers)
@@ -495,10 +510,7 @@ export const teachersService = {
 export const classesService = {
   async list(): Promise<Class[]> {
     try {
-      const result = await db
-        .select()
-        .from(classes)
-        .orderBy(asc(classes.name));
+      const result = await db.select().from(classes).orderBy(asc(classes.name));
       return result.map((c) => ({
         id: c.id,
         name: c.name,
@@ -520,7 +532,7 @@ export const classesService = {
         .from(classes)
         .where(eq(classes.id, id))
         .limit(1);
-      
+
       if (result.length === 0) return null;
 
       const c = result[0];
@@ -575,7 +587,8 @@ export const classesService = {
       if (data.name !== undefined) updateData.name = data.name;
       if (data.section !== undefined) updateData.section = data.section;
       if (data.capacity !== undefined) updateData.capacity = data.capacity;
-      if (data.classTeacherId !== undefined) updateData.classTeacherId = data.classTeacherId;
+      if (data.classTeacherId !== undefined)
+        updateData.classTeacherId = data.classTeacherId;
 
       const result = await db
         .update(classes)
@@ -616,7 +629,10 @@ export const classesService = {
 export const feesService = {
   async list(studentId?: string): Promise<FeePayment[]> {
     try {
-      let query = db.select().from(feePayments).orderBy(desc(feePayments.paymentDate));
+      let query = db
+        .select()
+        .from(feePayments)
+        .orderBy(desc(feePayments.paymentDate));
       if (studentId) {
         query = query.where(eq(feePayments.studentId, studentId));
       }
@@ -626,7 +642,12 @@ export const feesService = {
         studentId: f.studentId,
         amount: Number(f.amount || 0),
         paymentDate: f.paymentDate || new Date(),
-        paymentMethod: f.paymentMethod as "cash" | "card" | "online" | "cheque" | undefined,
+        paymentMethod: f.paymentMethod as
+          | "cash"
+          | "card"
+          | "online"
+          | "cheque"
+          | undefined,
         status: (f.status || "pending") as "pending" | "completed" | "failed",
         receiptNumber: f.receiptNumber || "",
       }));
@@ -686,7 +707,12 @@ export const feesService = {
         studentId: f.studentId,
         amount: Number(f.amount || 0),
         paymentDate: f.paymentDate || new Date(),
-        paymentMethod: f.paymentMethod as "cash" | "card" | "online" | "cheque" | undefined,
+        paymentMethod: f.paymentMethod as
+          | "cash"
+          | "card"
+          | "online"
+          | "cheque"
+          | undefined,
         status: (f.status || "pending") as "pending" | "completed" | "failed",
         receiptNumber: f.receiptNumber || "",
       };
@@ -702,7 +728,10 @@ export const feesService = {
 export const examsService = {
   async list(classId?: string): Promise<ExamSchedule[]> {
     try {
-      let query = db.select().from(examSchedules).orderBy(asc(examSchedules.examDate));
+      let query = db
+        .select()
+        .from(examSchedules)
+        .orderBy(asc(examSchedules.examDate));
       if (classId) {
         query = query.where(eq(examSchedules.classId || sql`''`, classId));
       }
@@ -766,7 +795,7 @@ export const examsService = {
     try {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-      
+
       const result = await db
         .select()
         .from(examSchedules)
@@ -849,7 +878,7 @@ export const attendanceService = {
     try {
       const startDate = new Date(year, month - 1, 1);
       const endDate = new Date(year, month, 0);
-      
+
       const result = await db
         .select()
         .from(attendance)
@@ -857,8 +886,8 @@ export const attendanceService = {
           and(
             eq(attendance.studentId, studentId),
             gte(attendance.date, startDate),
-            lte(attendance.date, endDate)
-          )
+            lte(attendance.date, endDate),
+          ),
         );
 
       const present = result.filter((r) => r.status === "present").length;
@@ -914,15 +943,18 @@ export interface BookIssue {
 export const libraryService = {
   async listBooks(limit?: number, offset?: number): Promise<LibraryBook[]> {
     try {
-      let query = db.select().from(libraryBooks).orderBy(desc(libraryBooks.createdAt));
-      
+      let query = db
+        .select()
+        .from(libraryBooks)
+        .orderBy(desc(libraryBooks.createdAt));
+
       if (limit !== undefined) {
         query = query.limit(limit);
       }
       if (offset !== undefined) {
         query = query.offset(offset);
       }
-      
+
       const result = await query;
       return result.map((b) => ({
         id: b.id,
@@ -954,9 +986,9 @@ export const libraryService = {
         .from(libraryBooks)
         .where(eq(libraryBooks.id, id))
         .limit(1);
-      
+
       if (result.length === 0) return null;
-      
+
       const b = result[0];
       return {
         id: b.id,
@@ -1004,17 +1036,14 @@ export const libraryService = {
         dueDate,
         status: "issued",
       };
-      
+
       if (borrowerType === "student") {
         issueData.studentId = borrowerId;
       } else {
         issueData.staffId = borrowerId;
       }
 
-      const result = await db
-        .insert(bookIssues)
-        .values(issueData)
-        .returning();
+      const result = await db.insert(bookIssues).values(issueData).returning();
 
       // Update available copies
       await db
@@ -1066,7 +1095,9 @@ export const libraryService = {
       // Calculate fine if overdue
       const today = new Date();
       if (today > issue.dueDate) {
-        const daysOverdue = Math.ceil((today.getTime() - issue.dueDate.getTime()) / (1000 * 60 * 60 * 24));
+        const daysOverdue = Math.ceil(
+          (today.getTime() - issue.dueDate.getTime()) / (1000 * 60 * 60 * 24),
+        );
         const fineAmount = daysOverdue * 5; // $5 per day
         updateData.fine = fineAmount.toString();
       }
@@ -1110,10 +1141,12 @@ export const libraryService = {
       const result = await db
         .select()
         .from(bookIssues)
-        .where(and(
-          eq(bookIssues.studentId, studentId),
-          eq(bookIssues.status, "issued")
-        ))
+        .where(
+          and(
+            eq(bookIssues.studentId, studentId),
+            eq(bookIssues.status, "issued"),
+          ),
+        )
         .orderBy(desc(bookIssues.issueDate));
 
       return result.map((i) => ({
@@ -1145,8 +1178,8 @@ export const libraryService = {
             like(libraryBooks.title, searchTerm),
             like(libraryBooks.author, searchTerm),
             like(libraryBooks.isbn || sql`''`, searchTerm),
-            like(libraryBooks.category || sql`''`, searchTerm)
-          )
+            like(libraryBooks.category || sql`''`, searchTerm),
+          ),
         )
         .orderBy(desc(libraryBooks.createdAt));
 
@@ -1319,7 +1352,7 @@ export const transportService = {
     latitude: number,
     longitude: number,
     speed?: number,
-    location?: string
+    location?: string,
   ): Promise<GPSLocation> {
     try {
       const result = await db
@@ -1380,12 +1413,13 @@ export const dashboardService = {
     pendingFeePayments: number;
   }> {
     try {
-      const [studentsCount, teachersCount, classesCount, feeStats] = await Promise.all([
-        db.select({ count: count() }).from(students),
-        db.select({ count: count() }).from(teachers),
-        db.select({ count: count() }).from(classes),
-        feesService.getStats(),
-      ]);
+      const [studentsCount, teachersCount, classesCount, feeStats] =
+        await Promise.all([
+          db.select({ count: count() }).from(students),
+          db.select({ count: count() }).from(teachers),
+          db.select({ count: count() }).from(classes),
+          feesService.getStats(),
+        ]);
 
       const currentMonth = new Date();
       currentMonth.setDate(1);
@@ -1397,8 +1431,8 @@ export const dashboardService = {
         .where(
           and(
             eq(feePayments.status, "completed"),
-            gte(feePayments.paymentDate, currentMonth)
-          )
+            gte(feePayments.paymentDate, currentMonth),
+          ),
         );
 
       return {

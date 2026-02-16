@@ -3,33 +3,30 @@
  * All sub-features for student and staff attendance tracking
  */
 
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
-import {
-  Calendar,
-  Clock,
-  Users,
-  CheckCircle,
-  XCircle,
-  AlertTriangle,
-  TrendingUp,
-  Download,
-  Plus,
-  ChevronRight,
-  Search,
-  Filter,
-  FileText,
-} from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { useSearch } from "@/lib/search-utils";
+import { handleError } from "@/lib/error-handler";
 import { exportToCSV } from "@/lib/export-utils";
 import { useListPageShortcuts } from "@/lib/keyboard-shortcuts";
-import { SkeletonTable } from "@/components/ui/skeleton";
+import { useSearch } from "@/lib/search-utils";
+import { Link, createFileRoute } from "@tanstack/react-router";
+import {
+  AlertTriangle,
+  Calendar,
+  CheckCircle,
+  ChevronRight,
+  Clock,
+  Download,
+  FileText,
+  Plus,
+  Search,
+  Users,
+  XCircle,
+} from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
-import { handleError } from "@/lib/error-handler";
 
 export const Route = createFileRoute("/app/attendance/")({
   component: AttendancePage,
@@ -174,11 +171,11 @@ function AttendancePage() {
   const handleExport = () => {
     try {
       const exportData = todayAttendance.map((a) => ({
-        "Class": a.class,
+        Class: a.class,
         "Total Students": a.total.toString(),
-        "Present": a.present.toString(),
-        "Absent": a.absent.toString(),
-        "Percentage": a.percentage,
+        Present: a.present.toString(),
+        Absent: a.absent.toString(),
+        Percentage: a.percentage,
       }));
 
       exportToCSV(exportData, `attendance-export-${selectedDate}`);
@@ -192,7 +189,7 @@ function AttendancePage() {
   useListPageShortcuts(
     () => toast.info("Mark Attendance feature coming soon"),
     () => window.location.reload(),
-    () => handleExport()
+    () => handleExport(),
   );
 
   return (
@@ -200,7 +197,7 @@ function AttendancePage() {
       {/* Header */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Attendance</h1>
+          <h1 className="font-bold text-3xl tracking-tight">Attendance</h1>
           <p className="text-muted-foreground">
             Track student and staff attendance, manage leave requests, and send
             alerts.
@@ -215,7 +212,9 @@ function AttendancePage() {
             <Download className="mr-2 h-4 w-4" />
             Export Report ({todayAttendance.length})
           </Button>
-          <Button onClick={() => toast.info("Mark Attendance feature coming soon")}>
+          <Button
+            onClick={() => toast.info("Mark Attendance feature coming soon")}
+          >
             <Plus className="mr-2 h-4 w-4" />
             Mark Attendance
           </Button>
@@ -230,7 +229,7 @@ function AttendancePage() {
             type="date"
             value={selectedDate}
             onChange={(e) => setSelectedDate(e.target.value)}
-            className="flex h-10 w-[200px] items-center justify-between rounded-lg border border-input bg-white px-3 py-2 text-sm"
+            className="flex h-10 w-[200px] items-center justify-between rounded-lg border border-input bg-card px-3 py-2 text-sm"
           />
         </div>
         <Button variant="outline">Today</Button>
@@ -244,10 +243,11 @@ function AttendancePage() {
             <Link
               key={feature.name}
               to={feature.href}
-              className={`flex items-center gap-2 px-4 py-2 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${feature.active
-                ? "border-primary text-primary"
-                : "border-transparent text-muted-foreground hover:text-foreground"
-                }`}
+              className={`flex items-center gap-2 whitespace-nowrap border-b-2 px-4 py-2 font-medium text-sm transition-colors ${
+                feature.active
+                  ? "border-primary text-primary"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
+              }`}
             >
               <feature.icon className="h-4 w-4" />
               {feature.name}
@@ -261,34 +261,36 @@ function AttendancePage() {
         {stats.map((stat) => (
           <Card key={stat.title}>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">
+              <CardTitle className="font-medium text-sm">
                 {stat.title}
               </CardTitle>
               <div
-                className={`p-2 rounded-lg ${stat.color === "green"
-                  ? "bg-green-100"
-                  : stat.color === "red"
-                    ? "bg-red-100"
-                    : stat.color === "yellow"
-                      ? "bg-yellow-100"
-                      : "bg-purple-100"
-                  }`}
+                className={`rounded-lg p-2 ${
+                  stat.color === "green"
+                    ? "bg-success/15"
+                    : stat.color === "red"
+                      ? "bg-destructive/10"
+                      : stat.color === "yellow"
+                        ? "bg-warning/15"
+                        : "bg-primary/10"
+                }`}
               >
                 <stat.icon
-                  className={`h-4 w-4 ${stat.color === "green"
-                    ? "text-green-600"
-                    : stat.color === "red"
-                      ? "text-red-600"
-                      : stat.color === "yellow"
-                        ? "text-yellow-600"
-                        : "text-purple-600"
-                    }`}
+                  className={`h-4 w-4 ${
+                    stat.color === "green"
+                      ? "text-success"
+                      : stat.color === "red"
+                        ? "text-destructive"
+                        : stat.color === "yellow"
+                          ? "text-warning"
+                          : "text-primary"
+                  }`}
                 />
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stat.value}</div>
-              <p className="text-xs text-muted-foreground">{stat.change}</p>
+              <div className="font-bold text-2xl">{stat.value}</div>
+              <p className="text-muted-foreground text-xs">{stat.change}</p>
             </CardContent>
           </Card>
         ))}
@@ -313,7 +315,7 @@ function AttendancePage() {
           {/* Search */}
           <div className="mb-4">
             <div className="relative max-w-md">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Search className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
               <Input
                 type="search"
                 placeholder="Search by class... (Press / to focus)"
@@ -326,7 +328,7 @@ function AttendancePage() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b text-left text-sm text-muted-foreground">
+                <tr className="border-b text-left text-muted-foreground text-sm">
                   <th className="pb-3 font-medium">Class</th>
                   <th className="pb-3 font-medium">Total Students</th>
                   <th className="pb-3 font-medium">Present</th>
@@ -339,8 +341,13 @@ function AttendancePage() {
               <tbody>
                 {filteredAttendance.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="py-8 text-center text-gray-500">
-                      {hasActiveFilters ? "No classes found" : "No attendance data"}
+                    <td
+                      colSpan={7}
+                      className="py-8 text-center text-muted-foreground"
+                    >
+                      {hasActiveFilters
+                        ? "No classes found"
+                        : "No attendance data"}
                     </td>
                   </tr>
                 ) : (
@@ -348,22 +355,23 @@ function AttendancePage() {
                     <tr key={row.class} className="border-b last:border-0">
                       <td className="py-3 font-medium">{row.class}</td>
                       <td className="py-3">{row.total}</td>
-                      <td className="py-3 text-green-600 font-medium">
+                      <td className="py-3 font-medium text-success">
                         {row.present}
                       </td>
-                      <td className="py-3 text-red-600 font-medium">
+                      <td className="py-3 font-medium text-destructive">
                         {row.absent}
                       </td>
                       <td className="py-3">
                         <div className="flex items-center gap-2">
-                          <div className="w-24 h-2 bg-gray-200 rounded-full">
+                          <div className="h-2 w-24 rounded-full bg-muted">
                             <div
-                              className={`h-2 rounded-full ${parseFloat(row.percentage) >= 95
-                                ? "bg-green-500"
-                                : parseFloat(row.percentage) >= 90
-                                  ? "bg-yellow-500"
-                                  : "bg-red-500"
-                                }`}
+                              className={`h-2 rounded-full ${
+                                parseFloat(row.percentage) >= 95
+                                  ? "bg-success"
+                                  : parseFloat(row.percentage) >= 90
+                                    ? "bg-warning"
+                                    : "bg-destructive"
+                              }`}
                               style={{ width: row.percentage }}
                             />
                           </div>
@@ -390,7 +398,7 @@ function AttendancePage() {
                       <td className="py-3">
                         <Button variant="ghost" size="sm">
                           View Details
-                          <ChevronRight className="h-4 w-4 ml-1" />
+                          <ChevronRight className="ml-1 h-4 w-4" />
                         </Button>
                       </td>
                     </tr>
@@ -423,7 +431,7 @@ function AttendancePage() {
             {/* Search */}
             <div className="mb-4">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Search className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
                 <Input
                   type="search"
                   placeholder="Search absent students..."
@@ -435,31 +443,33 @@ function AttendancePage() {
             </div>
             <div className="space-y-4">
               {filteredAbsentStudents.length === 0 ? (
-                <div className="text-center py-8">
-                  <XCircle className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-                  <p className="text-sm text-gray-600">
-                    {hasAbsentFilters ? "No students found" : "No absences recorded"}
+                <div className="py-8 text-center">
+                  <XCircle className="mx-auto mb-2 h-8 w-8 text-muted-foreground" />
+                  <p className="text-muted-foreground text-sm">
+                    {hasAbsentFilters
+                      ? "No students found"
+                      : "No absences recorded"}
                   </p>
                 </div>
               ) : (
                 filteredAbsentStudents.map((student) => (
                   <div
                     key={student.id}
-                    className="flex items-center justify-between p-3 rounded-lg border"
+                    className="flex items-center justify-between rounded-lg border p-3"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="p-2 rounded-full bg-red-100">
-                        <XCircle className="h-4 w-4 text-red-600" />
+                      <div className="rounded-full bg-destructive/10 p-2">
+                        <XCircle className="h-4 w-4 text-destructive" />
                       </div>
                       <div>
-                        <p className="text-sm font-medium">{student.name}</p>
-                        <p className="text-xs text-muted-foreground">
+                        <p className="font-medium text-sm">{student.name}</p>
+                        <p className="text-muted-foreground text-xs">
                           {student.class} • {student.reason}
                         </p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-muted-foreground text-xs">
                         {student.date}
                       </p>
                       <Badge
@@ -478,56 +488,56 @@ function AttendancePage() {
 
         {/* Quick Actions */}
         <div className="space-y-4">
-          <Card className="cursor-pointer hover:shadow-md transition-shadow">
+          <Card className="cursor-pointer transition-shadow hover:shadow-md">
             <CardContent className="flex items-center gap-4 p-4">
-              <div className="p-3 rounded-lg bg-green-100">
-                <CheckCircle className="h-5 w-5 text-green-600" />
+              <div className="rounded-lg bg-success/15 p-3">
+                <CheckCircle className="h-5 w-5 text-success" />
               </div>
               <div className="flex-1">
                 <p className="font-medium">Bulk Attendance</p>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-muted-foreground text-sm">
                   Mark all present/absent
                 </p>
               </div>
               <ChevronRight className="h-5 w-5 text-muted-foreground" />
             </CardContent>
           </Card>
-          <Card className="cursor-pointer hover:shadow-md transition-shadow">
+          <Card className="cursor-pointer transition-shadow hover:shadow-md">
             <CardContent className="flex items-center gap-4 p-4">
-              <div className="p-3 rounded-lg bg-blue-100">
-                <Users className="h-5 w-5 text-blue-600" />
+              <div className="rounded-lg bg-primary/10 p-3">
+                <Users className="h-5 w-5 text-primary" />
               </div>
               <div className="flex-1">
                 <p className="font-medium">Individual Entry</p>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-muted-foreground text-sm">
                   Mark specific student
                 </p>
               </div>
               <ChevronRight className="h-5 w-5 text-muted-foreground" />
             </CardContent>
           </Card>
-          <Card className="cursor-pointer hover:shadow-md transition-shadow">
+          <Card className="cursor-pointer transition-shadow hover:shadow-md">
             <CardContent className="flex items-center gap-4 p-4">
-              <div className="p-3 rounded-lg bg-yellow-100">
-                <AlertTriangle className="h-5 w-5 text-yellow-600" />
+              <div className="rounded-lg bg-warning/15 p-3">
+                <AlertTriangle className="h-5 w-5 text-warning" />
               </div>
               <div className="flex-1">
                 <p className="font-medium">Send Alerts</p>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-muted-foreground text-sm">
                   Auto-notify parents
                 </p>
               </div>
               <ChevronRight className="h-5 w-5 text-muted-foreground" />
             </CardContent>
           </Card>
-          <Card className="cursor-pointer hover:shadow-md transition-shadow">
+          <Card className="cursor-pointer transition-shadow hover:shadow-md">
             <CardContent className="flex items-center gap-4 p-4">
-              <div className="p-3 rounded-lg bg-purple-100">
-                <FileText className="h-5 w-5 text-purple-600" />
+              <div className="rounded-lg bg-primary/10 p-3">
+                <FileText className="h-5 w-5 text-primary" />
               </div>
               <div className="flex-1">
                 <p className="font-medium">Generate Reports</p>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-muted-foreground text-sm">
                   Attendance statements
                 </p>
               </div>

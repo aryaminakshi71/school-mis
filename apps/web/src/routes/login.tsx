@@ -1,12 +1,32 @@
-import { useState } from "react";
-import { Link, useNavigate, createFileRoute } from "@tanstack/react-router";
-import { useAuth } from "@/lib/auth-context";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useAuth } from "@/lib/auth-context";
+import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/login")({
+  head: () => {
+    const baseUrl =
+      import.meta.env.VITE_PUBLIC_SITE_URL || "http://localhost:3000";
+    const canonical = baseUrl.replace(/\/$/, "") + "/login";
+    return {
+      meta: [
+        { title: "School MIS - Login" },
+        { name: "description", content: "Log in to School MIS." },
+        { name: "robots", content: "noindex, nofollow" },
+        { property: "og:title", content: "School MIS - Login" },
+        { property: "og:description", content: "Log in to School MIS." },
+        { property: "og:type", content: "website" },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: "School MIS - Login" },
+        { name: "twitter:description", content: "Log in to School MIS." },
+      ],
+      links: [{ rel: "canonical", href: canonical }],
+    };
+  },
+
   component: LoginPage,
 });
 
@@ -33,7 +53,11 @@ function LoginPage() {
       navigate({ to: "/app/" });
     } catch (error) {
       console.error("Login error:", error);
-      toast.error(error instanceof Error ? error.message : "Login failed. Please try again.");
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Login failed. Please try again.",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -47,15 +71,15 @@ function LoginPage() {
         <div className="relative flex h-full flex-col justify-between p-10 text-primary-foreground">
           <Link
             to="/"
-            className="flex items-center gap-2 text-lg font-semibold"
+            className="flex items-center gap-2 font-semibold text-lg"
           >
             <div className="flex size-8 items-center justify-center rounded-lg bg-primary-foreground/20">
-              <span className="text-sm font-bold">SM</span>
+              <span className="font-bold text-sm">SM</span>
             </div>
             {"School MIS"}
           </Link>
           <div className="space-y-4">
-            <blockquote className="text-xl font-medium">
+            <blockquote className="font-medium text-xl">
               "Complete school management solution with all features you need."
             </blockquote>
             <footer className="text-sm opacity-80">
@@ -71,7 +95,7 @@ function LoginPage() {
         <div className="flex h-14 items-center border-b px-6 lg:hidden">
           <Link to="/" className="flex items-center gap-2 font-semibold">
             <div className="flex size-6 items-center justify-center rounded bg-primary">
-              <span className="text-xs font-bold text-primary-foreground">
+              <span className="font-bold text-primary-foreground text-xs">
                 SM
               </span>
             </div>
@@ -82,9 +106,9 @@ function LoginPage() {
         {/* Form container */}
         <div className="flex flex-1 items-center justify-center p-6 lg:p-10">
           <div className="w-full max-w-sm">
-            <div className="text-center mb-8">
-              <h1 className="text-2xl font-bold">Welcome Back</h1>
-              <p className="text-muted-foreground mt-2">
+            <div className="mb-8 text-center">
+              <h1 className="font-bold text-2xl">Welcome Back</h1>
+              <p className="mt-2 text-muted-foreground">
                 Enter your credentials to access the dashboard
               </p>
             </div>
@@ -115,11 +139,11 @@ function LoginPage() {
                 {isLoading ? "Logging in..." : "Login"}
               </Button>
             </form>
-            <p className="text-center mt-6 text-sm text-muted-foreground">
+            <p className="mt-6 text-center text-muted-foreground text-sm">
               Don't have an account?{" "}
               <Link
                 to="/signup"
-                className="text-primary font-medium hover:underline"
+                className="font-medium text-primary hover:underline"
               >
                 Sign up
               </Link>

@@ -8,28 +8,36 @@
  * - Personalized learning recommendations
  */
 
-import { createAIClient, predictScore, generateSuggestions, analyzeText } from "./ai";
+import {
+  analyzeText,
+  createAIClient,
+  generateSuggestions,
+  predictScore,
+} from "./ai";
 
 const ai = createAIClient({ provider: "openai" });
 
 /**
  * Predict student performance
  */
-export async function predictStudentPerformance(
-  studentData: {
-    name: string;
-    currentGrades?: Record<string, number>;
-    attendance?: number;
-    pastPerformance?: string;
-  }
-): Promise<{ score: number; reasoning: string; recommendations: string[] }> {
+export async function predictStudentPerformance(studentData: {
+  name: string;
+  currentGrades?: Record<string, number>;
+  attendance?: number;
+  pastPerformance?: string;
+}): Promise<{ score: number; reasoning: string; recommendations: string[] }> {
   if (!ai) {
     return { score: 50, reasoning: "AI not configured", recommendations: [] };
   }
 
   const context = `Student: ${studentData.name}, Grades: ${JSON.stringify(studentData.currentGrades || {})}, Attendance: ${studentData.attendance || "N/A"}%`;
   const prediction = await predictScore(ai, context, "success");
-  const recommendations = await generateSuggestions(ai, "School-MIS", context, "improvements");
+  const recommendations = await generateSuggestions(
+    ai,
+    "School-MIS",
+    context,
+    "improvements",
+  );
 
   return {
     score: prediction.score,
@@ -41,12 +49,10 @@ export async function predictStudentPerformance(
 /**
  * Analyze attendance patterns
  */
-export async function analyzeAttendancePattern(
-  attendanceData: {
-    studentId: string;
-    attendanceRecords: Array<{ date: string; present: boolean }>;
-  }
-): Promise<{ pattern: string; risk: "low" | "medium" | "high" }> {
+export async function analyzeAttendancePattern(attendanceData: {
+  studentId: string;
+  attendanceRecords: Array<{ date: string; present: boolean }>;
+}): Promise<{ pattern: string; risk: "low" | "medium" | "high" }> {
   if (!ai) {
     return { pattern: "No pattern detected", risk: "low" };
   }
@@ -56,7 +62,9 @@ export async function analyzeAttendancePattern(
     .join("\n");
 
   const analysis = await analyzeText(ai, attendanceSummary, "summary");
-  const presentCount = attendanceData.attendanceRecords.filter((r) => r.present).length;
+  const presentCount = attendanceData.attendanceRecords.filter(
+    (r) => r.present,
+  ).length;
   const totalCount = attendanceData.attendanceRecords.length;
   const attendanceRate = (presentCount / totalCount) * 100;
 

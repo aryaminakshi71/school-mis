@@ -1,6 +1,6 @@
 /**
  * Optimized Image Component
- * 
+ *
  * Automatically optimizes images with WebP/AVIF format, responsive sizes, and lazy loading.
  * Works with Cloudflare Images or R2 with on-demand transformations.
  */
@@ -29,7 +29,7 @@ function getOptimizedImageUrl(
   src: string,
   width?: number,
   quality: number = 85,
-  format: "webp" | "avif" | "auto" = "auto"
+  format: "webp" | "avif" | "auto" = "auto",
 ): string {
   // If already a full URL with CDN, add optimization params
   if (src.startsWith("http://") || src.startsWith("https://")) {
@@ -44,21 +44,23 @@ function getOptimizedImageUrl(
 
   // Relative path - prepend CDN URL if available
   const cdnUrl = env.VITE_PUBLIC_CDN_URL || "";
-  const baseUrl = cdnUrl ? `${cdnUrl}${src.startsWith("/") ? "" : "/"}${src}` : src;
+  const baseUrl = cdnUrl
+    ? `${cdnUrl}${src.startsWith("/") ? "" : "/"}${src}`
+    : src;
   const url = new URL(baseUrl, window.location.origin);
-  
+
   if (width) url.searchParams.set("w", width.toString());
   url.searchParams.set("q", quality.toString());
   if (format !== "auto") {
     url.searchParams.set("f", format);
   }
-  
+
   return url.toString();
 }
 
 /**
  * Optimized Image Component
- * 
+ *
  * Features:
  * - Automatic WebP/AVIF format selection
  * - Responsive image sizes
@@ -91,19 +93,11 @@ export function OptimizedImage({
   return (
     <picture className={className}>
       {/* AVIF format (best compression) */}
-      <source
-        srcSet={avifSrc}
-        type="image/avif"
-        sizes={responsiveSizes}
-      />
-      
+      <source srcSet={avifSrc} type="image/avif" sizes={responsiveSizes} />
+
       {/* WebP format (good compression, wider support) */}
-      <source
-        srcSet={webpSrc}
-        type="image/webp"
-        sizes={responsiveSizes}
-      />
-      
+      <source srcSet={webpSrc} type="image/webp" sizes={responsiveSizes} />
+
       {/* Fallback to original */}
       <img
         src={fallbackSrc}

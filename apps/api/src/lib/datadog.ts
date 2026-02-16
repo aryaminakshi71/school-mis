@@ -6,10 +6,10 @@
 export const tracer = {
   trace: <T>(name: string, options: any, callback: () => T) => callback(),
   use: () => ({
-    addTags: () => { },
-    setError: () => { },
+    addTags: () => {},
+    setError: () => {},
   }),
-  init: () => { },
+  init: () => {},
 };
 
 export function initDatadog() {
@@ -19,7 +19,7 @@ export function initDatadog() {
 export function createSpan<T>(
   name: string,
   operation: string,
-  callback: () => T | Promise<T>
+  callback: () => T | Promise<T>,
 ): T | Promise<T> {
   return callback();
 }

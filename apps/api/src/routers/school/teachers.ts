@@ -4,11 +4,11 @@
  * oRPC router for teacher management.
  */
 
-import { z } from "zod";
-import { pub, orgAuthed } from "../../procedures/index.js";
-import { getDb } from "../../lib/db.js";
 import { teachers } from "@school/storage";
-import { desc, eq } from "drizzle-orm";
+import { desc } from "drizzle-orm";
+import { z } from "zod";
+import { getDb } from "../../lib/db.js";
+import { orgAuthed, pub } from "../../procedures/index.js";
 
 export const teachersRouter = {
   list: pub
@@ -38,10 +38,10 @@ export const teachersRouter = {
 
   get: pub
     .route({
-      method: 'GET',
-      path: '/teachers/{id}',
-      summary: 'Get single teacher',
-      tags: ['Teachers'],
+      method: "GET",
+      path: "/teachers/{id}",
+      summary: "Get single teacher",
+      tags: ["Teachers"],
     })
     .input(z.object({ id: z.string().uuid() }))
     .output(z.any())
@@ -49,10 +49,10 @@ export const teachersRouter = {
 
   create: orgAuthed
     .route({
-      method: 'POST',
-      path: '/teachers',
-      summary: 'Create teacher',
-      tags: ['Teachers'],
+      method: "POST",
+      path: "/teachers",
+      summary: "Create teacher",
+      tags: ["Teachers"],
     })
     .input(
       z.object({
@@ -64,17 +64,17 @@ export const teachersRouter = {
         qualification: z.string().optional(),
         experience: z.number().int().optional(),
         subjectSpecialization: z.string().optional(),
-      })
+      }),
     )
     .output(z.any())
-    .handler(async ({ input }) => ({ id: 'new-id', ...input })),
+    .handler(async ({ input }) => ({ id: "new-id", ...input })),
 
   update: orgAuthed
     .route({
-      method: 'PUT',
-      path: '/teachers/{id}',
-      summary: 'Update teacher',
-      tags: ['Teachers'],
+      method: "PUT",
+      path: "/teachers/{id}",
+      summary: "Update teacher",
+      tags: ["Teachers"],
     })
     .input(
       z.object({
@@ -85,17 +85,17 @@ export const teachersRouter = {
         phone: z.string().optional(),
         qualification: z.string().optional(),
         experience: z.number().int().optional(),
-      })
+      }),
     )
     .output(z.any())
     .handler(async ({ input }) => input),
 
   delete: orgAuthed
     .route({
-      method: 'DELETE',
-      path: '/teachers/{id}',
-      summary: 'Delete teacher',
-      tags: ['Teachers'],
+      method: "DELETE",
+      path: "/teachers/{id}",
+      summary: "Delete teacher",
+      tags: ["Teachers"],
     })
     .input(z.object({ id: z.string().uuid() }))
     .output(z.object({ success: z.boolean() }))

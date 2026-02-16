@@ -4,41 +4,42 @@
  * Hono app with oRPC integration for Node.js server.
  */
 
+import { OpenAPIGenerator } from "@orpc/openapi";
 import { onError } from "@orpc/server";
 import { RPCHandler } from "@orpc/server/fetch";
-import { OpenAPIGenerator } from "@orpc/openapi";
 import { ZodToJsonSchemaConverter } from "@orpc/zod";
+import {
+  attendance,
+  auditLogs,
+  classes,
+  expenses,
+  feeCategories,
+  feePayments,
+  feeStructures,
+  libraryBooks,
+  bookIssues as libraryTransactions,
+  reportCardDetails,
+  reportCards,
+  sessions,
+  studentFeeAllocations,
+  students,
+  subjects,
+  teachers,
+  transportRoutes,
+  vehicles as transportVehicles,
+} from "@school/storage";
+import { and, desc, eq, like, sql } from "drizzle-orm";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { requestId } from "hono/request-id";
 import type { AppContext } from "./context.js";
-import { loggerMiddleware } from "./middleware/logger.js";
-import { initSentry } from "./lib/sentry.js";
 import { initDatadog } from "./lib/datadog.js";
-import { rateLimitRedis } from "./middleware/rate-limit-redis.js";
-import { setSecurityHeaders } from "./lib/security.js";
-import { appRouter } from "./routers/index.js";
 import { getDb } from "./lib/db.js";
-import {
-  students,
-  classes,
-  teachers,
-  attendance,
-  feePayments,
-  studentFeeAllocations,
-  sessions,
-  feeCategories,
-  feeStructures,
-  expenses,
-  reportCards,
-  reportCardDetails,
-  subjects,
-  transportRoutes,
-  transportVehicles,
-  libraryBooks,
-  libraryTransactions,
-} from "@school/storage";
-import { eq, like, and, desc, sql } from "drizzle-orm";
+import { setSecurityHeaders } from "./lib/security.js";
+import { initSentry } from "./lib/sentry.js";
+import { loggerMiddleware } from "./middleware/logger.js";
+import { rateLimitRedis } from "./middleware/rate-limit-redis.js";
+import { appRouter } from "./routers/index.js";
 
 // Helper function to generate notification messages
 function getNotificationMessage(data: Record<string, unknown>): string {
@@ -107,6 +108,26 @@ export function createApp() {
   // Rate limiting middleware
   app.use("/api/*", rateLimitRedis({ limiterType: "api" }));
   app.use("/api/auth/*", rateLimitRedis({ limiterType: "auth" }));
+
+  // Audit log read endpoint (basic "trust pack" feature).
+  app.get("/api/audit/logs", async (c: any) => {
+    // This app currently uses demo auth; require a token in production.
+    if (c.env?.NODE_ENV === "production" && !c.req.header("Authorization")) {
+      return c.json({ error: "unauthorized" }, 401);
+    }
+
+    const db = getDb(c.env);
+    const limitRaw = c.req.query("limit");
+    const limit = Math.max(1, Math.min(200, Number(limitRaw || 50) || 50));
+
+    const rows = await db
+      .select()
+      .from(auditLogs)
+      .orderBy(desc(auditLogs.createdAt))
+      .limit(limit);
+
+    return c.json({ logs: rows });
+  });
 
   // Direct REST endpoints for Students (bypassing oRPC for now)
   app.get("/api/students", async (c: any) => {
@@ -628,8 +649,6 @@ export function createApp() {
     }
   });
 
-
-
   // Fee Structure Endpoints
   app.get("/api/fee-structures", async (c: any) => {
     try {
@@ -645,7 +664,10 @@ export function createApp() {
         })
         .from(feeStructures)
         .leftJoin(classes, eq(feeStructures.classId, classes.id))
-        .innerJoin(feeCategories, eq(feeStructures.categoryId, feeCategories.id));
+        .innerJoin(
+          feeCategories,
+          eq(feeStructures.categoryId, feeCategories.id),
+        );
 
       return c.json({ structures });
     } catch (error) {
@@ -691,12 +713,15 @@ export function createApp() {
     try {
       const db = getDb(c.env);
       const data = await c.req.json();
-      const [newCategory] = await db.insert(feeCategories).values({
-        name: data.name,
-        type: data.type,
-        frequency: data.frequency,
-        isRecurring: data.isRecurring || false,
-      }).returning();
+      const [newCategory] = await db
+        .insert(feeCategories)
+        .values({
+          name: data.name,
+          type: data.type,
+          frequency: data.frequency,
+          isRecurring: data.isRecurring || false,
+        })
+        .returning();
       return c.json({ success: true, category: newCategory });
     } catch (error) {
       return c.json({ error: "Failed to create category" }, 500);
@@ -858,7 +883,10 @@ export function createApp() {
   app.get("/api/expenses", async (c: any) => {
     try {
       const db = getDb(c.env);
-      const allExpenses = await db.select().from(expenses).orderBy(desc(expenses.date));
+      const allExpenses = await db
+        .select()
+        .from(expenses)
+        .orderBy(desc(expenses.date));
       return c.json({ expenses: allExpenses });
     } catch (error) {
       console.error("Error fetching expenses:", error);
@@ -880,7 +908,7 @@ export function createApp() {
           date: data.date,
           paymentMethod: data.paymentMethod,
           paidTo: data.paidTo,
-          status: 'paid',
+          status: "paid",
         })
         .returning();
 
@@ -924,7 +952,10 @@ export function createApp() {
           classId: reportCards.classId,
         })
         .from(reportCardDetails)
-        .innerJoin(reportCards, eq(reportCardDetails.reportCardId, reportCards.id));
+        .innerJoin(
+          reportCards,
+          eq(reportCardDetails.reportCardId, reportCards.id),
+        );
 
       const allDetails = await query;
 
@@ -932,7 +963,10 @@ export function createApp() {
       const enrichedGrades = await Promise.all(
         allDetails.map(async (detail) => {
           const [student] = await db
-            .select({ firstName: students.firstName, lastName: students.lastName })
+            .select({
+              firstName: students.firstName,
+              lastName: students.lastName,
+            })
             .from(students)
             .where(eq(students.id, detail.studentId))
             .limit(1);
@@ -946,15 +980,22 @@ export function createApp() {
           return {
             id: detail.id,
             studentId: detail.studentId,
-            studentName: student ? `${student.firstName} ${student.lastName}` : "Unknown",
+            studentName: student
+              ? `${student.firstName} ${student.lastName}`
+              : "Unknown",
             subject: subject?.name || "Unknown",
             examType: detail.examType,
             score: Number(detail.obtainedMarks),
             maxScore: Number(detail.maxMarks),
-            grade: detail.grade || calculateGrade(Number(detail.obtainedMarks), Number(detail.maxMarks)),
+            grade:
+              detail.grade ||
+              calculateGrade(
+                Number(detail.obtainedMarks),
+                Number(detail.maxMarks),
+              ),
             date: new Date().toISOString().split("T")[0], // Placeholder
           };
-        })
+        }),
       );
 
       return c.json({ grades: enrichedGrades });
@@ -977,8 +1018,8 @@ export function createApp() {
           and(
             eq(reportCards.studentId, data.studentId),
             eq(reportCards.examType, data.examType),
-            eq(reportCards.classId, data.classId)
-          )
+            eq(reportCards.classId, data.classId),
+          ),
         )
         .limit(1);
 
@@ -1007,7 +1048,8 @@ export function createApp() {
           subjectId: data.subjectId,
           maxMarks: data.maxMarks,
           obtainedMarks: data.obtainedMarks,
-          grade: data.grade || calculateGrade(data.obtainedMarks, data.maxMarks),
+          grade:
+            data.grade || calculateGrade(data.obtainedMarks, data.maxMarks),
         })
         .returning();
 
@@ -1040,8 +1082,6 @@ export function createApp() {
     return "F";
   }
 
-
-
   // Transport API
   app.get("/api/transport/routes", async (c: any) => {
     try {
@@ -1061,12 +1101,12 @@ export function createApp() {
       const [newRoute] = await db
         .insert(transportRoutes)
         .values({
+          routeNumber: data.routeNumber,
           routeName: data.routeName,
           startPoint: data.startPoint,
           endPoint: data.endPoint,
           distance: data.distance,
           estimatedTime: data.estimatedTime,
-          fare: data.fare,
           status: "active",
         })
         .returning();
@@ -1097,8 +1137,6 @@ export function createApp() {
           vehicleNumber: data.vehicleNumber,
           vehicleType: data.vehicleType,
           capacity: data.capacity,
-          driverName: data.driverName,
-          driverPhone: data.driverPhone,
           routeId: data.routeId,
           status: "active",
         })
@@ -1123,7 +1161,7 @@ export function createApp() {
           (b) =>
             b.title.toLowerCase().includes(search.toLowerCase()) ||
             b.author?.toLowerCase().includes(search.toLowerCase()) ||
-            b.isbn?.toLowerCase().includes(search.toLowerCase())
+            b.isbn?.toLowerCase().includes(search.toLowerCase()),
         );
       }
 
@@ -1145,15 +1183,18 @@ export function createApp() {
       const [newBook] = await db
         .insert(libraryBooks)
         .values({
+          bookNumber: data.bookNumber,
           title: data.title,
           author: data.author,
           isbn: data.isbn,
           category: data.category,
           publisher: data.publisher,
-          publicationYear: data.publicationYear,
+          edition: data.edition,
+          shelfNumber: data.shelfNumber,
+          rackNumber: data.rackNumber,
           totalCopies: data.totalCopies || 1,
           availableCopies: data.availableCopies || 1,
-          location: data.location,
+          price: data.price,
           status: "available",
         })
         .returning();
@@ -1377,7 +1418,7 @@ export function createApp() {
 
   app.use("/api/rpc/*", async (c: any, next: any) => {
     const initialContext: AppContext = {
-      env: process.env as unknown as AppContext["env"],
+      env: (c.env || process.env) as unknown as AppContext["env"],
       headers: c.req.raw.headers,
       requestId: c.get("requestId") || crypto.randomUUID(),
       logger: c.get("logger"),
@@ -1390,6 +1431,44 @@ export function createApp() {
     });
 
     if (matched && response) {
+      const method = c.req.method?.toUpperCase?.() ?? "GET";
+      const shouldAudit =
+        method !== "GET" &&
+        method !== "HEAD" &&
+        !c.req.path.startsWith("/api/audit/");
+
+      if (shouldAudit) {
+        try {
+          const db = getDb(c.env);
+          const url = new URL(c.req.url);
+          const rpcPath = url.pathname.startsWith("/api/rpc")
+            ? url.pathname.slice("/api/rpc".length) || "/"
+            : url.pathname;
+
+          const ip =
+            c.req.header("cf-connecting-ip") ||
+            (c.req.header("x-forwarded-for") || "").split(",")[0]?.trim() ||
+            null;
+
+          await db.insert(auditLogs).values({
+            actorUserId: null,
+            actorEmail: null,
+            organizationId: null,
+            action: `${method} ${rpcPath}`,
+            requestMethod: method,
+            requestPath: rpcPath,
+            statusCode: response.status,
+            ipAddress: ip,
+            userAgent: c.req.header("user-agent") || null,
+            metadata: {
+              requestId: initialContext.requestId,
+            },
+          });
+        } catch (err) {
+          console.error("[AuditLog] Failed to write audit log", err);
+        }
+      }
+
       return c.newResponse(response.body, response);
     }
 

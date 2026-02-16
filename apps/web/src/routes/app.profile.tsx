@@ -1,21 +1,11 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useAuth } from "../lib/auth-context";
-import { toast } from "sonner";
-import {
-  User,
-  Mail,
-  Phone,
-  MapPin,
-  Building,
-  Calendar,
-  Edit,
-  Save,
-  X,
-} from "lucide-react";
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { createFileRoute } from "@tanstack/react-router";
+import { Calendar, Edit, Mail, MapPin, Phone, Save, X } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
+import { useAuth } from "../lib/auth-context";
 
 export const Route = createFileRoute("/app/profile")({
   component: ProfilePage,
@@ -51,25 +41,25 @@ function ProfilePage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="mx-auto max-w-4xl">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">My Profile</h1>
-        <p className="text-gray-600">View and manage your profile</p>
+        <h1 className="font-bold text-2xl text-foreground">My Profile</h1>
+        <p className="text-muted-foreground">View and manage your profile</p>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-6">
+      <div className="grid gap-6 md:grid-cols-3">
         <Card className="md:col-span-1">
           <CardContent className="pt-6">
             <div className="text-center">
-              <div className="w-24 h-24 rounded-full bg-blue-600 flex items-center justify-center text-white text-3xl font-bold mx-auto mb-4">
+              <div className="mx-auto mb-4 flex h-24 w-24 items-center justify-center rounded-full bg-primary font-bold text-3xl text-primary-foreground">
                 {profile.firstName.charAt(0)}
                 {profile.lastName.charAt(0)}
               </div>
-              <h2 className="text-xl font-bold text-gray-900">
+              <h2 className="font-bold text-foreground text-xl">
                 {profile.firstName} {profile.lastName}
               </h2>
-              <p className="text-gray-500 text-sm">Administrator</p>
-              <p className="text-gray-400 text-xs mt-1">ID: ADM-001</p>
+              <p className="text-muted-foreground text-sm">Administrator</p>
+              <p className="mt-1 text-muted-foreground text-xs">ID: ADM-001</p>
 
               {!editing && (
                 <Button
@@ -77,42 +67,42 @@ function ProfilePage() {
                   variant="outline"
                   className="mt-4 w-full"
                 >
-                  <Edit className="w-4 h-4 mr-2" />
+                  <Edit className="mr-2 h-4 w-4" />
                   Edit Profile
                 </Button>
               )}
             </div>
 
-            <div className="mt-6 pt-6 border-t space-y-3">
-              <div className="flex items-center gap-3 text-sm text-gray-600">
-                <Mail className="w-4 h-4" />
+            <div className="mt-6 space-y-3 border-t pt-6">
+              <div className="flex items-center gap-3 text-muted-foreground text-sm">
+                <Mail className="h-4 w-4" />
                 <span>{profile.email}</span>
               </div>
-              <div className="flex items-center gap-3 text-sm text-gray-600">
-                <Phone className="w-4 h-4" />
+              <div className="flex items-center gap-3 text-muted-foreground text-sm">
+                <Phone className="h-4 w-4" />
                 <span>{profile.phone}</span>
               </div>
-              <div className="flex items-center gap-3 text-sm text-gray-600">
-                <MapPin className="w-4 h-4" />
+              <div className="flex items-center gap-3 text-muted-foreground text-sm">
+                <MapPin className="h-4 w-4" />
                 <span>{profile.address}</span>
               </div>
-              <div className="flex items-center gap-3 text-sm text-gray-600">
-                <Calendar className="w-4 h-4" />
+              <div className="flex items-center gap-3 text-muted-foreground text-sm">
+                <Calendar className="h-4 w-4" />
                 <span>Joined {profile.joiningDate}</span>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <div className="md:col-span-2 space-y-6">
+        <div className="space-y-6 md:col-span-2">
           <Card>
             <CardHeader>
               <CardTitle>Personal Information</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="mb-1 block font-medium text-foreground text-sm">
                     First Name
                   </label>
                   {editing ? (
@@ -123,11 +113,11 @@ function ProfilePage() {
                       }
                     />
                   ) : (
-                    <p className="text-gray-900">{profile.firstName}</p>
+                    <p className="text-foreground">{profile.firstName}</p>
                   )}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="mb-1 block font-medium text-foreground text-sm">
                     Last Name
                   </label>
                   {editing ? (
@@ -138,13 +128,13 @@ function ProfilePage() {
                       }
                     />
                   ) : (
-                    <p className="text-gray-900">{profile.lastName}</p>
+                    <p className="text-foreground">{profile.lastName}</p>
                   )}
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="mb-1 block font-medium text-foreground text-sm">
                   Email
                 </label>
                 {editing ? (
@@ -156,12 +146,12 @@ function ProfilePage() {
                     }
                   />
                 ) : (
-                  <p className="text-gray-900">{profile.email}</p>
+                  <p className="text-foreground">{profile.email}</p>
                 )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="mb-1 block font-medium text-foreground text-sm">
                   Phone
                 </label>
                 {editing ? (
@@ -172,12 +162,12 @@ function ProfilePage() {
                     }
                   />
                 ) : (
-                  <p className="text-gray-900">{profile.phone}</p>
+                  <p className="text-foreground">{profile.phone}</p>
                 )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="mb-1 block font-medium text-foreground text-sm">
                   Address
                 </label>
                 {editing ? (
@@ -188,12 +178,12 @@ function ProfilePage() {
                     }
                   />
                 ) : (
-                  <p className="text-gray-900">{profile.address}</p>
+                  <p className="text-foreground">{profile.address}</p>
                 )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="mb-1 block font-medium text-foreground text-sm">
                   Date of Birth
                 </label>
                 {editing ? (
@@ -205,7 +195,7 @@ function ProfilePage() {
                     }
                   />
                 ) : (
-                  <p className="text-gray-900">{profile.dob}</p>
+                  <p className="text-foreground">{profile.dob}</p>
                 )}
               </div>
             </CardContent>
@@ -223,22 +213,22 @@ function ProfilePage() {
                     setProfile({ ...profile, bio: e.target.value })
                   }
                   rows={4}
-                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full rounded-lg border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
                 />
               ) : (
-                <p className="text-gray-600">{profile.bio}</p>
+                <p className="text-muted-foreground">{profile.bio}</p>
               )}
             </CardContent>
           </Card>
 
           {editing && (
-            <div className="flex gap-3 justify-end">
+            <div className="flex justify-end gap-3">
               <Button
                 variant="outline"
                 onClick={handleCancel}
                 className="flex items-center gap-2"
               >
-                <X className="w-4 h-4" />
+                <X className="h-4 w-4" />
                 Cancel
               </Button>
               <Button
@@ -246,7 +236,7 @@ function ProfilePage() {
                 disabled={saving}
                 className="flex items-center gap-2"
               >
-                <Save className="w-4 h-4" />
+                <Save className="h-4 w-4" />
                 {saving ? "Saving..." : "Save Changes"}
               </Button>
             </div>

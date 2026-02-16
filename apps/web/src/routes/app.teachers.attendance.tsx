@@ -2,35 +2,31 @@
  * Staff Attendance Management - Daily attendance, reports, leave tracking
  */
 
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
-import {
-  Users,
-  UserPlus,
-  DollarSign,
-  Calendar,
-  Award,
-  Search,
-  CheckCircle,
-  XCircle,
-  Clock,
-  Download,
-  FileText,
-  TrendingUp,
-  AlertCircle,
-  Filter,
-  CalendarDays,
-  Timer,
-  MoreVertical,
-  Eye,
-  Edit,
-} from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { useSearch } from "@/lib/search-utils";
 import { exportToCSV } from "@/lib/export-utils";
+import { useSearch } from "@/lib/search-utils";
+import { createFileRoute } from "@tanstack/react-router";
+import {
+  AlertCircle,
+  Award,
+  Calendar,
+  CheckCircle,
+  Clock,
+  DollarSign,
+  Download,
+  Eye,
+  FileText,
+  Filter,
+  Search,
+  TrendingUp,
+  UserPlus,
+  Users,
+  XCircle,
+} from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/app/teachers/attendance")({
@@ -41,7 +37,12 @@ const subFeatures = [
   { name: "All Staff", href: "/app/teachers", icon: Users },
   { name: "Recruitment", href: "/app/teachers/recruitment", icon: UserPlus },
   { name: "Payroll", href: "/app/teachers/payroll", icon: DollarSign },
-  { name: "Attendance", href: "/app/teachers/attendance", icon: Calendar, active: true },
+  {
+    name: "Attendance",
+    href: "/app/teachers/attendance",
+    icon: Calendar,
+    active: true,
+  },
   { name: "Leave", href: "/app/teachers/leave", icon: Clock },
   { name: "Performance", href: "/app/teachers/performance", icon: Award },
   { name: "Training", href: "/app/teachers/training", icon: Award },
@@ -141,9 +142,15 @@ function AttendancePage() {
     searchQuery: "",
   });
 
-  const presentCount = filteredRecords.filter((r) => r.status === "present").length;
-  const absentCount = filteredRecords.filter((r) => r.status === "absent").length;
-  const onLeaveCount = filteredRecords.filter((r) => r.status === "on_leave").length;
+  const presentCount = filteredRecords.filter(
+    (r) => r.status === "present",
+  ).length;
+  const absentCount = filteredRecords.filter(
+    (r) => r.status === "absent",
+  ).length;
+  const onLeaveCount = filteredRecords.filter(
+    (r) => r.status === "on_leave",
+  ).length;
 
   const handleMarkAllPresent = () => {
     toast.success("Marked all staff as present for today");
@@ -152,14 +159,14 @@ function AttendancePage() {
   const handleExport = () => {
     const exportData = filteredRecords.map((r) => ({
       "Employee ID": r.id,
-      "Name": r.name,
-      "Designation": r.designation,
+      Name: r.name,
+      Designation: r.designation,
       "Present Days": r.present,
       "Absent Days": r.absent,
       "Leave Days": r.leave,
       "Total Days": r.total,
-      "Percentage": `${r.percentage}%`,
-      "Status": r.status,
+      Percentage: `${r.percentage}%`,
+      Status: r.status,
     }));
 
     exportToCSV(exportData, `staff-attendance-${selectedDate}`);
@@ -167,10 +174,34 @@ function AttendancePage() {
   };
 
   const stats = [
-    { title: "Present Today", value: presentCount.toString(), change: "On duty", icon: CheckCircle, color: "green" },
-    { title: "Absent", value: absentCount.toString(), change: "Not reported", icon: XCircle, color: "red" },
-    { title: "On Leave", value: onLeaveCount.toString(), change: "Approved leave", icon: Calendar, color: "blue" },
-    { title: "Avg Attendance", value: "95%", change: "This month", icon: TrendingUp, color: "purple" },
+    {
+      title: "Present Today",
+      value: presentCount.toString(),
+      change: "On duty",
+      icon: CheckCircle,
+      color: "green",
+    },
+    {
+      title: "Absent",
+      value: absentCount.toString(),
+      change: "Not reported",
+      icon: XCircle,
+      color: "red",
+    },
+    {
+      title: "On Leave",
+      value: onLeaveCount.toString(),
+      change: "Approved leave",
+      icon: Calendar,
+      color: "blue",
+    },
+    {
+      title: "Avg Attendance",
+      value: "95%",
+      change: "This month",
+      icon: TrendingUp,
+      color: "purple",
+    },
   ];
 
   return (
@@ -178,8 +209,12 @@ function AttendancePage() {
       {/* Header */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Staff Attendance</h1>
-          <p className="text-muted-foreground">Track daily attendance, view reports, and manage leave.</p>
+          <h1 className="font-bold text-3xl tracking-tight">
+            Staff Attendance
+          </h1>
+          <p className="text-muted-foreground">
+            Track daily attendance, view reports, and manage leave.
+          </p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" onClick={handleExport}>
@@ -200,7 +235,7 @@ function AttendancePage() {
             <a
               key={feature.name}
               href={feature.href}
-              className={`flex items-center gap-2 px-4 py-2 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
+              className={`flex items-center gap-2 whitespace-nowrap border-b-2 px-4 py-2 font-medium text-sm transition-colors ${
                 feature.active
                   ? "border-primary text-primary"
                   : "border-transparent text-muted-foreground hover:text-foreground"
@@ -218,14 +253,16 @@ function AttendancePage() {
         {stats.map((stat) => (
           <Card key={stat.title}>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
-              <div className={`p-2 rounded-lg bg-${stat.color}-100`}>
+              <CardTitle className="font-medium text-sm">
+                {stat.title}
+              </CardTitle>
+              <div className={`rounded-lg p-2 bg-${stat.color}-100`}>
                 <stat.icon className={`h-4 w-4 text-${stat.color}-600`} />
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stat.value}</div>
-              <p className="text-xs text-muted-foreground">{stat.change}</p>
+              <div className="font-bold text-2xl">{stat.value}</div>
+              <p className="text-muted-foreground text-xs">{stat.change}</p>
             </CardContent>
           </Card>
         ))}
@@ -236,7 +273,7 @@ function AttendancePage() {
         <div className="flex gap-2 border-b">
           <button
             onClick={() => setViewMode("daily")}
-            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+            className={`border-b-2 px-4 py-2 font-medium text-sm transition-colors ${
               viewMode === "daily"
                 ? "border-primary text-primary"
                 : "border-transparent text-muted-foreground hover:text-foreground"
@@ -246,7 +283,7 @@ function AttendancePage() {
           </button>
           <button
             onClick={() => setViewMode("monthly")}
-            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+            className={`border-b-2 px-4 py-2 font-medium text-sm transition-colors ${
               viewMode === "monthly"
                 ? "border-primary text-primary"
                 : "border-transparent text-muted-foreground hover:text-foreground"
@@ -256,7 +293,7 @@ function AttendancePage() {
           </button>
           <button
             onClick={() => setViewMode("reports")}
-            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+            className={`border-b-2 px-4 py-2 font-medium text-sm transition-colors ${
               viewMode === "reports"
                 ? "border-primary text-primary"
                 : "border-transparent text-muted-foreground hover:text-foreground"
@@ -269,7 +306,7 @@ function AttendancePage() {
           type="date"
           value={selectedDate}
           onChange={(e) => setSelectedDate(e.target.value)}
-          className="flex h-10 w-[180px] items-center justify-between rounded-lg border border-input bg-white px-3 py-2 text-sm"
+          className="flex h-10 w-[180px] items-center justify-between rounded-lg border border-input bg-card px-3 py-2 text-sm"
         />
       </div>
 
@@ -277,16 +314,21 @@ function AttendancePage() {
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="flex gap-2">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Search className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
               placeholder="Search staff..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 w-[300px]"
+              className="w-[300px] pl-9"
             />
             {hasActiveFilters && (
-              <Button variant="ghost" size="sm" onClick={clearSearch} className="absolute right-2 top-1/2 -translate-y-1/2 h-6 px-2 text-xs">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={clearSearch}
+                className="-translate-y-1/2 absolute top-1/2 right-2 h-6 px-2 text-xs"
+              >
                 Clear
               </Button>
             )}
@@ -308,7 +350,7 @@ function AttendancePage() {
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b text-left text-sm text-muted-foreground">
+                  <tr className="border-b text-left text-muted-foreground text-sm">
                     <th className="pb-3 font-medium">Employee ID</th>
                     <th className="pb-3 font-medium">Name</th>
                     <th className="pb-3 font-medium">Designation</th>
@@ -331,8 +373,8 @@ function AttendancePage() {
                             record.status === "present"
                               ? "success"
                               : record.status === "absent"
-                              ? "destructive"
-                              : "default"
+                                ? "destructive"
+                                : "default"
                           }
                         >
                           {record.status.replace("_", " ")}
@@ -341,21 +383,33 @@ function AttendancePage() {
                       <td className="py-3 text-sm">{record.checkIn}</td>
                       <td className="py-3 text-sm">{record.checkOut}</td>
                       <td className="py-3">
-                        <Badge variant={record.percentage >= 95 ? "success" : record.percentage >= 90 ? "default" : "warning"}>
+                        <Badge
+                          variant={
+                            record.percentage >= 95
+                              ? "success"
+                              : record.percentage >= 90
+                                ? "default"
+                                : "warning"
+                          }
+                        >
                           {record.percentage}%
                         </Badge>
                       </td>
                       <td className="py-3">
                         <div className="flex gap-1">
                           <Button variant="ghost" size="sm" className="h-8">
-                            <CheckCircle className="h-4 w-4 mr-1" />
+                            <CheckCircle className="mr-1 h-4 w-4" />
                             Present
                           </Button>
                           <Button variant="ghost" size="sm" className="h-8">
-                            <XCircle className="h-4 w-4 mr-1" />
+                            <XCircle className="mr-1 h-4 w-4" />
                             Absent
                           </Button>
-                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                          >
                             <Eye className="h-4 w-4" />
                           </Button>
                         </div>
@@ -378,7 +432,7 @@ function AttendancePage() {
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b text-left text-sm text-muted-foreground">
+                  <tr className="border-b text-left text-muted-foreground text-sm">
                     <th className="pb-3 font-medium">Date</th>
                     <th className="pb-3 font-medium">Present</th>
                     <th className="pb-3 font-medium">Absent</th>
@@ -391,11 +445,21 @@ function AttendancePage() {
                   {dailySummary.map((day) => (
                     <tr key={day.date} className="border-b last:border-0">
                       <td className="py-3 text-sm">{day.date}</td>
-                      <td className="py-3 text-sm font-medium text-green-600">{day.present}</td>
-                      <td className="py-3 text-sm font-medium text-red-600">{day.absent}</td>
-                      <td className="py-3 text-sm font-medium text-blue-600">{day.leave}</td>
-                      <td className="py-3 text-sm font-medium text-yellow-600">{day.late}</td>
-                      <td className="py-3 text-sm">{Math.round((day.present / 50) * 100)}%</td>
+                      <td className="py-3 font-medium text-sm text-success">
+                        {day.present}
+                      </td>
+                      <td className="py-3 font-medium text-destructive text-sm">
+                        {day.absent}
+                      </td>
+                      <td className="py-3 font-medium text-primary text-sm">
+                        {day.leave}
+                      </td>
+                      <td className="py-3 font-medium text-sm text-warning">
+                        {day.late}
+                      </td>
+                      <td className="py-3 text-sm">
+                        {Math.round((day.present / 50) * 100)}%
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -407,36 +471,36 @@ function AttendancePage() {
 
       {viewMode === "reports" && (
         <div className="grid gap-4 md:grid-cols-3">
-          <Card className="cursor-pointer hover:shadow-md transition-shadow">
+          <Card className="cursor-pointer transition-shadow hover:shadow-md">
             <CardContent className="flex items-center gap-4 p-4">
-              <div className="p-3 rounded-lg bg-blue-100">
-                <FileText className="h-5 w-5 text-blue-600" />
+              <div className="rounded-lg bg-primary/10 p-3">
+                <FileText className="h-5 w-5 text-primary" />
               </div>
               <div>
                 <p className="font-medium">Monthly Report</p>
-                <p className="text-sm text-muted-foreground">Download PDF</p>
+                <p className="text-muted-foreground text-sm">Download PDF</p>
               </div>
             </CardContent>
           </Card>
-          <Card className="cursor-pointer hover:shadow-md transition-shadow">
+          <Card className="cursor-pointer transition-shadow hover:shadow-md">
             <CardContent className="flex items-center gap-4 p-4">
-              <div className="p-3 rounded-lg bg-green-100">
-                <TrendingUp className="h-5 w-5 text-green-600" />
+              <div className="rounded-lg bg-success/15 p-3">
+                <TrendingUp className="h-5 w-5 text-success" />
               </div>
               <div>
                 <p className="font-medium">Attendance Trends</p>
-                <p className="text-sm text-muted-foreground">View analytics</p>
+                <p className="text-muted-foreground text-sm">View analytics</p>
               </div>
             </CardContent>
           </Card>
-          <Card className="cursor-pointer hover:shadow-md transition-shadow">
+          <Card className="cursor-pointer transition-shadow hover:shadow-md">
             <CardContent className="flex items-center gap-4 p-4">
-              <div className="p-3 rounded-lg bg-yellow-100">
-                <AlertCircle className="h-5 w-5 text-yellow-600" />
+              <div className="rounded-lg bg-warning/15 p-3">
+                <AlertCircle className="h-5 w-5 text-warning" />
               </div>
               <div>
                 <p className="font-medium">Low Attendance</p>
-                <p className="text-sm text-muted-foreground">View alerts</p>
+                <p className="text-muted-foreground text-sm">View alerts</p>
               </div>
             </CardContent>
           </Card>

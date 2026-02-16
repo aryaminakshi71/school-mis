@@ -1,5 +1,5 @@
+import { type VariantProps, cva } from "class-variance-authority";
 import * as React from "react";
-import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../../lib/utils";
 
 const buttonVariants = cva(
@@ -18,9 +18,9 @@ const buttonVariants = cva(
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
         success:
-          "bg-success text-white shadow-sm hover:bg-success/90 active:scale-[0.98]",
+          "bg-success  text-success-foreground shadow-sm hover:bg-success/90 active:scale-[0.98]",
         warning:
-          "bg-warning text-white shadow-sm hover:bg-warning/90 active:scale-[0.98]",
+          "bg-warning  text-warning-foreground shadow-sm hover:bg-warning/90 active:scale-[0.98]",
       },
       size: {
         default: "h-10 px-4 py-2",
@@ -40,8 +40,7 @@ const buttonVariants = cva(
 );
 
 export interface ButtonProps
-  extends
-    React.ButtonHTMLAttributes<HTMLButtonElement>,
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
   loading?: boolean;
@@ -62,7 +61,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {loading ? (
           <>
             <svg
-              className="animate-spin h-4 w-4"
+              className="h-4 w-4 animate-spin"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"

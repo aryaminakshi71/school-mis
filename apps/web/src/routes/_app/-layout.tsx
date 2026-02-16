@@ -2,33 +2,8 @@
  * App Layout - Consistent UI with Sidebar & Breadcrumbs
  */
 
-import { Outlet, useLocation, Link, useNavigate } from "@tanstack/react-router";
-import { ArrowLeft } from "lucide-react";
-import { useEffect, useState } from "react";
-import {
-  LayoutDashboard,
-  Users,
-  GraduationCap,
-  BookOpen,
-  Calendar,
-  DollarSign,
-  Bus,
-  FileText,
-  MessageSquare,
-  User,
-  Settings,
-  ChevronRight,
-  LogOut,
-  Search,
-  Menu,
-  X,
-  Home,
-  Plus,
-  Package,
-  BarChart3,
-} from "lucide-react";
-import { useAuth } from "@/lib/auth-context";
-import { cn } from "@/lib/utils";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,8 +11,33 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { useAuth } from "@/lib/auth-context";
+import { cn } from "@/lib/utils";
+import { Link, Outlet, useLocation, useNavigate } from "@tanstack/react-router";
+import { ArrowLeft } from "lucide-react";
+import {
+  BarChart3,
+  BookOpen,
+  Bus,
+  Calendar,
+  ChevronRight,
+  DollarSign,
+  FileText,
+  GraduationCap,
+  Home,
+  LayoutDashboard,
+  LogOut,
+  Menu,
+  MessageSquare,
+  Package,
+  Plus,
+  Search,
+  Settings,
+  User,
+  Users,
+  X,
+} from "lucide-react";
+import { useEffect, useState } from "react";
 
 const getBreadcrumbs = (pathname: string) => {
   const paths = pathname.split("/").filter(Boolean);
@@ -47,7 +47,9 @@ const getBreadcrumbs = (pathname: string) => {
     icon?: any;
   }
 
-  const breadcrumbs: BreadcrumbItem[] = [{ label: "Home", href: "/app", icon: Home }];
+  const breadcrumbs: BreadcrumbItem[] = [
+    { label: "Home", href: "/app", icon: Home },
+  ];
 
   if (paths.length === 0) return breadcrumbs;
 
@@ -130,16 +132,21 @@ function NavLink({ item, isActive }: { item: NavItem; isActive: boolean }) {
     <Link
       to={item.href}
       className={cn(
-        "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200",
+        "flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-sm transition-all duration-200",
         isActive
-          ? "bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-md"
-          : "text-gray-700 hover:bg-gray-100 hover:text-gray-900 hover:shadow-sm",
+          ? "bg-gradient-to-r from-primary to-primary/90 text-background shadow-md"
+          : "text-foreground hover:bg-muted hover:text-foreground hover:shadow-sm",
       )}
     >
-      <item.icon className={cn("h-4 w-4", isActive ? "text-white" : "text-gray-500")} />
+      <item.icon
+        className={cn(
+          "h-4 w-4",
+          isActive ? "text-background" : "text-muted-foreground",
+        )}
+      />
       <span className="font-medium">{item.label}</span>
       {item.badge && (
-        <span className="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">
+        <span className="ml-auto rounded-full bg-destructive px-2 py-0.5 font-semibold text-destructive-foreground text-xs">
           {item.badge}
         </span>
       )}
@@ -162,8 +169,8 @@ export default function AppLayout() {
 
   if (isLoading) {
     return (
-      <div className="flex h-screen items-center justify-center bg-gray-50">
-        <div className="animate-spin h-8 w-8 border-4 border-blue-600 border-t-transparent rounded-full" />
+      <div className="flex h-screen items-center justify-center bg-muted">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
       </div>
     );
   }
@@ -174,18 +181,18 @@ export default function AppLayout() {
 
   const userInitials = user?.name
     ? user.name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2)
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2)
     : "??";
 
   const currentPath =
     typeof window !== "undefined" ? window.location.pathname : "";
 
   return (
-    <div className="flex h-screen w-full bg-gray-50">
+    <div className="flex h-screen w-full bg-muted">
       {sidebarOpen && (
         <div
           className="fixed inset-0 z-40 bg-black/50 lg:hidden"
@@ -195,29 +202,29 @@ export default function AppLayout() {
 
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-white border-r border-gray-200 shadow-xl transform transition-transform lg:relative lg:translate-x-0",
+          "fixed inset-y-0 left-0 z-50 flex w-64 transform flex-col border-border border-r bg-card shadow-xl transition-transform lg:relative lg:translate-x-0",
           sidebarOpen ? "translate-x-0" : "-translate-x-full",
         )}
       >
-        <div className="flex h-16 items-center border-b px-4 bg-gradient-to-r from-blue-600 via-blue-700 to-blue-600 text-white shadow-lg">
+        <div className="flex h-16 items-center border-b bg-gradient-to-r from-primary via-primary/80 to-primary/90 px-4 text-background shadow-lg">
           <Link
             to="/app"
-            className="flex items-center gap-2 font-bold hover:opacity-90 transition-opacity"
+            className="flex items-center gap-2 font-bold transition-opacity hover:opacity-90"
           >
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/20 backdrop-blur-sm shadow-md">
-              <span className="text-sm font-bold">SM</span>
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-card/20 shadow-md backdrop-blur-sm">
+              <span className="font-bold text-sm">SM</span>
             </div>
-            <span className="hidden sm:inline text-lg">School MIS</span>
+            <span className="hidden text-lg sm:inline">School MIS</span>
           </Link>
           <Link
             to="/app"
-            className="ml-auto text-xs bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-lg hover:bg-white/30 transition-all duration-200 hidden sm:flex items-center gap-1.5 font-medium shadow-sm"
+            className="ml-auto hidden items-center gap-1.5 rounded-lg bg-card/20 px-3 py-1.5 font-medium text-xs shadow-sm backdrop-blur-sm transition-all duration-200 hover:bg-card/30 sm:flex"
           >
-            <Home className="w-3.5 h-3.5" />
+            <Home className="h-3.5 w-3.5" />
             Dashboard
           </Link>
           <button
-            className="ml-auto lg:hidden text-white p-1.5 hover:bg-white/20 rounded-lg transition-colors"
+            className="ml-auto rounded-lg p-1.5 text-background transition-colors hover:bg-card/20 lg:hidden"
             onClick={() => setSidebarOpen(false)}
           >
             <X className="h-5 w-5" />
@@ -254,23 +261,23 @@ export default function AppLayout() {
           </nav>
         </div>
 
-        <div className="border-t p-4 bg-gray-50">
+        <div className="border-t bg-muted p-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="outline"
-                className="w-full justify-start gap-2 hover:bg-white"
+                className="w-full justify-start gap-2 hover:bg-card"
               >
                 <Avatar className="h-8 w-8">
-                  <AvatarFallback className="bg-blue-600 text-white text-xs">
+                  <AvatarFallback className="bg-primary text-primary-foreground text-xs">
                     {userInitials}
                   </AvatarFallback>
                 </Avatar>
                 <span className="flex flex-col items-start text-left">
-                  <span className="text-sm font-medium">
+                  <span className="font-medium text-sm">
                     {user?.name || "User"}
                   </span>
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-muted-foreground text-xs">
                     {user?.role || "Admin"}
                   </span>
                 </span>
@@ -314,9 +321,9 @@ export default function AppLayout() {
       </aside>
 
       <div className="flex flex-1 flex-col overflow-hidden">
-        <header className="flex h-16 items-center gap-4 border-b bg-white px-4 lg:px-6 shadow-md">
+        <header className="flex h-16 items-center gap-4 border-b bg-card px-4 shadow-md lg:px-6">
           <button
-            className="lg:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="rounded-lg p-2 transition-colors hover:bg-muted lg:hidden"
             onClick={() => setSidebarOpen(true)}
           >
             <Menu className="h-5 w-5" />
@@ -325,29 +332,33 @@ export default function AppLayout() {
           <div className="flex items-center gap-2">
             <Link
               to="/app"
-              className="p-2 hover:bg-gray-100 rounded-lg text-gray-600 flex items-center gap-1.5 transition-colors group"
+              className="group flex items-center gap-1.5 rounded-lg p-2 text-muted-foreground transition-colors hover:bg-muted"
               title="Back to Dashboard"
             >
-              <ArrowLeft className="h-4 w-4 group-hover:text-blue-600 transition-colors" />
-              <span className="text-sm font-medium hidden sm:inline group-hover:text-blue-600 transition-colors">Dashboard</span>
+              <ArrowLeft className="h-4 w-4 transition-colors group-hover:text-primary" />
+              <span className="hidden font-medium text-sm transition-colors group-hover:text-primary sm:inline">
+                Dashboard
+              </span>
             </Link>
           </div>
 
-          <nav className="hidden md:flex items-center gap-1.5 text-sm bg-gray-50 px-3 py-1.5 rounded-lg">
+          <nav className="hidden items-center gap-1.5 rounded-lg bg-muted px-3 py-1.5 text-sm md:flex">
             {breadcrumbs.map((crumb, index) => (
               <div key={crumb.href} className="flex items-center gap-1.5">
                 {index > 0 && (
-                  <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
+                  <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
                 )}
                 {index === breadcrumbs.length - 1 ? (
-                  <span className="font-semibold text-gray-900 flex items-center gap-1.5">
-                    {crumb.icon && <crumb.icon className="h-3.5 w-3.5 text-blue-600" />}
+                  <span className="flex items-center gap-1.5 font-semibold text-foreground">
+                    {crumb.icon && (
+                      <crumb.icon className="h-3.5 w-3.5 text-primary" />
+                    )}
                     {crumb.label}
                   </span>
                 ) : (
                   <Link
                     to={crumb.href}
-                    className="text-gray-600 hover:text-blue-600 flex items-center gap-1.5 transition-colors font-medium"
+                    className="flex items-center gap-1.5 font-medium text-muted-foreground transition-colors hover:text-primary"
                   >
                     {crumb.icon && <crumb.icon className="h-3.5 w-3.5" />}
                     {crumb.label}
@@ -361,27 +372,27 @@ export default function AppLayout() {
 
           <button
             className={cn(
-              "hidden md:flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900",
-              "cursor-pointer px-4 py-2 rounded-lg border border-gray-200 bg-white hover:border-blue-300 hover:shadow-sm transition-all",
+              "hidden items-center gap-2 text-muted-foreground text-sm hover:text-foreground md:flex",
+              "cursor-pointer rounded-lg border border-border bg-card px-4 py-2 transition-all hover:border-primary/30 hover:shadow-sm",
             )}
           >
             <Search className="h-4 w-4" />
-            <span className="text-gray-500">Search...</span>
-            <kbd className="pointer-events-none ml-1 hidden h-5 select-none items-center gap-1 rounded border bg-gray-50 px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
+            <span className="text-muted-foreground">Search...</span>
+            <kbd className="pointer-events-none ml-1 hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-medium font-mono text-[10px] opacity-100 sm:flex">
               <span className="text-xs">⌘</span>K
             </kbd>
           </button>
 
           <Button
             size="sm"
-            className="hidden sm:flex bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-md hover:shadow-lg transition-all"
+            className="hidden bg-gradient-to-r from-primary to-primary/90 text-background shadow-md transition-all hover:from-primary hover:to-primary/90 hover:shadow-lg sm:flex"
           >
-            <Plus className="h-4 w-4 mr-1.5" />
+            <Plus className="mr-1.5 h-4 w-4" />
             Add New
           </Button>
         </header>
 
-        <main className="flex-1 overflow-auto p-4 lg:p-6 bg-gradient-to-br from-gray-50 via-white to-gray-50">
+        <main className="flex-1 overflow-auto bg-gradient-to-br from-muted via-background to-muted p-4 lg:p-6">
           <div className="mx-auto max-w-7xl">
             <Outlet />
           </div>

@@ -1,24 +1,24 @@
-import * as React from "react";
 import {
   ColumnDef,
+  SortingState,
   flexRender,
   getCoreRowModel,
-  getSortedRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
-  SortingState,
+  getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { cn } from "../../lib/utils";
 import {
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   ChevronUp,
   ChevronsLeft,
   ChevronsRight,
-  ChevronLeft,
-  ChevronRight,
   Search,
 } from "lucide-react";
+import * as React from "react";
+import { cn } from "../../lib/utils";
 
 // Basic table components for use in data-table.tsx
 const Table = React.forwardRef<
@@ -63,7 +63,7 @@ const TableRow = React.forwardRef<
     ref={ref}
     className={cn(
       "border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted",
-      className
+      className,
     )}
     {...props}
   />
@@ -78,7 +78,7 @@ const TableHead = React.forwardRef<
     ref={ref}
     className={cn(
       "h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0",
-      className
+      className,
     )}
     {...props}
   />
@@ -141,28 +141,28 @@ export function DataTable<TData, TValue>({
     <div className="space-y-4">
       {showSearch && (
         <div className="relative max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <Search className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
           <input
             type="text"
             placeholder={searchPlaceholder}
             value={searchValue || ""}
             onChange={(e) => onSearchChange?.(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full rounded-lg border border-border py-2 pr-4 pl-10 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-ring"
           />
         </div>
       )}
 
-      <div className="rounded-lg border bg-white overflow-hidden shadow-sm">
+      <div className="overflow-hidden rounded-lg border bg-card shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50 border-b">
+            <thead className="border-b bg-muted">
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {
                     return (
                       <th
                         key={header.id}
-                        className="px-4 py-3 text-left text-sm font-medium text-gray-600 whitespace-nowrap"
+                        className="whitespace-nowrap px-4 py-3 text-left font-medium text-muted-foreground text-sm"
                         style={{ width: header.getSize() }}
                       >
                         {header.isPlaceholder ? null : (
@@ -170,7 +170,7 @@ export function DataTable<TData, TValue>({
                             className={cn(
                               "flex items-center gap-2",
                               header.column.getCanSort() &&
-                                "cursor-pointer select-none hover:text-gray-900",
+                                "cursor-pointer select-none hover:text-foreground",
                             )}
                             onClick={header.column.getToggleSortingHandler()}
                           >
@@ -182,13 +182,13 @@ export function DataTable<TData, TValue>({
                               <span className="inline-flex">
                                 {{
                                   asc: (
-                                    <ChevronUp className="w-4 h-4 text-blue-600" />
+                                    <ChevronUp className="h-4 w-4 text-primary" />
                                   ),
                                   desc: (
-                                    <ChevronDown className="w-4 h-4 text-blue-600" />
+                                    <ChevronDown className="h-4 w-4 text-primary" />
                                   ),
                                 }[header.column.getIsSorted() as string] ?? (
-                                  <ChevronDown className="w-4 h-4 text-gray-300 opacity-50" />
+                                  <ChevronDown className="h-4 w-4 text-muted-foreground opacity-50" />
                                 )}
                               </span>
                             )}
@@ -200,17 +200,14 @@ export function DataTable<TData, TValue>({
                 </tr>
               ))}
             </thead>
-            <tbody className="divide-y divide-gray-200">
+            <tbody className="divide-y divide-border">
               {table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (
-                  <tr
-                    key={row.id}
-                    className="hover:bg-gray-50 transition-colors"
-                  >
+                  <tr key={row.id} className="transition-colors hover:bg-muted">
                     {row.getVisibleCells().map((cell) => (
                       <td
                         key={cell.id}
-                        className="px-4 py-3 text-sm text-gray-700 whitespace-nowrap"
+                        className="whitespace-nowrap px-4 py-3 text-foreground text-sm"
                       >
                         {flexRender(
                           cell.column.columnDef.cell,
@@ -224,7 +221,7 @@ export function DataTable<TData, TValue>({
                 <tr>
                   <td
                     colSpan={columns.length}
-                    className="px-4 py-8 text-center text-gray-600"
+                    className="px-4 py-8 text-center text-muted-foreground"
                   >
                     No results found
                   </td>
@@ -235,9 +232,9 @@ export function DataTable<TData, TValue>({
         </div>
 
         {table.getFilteredRowModel().rows.length > pageSize && (
-          <div className="flex items-center justify-between px-4 py-3 border-t bg-gray-50">
+          <div className="flex items-center justify-between border-t bg-muted px-4 py-3">
             <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-600">
+              <span className="text-muted-foreground text-sm">
                 Page {table.getState().pagination.pageIndex + 1} of{" "}
                 {table.getPageCount()}
               </span>
@@ -246,7 +243,7 @@ export function DataTable<TData, TValue>({
                 onChange={(e) => {
                   table.setPageSize(Number(e.target.value));
                 }}
-                className="px-2 py-1 border rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="rounded border px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
               >
                 {[10, 20, 30, 40, 50].map((size) => (
                   <option key={size} value={size}>
@@ -259,30 +256,30 @@ export function DataTable<TData, TValue>({
               <button
                 onClick={() => table.setPageIndex(0)}
                 disabled={!table.getCanPreviousPage()}
-                className="p-1.5 rounded hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="rounded p-1.5 transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50"
               >
-                <ChevronsLeft className="w-4 h-4" />
+                <ChevronsLeft className="h-4 w-4" />
               </button>
               <button
                 onClick={() => table.previousPage()}
                 disabled={!table.getCanPreviousPage()}
-                className="p-1.5 rounded hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="rounded p-1.5 transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50"
               >
-                <ChevronLeft className="w-4 h-4" />
+                <ChevronLeft className="h-4 w-4" />
               </button>
               <button
                 onClick={() => table.nextPage()}
                 disabled={!table.getCanNextPage()}
-                className="p-1.5 rounded hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="rounded p-1.5 transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50"
               >
-                <ChevronRight className="w-4 h-4" />
+                <ChevronRight className="h-4 w-4" />
               </button>
               <button
                 onClick={() => table.setPageIndex(table.getPageCount() - 1)}
                 disabled={!table.getCanNextPage()}
-                className="p-1.5 rounded hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="rounded p-1.5 transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50"
               >
-                <ChevronsRight className="w-4 h-4" />
+                <ChevronsRight className="h-4 w-4" />
               </button>
             </div>
           </div>

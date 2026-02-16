@@ -4,22 +4,22 @@
  */
 
 export interface OrganizationSchema {
-  name: string
-  url: string
-  logo?: string
-  description?: string
+  name: string;
+  url: string;
+  logo?: string;
+  description?: string;
   contactPoint?: {
-    telephone?: string
-    contactType?: string
-    email?: string
-  }
-  sameAs?: string[]
+    telephone?: string;
+    contactType?: string;
+    email?: string;
+  };
+  sameAs?: string[];
 }
 
 export interface WebSiteSchema {
-  name: string
-  url: string
-  description?: string
+  name: string;
+  url: string;
+  description?: string;
 }
 
 /**
@@ -27,20 +27,20 @@ export interface WebSiteSchema {
  */
 export function generateOrganizationSchema(data: OrganizationSchema): object {
   return {
-    '@context': 'https://schema.org',
-    '@type': 'Organization',
+    "@context": "https://schema.org",
+    "@type": "Organization",
     name: data.name,
     url: data.url,
     ...(data.logo && { logo: data.logo }),
     ...(data.description && { description: data.description }),
     ...(data.contactPoint && {
       contactPoint: {
-        '@type': 'ContactPoint',
+        "@type": "ContactPoint",
         ...data.contactPoint,
       },
     }),
     ...(data.sameAs && data.sameAs.length > 0 && { sameAs: data.sameAs }),
-  }
+  };
 }
 
 /**
@@ -48,12 +48,12 @@ export function generateOrganizationSchema(data: OrganizationSchema): object {
  */
 export function generateWebSiteSchema(data: WebSiteSchema): object {
   return {
-    '@context': 'https://schema.org',
-    '@type': 'WebSite',
+    "@context": "https://schema.org",
+    "@type": "WebSite",
     name: data.name,
     url: data.url,
     ...(data.description && { description: data.description }),
-  }
+  };
 }
 
 /**
@@ -61,8 +61,9 @@ export function generateWebSiteSchema(data: WebSiteSchema): object {
  */
 export function getSchoolMISOrganizationSchema(): OrganizationSchema {
   return {
-    name: 'School MIS',
-    url: import.meta.env.VITE_PUBLIC_SITE_URL || 'https://school-mis.your-domain.com',
-    description: 'Complete school administration solution for managing all school operations.',
-  }
+    name: "School MIS",
+    url: import.meta.env.VITE_PUBLIC_SITE_URL || "http://localhost:3000",
+    description:
+      "Complete school administration solution for managing all school operations.",
+  };
 }

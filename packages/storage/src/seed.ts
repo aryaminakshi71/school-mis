@@ -5,9 +5,9 @@
  * Usage: bun run packages/storage/src/seed.ts
  */
 
-import { db, schema } from "./db";
 import { sql } from "drizzle-orm";
 import { v4 as uuidv4 } from "uuid";
+import { db, schema } from "./db";
 
 const toDateStr = (d: Date) => d.toISOString().split("T")[0];
 const toTimeStr = (d: Date) => d.toTimeString().split(" ")[0];
@@ -207,9 +207,7 @@ async function seed() {
         lastName: surnames[i % surnames.length],
         email: `${firstName.toLowerCase()}.${surnames[i % surnames.length].toLowerCase()}${i}@student.com`,
         phone: `+91 98765${String(42000 + i).padEnd(5, "0")}`,
-        dateOfBirth: toDateStr(
-          new Date(2010 + (i % 5), i % 12, (i % 28) + 1),
-        ),
+        dateOfBirth: toDateStr(new Date(2010 + (i % 5), i % 12, (i % 28) + 1)),
         gender,
         bloodGroup: ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"][i % 8],
         classId: classIds[classIndex],
@@ -270,11 +268,7 @@ async function seed() {
           sessionId,
           amount: (5000 + classNum * 500).toString(),
           dueDate: toDateStr(
-            new Date(
-              currentDate.getFullYear(),
-              currentDate.getMonth() + 1,
-              15,
-            ),
+            new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 15),
           ),
         },
         {
@@ -283,11 +277,7 @@ async function seed() {
           sessionId,
           amount: "2000",
           dueDate: toDateStr(
-            new Date(
-              currentDate.getFullYear(),
-              currentDate.getMonth() + 1,
-              15,
-            ),
+            new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 15),
           ),
         },
         {

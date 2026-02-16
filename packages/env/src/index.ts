@@ -1,6 +1,6 @@
 /**
  * Environment Variables Package
- * 
+ *
  * Type-safe environment variable access
  */
 

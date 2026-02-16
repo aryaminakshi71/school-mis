@@ -1,39 +1,22 @@
 /**
- * Sentry Error Tracking
- * 
- * Provides error tracking and performance monitoring.
- * Gracefully degrades if SENTRY_DSN is not configured.
+ * Sentry Helpers (Cloudflare Workers)
+ *
+ * Worker entrypoints should initialize Sentry via `@sentry/cloudflare`'s `withSentry(...)`.
+ * This module avoids Node-only SDKs and provides safe capture helpers for app code.
  */
 
-import * as Sentry from "@sentry/node";
+import * as Sentry from "@sentry/cloudflare";
 
-const isConfigured = !!process.env.SENTRY_DSN;
-const shouldWarnMissing = process.env.NODE_ENV === "production";
-
-if (!isConfigured && shouldWarnMissing) {
-  console.warn("SENTRY_DSN not set - Error tracking disabled");
+function isEnabled(): boolean {
+  try {
+    return !!Sentry.getClient?.();
+  } catch {
+    return false;
+  }
 }
 
 export function initSentry() {
-  if (!isConfigured) return;
-
-  Sentry.init({
-    dsn: process.env.SENTRY_DSN,
-    environment: process.env.SENTRY_ENVIRONMENT || process.env.NODE_ENV || "development",
-    tracesSampleRate: process.env.NODE_ENV === "production" ? 0.1 : 1.0,
-    profilesSampleRate: process.env.NODE_ENV === "production" ? 0.1 : 1.0,
-    integrations: [
-      Sentry.httpIntegration(),
-      Sentry.nativeNodeFetchIntegration(),
-    ],
-    beforeSend(event) {
-      if (process.env.NODE_ENV === "development" && !process.env.SENTRY_DEBUG) {
-        console.log("[Sentry] Would send event:", event.message || event.exception);
-        return null;
-      }
-      return event;
-    },
-  });
+  // no-op: initialized in the Worker entrypoint via withSentry(...)
 }
 
 export function captureException(
@@ -44,7 +27,7 @@ export function captureException(
     extra?: Record<string, unknown>;
   },
 ) {
-  if (!isConfigured) {
+  if (!isEnabled()) {
     console.error("[Error]", error);
     return;
   }
@@ -52,10 +35,14 @@ export function captureException(
   Sentry.withScope((scope) => {
     if (context?.user) scope.setUser(context.user);
     if (context?.tags) {
-      Object.entries(context.tags).forEach(([key, value]) => scope.setTag(key, value));
+      for (const [key, value] of Object.entries(context.tags)) {
+        scope.setTag(key, value);
+      }
     }
     if (context?.extra) {
-      Object.entries(context.extra).forEach(([key, value]) => scope.setExtra(key, value));
+      for (const [key, value] of Object.entries(context.extra)) {
+        scope.setExtra(key, value);
+      }
     }
     Sentry.captureException(error);
   });
@@ -70,7 +57,7 @@ export function captureMessage(
     extra?: Record<string, unknown>;
   },
 ) {
-  if (!isConfigured) {
+  if (!isEnabled()) {
     console.log(`[${level.toUpperCase()}]`, message);
     return;
   }
@@ -79,22 +66,28 @@ export function captureMessage(
     scope.setLevel(level);
     if (context?.user) scope.setUser(context.user);
     if (context?.tags) {
-      Object.entries(context.tags).forEach(([key, value]) => scope.setTag(key, value));
+      for (const [key, value] of Object.entries(context.tags)) {
+        scope.setTag(key, value);
+      }
     }
     if (context?.extra) {
-      Object.entries(context.extra).forEach(([key, value]) => scope.setExtra(key, value));
+      for (const [key, value] of Object.entries(context.extra)) {
+        scope.setExtra(key, value);
+      }
     }
     Sentry.captureMessage(message);
   });
 }
 
-export function setUser(user: { id: string; email?: string; name?: string } | null) {
-  if (!isConfigured) return;
+export function setUser(
+  user: { id: string; email?: string; name?: string } | null,
+) {
+  if (!isEnabled()) return;
   Sentry.setUser(user);
 }
 
 export async function flush(timeout = 2000) {
-  if (!isConfigured) return;
+  if (!isEnabled()) return;
   await Sentry.flush(timeout);
 }
 

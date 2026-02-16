@@ -1,14 +1,8 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "lib": [
-      "DOM",
-      "DOM.Iterable",
-      "ES2022"
-    ],
-    "types": [
-      "vite/client"
-    ],
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "types": ["vite/client"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -21,34 +15,15 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-      "@school/api": [
-        "../../apps/api/src"
-      ],
-      "@school/api/*": [
-        "../../apps/api/src/*"
-      ],
-      "@school/env": [
-        "../../packages/env/src"
-      ],
-      "@school/env/*": [
-        "../../packages/env/src/*"
-      ],
-      "@school/storage": [
-        "../../packages/storage/src"
-      ],
-      "@school/storage/*": [
-        "../../packages/storage/src/*"
-      ]
+      "@/*": ["./src/*"],
+      "@school/api": ["../../apps/api/src"],
+      "@school/api/*": ["../../apps/api/src/*"],
+      "@school/env": ["../../packages/env/src"],
+      "@school/env/*": ["../../packages/env/src/*"],
+      "@school/storage": ["../../packages/storage/src"],
+      "@school/storage/*": ["../../packages/storage/src/*"]
     }
   },
-  "include": [
-    "src/**/*",
-    "*.config.*"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["src/**/*", "*.config.*"],
+  "exclude": ["node_modules"]
 }

@@ -4,12 +4,12 @@
  * Setup Better Auth for authentication.
  */
 
+import { createStripeClient, createStripePlugin } from "@school/auth";
+import type { Database } from "@school/storage";
+import { schema } from "@school/storage";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { organization } from "better-auth/plugins";
-import type { Database } from "@school/storage";
-import { schema } from "@school/storage";
-import { createStripePlugin, createStripeClient } from "@school/auth";
 
 export function createAuth(db: Database, env: Record<string, any>) {
   // Build plugins array
@@ -30,7 +30,7 @@ export function createAuth(db: Database, env: Record<string, any>) {
         webhookSecret: env.STRIPE_WEBHOOK_SECRET,
         db,
         appId: "school-mis",
-      })
+      }),
     );
   }
 

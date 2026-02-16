@@ -209,7 +209,7 @@ class PaymentService {
   ): Promise<{ orderId: string; amount: number } | null> {
     try {
       // Mock order creation
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 500));
       return { orderId: `order_${Date.now()}`, amount };
     } catch (error) {
       console.error("Failed to create payment order:", error);
@@ -220,7 +220,7 @@ class PaymentService {
   async verifyPayment(transactionId: string): Promise<boolean> {
     try {
       // Mock verification
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 500));
       return true;
     } catch {
       return false;
@@ -316,7 +316,7 @@ class PaymentService {
   ): Promise<{ success: boolean; refundId?: string; error?: string }> {
     try {
       // Mock refund
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 500));
       return { success: true, refundId: `ref_${Date.now()}` };
     } catch (error) {
       return { success: false, error: "Refund failed" };
