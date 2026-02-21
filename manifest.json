@@ -1,0 +1,41 @@
+{
+  "appId": "school-mis",
+  "version": "1.0.0",
+  "capabilities": [
+    "school.students.manage",
+    "school.attendance.track",
+    "school.performance.predict",
+    "school.ai.assist"
+  ],
+  "api": {
+    "basePath": "/api",
+    "openApiUrl": "/api/openapi.json"
+  },
+  "events": {
+    "published": [
+      "school.student.created",
+      "school.attendance.updated",
+      "school.ai.performance_predicted"
+    ],
+    "subscribed": [
+      "fees.payment.received",
+      "notifications.dispatch.requested"
+    ]
+  },
+  "ai": {
+    "assistant": {
+      "enabled": true,
+      "entrypoint": "/api/ai/student/performance"
+    },
+    "automationAgents": [
+      "school-attendance-alert-agent",
+      "school-fee-followup-agent"
+    ],
+    "analyticsAgent": [
+      "school-performance-insights-agent"
+    ],
+    "guardrails": {
+      "dataClass": "pii"
+    }
+  }
+}

@@ -8,6 +8,7 @@ import {
 } from "@tanstack/react-router";
 import { AuthProvider } from "../lib/auth-context";
 import { initSentry } from "../lib/sentry";
+import { registerServiceWorker } from "../lib/service-worker";
 import {
   generateOrganizationSchema,
   generateWebSiteSchema,
@@ -66,6 +67,7 @@ const queryClient = new QueryClient();
 function RootDocument() {
   if (typeof window !== "undefined") {
     initSentry();
+    registerServiceWorker();
   }
 
   return (

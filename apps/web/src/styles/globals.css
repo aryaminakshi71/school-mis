@@ -18,7 +18,7 @@
   --popover-foreground: oklch(0.22 0.015 260);
 
   /* Primary Brand - Indigo */
-  --primary: oklch(0.55 0.2 260);
+  --primary: 240 85% 60%;
   --primary-foreground: oklch(0.99 0.005 250);
   --primary-light: oklch(0.65 0.12 260);
   --primary-dark: oklch(0.45 0.14 260);
@@ -91,7 +91,7 @@
   --popover: oklch(0.16 0.01 260);
   --popover-foreground: oklch(0.95 0.005 250);
 
-  --primary: oklch(0.65 0.2 260);
+  --primary: 240 85% 60%;
   --primary-foreground: oklch(0.99 0.005 250);
   --primary-light: oklch(0.7 0.12 260);
   --primary-dark: oklch(0.5 0.14 260);
@@ -144,7 +144,7 @@
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
 
-  --color-primary: var(--primary);
+  --color-primary: hsl(var(--primary));
   --color-primary-foreground: var(--primary-foreground);
   --color-primary-light: var(--primary-light);
   --color-primary-dark: var(--primary-dark);

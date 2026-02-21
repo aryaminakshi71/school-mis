@@ -33,6 +33,10 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { requestId } from "hono/request-id";
 import type { AppContext } from "./context.js";
+import {
+  analyzeAttendancePattern,
+  predictStudentPerformance,
+} from "./lib/ai-features.js";
 import { initDatadog } from "./lib/datadog.js";
 import { getDb } from "./lib/db.js";
 import { setSecurityHeaders } from "./lib/security.js";
@@ -103,6 +107,60 @@ export function createApp() {
       },
       message: "API server is running. Use /api/* endpoints.",
     });
+  });
+
+  // AI assistant routes
+  app.post("/api/ai/student/performance", async (c: any) => {
+    try {
+      const body = (await c.req.json()) as {
+        name?: string;
+        currentGrades?: Record<string, number>;
+        attendance?: number;
+        pastPerformance?: string;
+      };
+
+      if (!body?.name) {
+        return c.json({ error: "name is required" }, 400);
+      }
+
+      const prediction = await predictStudentPerformance({
+        name: body.name,
+        currentGrades: body.currentGrades,
+        attendance: body.attendance,
+        pastPerformance: body.pastPerformance,
+      });
+
+      return c.json({ prediction });
+    } catch (error) {
+      console.error("Error in /api/ai/student/performance:", error);
+      return c.json({ error: "AI prediction failed" }, 500);
+    }
+  });
+
+  app.post("/api/ai/attendance/analyze", async (c: any) => {
+    try {
+      const body = (await c.req.json()) as {
+        studentId?: string;
+        attendanceRecords?: Array<{ date: string; present: boolean }>;
+      };
+
+      if (!body?.studentId || !Array.isArray(body.attendanceRecords)) {
+        return c.json(
+          { error: "studentId and attendanceRecords are required" },
+          400,
+        );
+      }
+
+      const analysis = await analyzeAttendancePattern({
+        studentId: body.studentId,
+        attendanceRecords: body.attendanceRecords,
+      });
+
+      return c.json({ analysis });
+    } catch (error) {
+      console.error("Error in /api/ai/attendance/analyze:", error);
+      return c.json({ error: "AI attendance analysis failed" }, 500);
+    }
   });
 
   // Rate limiting middleware
