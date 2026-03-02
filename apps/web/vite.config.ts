@@ -11,6 +11,7 @@ import viteTsConfigPaths from "vite-tsconfig-paths";
 export default defineConfig(({ mode }) => {
   // Capture PORT from shell BEFORE loadEnv (which might load PORT from .env)
   const shellPort = process.env.PORT;
+  const isE2E = process.env.E2E_TEST === "1";
   // Load env from root (../../)
   const env = loadEnv(mode, path.resolve(__dirname, "../../"), "");
   // PORT from shell environment takes highest priority
@@ -73,7 +74,7 @@ export default defineConfig(({ mode }) => {
     },
     server: {
       port: Number(port),
-      host: true,
+      host: isE2E ? "127.0.0.1" : true,
       strictPort: true,
     },
     plugins: [
@@ -88,11 +89,12 @@ export default defineConfig(({ mode }) => {
             }),
           ]
         : []),
-      devtools({
-        eventBusConfig: {
-          port: devtoolsPort,
-        },
-      }),
+      !isE2E &&
+        devtools({
+          eventBusConfig: {
+            port: devtoolsPort,
+          },
+        }),
       tailwindcss(),
       tanstackStart({
         srcDirectory: "src",
