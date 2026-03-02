@@ -7,14 +7,21 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useAuth } from "@/lib/auth-context";
-import { Language, useLanguage } from "@/lib/services/i18n.service";
+import type { User as AuthUser } from "@/lib/auth-context";
+import {
+  Language,
+  type LanguageInfo,
+  useLanguage,
+} from "@/lib/services/i18n.service";
+import type { Notification } from "@/lib/services/notification.service";
 import { useNotifications } from "@/lib/services/notification.service";
 import { Theme, useTheme } from "@/lib/services/theme.service";
 import {
-  WidgetConfig,
+  type WidgetConfig,
+  type WidgetType,
   availableWidgets,
   useWidgetConfig,
-} from "@/lib/services/widget.service.tsx";
+} from "@/lib/services/widget.service";
 import { createFileRoute } from "@tanstack/react-router";
 import {
   Bell,
@@ -41,12 +48,10 @@ export const Route = createFileRoute("/app/settings")({
 
 function SettingsPage() {
   const { user } = useAuth();
-  const { theme, setTheme, resolvedTheme, toggleTheme, isDark, themes } =
-    useTheme();
+  const { theme, setTheme, toggleTheme, isDark, themes } = useTheme();
   const {
     language,
     setLanguage,
-    t,
     languages: langList,
     currentLanguage,
     isRTL,
@@ -127,14 +132,14 @@ function SettingsPage() {
               currentLang={language}
               setLang={setLanguage}
               languages={langList}
-              t={t}
+              currentLanguage={currentLanguage}
               isRTL={isRTL}
             />
           )}
           {activeTab === "notifications" && (
             <NotificationSettings
               notifications={notifications}
-              hasPermission={hasPermission}
+              hasPermission={hasPermission()}
               requestPermission={requestPermission}
               markAllAsRead={markAllAsRead}
             />
@@ -156,7 +161,7 @@ function SettingsPage() {
   );
 }
 
-function ProfileSettings({ user }: { user: any }) {
+function ProfileSettings({ user }: { user: AuthUser | null }) {
   return (
     <Card>
       <CardHeader>
@@ -290,13 +295,13 @@ function LanguageSettings({
   currentLang,
   setLang,
   languages: langList,
-  t,
+  currentLanguage,
   isRTL,
 }: {
   currentLang: Language;
   setLang: (l: Language) => void;
-  languages: typeof langList;
-  t: any;
+  languages: LanguageInfo[];
+  currentLanguage?: LanguageInfo;
   isRTL: boolean;
 }) {
   const [search, setSearch] = useState("");
@@ -374,12 +379,29 @@ function NotificationSettings({
   requestPermission,
   markAllAsRead,
 }: {
-  notifications: any[];
+  notifications: Notification[];
   hasPermission: boolean;
   requestPermission: () => Promise<boolean>;
   markAllAsRead: () => void;
 }) {
-  const [settings, setSettings] = useState({
+  type NotificationSettingsState = {
+    email: boolean;
+    sms: boolean;
+    push: boolean;
+    attendance: boolean;
+    fees: boolean;
+    exams: boolean;
+    homework: boolean;
+    notices: boolean;
+  };
+  type NotificationTypeKey =
+    | "attendance"
+    | "fees"
+    | "exams"
+    | "homework"
+    | "notices";
+
+  const [settings, setSettings] = useState<NotificationSettingsState>({
     email: true,
     sms: true,
     push: false,
@@ -414,7 +436,7 @@ function NotificationSettings({
                 type="checkbox"
                 checked={settings.email}
                 onChange={(e) =>
-                  setSettings({ ...settings, email: e.target.checked })
+                  setSettings((prev) => ({ ...prev, email: e.target.checked }))
                 }
                 className="h-4 w-4"
               />
@@ -430,7 +452,7 @@ function NotificationSettings({
                 type="checkbox"
                 checked={settings.sms}
                 onChange={(e) =>
-                  setSettings({ ...settings, sms: e.target.checked })
+                  setSettings((prev) => ({ ...prev, sms: e.target.checked }))
                 }
                 className="h-4 w-4"
               />
@@ -447,7 +469,7 @@ function NotificationSettings({
                   type="checkbox"
                   checked={settings.push}
                   onChange={(e) =>
-                    setSettings({ ...settings, push: e.target.checked })
+                    setSettings((prev) => ({ ...prev, push: e.target.checked }))
                   }
                   className="h-4 w-4"
                 />
@@ -463,13 +485,15 @@ function NotificationSettings({
         <div className="border-t pt-4">
           <h4 className="mb-3 font-medium">Notification Types</h4>
           <div className="grid grid-cols-2 gap-3">
-            {[
-              { key: "attendance", label: "Attendance Alerts" },
-              { key: "fees", label: "Fee Reminders" },
-              { key: "exams", label: "Exam Notifications" },
-              { key: "homework", label: "Homework Updates" },
-              { key: "notices", label: "School Notices" },
-            ].map(({ key, label }) => (
+            {(
+              [
+                { key: "attendance", label: "Attendance Alerts" },
+                { key: "fees", label: "Fee Reminders" },
+                { key: "exams", label: "Exam Notifications" },
+                { key: "homework", label: "Homework Updates" },
+                { key: "notices", label: "School Notices" },
+              ] as Array<{ key: NotificationTypeKey; label: string }>
+            ).map(({ key, label }) => (
               <div
                 key={key}
                 className="flex items-center justify-between rounded-lg bg-muted p-3"
@@ -477,9 +501,12 @@ function NotificationSettings({
                 <span className="text-sm">{label}</span>
                 <input
                   type="checkbox"
-                  checked={(settings as any)[key]}
+                  checked={settings[key]}
                   onChange={(e) =>
-                    setSettings({ ...settings, [key]: e.target.checked })
+                    setSettings((prev) => ({
+                      ...prev,
+                      [key]: e.target.checked,
+                    }))
                   }
                   className="h-4 w-4"
                 />
@@ -523,11 +550,11 @@ function WidgetSettings({
   resetWidgets,
 }: {
   allWidgets: WidgetConfig[];
-  updateWidget: any;
-  toggleVisibility: any;
-  removeWidget: any;
-  addWidget: any;
-  resetWidgets: any;
+  updateWidget: (id: string, updates: Partial<WidgetConfig>) => void;
+  toggleVisibility: (id: string) => void;
+  removeWidget: (id: string) => void;
+  addWidget: (type: WidgetType) => void;
+  resetWidgets: () => void;
 }) {
   const [showAddWidget, setShowAddWidget] = useState(false);
 

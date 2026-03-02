@@ -1,4 +1,4 @@
-import api from "@school/api";
+import { api } from "@school/api";
 import { honoIntegration, withSentry } from "@sentry/cloudflare";
 import handler from "@tanstack/react-start/server-entry";
 import type { getRouter } from "./router";

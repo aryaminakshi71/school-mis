@@ -422,7 +422,8 @@ function StudentsPage() {
                       <td className="py-3">
                         <div className="flex items-center gap-2">
                           <Link
-                            to={`/app/students/${student.id}`}
+                            to="/app/students/$id"
+                            params={{ id: student.id }}
                             className="flex items-center gap-2 hover:underline"
                           >
                             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
@@ -471,7 +472,10 @@ function StudentsPage() {
                       </td>
                       <td className="py-3">
                         <div className="flex gap-1">
-                          <Link to={`/app/students/${student.id}`}>
+                          <Link
+                            to="/app/students/$id"
+                            params={{ id: student.id }}
+                          >
                             <Button
                               variant="ghost"
                               size="icon"

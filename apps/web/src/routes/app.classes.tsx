@@ -36,11 +36,11 @@ function ClassesPage() {
     data: classes = [],
     isLoading,
     error,
-  } = useQuery({
+  } = useQuery<Class[]>({
     queryKey: ["classes"],
     queryFn: async () => {
       try {
-        return await api.classes.list();
+        return (await api.classes.list()) as Class[];
       } catch (err) {
         toast.error(handleError(err));
         throw err;
@@ -55,7 +55,7 @@ function ClassesPage() {
     filteredData: filteredClasses,
     hasActiveFilters,
     clearSearch,
-  } = useSearch({
+  } = useSearch<Class>({
     data: classes,
     searchFields: ["name", "section", "classTeacher"],
   });

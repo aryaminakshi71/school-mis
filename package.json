@@ -1,29 +1,53 @@
 {
-  "name": "@company/school-mis",
+  "name": "school-mis",
   "version": "1.0.0",
   "description": "School Management Information System",
   "private": true,
   "type": "module",
   "packageManager": "bun@1.3.5",
-  "workspaces": ["apps/*", "packages/*"],
   "scripts": {
-    "dev": "bun run --filter '@school/web' dev",
+    "dev": "bun run dev:web & bun run dev:api",
     "build": "bun run --filter '@school/api' build && bun run --filter '@school/web' build",
+    "build:api": "bun run --filter '@school/api' build",
+    "build:web": "bun run --filter '@school/web' build",
+    "start": "bun run start:api & bun run start:web",
+    "start:api": "bun run --filter '@school/api' start",
+    "start:web": "bun run --filter '@school/web' start",
     "test": "bun run --filter '@school/api' test",
+    "test:watch": "bun run --filter '@school/api' test:watch",
+    "test:coverage": "bun run --filter '@school/api' test:coverage",
     "test:unit": "bun run --filter '@school/api' test:unit",
     "test:integration": "bun run --filter '@school/api' test:integration",
     "test:e2e": "E2E_TEST=1 SENTRY_DSN=https://examplePublicKey@o0.ingest.sentry.io/0 bun run --filter '@school/web' test:e2e",
     "test:e2e:ui": "E2E_TEST=1 SENTRY_DSN=https://examplePublicKey@o0.ingest.sentry.io/0 bun run --filter '@school/web' test:e2e:ui",
     "test:e2e:install": "bun run --filter '@school/web' test:e2e:install",
-    "typecheck": "bun run --filter '@school/api' typecheck",
+    "test:all": "bun run test && bun run test:e2e",
+    "typecheck": "bun run --filter '@school/api' typecheck && bun run --filter '@school/web' typecheck",
+    "typecheck:api": "bun run --filter '@school/api' typecheck",
     "typecheck:web": "bun run --filter '@school/web' typecheck",
-    "lint": "biome check .",
-    "format": "biome format --write ."
+    "lint": "bunx @biomejs/biome check .",
+    "lint:fix": "bunx @biomejs/biome lint --write .",
+    "format": "bunx @biomejs/biome format --write .",
+    "format:check": "bunx @biomejs/biome format .",
+    "check": "bunx @biomejs/biome check --write .",
+    "clean": "rm -rf node_modules apps/*/node_modules packages/*/node_modules .turbo",
+    "db:generate": "bun run --filter '@school/api' db:generate",
+    "db:push": "bun run --filter '@school/api' db:push",
+    "db:migrate": "bun run --filter '@school/api' db:migrate",
+    "db:studio": "bun run --filter '@school/api' db:studio",
+    "db:seed": "bun run --filter '@school/api' db:seed",
+    "health": "node scripts/platform-healthcheck.mjs",
+    "db:check": "node scripts/platform-db-check.mjs",
+    "security:audit": "bun audit",
+    "security:scan": "bunx snyk test",
+    "dev:web": "bun run --cwd apps/web dev",
+    "dev:api": "bun run --cwd apps/api dev"
   },
   "dependencies": {
     "vite": "7.3.1"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.9.4"
+    "@biomejs/biome": "^1.9.4",
+    "@playwright/test": "^1.57.0"
   }
 }

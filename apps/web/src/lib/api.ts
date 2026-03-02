@@ -11,6 +11,14 @@ export interface Student {
   rollNumber: number;
   fatherName: string;
   fatherPhone: string;
+  motherName?: string;
+  motherPhone?: string;
+  gender?: string;
+  dateOfBirth?: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  pincode?: string;
   attendance: number;
   status: "active" | "inactive";
   createdAt: string;
@@ -47,7 +55,7 @@ export interface FeePayment {
   className: string;
   amount: number;
   paymentMethod: string;
-  status: "paid" | "pending" | "overdue";
+  status: "paid" | "pending" | "overdue" | "completed";
   date: string;
 }
 
@@ -70,8 +78,101 @@ export interface AttendanceRecord {
   date: string;
 }
 
+export interface GradeRecord {
+  id: string;
+  studentId: string;
+  studentName: string;
+  subject: string;
+  examType: string;
+  score: number;
+  maxScore: number;
+  grade: string;
+  date: string;
+}
+
+interface StudentsListResponse {
+  students: Student[];
+  pagination?: {
+    total?: number;
+  };
+}
+
+interface TeachersListResponse {
+  teachers: Teacher[];
+}
+
+interface ClassesListResponse {
+  classes: Class[];
+}
+
+interface FeesListResponse {
+  fees: FeePayment[];
+}
+
+interface AttendanceListResponse {
+  attendance: AttendanceRecord[];
+}
+
+interface ExpensesListResponse {
+  expenses: Record<string, unknown>[];
+}
+
+interface ExpenseStatsResponse {
+  totalExpenses: number;
+  monthlyExpenses?: number;
+  [key: string]: number | undefined;
+}
+
+interface FeeStructuresListResponse {
+  structures: Record<string, unknown>[];
+}
+
+interface FeeCategoriesListResponse {
+  categories: Record<string, unknown>[];
+}
+
+interface ExamsListResponse {
+  exams: Exam[];
+}
+
+interface GradesListResponse {
+  grades: GradeRecord[];
+}
+
+interface SubjectsListResponse {
+  subjects: Record<string, unknown>[];
+}
+
+interface TransportRoutesListResponse {
+  routes: Record<string, unknown>[];
+}
+
+interface TransportVehiclesListResponse {
+  vehicles: Record<string, unknown>[];
+}
+
+interface LibraryBooksListResponse {
+  books: Record<string, unknown>[];
+}
+
+interface LibraryTransactionsListResponse {
+  transactions: Record<string, unknown>[];
+}
+
+export interface DashboardStats {
+  totalStudents: number;
+  totalTeachers: number;
+  totalClasses: number;
+  todayAttendance: number;
+  monthlyFeeCollection: number;
+  pendingFeePayments: number;
+}
+
 // Helper to handle API requests
-const request = async (path: string, options: RequestInit = {}) => {
+const request = async <T>(
+  path: string,
+  options: RequestInit = {},
+): Promise<T> => {
   const response = await fetch(`/api${path}`, {
     ...options,
     headers: {
@@ -84,7 +185,7 @@ const request = async (path: string, options: RequestInit = {}) => {
     throw new Error(`API Error: ${response.statusText}`);
   }
 
-  return response.json();
+  return (await response.json()) as T;
 };
 
 // API Functions
@@ -92,11 +193,11 @@ export const api = {
   // Students
   students: {
     list: async () => {
-      const data = await request("/students?limit=100");
+      const data = await request<StudentsListResponse>("/students?limit=100");
       return data.students;
     },
     get: async (id: string) => {
-      const data = await request(`/students/${id}`);
+      const data = await request<Student>(`/students/${id}`);
       return data;
     },
     create: async (data: Omit<Student, "id" | "createdAt">) => {
@@ -121,11 +222,11 @@ export const api = {
   // Teachers
   teachers: {
     list: async () => {
-      const data = await request("/teachers");
+      const data = await request<TeachersListResponse>("/teachers");
       return data.teachers;
     },
     get: async (id: string) => {
-      return request(`/teachers/${id}`);
+      return request<Teacher>(`/teachers/${id}`);
     },
     create: async (data: Omit<Teacher, "id" | "createdAt">) => {
       return request("/teachers", {
@@ -149,11 +250,11 @@ export const api = {
   // Classes
   classes: {
     list: async () => {
-      const data = await request("/classes");
+      const data = await request<ClassesListResponse>("/classes");
       return data.classes;
     },
     get: async (id: string) => {
-      const data = await request("/classes");
+      const data = await request<ClassesListResponse>("/classes");
       return data.classes.find((c: Class) => c.id === id);
     },
     create: async (data: Omit<Class, "id" | "students">) => {
@@ -178,7 +279,7 @@ export const api = {
   // Fees
   fees: {
     list: async () => {
-      const data = await request("/fees");
+      const data = await request<FeesListResponse>("/fees");
       return data.fees;
     },
     collect: async (data: Omit<FeePayment, "id">) => {
@@ -188,7 +289,7 @@ export const api = {
       });
     },
     getStats: async () => {
-      const data = await request("/fees");
+      const data = await request<FeesListResponse>("/fees");
       const fees: FeePayment[] = data.fees || [];
 
       return {
@@ -208,17 +309,17 @@ export const api = {
   // Expenses
   expenses: {
     list: async () => {
-      const data = await request("/expenses");
+      const data = await request<ExpensesListResponse>("/expenses");
       return data.expenses;
     },
-    create: async (data: any) => {
+    create: async (data: Record<string, unknown>) => {
       return request("/expenses", {
         method: "POST",
         body: JSON.stringify(data),
       });
     },
     getStats: async () => {
-      const data = await request("/expenses/stats");
+      const data = await request<ExpenseStatsResponse>("/expenses/stats");
       return data;
     },
   },
@@ -226,10 +327,10 @@ export const api = {
   // Fee Structures
   feeStructures: {
     list: async () => {
-      const data = await request("/fee-structures");
+      const data = await request<FeeStructuresListResponse>("/fee-structures");
       return data.structures;
     },
-    create: async (data: any) => {
+    create: async (data: Record<string, unknown>) => {
       return request("/fee-structures", {
         method: "POST",
         body: JSON.stringify(data),
@@ -240,10 +341,10 @@ export const api = {
   // Fee Categories
   feeCategories: {
     list: async () => {
-      const data = await request("/fee-categories");
+      const data = await request<FeeCategoriesListResponse>("/fee-categories");
       return data.categories;
     },
-    create: async (data: any) => {
+    create: async (data: Record<string, unknown>) => {
       return request("/fee-categories", {
         method: "POST",
         body: JSON.stringify(data),
@@ -255,7 +356,7 @@ export const api = {
   exams: {
     list: async () => {
       try {
-        const data = await request("/exams");
+        const data = await request<ExamsListResponse>("/exams");
         return data.exams || [];
       } catch (e) {
         console.warn("Exams endpoint not ready", e);
@@ -274,14 +375,14 @@ export const api = {
   grades: {
     list: async () => {
       try {
-        const data = await request("/grades");
+        const data = await request<GradesListResponse>("/grades");
         return data.grades || [];
       } catch (e) {
         console.warn("Grades endpoint not ready", e);
         return [];
       }
     },
-    create: async (data: any) => {
+    create: async (data: Record<string, unknown>) => {
       return request("/grades", {
         method: "POST",
         body: JSON.stringify(data),
@@ -293,7 +394,7 @@ export const api = {
   subjects: {
     list: async () => {
       try {
-        const data = await request("/subjects");
+        const data = await request<SubjectsListResponse>("/subjects");
         return data.subjects || [];
       } catch (e) {
         console.warn("Subjects endpoint not ready", e);
@@ -305,26 +406,28 @@ export const api = {
   // Attendance
   attendance: {
     list: async () => {
-      const data = await request("/attendance");
+      const data = await request<AttendanceListResponse>("/attendance");
       return data.attendance;
     },
     getByDate: async (date: string) => {
-      const data = await request(`/attendance?date=${date}`);
+      const data = await request<AttendanceListResponse>(
+        `/attendance?date=${date}`,
+      );
       return data.attendance;
     },
   },
 
   // Dashboard Stats
   dashboard: {
-    getStats: async () => {
+    getStats: async (): Promise<DashboardStats> => {
       try {
         // Use request helper for cleaner error handling
         const [studentsData, teachersData, classesData, feesData] =
           await Promise.all([
-            request("/students?limit=1"),
-            request("/teachers"),
-            request("/classes"),
-            request("/fees"),
+            request<StudentsListResponse>("/students?limit=1"),
+            request<TeachersListResponse>("/teachers"),
+            request<ClassesListResponse>("/classes"),
+            request<FeesListResponse>("/fees"),
           ]);
 
         const fees = feesData.fees || [];
@@ -335,10 +438,10 @@ export const api = {
           totalClasses: classesData.classes?.length || 0,
           todayAttendance: 94.2, // Placeholder
           monthlyFeeCollection: fees
-            .filter((f: any) => f.status === "completed" || f.status === "paid")
-            .reduce((sum: number, f: any) => sum + Number(f.amount), 0),
+            .filter((f) => f.status === "completed" || f.status === "paid")
+            .reduce((sum, f) => sum + Number(f.amount), 0),
           pendingFeePayments: fees.filter(
-            (f: any) => f.status === "pending" || f.status === "overdue",
+            (f) => f.status === "pending" || f.status === "overdue",
           ).length,
         };
       } catch (error) {
@@ -360,14 +463,15 @@ export const api = {
     routes: {
       list: async () => {
         try {
-          const data = await request("/transport/routes");
+          const data =
+            await request<TransportRoutesListResponse>("/transport/routes");
           return data.routes || [];
         } catch (e) {
           console.warn("Transport routes endpoint not ready", e);
           return [];
         }
       },
-      create: async (data: any) => {
+      create: async (data: Record<string, unknown>) => {
         return request("/transport/routes", {
           method: "POST",
           body: JSON.stringify(data),
@@ -377,14 +481,16 @@ export const api = {
     vehicles: {
       list: async () => {
         try {
-          const data = await request("/transport/vehicles");
+          const data = await request<TransportVehiclesListResponse>(
+            "/transport/vehicles",
+          );
           return data.vehicles || [];
         } catch (e) {
           console.warn("Transport vehicles endpoint not ready", e);
           return [];
         }
       },
-      create: async (data: any) => {
+      create: async (data: Record<string, unknown>) => {
         return request("/transport/vehicles", {
           method: "POST",
           body: JSON.stringify(data),
@@ -401,14 +507,16 @@ export const api = {
           const params = new URLSearchParams();
           if (search) params.append("search", search);
           if (category) params.append("category", category);
-          const data = await request(`/library/books?${params.toString()}`);
+          const data = await request<LibraryBooksListResponse>(
+            `/library/books?${params.toString()}`,
+          );
           return data.books || [];
         } catch (e) {
           console.warn("Library books endpoint not ready", e);
           return [];
         }
       },
-      create: async (data: any) => {
+      create: async (data: Record<string, unknown>) => {
         return request("/library/books", {
           method: "POST",
           body: JSON.stringify(data),
@@ -418,7 +526,9 @@ export const api = {
     transactions: {
       list: async () => {
         try {
-          const data = await request("/library/transactions");
+          const data = await request<LibraryTransactionsListResponse>(
+            "/library/transactions",
+          );
           return data.transactions || [];
         } catch (e) {
           console.warn("Library transactions endpoint not ready", e);

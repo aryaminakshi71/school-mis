@@ -1,5 +1,6 @@
 import { smsLogs, smsTemplates } from "@school/storage";
 import { db } from "@school/storage";
+import { eq } from "drizzle-orm";
 import type {
   NotificationPayload,
   NotificationResult,
@@ -208,7 +209,5 @@ export const smsService = {
     }
   },
 };
-
-export const eq = (a: any, b: any) => a === b;
 
 export default smsService;

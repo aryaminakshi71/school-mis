@@ -13,7 +13,7 @@ export interface KeyboardShortcut {
   meta?: boolean;
   shift?: boolean;
   alt?: boolean;
-  action: () => void;
+  action: (event?: KeyboardEvent) => void;
   description?: string;
 }
 
@@ -37,7 +37,7 @@ export function useKeyboardShortcut(
 
         if (keyMatch && ctrlMatch && metaMatch && shiftMatch && altMatch) {
           event.preventDefault();
-          shortcut.action();
+          shortcut.action(event);
           break;
         }
       }
@@ -148,8 +148,8 @@ export function useFormShortcuts(onSubmit?: () => void, onCancel?: () => void) {
       key: "s",
       ctrl: true,
       meta: true,
-      action: (e) => {
-        e?.preventDefault();
+      action: (event) => {
+        event?.preventDefault();
         onSubmit?.();
       },
       description: "Save",

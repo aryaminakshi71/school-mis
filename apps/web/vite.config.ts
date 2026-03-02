@@ -84,7 +84,7 @@ export default defineConfig(({ mode }) => {
         ? [
             cloudflare({
               viteEnvironment: { name: "ssr" },
-              persist: true,
+              persistState: true,
             }),
           ]
         : []),

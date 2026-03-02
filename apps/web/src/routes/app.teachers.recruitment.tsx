@@ -172,7 +172,7 @@ function RecruitmentPage() {
       : applications.filter((a) => a.status === selectedStatus);
 
   const handleExport = () => {
-    const exportData =
+    const exportData: Record<string, unknown>[] =
       activeTab === "jobs"
         ? filteredJobs.map((j) => ({
             "Job ID": j.id,
@@ -481,7 +481,7 @@ function RecruitmentPage() {
                               : app.status === "under_review"
                                 ? "default"
                                 : app.status === "new"
-                                  ? "info"
+                                  ? "secondary"
                                   : "outline"
                           }
                         >

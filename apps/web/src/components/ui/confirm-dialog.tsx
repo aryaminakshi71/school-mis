@@ -28,7 +28,7 @@ interface ConfirmDialogProps {
   confirmText?: string;
   cancelText?: string;
   isLoading?: boolean;
-  icon?: React.ReactNode;
+  icon?: React.ComponentType<{ className?: string }>;
 }
 
 const variantConfig: Record<
@@ -151,7 +151,7 @@ export function useConfirmDialog() {
         variant?: ConfirmDialogVariant;
         confirmText?: string;
         cancelText?: string;
-        icon?: React.ReactNode;
+        icon?: React.ComponentType<{ className?: string }>;
       },
     ): Promise<boolean> => {
       return new Promise((resolve) => {

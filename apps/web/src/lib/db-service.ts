@@ -3,6 +3,9 @@
  *
  * This module provides real database queries using Drizzle ORM.
  * Connected to Neon PostgreSQL database.
+ *
+ * Prefer importing from `@/lib/db` for new code. This file remains as a
+ * compatibility layer while services are modularized.
  */
 
 import { db } from "@school/storage";
@@ -31,6 +34,7 @@ import {
   or,
   sql,
 } from "drizzle-orm";
+import { fromPgDate, toPgDate } from "./db/date-utils";
 import { NotFoundError } from "./error-handler";
 
 export interface Student {
@@ -629,14 +633,15 @@ export const classesService = {
 export const feesService = {
   async list(studentId?: string): Promise<FeePayment[]> {
     try {
-      let query = db
+      const baseQuery = db
         .select()
         .from(feePayments)
         .orderBy(desc(feePayments.paymentDate));
-      if (studentId) {
-        query = query.where(eq(feePayments.studentId, studentId));
-      }
-      const result = await query;
+
+      const result = studentId
+        ? await baseQuery.where(eq(feePayments.studentId, studentId))
+        : await baseQuery;
+
       return result.map((f) => ({
         id: f.id,
         studentId: f.studentId,
@@ -681,7 +686,7 @@ export const feesService = {
   },
 
   async create(
-    data: Omit<FeePayment, "id" | "receiptNumber">,
+    data: Omit<FeePayment, "id" | "receiptNumber"> & { allocationId: string },
   ): Promise<FeePayment> {
     try {
       const receiptNumber = `RCP${Date.now()}`;
@@ -689,6 +694,7 @@ export const feesService = {
         .insert(feePayments)
         .values({
           studentId: data.studentId,
+          allocationId: data.allocationId,
           amount: data.amount.toString(),
           paymentDate: data.paymentDate,
           paymentMethod: data.paymentMethod,
@@ -728,21 +734,22 @@ export const feesService = {
 export const examsService = {
   async list(classId?: string): Promise<ExamSchedule[]> {
     try {
-      let query = db
+      const baseQuery = db
         .select()
         .from(examSchedules)
         .orderBy(asc(examSchedules.examDate));
-      if (classId) {
-        query = query.where(eq(examSchedules.classId || sql`''`, classId));
-      }
-      const result = await query;
+
+      const result = classId
+        ? await baseQuery.where(eq(examSchedules.classId, classId))
+        : await baseQuery;
+
       return result.map((e) => ({
         id: e.id,
         title: e.title || "",
         examType: e.examType || "",
         classId: e.classId || undefined,
         subjectId: e.subjectId || undefined,
-        examDate: e.examDate || new Date(),
+        examDate: fromPgDate(e.examDate) || new Date(),
         startTime: e.startTime || "",
         endTime: e.endTime || "",
         totalMarks: e.totalMarks ? Number(e.totalMarks) : undefined,
@@ -762,10 +769,10 @@ export const examsService = {
           examType: data.examType,
           classId: data.classId,
           subjectId: data.subjectId,
-          examDate: data.examDate,
+          examDate: toPgDate(data.examDate),
           startTime: data.startTime,
           endTime: data.endTime,
-          totalMarks: data.totalMarks?.toString(),
+          totalMarks: data.totalMarks,
         })
         .returning();
 
@@ -780,7 +787,7 @@ export const examsService = {
         examType: e.examType || "",
         classId: e.classId || undefined,
         subjectId: e.subjectId || undefined,
-        examDate: e.examDate || new Date(),
+        examDate: fromPgDate(e.examDate) || new Date(),
         startTime: e.startTime || "",
         endTime: e.endTime || "",
         totalMarks: e.totalMarks ? Number(e.totalMarks) : undefined,
@@ -799,7 +806,7 @@ export const examsService = {
       const result = await db
         .select()
         .from(examSchedules)
-        .where(gte(examSchedules.examDate, today))
+        .where(gte(examSchedules.examDate, toPgDate(today)))
         .orderBy(asc(examSchedules.examDate))
         .limit(limit);
 
@@ -809,7 +816,7 @@ export const examsService = {
         examType: e.examType || "",
         classId: e.classId || undefined,
         subjectId: e.subjectId || undefined,
-        examDate: e.examDate || new Date(),
+        examDate: fromPgDate(e.examDate) || new Date(),
         startTime: e.startTime || "",
         endTime: e.endTime || "",
         totalMarks: e.totalMarks ? Number(e.totalMarks) : undefined,
@@ -827,6 +834,7 @@ export const attendanceService = {
   async mark(
     studentId: string,
     classId: string,
+    sessionId: string,
     date: Date,
     status: string,
   ): Promise<void> {
@@ -834,7 +842,8 @@ export const attendanceService = {
       await db.insert(attendance).values({
         studentId,
         classId,
-        date,
+        sessionId,
+        date: toPgDate(date),
         status: status as "present" | "absent" | "late" | "excused",
       });
     } catch (error) {
@@ -862,7 +871,12 @@ export const attendanceService = {
       const result = await db
         .select()
         .from(attendance)
-        .where(and(eq(attendance.classId, classId), eq(attendance.date, date)));
+        .where(
+          and(
+            eq(attendance.classId, classId),
+            eq(attendance.date, toPgDate(date)),
+          ),
+        );
       return result;
     } catch (error) {
       console.error("Error getting class attendance:", error);
@@ -885,8 +899,8 @@ export const attendanceService = {
         .where(
           and(
             eq(attendance.studentId, studentId),
-            gte(attendance.date, startDate),
-            lte(attendance.date, endDate),
+            gte(attendance.date, toPgDate(startDate)),
+            lte(attendance.date, toPgDate(endDate)),
           ),
         );
 
@@ -943,19 +957,20 @@ export interface BookIssue {
 export const libraryService = {
   async listBooks(limit?: number, offset?: number): Promise<LibraryBook[]> {
     try {
-      let query = db
+      const baseQuery = db
         .select()
         .from(libraryBooks)
         .orderBy(desc(libraryBooks.createdAt));
 
-      if (limit !== undefined) {
-        query = query.limit(limit);
-      }
-      if (offset !== undefined) {
-        query = query.offset(offset);
-      }
+      const result =
+        limit !== undefined && offset !== undefined
+          ? await baseQuery.limit(limit).offset(offset)
+          : limit !== undefined
+            ? await baseQuery.limit(limit)
+            : offset !== undefined
+              ? await baseQuery.offset(offset)
+              : await baseQuery;
 
-      const result = await query;
       return result.map((b) => ({
         id: b.id,
         bookNumber: b.bookNumber || "",
@@ -1030,10 +1045,10 @@ export const libraryService = {
       }
 
       // Create issue record
-      const issueData: Record<string, unknown> = {
+      const issueData: typeof bookIssues.$inferInsert = {
         bookId,
-        issueDate: new Date(),
-        dueDate,
+        issueDate: toPgDate(new Date()),
+        dueDate: toPgDate(dueDate),
         status: "issued",
       };
 
@@ -1057,9 +1072,9 @@ export const libraryService = {
         bookId: issue.bookId,
         studentId: issue.studentId || undefined,
         staffId: issue.staffId || undefined,
-        issueDate: issue.issueDate,
-        dueDate: issue.dueDate,
-        returnDate: issue.returnDate || undefined,
+        issueDate: fromPgDate(issue.issueDate) || new Date(),
+        dueDate: fromPgDate(issue.dueDate) || new Date(),
+        returnDate: fromPgDate(issue.returnDate),
         condition: issue.condition || undefined,
         fine: issue.fine ? Number(issue.fine) : undefined,
         status: issue.status || "issued",
@@ -1086,17 +1101,18 @@ export const libraryService = {
       const issue = issueResult[0];
 
       // Update issue record
-      const updateData: Record<string, unknown> = {
-        returnDate: new Date(),
+      const updateData: Partial<typeof bookIssues.$inferInsert> = {
+        returnDate: toPgDate(new Date()),
         status: "returned",
       };
       if (condition) updateData.condition = condition;
 
       // Calculate fine if overdue
       const today = new Date();
-      if (today > issue.dueDate) {
+      const dueDate = new Date(issue.dueDate);
+      if (today > dueDate) {
         const daysOverdue = Math.ceil(
-          (today.getTime() - issue.dueDate.getTime()) / (1000 * 60 * 60 * 24),
+          (today.getTime() - dueDate.getTime()) / (1000 * 60 * 60 * 24),
         );
         const fineAmount = daysOverdue * 5; // $5 per day
         updateData.fine = fineAmount.toString();
@@ -1123,9 +1139,9 @@ export const libraryService = {
         bookId: updated.bookId,
         studentId: updated.studentId || undefined,
         staffId: updated.staffId || undefined,
-        issueDate: updated.issueDate,
-        dueDate: updated.dueDate,
-        returnDate: updated.returnDate || undefined,
+        issueDate: fromPgDate(updated.issueDate) || new Date(),
+        dueDate: fromPgDate(updated.dueDate) || new Date(),
+        returnDate: fromPgDate(updated.returnDate),
         condition: updated.condition || undefined,
         fine: updated.fine ? Number(updated.fine) : undefined,
         status: updated.status || "returned",
@@ -1154,9 +1170,9 @@ export const libraryService = {
         bookId: i.bookId,
         studentId: i.studentId || undefined,
         staffId: i.staffId || undefined,
-        issueDate: i.issueDate,
-        dueDate: i.dueDate,
-        returnDate: i.returnDate || undefined,
+        issueDate: fromPgDate(i.issueDate) || new Date(),
+        dueDate: fromPgDate(i.dueDate) || new Date(),
+        returnDate: fromPgDate(i.returnDate),
         condition: i.condition || undefined,
         fine: i.fine ? Number(i.fine) : undefined,
         status: i.status || "issued",
@@ -1310,8 +1326,8 @@ export const transportService = {
         capacity: v.capacity,
         routeId: v.routeId || undefined,
         status: v.status || "active",
-        insuranceExpiry: v.insuranceExpiry || undefined,
-        fitnessExpiry: v.fitnessExpiry || undefined,
+        insuranceExpiry: fromPgDate(v.insuranceExpiry),
+        fitnessExpiry: fromPgDate(v.fitnessExpiry),
       }));
     } catch (error) {
       console.error("Error listing vehicles:", error);

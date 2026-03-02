@@ -131,7 +131,7 @@ export const changePasswordSchema = z
 // Search schema
 export const searchSchema = z.object({
   query: z.string().min(1, "Search query is required"),
-  filters: z.record(z.unknown()).optional(),
+  filters: z.record(z.string(), z.unknown()).optional(),
 });
 
 // Export type inference helpers
@@ -160,7 +160,7 @@ export function validateForm<T>(
   }
 
   const errors: Record<string, string> = {};
-  result.error.errors.forEach((error) => {
+  result.error.issues.forEach((error) => {
     const path = error.path.join(".");
     errors[path] = error.message;
   });
