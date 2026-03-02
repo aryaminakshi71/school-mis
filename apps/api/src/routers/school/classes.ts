@@ -5,6 +5,7 @@
  */
 
 import { z } from "zod";
+import { ClassesListResponseSchema } from "../../contracts/school.js";
 import { orgAuthed, pub } from "../../procedures/index.js";
 
 export const classesRouter = {
@@ -15,9 +16,9 @@ export const classesRouter = {
       summary: "Get all classes",
       tags: ["Classes"],
     })
-    .output(z.array(z.any()))
+    .output(ClassesListResponseSchema)
     .handler(async () => {
-      return [];
+      return { classes: [] };
     }),
 
   get: pub

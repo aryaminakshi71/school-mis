@@ -7,8 +7,9 @@
 import { randomUUID } from "crypto";
 import { classes, students } from "@school/storage";
 import { getOrCache } from "@school/storage/redis";
-import { and, desc, eq, like } from "drizzle-orm";
+import { and, desc, eq, like, sql } from "drizzle-orm";
 import { z } from "zod";
+import { StudentsListResponseSchema } from "../../contracts/school.js";
 import { getDb } from "../../lib/db.js";
 import { orgAuthed, pub } from "../../procedures/index.js";
 
@@ -30,17 +31,7 @@ export const studentsRouter = {
         limit: z.number().int().min(1).max(100).optional().default(20),
       }),
     )
-    .output(
-      z.object({
-        students: z.array(z.any()),
-        pagination: z.object({
-          page: z.number(),
-          limit: z.number(),
-          total: z.number(),
-          totalPages: z.number(),
-        }),
-      }),
-    )
+    .output(StudentsListResponseSchema)
     .handler(async ({ input }) => {
       const db = getDb();
       const { classId, sessionId, search, page, limit } = input;
@@ -84,13 +75,23 @@ export const studentsRouter = {
             .offset(offset);
 
           const [{ count }] = await db
-            .select({ count: students.id })
+            .select({ count: sql<number>`count(*)` })
             .from(students)
             .where(and(...conditions));
 
           return {
             students: allStudents.map((s) => ({
-              ...s,
+              id: s.id,
+              admissionNumber: s.admissionNumber ?? "",
+              firstName: s.firstName,
+              lastName: s.lastName,
+              email: s.email ?? "",
+              phone: s.phone ?? "",
+              className: s.className ?? "",
+              fatherName: s.fatherName ?? "",
+              fatherPhone: s.fatherPhone ?? "",
+              gender: s.gender ?? undefined,
+              createdAt: s.createdAt ? new Date(s.createdAt).toISOString() : "",
               status: s.status ? "active" : "inactive",
               rollNumber: s.admissionNumber
                 ? parseInt(s.admissionNumber.split("-").pop() || "0")

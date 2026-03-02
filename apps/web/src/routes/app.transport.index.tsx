@@ -96,12 +96,10 @@ function TransportPage() {
     try {
       setSubmitting(true);
       await api.transport.routes.create({
-        ...routeForm,
-        distance: routeForm.distance ? Number(routeForm.distance) : null,
-        estimatedTime: routeForm.estimatedTime
-          ? Number(routeForm.estimatedTime)
-          : null,
-        fare: routeForm.fare ? Number(routeForm.fare) : null,
+        routeName: routeForm.routeName,
+        startPoint: routeForm.startPoint,
+        endPoint: routeForm.endPoint,
+        distance: routeForm.distance ? Number(routeForm.distance) : undefined,
       });
       toast.success("Route added successfully");
       setIsRouteDialogOpen(false);
@@ -130,9 +128,16 @@ function TransportPage() {
 
     try {
       setSubmitting(true);
+      if (!vehicleForm.capacity) {
+        toast.error("Please provide vehicle capacity");
+        return;
+      }
+
       await api.transport.vehicles.create({
-        ...vehicleForm,
-        capacity: vehicleForm.capacity ? Number(vehicleForm.capacity) : null,
+        vehicleNumber: vehicleForm.vehicleNumber,
+        vehicleType: vehicleForm.vehicleType,
+        capacity: Number(vehicleForm.capacity),
+        routeId: vehicleForm.routeId || undefined,
       });
       toast.success("Vehicle added successfully");
       setIsVehicleDialogOpen(false);

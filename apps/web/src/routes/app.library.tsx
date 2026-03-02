@@ -120,7 +120,12 @@ function LibraryPage() {
     try {
       setSubmitting(true);
       await api.library.books.create({
-        ...bookForm,
+        title: bookForm.title,
+        author: bookForm.author,
+        isbn: bookForm.isbn || undefined,
+        category: bookForm.category || undefined,
+        publisher: bookForm.publisher || undefined,
+        location: bookForm.location || undefined,
         totalCopies: Number(bookForm.totalCopies),
         availableCopies: Number(bookForm.totalCopies),
       });

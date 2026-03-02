@@ -1,4 +1,6 @@
 export { attendanceService } from "./attendance.service";
+export { classesService, type Class } from "./classes.service";
+export { dashboardService, type DashboardStats } from "./dashboard.service";
 export { examsService } from "./exams.service";
 export {
   feesService,
@@ -19,3 +21,5 @@ export {
   type TransportRoute,
   type Vehicle,
 } from "./transport.service";
+export { studentsService, type Student } from "./students.service";
+export { teachersService, type Teacher } from "./teachers.service";

@@ -1,4 +1,2 @@
-import { api } from "./app.js";
-
-export default api;
-export type App = typeof api;
+export { api } from "./app";
+export * from "./contracts/school";

@@ -108,7 +108,10 @@ function ExpensesPage() {
 
     try {
       setSubmitting(true);
-      await api.expenses.create(formData);
+      await api.expenses.create({
+        ...formData,
+        amount: Number(formData.amount),
+      });
       toast.success("Expense added successfully");
       setIsDialogOpen(false);
 

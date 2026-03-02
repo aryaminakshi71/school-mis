@@ -7,6 +7,7 @@
 import { teachers } from "@school/storage";
 import { desc } from "drizzle-orm";
 import { z } from "zod";
+import { TeachersListResponseSchema } from "../../contracts/school.js";
 import { getDb } from "../../lib/db.js";
 import { orgAuthed, pub } from "../../procedures/index.js";
 
@@ -18,7 +19,7 @@ export const teachersRouter = {
       summary: "Get all teachers",
       tags: ["Teachers"],
     })
-    .output(z.object({ teachers: z.array(z.any()) }))
+    .output(TeachersListResponseSchema)
     .handler(async () => {
       const db = getDb();
       const allTeachers = await db
@@ -28,7 +29,15 @@ export const teachersRouter = {
 
       return {
         teachers: allTeachers.map((t) => ({
-          ...t,
+          id: t.id,
+          employeeId: t.employeeId ?? "",
+          firstName: t.firstName,
+          lastName: t.lastName,
+          email: t.email ?? "",
+          phone: t.phone ?? "",
+          qualification: t.qualification ?? "",
+          subject: t.subjectSpecialization ?? "",
+          createdAt: t.createdAt ? new Date(t.createdAt).toISOString() : "",
           status: t.status ? "active" : "inactive",
           salary: 45000 + Math.floor(Math.random() * 20000), // Mock salary
           attendance: 85 + Math.floor(Math.random() * 10), // Mock attendance
