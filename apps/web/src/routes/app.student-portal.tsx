@@ -526,12 +526,12 @@ function StudentPortal() {
                     <span
                       className={`rounded px-2 py-0.5 text-xs ${
                         subject.marks >= 90
-                          ? "bg-success/15 text-success"
+                          ? "bg-success/15 text-foreground"
                           : subject.marks >= 75
-                            ? "bg-primary/10 text-primary"
+                            ? "bg-primary/10 text-foreground"
                             : subject.marks >= 60
-                              ? "bg-warning/15 text-warning"
-                              : "bg-destructive/10 text-destructive"
+                              ? "bg-warning/15 text-foreground"
+                              : "bg-destructive/10 text-foreground"
                       }`}
                     >
                       {subject.grade}
@@ -621,8 +621,8 @@ function StudentPortal() {
                   <span
                     className={`rounded px-2 py-0.5 text-xs ${
                       hw.status === "submitted"
-                        ? "bg-success/15 text-success"
-                        : "bg-warning/15 text-warning"
+                        ? "bg-success/15 text-foreground"
+                        : "bg-warning/15 text-foreground"
                     }`}
                   >
                     {hw.status}
@@ -674,8 +674,8 @@ function StudentPortal() {
                   <span
                     className={`rounded px-2 py-0.5 text-xs ${
                       fee.status === "paid"
-                        ? "bg-success/15 text-success"
-                        : "bg-destructive/10 text-destructive"
+                        ? "bg-success/15 text-foreground"
+                        : "bg-destructive/10 text-foreground"
                     }`}
                   >
                     {fee.status === "paid"

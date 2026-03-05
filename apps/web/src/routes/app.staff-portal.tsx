@@ -326,13 +326,13 @@ function StaffPortal() {
                   </div>
                   <div className="grid grid-cols-2 gap-2">
                     <div className="rounded-lg bg-primary/5 p-2 text-center">
-                      <p className="font-bold text-lg text-primary">88.9%</p>
+                      <p className="font-bold text-foreground text-lg">88.9%</p>
                       <p className="text-muted-foreground text-xs">
                         Attendance
                       </p>
                     </div>
                     <div className="rounded-lg bg-primary/5 p-2 text-center">
-                      <p className="font-bold text-lg text-primary">4.2/5</p>
+                      <p className="font-bold text-foreground text-lg">4.2/5</p>
                       <p className="text-muted-foreground text-xs">Rating</p>
                     </div>
                     <div className="rounded-lg bg-warning/15 p-2 text-center">

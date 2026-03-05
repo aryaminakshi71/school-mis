@@ -279,7 +279,7 @@ export default function DashboardHome() {
               {stats.totalStudents.toLocaleString()}
             </div>
             <p className="mt-1 text-muted-foreground text-xs">
-              <span className="font-medium text-success">+12%</span> from last
+              <span className="font-medium text-foreground">+12%</span> from last
               month
             </p>
           </CardContent>
@@ -298,7 +298,7 @@ export default function DashboardHome() {
               {stats.todayAttendance}%
             </div>
             <p className="mt-1 text-muted-foreground text-xs">
-              <span className="font-medium text-success">+2.1%</span> from
+              <span className="font-medium text-foreground">+2.1%</span> from
               yesterday
             </p>
           </CardContent>
@@ -317,7 +317,7 @@ export default function DashboardHome() {
               ₹{(stats.monthlyFeeCollection / 100000).toFixed(1)}L
             </div>
             <p className="mt-1 text-muted-foreground text-xs">
-              <span className="font-medium text-success">+₹2.3L</span> this week
+              <span className="font-medium text-foreground">+₹2.3L</span> this week
             </p>
           </CardContent>
         </Card>
@@ -507,7 +507,7 @@ export default function DashboardHome() {
                     <span className="text-muted-foreground text-xs">
                       {event.date.split(" ")[0]}
                     </span>
-                    <span className="font-bold text-primary text-sm">
+                    <span className="font-bold text-foreground text-sm">
                       {event.date.split(" ")[1].replace(",", "")}
                     </span>
                   </div>
@@ -519,12 +519,12 @@ export default function DashboardHome() {
                       variant="outline"
                       className={`mt-1 ${
                         event.type === "exam"
-                          ? "border-destructive/30 text-destructive"
+                          ? "border-destructive/30 text-foreground"
                           : event.type === "meeting"
-                            ? "border-primary/20 text-primary"
+                            ? "border-primary/20 text-foreground"
                             : event.type === "event"
-                              ? "border-success/30 text-success"
-                              : "border-warning/30 text-warning"
+                              ? "border-success/30 text-foreground"
+                              : "border-warning/30 text-foreground"
                       }`}
                     >
                       {event.type.charAt(0).toUpperCase() + event.type.slice(1)}
