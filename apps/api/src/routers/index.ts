@@ -10,7 +10,7 @@ import * as schoolRouters from "./school/index.js";
 
 export const appRouter = {
   health: healthRouter,
-  // School Management Routers (19 features)
+  // School Management Routers (22 features)
   students: schoolRouters.studentsRouter,
   attendance: schoolRouters.attendanceRouter,
   classes: schoolRouters.classesRouter,
@@ -24,6 +24,7 @@ export const appRouter = {
   dailyWorks: schoolRouters.dailyWorksRouter,
   assignments: schoolRouters.assignmentsRouter,
   exams: schoolRouters.examsRouter,
+  expenses: schoolRouters.expensesRouter,
   reportCards: schoolRouters.reportCardsRouter,
   timetable: schoolRouters.timetableRouter,
   holidays: schoolRouters.holidaysRouter,
@@ -34,6 +35,10 @@ export const appRouter = {
   healthRecords: schoolRouters.healthRouter,
   sms: schoolRouters.smsRouter,
   directory: schoolRouters.directoryRouter,
+  // New features
+  chat: schoolRouters.chatRouter,
+  analytics: schoolRouters.analyticsRouter,
+  inventory: schoolRouters.inventoryRouter,
 };
 
 export type AppRouter = typeof appRouter;

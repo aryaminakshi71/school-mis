@@ -1136,3 +1136,144 @@ export const expenses = pgTable("expenses", {
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
+
+// Chat / Messaging Tables
+export const conversations = pgTable("conversations", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  type: varchar("type", { length: 20 }).default("direct"), // "direct" or "group"
+  name: text("name"), // group name
+  createdBy: uuid("created_by"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const conversationParticipants = pgTable("conversation_participants", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  conversationId: uuid("conversation_id").references(() => conversations.id, { onDelete: "cascade" }),
+  userId: uuid("user_id").notNull(),
+  role: varchar("role", { length: 20 }).default("member"), // "admin", "member"
+  joinedAt: timestamp("joined_at").defaultNow(),
+});
+
+export const messages = pgTable("messages", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  conversationId: uuid("conversation_id").references(() => conversations.id, { onDelete: "cascade" }),
+  senderId: uuid("sender_id").notNull(),
+  content: text("content").notNull(),
+  type: varchar("type", { length: 20 }).default("text"), // "text", "image", "file"
+  isRead: boolean("is_read").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Analytics Tables
+export const analyticsEvents = pgTable("analytics_events", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  eventType: varchar("event_type", { length: 50 }).notNull(),
+  entityType: varchar("entity_type", { length: 50 }), // "student", "teacher", "fee", etc.
+  entityId: uuid("entity_id"),
+  userId: uuid("user_id"),
+  metadata: json("metadata"), // Additional event data
+  timestamp: timestamp("timestamp").defaultNow(),
+});
+
+export const analyticsSummaries = pgTable("analytics_summaries", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  period: varchar("period", { length: 20 }).notNull(), // "daily", "weekly", "monthly", "yearly"
+  periodStart: date("period_start").notNull(),
+  periodEnd: date("period_end").notNull(),
+  metric: varchar("metric", { length: 50 }).notNull(),
+  value: decimal("value", { precision: 15, scale: 2 }).notNull(),
+  category: varchar("category", { length: 50 }),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Inventory Tables
+export const inventoryCategories = pgTable("inventory_categories", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  name: text("name").notNull(),
+  description: text("description"),
+  parentId: uuid("parent_id"), // For subcategories
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const inventoryItems = pgTable("inventory_items", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  categoryId: uuid("category_id").references(() => inventoryCategories.id),
+  name: text("name").notNull(),
+  description: text("description"),
+  sku: varchar("sku", { length: 50 }).unique(),
+  quantity: integer("quantity").default(0),
+  unit: varchar("unit", { length: 20 }).default("pcs"), // "pcs", "kg", "liters", etc.
+  minQuantity: integer("min_quantity").default(0), // Reorder threshold
+  unitPrice: decimal("unit_price", { precision: 10, scale: 2 }),
+  location: text("location"), // Storage location
+  supplier: text("supplier"),
+  status: varchar("status", { length: 20 }).default("active"), // "active", "discontinued"
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const inventoryTransactions = pgTable("inventory_transactions", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  itemId: uuid("item_id").references(() => inventoryItems.id, { onDelete: "cascade" }),
+  type: varchar("type", { length: 20 }).notNull(), // "purchase", "usage", "adjustment", "transfer"
+  quantity: integer("quantity").notNull(), // Positive for in, negative for out
+  unitPrice: decimal("unit_price", { precision: 10, scale: 2 }),
+  reference: text("reference"), // PO number, requisition, etc.
+  notes: text("notes"),
+  performedBy: uuid("performed_by"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Relations
+export const conversationsRelations = relations(conversations, ({ many }) => ({
+  participants: many(conversationParticipants),
+  messages: many(messages),
+}));
+
+export const conversationParticipantsRelations = relations(
+  conversationParticipants,
+  ({ one }) => ({
+    conversation: one(conversations, {
+      fields: [conversationParticipants.conversationId],
+      references: [conversations.id],
+    }),
+  })
+);
+
+export const messagesRelations = relations(messages, ({ one }) => ({
+  conversation: one(conversations, {
+    fields: [messages.conversationId],
+    references: [conversations.id],
+  }),
+}));
+
+export const analyticsEventsRelations = relations(analyticsEvents, () => ({}));
+export const analyticsSummariesRelations = relations(analyticsSummaries, () => ({}));
+
+export const inventoryCategoriesRelations = relations(
+  inventoryCategories,
+  ({ one, many }) => ({
+    parent: one(inventoryCategories, {
+      fields: [inventoryCategories.parentId],
+      references: [inventoryCategories.id],
+    }),
+    items: many(inventoryItems),
+  })
+);
+
+export const inventoryItemsRelations = relations(inventoryItems, ({ one, many }) => ({
+  category: one(inventoryCategories, {
+    fields: [inventoryItems.categoryId],
+    references: [inventoryCategories.id],
+  }),
+  transactions: many(inventoryTransactions),
+}));
+
+export const inventoryTransactionsRelations = relations(inventoryTransactions, ({ one }) => ({
+  item: one(inventoryItems, {
+    fields: [inventoryTransactions.itemId],
+    references: [inventoryItems.id],
+  }),
+}));
+
