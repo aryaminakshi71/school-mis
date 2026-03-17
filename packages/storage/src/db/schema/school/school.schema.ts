@@ -1,4 +1,4 @@
-import { relations } from "drizzle-orm";
+import { boolean, jsonb, relations, timestamp } from "drizzle-orm";
 import {
   boolean,
   date,
@@ -1172,7 +1172,7 @@ export const analyticsEvents = pgTable("analytics_events", {
   entityType: varchar("entity_type", { length: 50 }), // "student", "teacher", "fee", etc.
   entityId: uuid("entity_id"),
   userId: uuid("user_id"),
-  metadata: json("metadata"), // Additional event data
+  metadata: jsonb("metadata"), // Additional event data
   timestamp: timestamp("timestamp").defaultNow(),
 });
 
