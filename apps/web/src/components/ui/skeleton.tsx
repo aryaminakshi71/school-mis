@@ -14,7 +14,10 @@ export function Skeleton({ className, ...props }: SkeletonProps) {
 export function SkeletonText({
   lines = 3,
   className,
-}: { lines?: number; className?: string }) {
+}: {
+  lines?: number;
+  className?: string;
+}) {
   return (
     <div className={cn("space-y-2", className)}>
       {Array.from({ length: lines }).map((_, i) => (
@@ -43,7 +46,10 @@ export function SkeletonCard() {
 export function SkeletonTable({
   rows = 5,
   cols = 4,
-}: { rows?: number; cols?: number }) {
+}: {
+  rows?: number;
+  cols?: number;
+}) {
   return (
     <div className="overflow-hidden rounded-lg border bg-card">
       <div className="border-b bg-muted p-4">

@@ -59,7 +59,7 @@ function BlogPostPage() {
   const articleSchema = generateArticleSchema({
     headline: post.title,
     description: post.description,
-    authorName: post.author,
+    author: { name: post.author },
     datePublished: post.publishedAt,
     dateModified: post.updatedAt,
     url: `${siteUrl.replace(/\/$/, "")}/blog/${post.slug}`,

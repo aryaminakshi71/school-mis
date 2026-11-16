@@ -1,3 +1,7 @@
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+import QRCode from "qrcode";
+
 export type DocumentCategory =
   | "admission"
   | "report-card"
@@ -307,6 +311,223 @@ class DocumentService {
     return [...this.uploadQueue];
   }
 
+  // Generate PDF from HTML element
+  async generatePDF(
+    elementId: string,
+    filename: string,
+    options?: {
+      orientation?: "portrait" | "landscape";
+      format?: "a4" | "letter";
+    },
+  ) {
+    const element = document.getElementById(elementId);
+    if (!element) throw new Error("Element not found");
+
+    const canvas = await html2canvas(element, {
+      scale: 2,
+      useCORS: true,
+      logging: false,
+    });
+
+    const imgData = canvas.toDataURL("image/png");
+    const pdf = new jsPDF(
+      options?.orientation || "portrait",
+      "mm",
+      options?.format || "a4",
+    );
+
+    const imgProps = pdf.getImageProperties(imgData);
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+    pdf.save(`${filename}.pdf`);
+
+    return pdf;
+  }
+
+  // Generate Student ID Card PDF
+  async generateStudentIDCard(student: any) {
+    const doc = new jsPDF("portrait", "mm", "a4");
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const margin = 20;
+
+    // Header
+    doc.setFontSize(20);
+    doc.setTextColor(79, 70, 229);
+    doc.text("Student ID Card", pageWidth / 2, margin + 10, {
+      align: "center",
+    });
+
+    // Student Photo Placeholder
+    doc.setDrawColor(200, 200, 200);
+    doc.rect(margin, margin + 20, 40, 50);
+    doc.setFontSize(10);
+    doc.setTextColor(100, 100, 100);
+    doc.text("Photo", margin + 20, margin + 45, { align: "center" });
+
+    // Student Details
+    doc.setFontSize(12);
+    doc.setTextColor(0, 0, 0);
+    const detailsX = margin + 50;
+    let detailsY = margin + 25;
+
+    doc.text(
+      `Name: ${student.firstName} ${student.lastName}`,
+      detailsX,
+      detailsY,
+    );
+    detailsY += 8;
+    doc.text(`Admission No: ${student.admissionNumber}`, detailsX, detailsY);
+    detailsY += 8;
+    doc.text(`Class: ${student.className}`, detailsX, detailsY);
+    detailsY += 8;
+    doc.text(`Roll No: ${student.rollNumber}`, detailsX, detailsY);
+    detailsY += 8;
+    doc.text(`Blood Group: ${student.bloodGroup || "N/A"}`, detailsX, detailsY);
+    detailsY += 8;
+    doc.text(`Contact: ${student.phone || "N/A"}`, detailsX, detailsY);
+
+    // QR Code
+    const qrData = JSON.stringify({
+      id: student.id,
+      admissionNumber: student.admissionNumber,
+      type: "student",
+    });
+    const qrCanvas = document.createElement("canvas");
+    await QRCode.toCanvas(qrCanvas, qrData, { width: 50 });
+    const qrDataUrl = qrCanvas.toDataURL("image/png");
+    doc.addImage(
+      qrDataUrl,
+      "PNG",
+      pageWidth - margin - 50,
+      margin + 20,
+      50,
+      50,
+    );
+
+    // Footer
+    doc.setFontSize(10);
+    doc.setTextColor(100, 100, 100);
+    doc.text(
+      "This card is the property of the school. If found, please return to the school office.",
+      pageWidth / 2,
+      pageWidth - 20,
+      { align: "center" },
+    );
+
+    doc.save(`ID_Card_${student.admissionNumber}.pdf`);
+  }
+
+  // Generate Fee Receipt PDF
+  async generateFeeReceipt(receipt: any) {
+    const doc = new jsPDF("portrait", "mm", "a4");
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const margin = 20;
+
+    // Header
+    doc.setFontSize(18);
+    doc.setTextColor(79, 70, 229);
+    doc.text("FEE RECEIPT", pageWidth / 2, margin, { align: "center" });
+
+    // School Info
+    doc.setFontSize(10);
+    doc.setTextColor(100, 100, 100);
+    doc.text("School MIS", pageWidth / 2, margin + 8, { align: "center" });
+
+    // Receipt Details
+    doc.setFontSize(12);
+    doc.setTextColor(0, 0, 0);
+    let y = margin + 25;
+
+    doc.text(`Receipt No: ${receipt.receiptNumber}`, margin, y);
+    doc.text(
+      `Date: ${new Date(receipt.paymentDate).toLocaleDateString()}`,
+      pageWidth - margin - 50,
+      y,
+    );
+    y += 10;
+
+    doc.text(`Student Name: ${receipt.studentName}`, margin, y);
+    y += 10;
+    doc.text(`Class: ${receipt.className}`, margin, y);
+    y += 10;
+    doc.text(`Admission No: ${receipt.admissionNumber}`, margin, y);
+    y += 15;
+
+    // Line separator
+    doc.setDrawColor(200, 200, 200);
+    doc.line(margin, y, pageWidth - margin, y);
+    y += 10;
+
+    // Fee Details Table
+    doc.setFontSize(11);
+    doc.text("Fee Category", margin, y);
+    doc.text("Amount (₹)", pageWidth - margin - 30, y);
+    y += 8;
+
+    receipt.fees.forEach((fee: any) => {
+      doc.text(fee.category, margin, y);
+      doc.text(fee.amount.toFixed(2), pageWidth - margin - 30, y);
+      y += 6;
+    });
+
+    y += 5;
+    doc.line(margin, y, pageWidth - margin, y);
+    y += 10;
+
+    // Total
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "bold");
+    doc.text("Total Amount:", margin, y);
+    doc.text(`₹${receipt.totalAmount.toFixed(2)}`, pageWidth - margin - 30, y);
+    doc.setFont("helvetica", "normal");
+    y += 10;
+
+    doc.text(`Payment Method: ${receipt.paymentMethod}`, margin, y);
+    y += 10;
+    doc.text(`Transaction ID: ${receipt.transactionId || "N/A"}`, margin, y);
+
+    // Footer
+    doc.setFontSize(9);
+    doc.setTextColor(100, 100, 100);
+    doc.text(
+      "This is a computer generated receipt and does not require signature.",
+      pageWidth / 2,
+      280,
+      { align: "center" },
+    );
+
+    doc.save(`Fee_Receipt_${receipt.receiptNumber}.pdf`);
+  }
+
+  // Generate QR Code
+  async generateQRCode(
+    data: string,
+    options?: { width?: number; color?: string },
+  ) {
+    const canvas = document.createElement("canvas");
+    await QRCode.toCanvas(canvas, data, {
+      width: options?.width || 200,
+      color: {
+        dark: options?.color || "#000000",
+        light: "#ffffff",
+      },
+    });
+    return canvas.toDataURL("image/png");
+  }
+
+  // Generate Student QR ID
+  async generateStudentQR(studentId: string, admissionNumber: string) {
+    const data = JSON.stringify({
+      id: studentId,
+      admissionNumber,
+      type: "student",
+      timestamp: Date.now(),
+    });
+    return this.generateQRCode(data, { width: 300, color: "#4f46e5" });
+  }
+
   clearCompletedUploads() {
     this.uploadQueue = this.uploadQueue.filter((u) => u.status !== "completed");
   }
@@ -375,5 +596,5 @@ export function useDocuments() {
   };
 }
 
-export { formatFileSize, categoryLabels, categoryIcons };
+export { categoryIcons, categoryLabels, formatFileSize };
 export default documentService;

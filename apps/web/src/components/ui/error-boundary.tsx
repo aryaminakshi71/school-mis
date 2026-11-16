@@ -99,5 +99,5 @@ class ErrorBoundary extends React.Component<
   }
 }
 
-export { ErrorBoundary };
 export type { ErrorBoundaryProps, ErrorBoundaryState };
+export { ErrorBoundary };

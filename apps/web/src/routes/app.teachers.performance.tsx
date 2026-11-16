@@ -6,8 +6,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { api } from "@/lib/api";
 import { exportToCSV } from "@/lib/export-utils";
 import { useSearch } from "@/lib/search-utils";
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import {
   AlertCircle,
@@ -50,110 +52,16 @@ const subFeatures = [
   },
   { name: "Training", href: "/app/teachers/training", icon: Award },
 ];
-
-// Mock data for performance evaluations
-const performanceData = [
-  {
-    id: "EMP-001",
-    name: "Ramesh Kumar",
-    designation: "Senior Teacher",
-    department: "Mathematics",
-    rating: 4.8,
-    studentsFeedback: 4.7,
-    peerReview: 4.9,
-    attendance: 96,
-    lastAppraisal: "2025-07-15",
-    nextAppraisal: "2026-07-15",
-    status: "excellent",
-  },
-  {
-    id: "EMP-002",
-    name: "Priya Sharma",
-    designation: "Teacher",
-    department: "Science",
-    rating: 4.5,
-    studentsFeedback: 4.6,
-    peerReview: 4.4,
-    attendance: 98,
-    lastAppraisal: "2025-08-20",
-    nextAppraisal: "2026-08-20",
-    status: "good",
-  },
-  {
-    id: "EMP-003",
-    name: "Amit Patel",
-    designation: "Head of Department",
-    department: "English",
-    rating: 4.2,
-    studentsFeedback: 4.0,
-    peerReview: 4.3,
-    attendance: 94,
-    lastAppraisal: "2025-06-10",
-    nextAppraisal: "2026-06-10",
-    status: "average",
-  },
-  {
-    id: "EMP-004",
-    name: "Sneha Gupta",
-    designation: "Teacher",
-    department: "Mathematics",
-    rating: 4.9,
-    studentsFeedback: 4.9,
-    peerReview: 4.8,
-    attendance: 99,
-    lastAppraisal: "2025-09-01",
-    nextAppraisal: "2026-09-01",
-    status: "excellent",
-  },
-  {
-    id: "EMP-005",
-    name: "Vikram Singh",
-    designation: "Teacher",
-    department: "Sports",
-    rating: 3.8,
-    studentsFeedback: 3.9,
-    peerReview: 3.7,
-    attendance: 88,
-    lastAppraisal: "2025-05-25",
-    nextAppraisal: "2026-05-25",
-    status: "needs_improvement",
-  },
-];
-
-// Mock data for appraisal cycles
-const appraisalCycles = [
-  {
-    id: "AP-2026-Q1",
-    name: "Annual Appraisal 2026",
-    startDate: "2026-01-01",
-    endDate: "2026-03-31",
-    status: "active",
-    completed: 25,
-    total: 50,
-  },
-  {
-    id: "AP-2025-Q4",
-    name: "Quarterly Review Q4 2025",
-    startDate: "2025-10-01",
-    endDate: "2025-12-31",
-    status: "completed",
-    completed: 48,
-    total: 48,
-  },
-  {
-    id: "AP-2025-Q3",
-    name: "Quarterly Review Q3 2025",
-    startDate: "2025-07-01",
-    endDate: "2025-09-30",
-    status: "completed",
-    completed: 46,
-    total: 46,
-  },
-];
-
 function PerformancePage() {
   const [activeTab, setActiveTab] = useState("evaluations");
   const [selectedRating, setSelectedRating] = useState("all");
+  const { data, isLoading } = useQuery({
+    queryKey: ["teachers", "performance"],
+    queryFn: api.teachers.getPerformance,
+  });
+
+  const performanceData = data?.performance || [];
+  const appraisalCycles = data?.appraisalCycles || [];
 
   const {
     searchQuery,
@@ -256,6 +164,14 @@ function PerformancePage() {
       color: "blue",
     },
   ];
+
+  if (isLoading) {
+    return (
+      <div className="flex h-96 items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

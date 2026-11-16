@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { AnalyticsDashboard } from "../components/analytics-dashboard";
 import { Button } from "../components/ui/button";
 import {
   Card,
@@ -18,6 +19,12 @@ import {
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "../components/ui/tabs";
 import { api } from "../lib/api";
 import { useAuth } from "../lib/auth-context";
 import { exportToCSV } from "../lib/export-utils";
@@ -258,172 +265,185 @@ function ReportsPage() {
           Reports & Analytics
         </h1>
         <p className="text-muted-foreground">
-          Generate and download various school reports
+          Generate reports and view analytics dashboard
         </p>
       </div>
 
-      <div className="mb-6 flex gap-4">
-        <Button variant="outline">
-          <Filter className="mr-2 h-4 w-4" />
-          Filters
-        </Button>
-        <Button variant="outline">
-          <Calendar className="mr-2 h-4 w-4" />
-          Date Range
-        </Button>
-        <Button variant="outline">
-          <Download className="mr-2 h-4 w-4" />
-          Export All
-        </Button>
-      </div>
+      <Tabs defaultValue="analytics" className="space-y-6">
+        <TabsList>
+          <TabsTrigger value="analytics">Analytics Dashboard</TabsTrigger>
+          <TabsTrigger value="reports">Reports</TabsTrigger>
+        </TabsList>
 
-      <div className="mb-6 grid gap-4 md:grid-cols-4">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="font-medium text-muted-foreground text-sm">
-              Total Reports
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-2">
-              <BarChart3 className="h-8 w-8 text-primary" />
-              <span className="font-bold text-2xl">156</span>
-            </div>
-          </CardContent>
-        </Card>
+        <TabsContent value="analytics" className="space-y-6">
+          <AnalyticsDashboard />
+        </TabsContent>
 
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="font-medium text-muted-foreground text-sm">
-              Generated This Month
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-2">
-              <TrendingUp className="h-8 w-8 text-success" />
-              <span className="font-bold text-2xl">24</span>
-            </div>
-          </CardContent>
-        </Card>
+        <TabsContent value="reports" className="space-y-6">
+          <div className="flex gap-4">
+            <Button variant="outline">
+              <Filter className="mr-2 h-4 w-4" />
+              Filters
+            </Button>
+            <Button variant="outline">
+              <Calendar className="mr-2 h-4 w-4" />
+              Date Range
+            </Button>
+            <Button variant="outline">
+              <Download className="mr-2 h-4 w-4" />
+              Export All
+            </Button>
+          </div>
 
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="font-medium text-muted-foreground text-sm">
-              Reports Downloaded
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-2">
-              <Download className="h-8 w-8 text-primary" />
-              <span className="font-bold text-2xl">89</span>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="font-medium text-muted-foreground text-sm">
-              Scheduled Reports
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-2">
-              <Calendar className="h-8 w-8 text-warning" />
-              <span className="font-bold text-2xl">5</span>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="grid gap-6 lg:grid-cols-2">
-        {reportCategories.map((category, idx) => (
-          <Card key={idx}>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <div
-                  className={`flex h-8 w-8 items-center justify-center rounded-lg ${category.color}`}
-                >
-                  <category.icon className="h-4 w-4" />
+          <div className="grid gap-4 md:grid-cols-4">
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="font-medium text-muted-foreground text-sm">
+                  Total Reports
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center gap-2">
+                  <BarChart3 className="h-8 w-8 text-primary" />
+                  <span className="font-bold text-2xl">156</span>
                 </div>
-                {category.title}
-              </CardTitle>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="font-medium text-muted-foreground text-sm">
+                  Generated This Month
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center gap-2">
+                  <TrendingUp className="h-8 w-8 text-success" />
+                  <span className="font-bold text-2xl">24</span>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="font-medium text-muted-foreground text-sm">
+                  Reports Downloaded
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center gap-2">
+                  <Download className="h-8 w-8 text-primary" />
+                  <span className="font-bold text-2xl">89</span>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="font-medium text-muted-foreground text-sm">
+                  Scheduled Reports
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-8 w-8 text-warning" />
+                  <span className="font-bold text-2xl">5</span>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="grid gap-6 lg:grid-cols-2">
+            {reportCategories.map((category, idx) => (
+              <Card key={idx}>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <div
+                      className={`flex h-8 w-8 items-center justify-center rounded-lg ${category.color}`}
+                    >
+                      <category.icon className="h-4 w-4" />
+                    </div>
+                    {category.title}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    {category.reports.map((report, rIdx) => (
+                      <button
+                        key={rIdx}
+                        onClick={() =>
+                          handleGenerateReport(report.name, report.type)
+                        }
+                        disabled={loading}
+                        className="flex w-full items-center justify-between rounded-lg bg-muted p-3 text-left transition-colors hover:bg-muted disabled:opacity-50"
+                      >
+                        <div>
+                          <p className="font-medium text-sm">{report.name}</p>
+                          <p className="text-muted-foreground text-xs">
+                            {report.description}
+                          </p>
+                        </div>
+                        <Download className="h-4 w-4 text-muted-foreground" />
+                      </button>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Recent Reports</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-2">
-                {category.reports.map((report, rIdx) => (
-                  <button
-                    key={rIdx}
-                    onClick={() =>
-                      handleGenerateReport(report.name, report.type)
-                    }
-                    disabled={loading}
-                    className="flex w-full items-center justify-between rounded-lg bg-muted p-3 text-left transition-colors hover:bg-muted disabled:opacity-50"
+              <div className="space-y-3">
+                {recentReports.map((report, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-center justify-between rounded-lg bg-muted p-3"
                   >
-                    <div>
-                      <p className="font-medium text-sm">{report.name}</p>
-                      <p className="text-muted-foreground text-xs">
-                        {report.description}
-                      </p>
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={`flex h-10 w-10 items-center justify-center rounded-lg ${
+                          report.type === "finance"
+                            ? "bg-success/15"
+                            : report.type === "student"
+                              ? "bg-primary/10"
+                              : report.type === "academic"
+                                ? "bg-primary/10"
+                                : "bg-warning/15"
+                        }`}
+                      >
+                        <BarChart3
+                          className={`h-5 w-5 ${
+                            report.type === "finance"
+                              ? "text-success"
+                              : report.type === "student"
+                                ? "text-primary"
+                                : report.type === "academic"
+                                  ? "text-primary"
+                                  : "text-warning"
+                          }`}
+                        />
+                      </div>
+                      <div>
+                        <p className="font-medium text-sm">{report.name}</p>
+                        <p className="text-muted-foreground text-xs">
+                          Generated on {report.date} • {report.size}
+                        </p>
+                      </div>
                     </div>
-                    <Download className="h-4 w-4 text-muted-foreground" />
-                  </button>
+                    <Button variant="ghost" size="sm">
+                      <Download className="h-4 w-4" />
+                    </Button>
+                  </div>
                 ))}
               </div>
             </CardContent>
           </Card>
-        ))}
-      </div>
-
-      <Card className="mt-6">
-        <CardHeader>
-          <CardTitle>Recent Reports</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            {recentReports.map((report, idx) => (
-              <div
-                key={idx}
-                className="flex items-center justify-between rounded-lg bg-muted p-3"
-              >
-                <div className="flex items-center gap-3">
-                  <div
-                    className={`flex h-10 w-10 items-center justify-center rounded-lg ${
-                      report.type === "finance"
-                        ? "bg-success/15"
-                        : report.type === "student"
-                          ? "bg-primary/10"
-                          : report.type === "academic"
-                            ? "bg-primary/10"
-                            : "bg-warning/15"
-                    }`}
-                  >
-                    <BarChart3
-                      className={`h-5 w-5 ${
-                        report.type === "finance"
-                          ? "text-success"
-                          : report.type === "student"
-                            ? "text-primary"
-                            : report.type === "academic"
-                              ? "text-primary"
-                              : "text-warning"
-                      }`}
-                    />
-                  </div>
-                  <div>
-                    <p className="font-medium text-sm">{report.name}</p>
-                    <p className="text-muted-foreground text-xs">
-                      Generated on {report.date} • {report.size}
-                    </p>
-                  </div>
-                </div>
-                <Button variant="ghost" size="sm">
-                  <Download className="h-4 w-4" />
-                </Button>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

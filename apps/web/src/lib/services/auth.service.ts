@@ -1,6 +1,5 @@
 import { createHmac, randomBytes } from "crypto";
-import { db } from "@school/storage";
-import { userPasswords, userSessions, users } from "@school/storage";
+import { db, userPasswords, userSessions, users } from "@school/storage";
 import { and, eq } from "drizzle-orm";
 import { SignJWT, jwtVerify } from "jose";
 
@@ -168,7 +167,7 @@ export const authService = {
           email: user.email,
           name: user.name,
           role: user.role as UserRole,
-          avatar: user.avatar || undefined,
+          avatar: user.image || undefined,
           phone: user.phone || undefined,
           studentId: user.studentId || undefined,
           childId: user.childId || undefined,
@@ -242,7 +241,7 @@ export const authService = {
           email: user.email,
           name: user.name,
           role: user.role as UserRole,
-          avatar: user.avatar || undefined,
+          avatar: user.image || undefined,
           phone: user.phone || undefined,
         },
         accessToken: newAccessToken,
@@ -282,7 +281,7 @@ export const authService = {
       email: user.email,
       name: user.name,
       role: user.role as UserRole,
-      avatar: user.avatar || undefined,
+      avatar: user.image || undefined,
       phone: user.phone || undefined,
       studentId: user.studentId || undefined,
       childId: user.childId || undefined,

@@ -1,0 +1,46 @@
+{
+  "items": [
+    {
+      "id": "inv-1",
+      "name": "Textbooks Class 9",
+      "category": "Books",
+      "quantity": 150,
+      "unit": "pcs",
+      "threshold": 50,
+      "price": 450,
+      "status": "in-stock",
+      "createdAt": "2026-03-01T09:00:00.000Z"
+    },
+    {
+      "id": "inv-2",
+      "name": "Whiteboard Markers",
+      "category": "Stationery",
+      "quantity": 45,
+      "unit": "boxes",
+      "threshold": 60,
+      "price": 120,
+      "status": "low-stock",
+      "createdAt": "2026-03-02T09:00:00.000Z"
+    }
+  ],
+  "orders": [
+    {
+      "id": "po-1",
+      "supplier": "Book Distributors",
+      "items": 100,
+      "amount": 45000,
+      "status": "delivered",
+      "date": "2026-03-03",
+      "notes": "Annual textbook replenishment"
+    },
+    {
+      "id": "po-2",
+      "supplier": "Stationery Mart",
+      "items": 12,
+      "amount": 12500,
+      "status": "pending",
+      "date": "2026-03-05",
+      "notes": "Weekly classroom stock refill"
+    }
+  ]
+}

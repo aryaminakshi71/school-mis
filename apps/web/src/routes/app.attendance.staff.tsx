@@ -6,8 +6,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { api } from "@/lib/api";
 import { exportToCSV } from "@/lib/export-utils";
 import { useSearch } from "@/lib/search-utils";
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import {
   AlertTriangle,
@@ -27,6 +29,25 @@ import {
 import { useState } from "react";
 import { toast } from "sonner";
 
+interface StaffMember {
+  id: string;
+  name: string;
+  designation: string;
+  department: string;
+  todayStatus?: string;
+  percentage?: number;
+  present?: number;
+  absent?: number;
+  leave?: number;
+  checkIn?: string;
+  checkOut?: string;
+  status?: string;
+}
+
+interface AttendanceData {
+  attendance: StaffMember[];
+}
+
 export const Route = createFileRoute("/app/attendance/staff")({
   component: StaffAttendancePage,
 });
@@ -45,83 +66,24 @@ const subFeatures = [
   { name: "Alerts", href: "/app/attendance/alerts", icon: AlertTriangle },
 ];
 
-// Mock data for staff attendance
-const staffAttendance = [
-  {
-    id: "EMP-001",
-    name: "Ramesh Kumar",
-    designation: "Senior Teacher",
-    department: "Mathematics",
-    present: 23,
-    absent: 1,
-    leave: 1,
-    percentage: 96,
-    status: "regular",
-    todayStatus: "Present",
-    checkIn: "08:45 AM",
-  },
-  {
-    id: "EMP-002",
-    name: "Priya Sharma",
-    designation: "Teacher",
-    department: "Science",
-    present: 24,
-    absent: 0,
-    leave: 1,
-    percentage: 100,
-    status: "excellent",
-    todayStatus: "Present",
-    checkIn: "08:30 AM",
-  },
-  {
-    id: "EMP-003",
-    name: "Amit Patel",
-    designation: "Head of Department",
-    department: "English",
-    present: 22,
-    absent: 2,
-    leave: 1,
-    percentage: 92,
-    status: "regular",
-    todayStatus: "Present",
-    checkIn: "09:00 AM",
-  },
-  {
-    id: "EMP-004",
-    name: "Sneha Gupta",
-    designation: "Teacher",
-    department: "Mathematics",
-    present: 20,
-    absent: 3,
-    leave: 2,
-    percentage: 88,
-    status: "warning",
-    todayStatus: "On Leave",
-    checkIn: "-",
-  },
-  {
-    id: "EMP-005",
-    name: "Vikram Singh",
-    designation: "Physical Education",
-    department: "Sports",
-    present: 24,
-    absent: 1,
-    leave: 0,
-    percentage: 98,
-    status: "excellent",
-    todayStatus: "Present",
-    checkIn: "08:15 AM",
-  },
-];
+const departmentOptions = ["All Departments"];
 
-const departmentOptions = [
-  "All Departments",
-  "Mathematics",
-  "Science",
-  "English",
-  "Sports",
-  "Administration",
-];
+function mapDepartments(data: any[]) {
+  const departments = new Set<string>();
+  data.forEach((d) => {
+    if (d.department) departments.add(d.department);
+  });
+  return ["All Departments", ...Array.from(departments).sort()];
+}
+
+function formatPercentage(value: number | undefined) {
+  return value && Number.isFinite(value) ? value : 0;
+}
+
+function formatAttendanceStatus(value: string) {
+  if (!value) return "Absent";
+  return value;
+}
 
 function StaffAttendancePage() {
   const [selectedDepartment, setSelectedDepartment] =
@@ -130,13 +92,26 @@ function StaffAttendancePage() {
     new Date().toISOString().split("T")[0],
   );
 
+  const { data: attendanceData, isLoading } = useQuery<AttendanceData>({
+    queryKey: ["staff-attendance"],
+    queryFn: async () => {
+      const data = await api.staff.getAttendance();
+      return data as AttendanceData;
+    },
+  });
+
+  const staffAttendance = attendanceData?.attendance || [];
+  const departments = attendanceData
+    ? mapDepartments(staffAttendance)
+    : departmentOptions;
+
   const {
     searchQuery,
     setSearchQuery,
     filteredData: filteredStaff,
     hasActiveFilters,
     clearSearch,
-  } = useSearch({
+  } = useSearch<StaffMember>({
     data: staffAttendance,
     searchFields: ["name", "id", "designation", "department"],
     searchQuery: "",
@@ -153,6 +128,16 @@ function StaffAttendancePage() {
   const onLeaveToday = filteredByDept.filter(
     (s) => s.todayStatus === "On Leave",
   ).length;
+
+  const avgAttendance =
+    filteredByDept.length > 0
+      ? Math.round(
+          filteredByDept.reduce(
+            (sum, s) => sum + formatPercentage(s.percentage),
+            0,
+          ) / filteredByDept.length,
+        )
+      : 0;
 
   const handleExport = () => {
     const exportData = filteredByDept.map((s) => ({
@@ -200,12 +185,20 @@ function StaffAttendancePage() {
     },
     {
       title: "Avg Attendance",
-      value: "94%",
+      value: `${avgAttendance}%`,
       change: "This month",
       icon: TrendingUp,
       color: "purple",
     },
   ];
+
+  if (isLoading) {
+    return (
+      <div className="flex h-96 items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -299,7 +292,7 @@ function StaffAttendancePage() {
             onChange={(e) => setSelectedDepartment(e.target.value)}
             className="flex h-10 w-[180px] items-center justify-between rounded-lg border border-input bg-card px-3 py-2 text-sm"
           >
-            {departmentOptions.map((d) => (
+            {departments.map((d) => (
               <option key={d} value={d}>
                 {d}
               </option>
@@ -358,14 +351,14 @@ function StaffAttendancePage() {
                     <td className="py-3">
                       <Badge
                         variant={
-                          staff.percentage >= 95
+                          (staff.percentage || 0) >= 95
                             ? "success"
-                            : staff.percentage >= 90
+                            : (staff.percentage || 0) >= 90
                               ? "default"
                               : "warning"
                         }
                       >
-                        {staff.percentage}%
+                        {staff.percentage || 0}%
                       </Badge>
                     </td>
                     <td className="py-3">

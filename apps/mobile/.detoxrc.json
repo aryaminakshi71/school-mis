@@ -1,0 +1,20 @@
+{
+  "testEnvironment": "./environment",
+  "specs": "e2e",
+  "configurations": {
+    "ios.simulator": {
+      "type": "ios.simulator",
+      "device": {
+        "id": "iPhone 16",
+        "platformType": "simulator"
+      }
+    },
+    "android.emulator": {
+      "type": "android.emulator",
+      "device": {
+        "id": "Pixel_9_API_34",
+        "platformType": "emulator"
+      }
+    }
+  }
+}

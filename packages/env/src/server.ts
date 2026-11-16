@@ -20,6 +20,8 @@ const serverSchema = clientSchema.extend({
     .min(32, "BETTER_AUTH_SECRET must be at least 32 characters")
     .optional(),
   BETTER_AUTH_URL: z.string().url().optional(),
+  BETTER_AUTH_BASE_PATH: z.string().optional(),
+  BETTER_AUTH_TRUSTED_ORIGINS: z.string().optional(),
 
   // OAuth Providers
   GOOGLE_CLIENT_ID: z.string().optional(),

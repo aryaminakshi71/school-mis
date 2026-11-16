@@ -26,10 +26,11 @@ import {
   X,
 } from "lucide-react";
 import * as React from "react";
-import { useAuth } from "../../lib/auth-context";
-import { cn } from "../../lib/utils";
-import { Avatar, AvatarFallback } from "../ui/avatar";
-import { Button } from "../ui/button";
+import { useAuth } from "../lib/auth-context";
+import { cn } from "../lib/utils";
+import { ModeToggle } from "./theme-provider";
+import { Avatar, AvatarFallback } from "./ui/avatar";
+import { Button } from "./ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -37,7 +38,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
+} from "./ui/dropdown-menu";
 
 interface NavItem {
   title: string;
@@ -123,15 +124,23 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const currentPath =
     typeof window !== "undefined" ? window.location.pathname : "";
 
-  const getBreadcrumbs = () => {
+  const getBreadcrumbs = (): Array<{
+    title: string;
+    href: string;
+    icon?: React.ElementType;
+  }> => {
     const paths = currentPath.split("/").filter(Boolean);
     if (paths.length === 0) return [];
 
-    const breadcrumbs = [{ title: "Home", href: "/app", icon: Home }];
+    const breadcrumbs: Array<{
+      title: string;
+      href: string;
+      icon?: React.ElementType;
+    }> = [{ title: "Home", href: "/app", icon: Home }];
 
     const moduleMap: Record<
       string,
-      { title: string; icon: React.ElementType }
+      { title: string; icon?: React.ElementType }
     > = {
       students: { title: "Students", icon: Users },
       teachers: { title: "Staff", icon: GraduationCap },
@@ -407,6 +416,9 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 <Plus className="mr-1 h-4 w-4" />
                 Quick Add
               </Button>
+
+              {/* Dark Mode Toggle */}
+              <ModeToggle />
 
               {/* Notifications */}
               <DropdownMenu>

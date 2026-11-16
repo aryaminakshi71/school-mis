@@ -17,10 +17,7 @@
       "school.attendance.updated",
       "school.ai.performance_predicted"
     ],
-    "subscribed": [
-      "fees.payment.received",
-      "notifications.dispatch.requested"
-    ]
+    "subscribed": ["fees.payment.received", "notifications.dispatch.requested"]
   },
   "ai": {
     "assistant": {
@@ -31,9 +28,7 @@
       "school-attendance-alert-agent",
       "school-fee-followup-agent"
     ],
-    "analyticsAgent": [
-      "school-performance-insights-agent"
-    ],
+    "analyticsAgent": ["school-performance-insights-agent"],
     "guardrails": {
       "dataClass": "pii"
     }

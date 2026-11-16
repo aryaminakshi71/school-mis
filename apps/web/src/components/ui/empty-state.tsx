@@ -47,5 +47,5 @@ function EmptyState({
   );
 }
 
-export { EmptyState };
 export type { EmptyStateProps };
+export { EmptyState };

@@ -303,6 +303,45 @@ class AnalyticsService {
     return this.mockData.library;
   }
 
+  // Helper methods for dashboard transformations
+  getAttendanceTrends(attendanceData: any[]) {
+    return {
+      averageRate: this.mockData.attendance.overallRate,
+      trend: "up" as const,
+      percentage: 2.5,
+      monthly: this.mockData.attendance.monthlyTrend,
+      byClass: this.mockData.attendance.classWiseRate,
+    };
+  }
+
+  getGradeDistribution(gradesData: any[]) {
+    return {
+      distribution: this.mockData.exams.gradeDistribution,
+      grades: this.mockData.exams.gradeDistribution,
+      bySubject: this.mockData.exams.subjectWisePerformance,
+    };
+  }
+
+  getFeeCollectionTrends(feesData: any[]) {
+    return {
+      totalCollected: this.mockData.fees.totalCollection,
+      collectionRate: this.mockData.fees.collectionRate,
+      monthly: this.mockData.fees.monthlyCollection,
+      outstanding: this.mockData.fees.classWiseCollection.map((c) => ({
+        class: c.class,
+        amount: c.pending,
+      })),
+    };
+  }
+
+  getStudentGrowthTrends(studentsData: any[]) {
+    return {
+      trend: "up" as const,
+      percentage: 4.2,
+      monthly: this.mockData.students.monthlyTrend,
+    };
+  }
+
   getFullAnalytics(): AnalyticsData {
     return this.mockData;
   }
@@ -509,6 +548,15 @@ export function useAnalytics() {
     exportToPDF: analyticsService.exportToPDF.bind(analyticsService),
     exportToExcel: analyticsService.exportToExcel.bind(analyticsService),
     generateReport: analyticsService.generateReport.bind(analyticsService),
+    // Dashboard helper methods
+    getAttendanceTrends:
+      analyticsService.getAttendanceTrends.bind(analyticsService),
+    getGradeDistribution:
+      analyticsService.getGradeDistribution.bind(analyticsService),
+    getFeeCollectionTrends:
+      analyticsService.getFeeCollectionTrends.bind(analyticsService),
+    getStudentGrowthTrends:
+      analyticsService.getStudentGrowthTrends.bind(analyticsService),
   };
 }
 

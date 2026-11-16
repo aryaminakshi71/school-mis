@@ -1,25 +1,25 @@
 export { attendanceService } from "./attendance.service";
-export { classesService, type Class } from "./classes.service";
-export { dashboardService, type DashboardStats } from "./dashboard.service";
+export { type Class, classesService } from "./classes.service";
+export { type DashboardStats, dashboardService } from "./dashboard.service";
 export { examsService } from "./exams.service";
 export {
-  feesService,
   type FeePayment,
   type FeePaymentCreateInput,
+  feesService,
   mapFeePaymentRow,
 } from "./fees.service";
 export {
+  type BookIssue,
+  type BookIssueRow,
+  type LibraryBook,
   libraryService,
   mapBookIssueRow,
-  type BookIssueRow,
-  type BookIssue,
-  type LibraryBook,
 } from "./library.service";
+export { type Student, studentsService } from "./students.service";
+export { type Teacher, teachersService } from "./teachers.service";
 export {
-  transportService,
   type GPSLocation,
   type TransportRoute,
+  transportService,
   type Vehicle,
 } from "./transport.service";
-export { studentsService, type Student } from "./students.service";
-export { teachersService, type Teacher } from "./teachers.service";

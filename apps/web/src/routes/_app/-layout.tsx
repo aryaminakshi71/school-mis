@@ -2,6 +2,9 @@
  * App Layout - Consistent UI with Sidebar & Breadcrumbs
  */
 
+import { AIAssistant } from "@/components/ai-assistant";
+import { GlobalSearch } from "@/components/global-search";
+import { NotificationCenter } from "@/components/notification-center";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,10 +17,11 @@ import {
 import { useAuth } from "@/lib/auth-context";
 import { cn } from "@/lib/utils";
 import { Link, Outlet, useLocation, useNavigate } from "@tanstack/react-router";
-import { ArrowLeft } from "lucide-react";
 import {
+  ArrowLeft,
   BarChart3,
   BookOpen,
+  Bot,
   Bus,
   Calendar,
   ChevronRight,
@@ -159,6 +163,7 @@ export default function AppLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [aiAssistantOpen, setAiAssistantOpen] = useState(false);
   const breadcrumbs = getBreadcrumbs(location.pathname);
 
   useEffect(() => {
@@ -370,6 +375,10 @@ export default function AppLayout() {
 
           <div className="flex-1" />
 
+          <GlobalSearch />
+
+          <NotificationCenter />
+
           <button
             className={cn(
               "hidden items-center gap-2 text-muted-foreground text-sm hover:text-foreground md:flex",
@@ -398,6 +407,21 @@ export default function AppLayout() {
           </div>
         </main>
       </div>
+
+      {/* AI Assistant Button */}
+      <Button
+        onClick={() => setAiAssistantOpen(true)}
+        className="fixed right-4 bottom-4 h-12 w-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg hover:from-purple-600 hover:to-pink-600"
+        size="sm"
+      >
+        <Bot className="h-6 w-6" />
+      </Button>
+
+      {/* AI Assistant */}
+      <AIAssistant
+        isOpen={aiAssistantOpen}
+        onClose={() => setAiAssistantOpen(false)}
+      />
     </div>
   );
 }

@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import { Link, createFileRoute } from "@tanstack/react-router";
 import {
   ArrowLeft,
@@ -12,7 +13,7 @@ import {
   UserPlus,
   Users,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../components/ui/button";
 import {
   Card,
@@ -20,6 +21,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
+import { api } from "../lib/api";
 import { useAuth } from "../lib/auth-context";
 
 export const Route = createFileRoute("/app/teacher-portal")({
@@ -28,7 +30,7 @@ export const Route = createFileRoute("/app/teacher-portal")({
 
 function TeacherPortal() {
   const { user, hasRole } = useAuth();
-  const [selectedClass, setSelectedClass] = useState("Class 9-A");
+  const [selectedClassId, setSelectedClassId] = useState<string | null>(null);
 
   if (!hasRole(["teacher", "admin"])) {
     return (
@@ -46,126 +48,134 @@ function TeacherPortal() {
     );
   }
 
-  const mockTeacher = {
-    name: user?.name || "John Smith",
-    qualification: "M.Sc Mathematics, B.Ed",
-    subjects: ["Mathematics", "Physics"],
-    classes: ["Class 9-A", "Class 10-B", "Class 11-A"],
-    experience: "8 years",
-    email: "john.smith@school.com",
-    phone: "+91 98765 43210",
-  };
+  // Fetch teacher profile
+  const { data: teacherProfile, isLoading: profileLoading } = useQuery({
+    queryKey: ["teacher-profile"],
+    queryFn: async () => {
+      const data = await api.teachers.getMyProfile();
+      return data;
+    },
+  });
 
-  const mockStudents = [
-    { id: "1", name: "Rahul Sharma", rollNumber: "ADM-001", attendance: 93 },
-    { id: "2", name: "Priya Patel", rollNumber: "ADM-002", attendance: 97 },
-    { id: "3", name: "Amit Kumar", rollNumber: "ADM-003", attendance: 85 },
-    { id: "4", name: "Sneha Gupta", rollNumber: "ADM-004", attendance: 91 },
-    { id: "5", name: "Vikash Singh", rollNumber: "ADM-005", attendance: 88 },
-  ];
+  // Fetch teacher's classes
+  const { data: teacherClasses, isLoading: classesLoading } = useQuery({
+    queryKey: ["teacher-classes"],
+    queryFn: async () => {
+      const data = await api.teachers.getMyClasses();
+      return (data as any).classes || [];
+    },
+  });
 
-  const mockClasses = [
-    {
-      id: "9-A",
-      name: "Class 9-A",
-      strength: 42,
-      averageMarks: 78.5,
-      averageAttendance: 92,
-    },
-    {
-      id: "10-B",
-      name: "Class 10-B",
-      strength: 38,
-      averageMarks: 82.3,
-      averageAttendance: 89,
-    },
-    {
-      id: "11-A",
-      name: "Class 11-A",
-      strength: 35,
-      averageMarks: 75.8,
-      averageAttendance: 94,
-    },
-  ];
+  useEffect(() => {
+    if (!selectedClassId && teacherClasses && teacherClasses.length > 0) {
+      setSelectedClassId(teacherClasses[0].id);
+    }
+  }, [selectedClassId, teacherClasses]);
 
-  const mockTimetable = [
-    {
-      time: "08:00 AM",
-      period: "Mathematics",
-      class: "Class 9-A",
-      room: "Room 101",
+  // Fetch teacher's students
+  const { data: teacherStudents, isLoading: studentsLoading } = useQuery({
+    queryKey: ["teacher-students"],
+    queryFn: async () => {
+      const data = await api.teachers.getMyStudents();
+      return (data as any).students || [];
     },
-    {
-      time: "09:00 AM",
-      period: "Mathematics",
-      class: "Class 10-B",
-      room: "Room 102",
-    },
-    { time: "10:00 AM", period: "Break", class: "", room: "" },
-    { time: "10:15 AM", period: "Physics", class: "Class 11-A", room: "Lab 1" },
-    {
-      time: "11:15 AM",
-      period: "Mathematics",
-      class: "Class 9-A",
-      room: "Room 101",
-    },
-    { time: "12:15 PM", period: "Lunch", class: "", room: "" },
-    {
-      time: "01:00 PM",
-      period: "Physics Lab",
-      class: "Class 10-B",
-      room: "Lab 2",
-    },
-  ];
+  });
 
-  const mockAssignments = [
-    {
-      id: "1",
-      title: "Linear Equations Worksheet",
-      class: "Class 9-A",
-      subject: "Mathematics",
-      dueDate: "2026-01-25",
-      submitted: 28,
-      total: 42,
+  // Fetch teacher's tasks/assignments
+  const { data: teacherTasksData, isLoading: tasksLoading } = useQuery({
+    queryKey: ["teacher-tasks"],
+    queryFn: async () => {
+      const data = await api.staff.getMyTasks();
+      return data as any;
     },
-    {
-      id: "2",
-      title: "Motion Lab Report",
-      class: "Class 10-B",
-      subject: "Physics",
-      dueDate: "2026-01-22",
-      submitted: 35,
-      total: 38,
+  });
+
+  // Fetch class stats
+  const { data: classStatsData, isLoading: statsLoading } = useQuery({
+    queryKey: ["teacher-class-stats"],
+    queryFn: async () => {
+      const data = await api.teachers.getClassStats();
+      return (data as any).classStats || [];
     },
-    {
-      id: "3",
-      title: "Quadratic Equations Test",
-      class: "Class 9-A",
-      subject: "Mathematics",
-      dueDate: "2026-01-30",
+  });
+
+  // Mock exams data (should be replaced with actual API call)
+  const examsData: any[] = [];
+
+  if (profileLoading) {
+    return (
+      <div className="flex h-96 items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+      </div>
+    );
+  }
+
+  const teacherData = teacherProfile
+    ? {
+        name: teacherProfile.firstName + " " + teacherProfile.lastName,
+        qualification: teacherProfile.qualification || "M.Sc Mathematics, B.Ed",
+        subjects: [teacherProfile.subject || "Mathematics"],
+        classes: teacherClasses || [],
+        experience: teacherProfile.experience
+          ? `${teacherProfile.experience} years`
+          : "N/A",
+        email: teacherProfile.email || "",
+        phone: teacherProfile.phone || "",
+        salary: teacherProfile.salary || 0,
+        attendance: teacherProfile.attendance || 0,
+      }
+    : null;
+
+  if (!teacherData) {
+    return (
+      <div className="flex h-96 items-center justify-center">
+        <div className="text-center">
+          <Users className="mx-auto mb-4 h-16 w-16 text-muted-foreground" />
+          <h2 className="mb-2 font-bold text-foreground text-xl">
+            No Teacher Data Found
+          </h2>
+          <p className="text-muted-foreground">
+            Unable to load teacher information.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  const selectedClassData = teacherClasses?.find(
+    (c: any) => c.id === selectedClassId,
+  );
+  const selectedClassName = selectedClassData?.name || "Class";
+
+  const timetable =
+    teacherClasses?.map((c: any, idx: number) => ({
+      time: `${8 + (idx % 6)}:00 AM`,
+      period: teacherData?.subjects?.[0] || "Class",
+      class: c.name,
+      room: `Room ${100 + idx}`,
+    })) || [];
+
+  const assignments = (teacherTasksData?.tasks || []).map(
+    (task: any, idx: number) => ({
+      id: task.id || `${idx}`,
+      title: task.title || task.description || "Task",
+      class: selectedClassName,
+      subject: teacherData?.subjects?.[0] || "",
+      dueDate: task.workDate
+        ? new Date(task.workDate).toLocaleDateString()
+        : "",
       submitted: 0,
-      total: 42,
-    },
-  ];
+      total: 0,
+    }),
+  );
 
-  const mockExams = [
-    {
-      title: "Mathematics Unit Test",
-      class: "Class 9-A",
-      date: "2026-02-05",
-      time: "10:00 AM",
-      status: "scheduled",
-    },
-    {
-      title: "Physics Mid Term",
-      class: "Class 10-B",
-      date: "2026-02-10",
-      time: "09:00 AM",
-      status: "scheduled",
-    },
-  ];
-
-  const selectedClassData = mockClasses.find((c) => c.name === selectedClass);
+  const exams = (examsData || []).map((exam: any) => ({
+    title: exam.title || "Exam",
+    class: selectedClassName,
+    date: exam.examDate ? new Date(exam.examDate).toLocaleDateString() : "",
+    time: exam.startTime || "",
+    status: exam.status || "scheduled",
+  }));
 
   return (
     <div className="space-y-6">
@@ -201,17 +211,17 @@ function TeacherPortal() {
           <CardContent className="pt-6">
             <div className="flex items-start gap-4">
               <div className="flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/80 font-bold text-2xl text-primary-foreground shadow-lg ring-4 ring-primary/20">
-                {mockTeacher.name.charAt(0)}
+                {teacherData.name.charAt(0)}
               </div>
               <div className="flex-1">
                 <h3 className="font-bold text-foreground text-xl">
-                  {mockTeacher.name}
+                  {teacherData.name}
                 </h3>
                 <p className="text-muted-foreground">
-                  {mockTeacher.qualification}
+                  {teacherData.qualification}
                 </p>
                 <div className="mt-2 flex flex-wrap gap-2">
-                  {mockTeacher.subjects.map((subject, i) => (
+                  {teacherData.subjects.map((subject, i) => (
                     <span
                       key={i}
                       className="rounded bg-primary/10 px-2 py-1 text-primary text-sm"
@@ -223,21 +233,21 @@ function TeacherPortal() {
                 <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-4">
                   <div>
                     <p className="text-muted-foreground text-sm">Experience</p>
-                    <p className="font-medium">{mockTeacher.experience}</p>
+                    <p className="font-medium">{teacherData.experience}</p>
                   </div>
                   <div>
                     <p className="text-muted-foreground text-sm">Classes</p>
                     <p className="font-medium">
-                      {mockTeacher.classes.length} classes
+                      {teacherData.classes.length} classes
                     </p>
                   </div>
                   <div>
                     <p className="text-muted-foreground text-sm">Email</p>
-                    <p className="font-medium text-sm">{mockTeacher.email}</p>
+                    <p className="font-medium text-sm">{teacherData.email}</p>
                   </div>
                   <div>
                     <p className="text-muted-foreground text-sm">Phone</p>
-                    <p className="font-medium">{mockTeacher.phone}</p>
+                    <p className="font-medium">{teacherData.phone}</p>
                   </div>
                 </div>
               </div>
@@ -299,7 +309,7 @@ function TeacherPortal() {
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
-              {mockTimetable.map((period, i) => (
+              {timetable.map((period: any, i: number) => (
                 <div
                   key={i}
                   className={`flex items-center gap-3 rounded-lg p-3 ${
@@ -349,32 +359,36 @@ function TeacherPortal() {
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
-              {mockClasses.map((cls) => (
-                <button
-                  key={cls.id}
-                  onClick={() => setSelectedClass(cls.name)}
-                  className={`flex w-full flex-col rounded-lg p-3 text-left transition-colors ${
-                    selectedClass === cls.name
-                      ? "border-2 border-success/30 bg-success/15"
-                      : "bg-muted hover:bg-muted"
-                  }`}
-                >
-                  <span className="flex w-full items-center justify-between">
-                    <span className="font-medium">{cls.name}</span>
-                    <span className="text-muted-foreground text-sm">
-                      {cls.strength} students
+              {teacherClasses?.map((cls: any) => {
+                const stats = classStatsData?.find((s: any) => s.id === cls.id);
+                return (
+                  <button
+                    key={cls.id}
+                    onClick={() => setSelectedClassId(cls.id)}
+                    className={`flex w-full flex-col rounded-lg p-3 text-left transition-colors ${
+                      selectedClassId === cls.id
+                        ? "border-2 border-success/30 bg-success/15"
+                        : "bg-muted hover:bg-muted"
+                    }`}
+                  >
+                    <span className="flex w-full items-center justify-between">
+                      <span className="font-medium">{cls.name}</span>
+                      <span className="text-muted-foreground text-sm">
+                        {stats?.students || cls.students || 0} students
+                      </span>
                     </span>
-                  </span>
-                  <span className="mt-1 flex w-full gap-4 text-sm">
-                    <span className="text-muted-foreground">
-                      Avg: {cls.averageMarks}%
+                    <span className="mt-1 flex w-full gap-4 text-sm">
+                      <span className="text-muted-foreground">
+                        Avg: {stats?.avgGrade ? `${stats.avgGrade}%` : "--%"}
+                      </span>
+                      <span className="text-muted-foreground">
+                        Att:{" "}
+                        {stats?.attendance ? `${stats.attendance}%` : "--%"}
+                      </span>
                     </span>
-                    <span className="text-muted-foreground">
-                      Att: {cls.averageAttendance}%
-                    </span>
-                  </span>
-                </button>
-              ))}
+                  </button>
+                );
+              })}
             </div>
           </CardContent>
         </Card>
@@ -388,7 +402,7 @@ function TeacherPortal() {
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
                   <ClipboardList className="h-4 w-4 text-background" />
                 </div>
-                Class Students - {selectedClass}
+                Class Students - {selectedClassName}
               </CardTitle>
               <Link
                 to="/app/students"
@@ -400,33 +414,29 @@ function TeacherPortal() {
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
-              {mockStudents.map((student) => (
+              {teacherStudents?.map((student: any) => (
                 <div
                   key={student.id}
                   className="flex items-center justify-between rounded-lg bg-muted p-2"
                 >
                   <div className="flex items-center gap-3">
                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary font-bold text-primary-foreground text-sm">
-                      {student.name.charAt(0)}
+                      {`${student.firstName || ""}`.charAt(0)}
                     </div>
                     <div>
-                      <p className="font-medium">{student.name}</p>
+                      <p className="font-medium">
+                        {student.firstName} {student.lastName}
+                      </p>
                       <p className="text-muted-foreground text-xs">
-                        Roll: {student.rollNumber}
+                        Class: {student.className || "N/A"}
                       </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
                     <span
-                      className={`rounded px-2 py-1 text-sm ${
-                        student.attendance >= 90
-                          ? "bg-success/15 text-success"
-                          : student.attendance >= 80
-                            ? "bg-warning/15 text-warning"
-                            : "bg-destructive/10 text-destructive"
-                      }`}
+                      className={`rounded bg-muted px-2 py-1 text-muted-foreground text-sm`}
                     >
-                      {student.attendance}%
+                      N/A
                     </span>
                     <Link to="/app/notifications">
                       <Button
@@ -463,7 +473,7 @@ function TeacherPortal() {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {mockAssignments.map((assignment) => (
+              {assignments.map((assignment: any) => (
                 <div key={assignment.id} className="rounded-lg bg-muted p-3">
                   <div className="flex items-start justify-between">
                     <div>
@@ -519,7 +529,7 @@ function TeacherPortal() {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {mockExams.map((exam, i) => (
+              {exams.map((exam, i) => (
                 <div
                   key={i}
                   className="rounded-lg border-primary border-l-4 bg-primary/5 p-3"

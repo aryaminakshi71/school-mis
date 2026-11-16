@@ -1,4 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+
 const menuItems = [
   { icon: "👤", title: "My Profile", subtitle: "View & edit" },
   { icon: "📚", title: "My Classes", subtitle: "Manage classes" },

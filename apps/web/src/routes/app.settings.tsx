@@ -1,3 +1,4 @@
+import { MonitoringDashboard } from "@/components/monitoring-dashboard";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -6,8 +7,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useAuth } from "@/lib/auth-context";
 import type { User as AuthUser } from "@/lib/auth-context";
+import { useAuth } from "@/lib/auth-context";
 import {
   Language,
   type LanguageInfo,
@@ -80,6 +81,7 @@ function SettingsPage() {
     { id: "notifications", label: "Notifications", icon: Bell },
     { id: "widgets", label: "Dashboard Widgets", icon: LayoutGrid },
     { id: "security", label: "Security", icon: Shield },
+    { id: "monitoring", label: "System Monitoring", icon: Monitor },
   ];
 
   return (
@@ -155,6 +157,7 @@ function SettingsPage() {
             />
           )}
           {activeTab === "security" && <SecuritySettings />}
+          {activeTab === "monitoring" && <MonitoringDashboard />}
         </div>
       </div>
     </div>

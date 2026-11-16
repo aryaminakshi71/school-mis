@@ -65,8 +65,10 @@ export const expensesRouter = {
         date: z.string(),
         paymentMethod: z.string().optional(),
         paidTo: z.string().optional(),
-        status: z.enum(["pending", "approved", "paid", "cancelled"]).default("pending"),
-      })
+        status: z
+          .enum(["pending", "approved", "paid", "cancelled"])
+          .default("pending"),
+      }),
     )
     .output(z.any())
     .handler(async ({ input, context }) => {
@@ -105,7 +107,7 @@ export const expensesRouter = {
         paymentMethod: z.string().optional(),
         paidTo: z.string().optional(),
         status: z.enum(["pending", "approved", "paid", "cancelled"]).optional(),
-      })
+      }),
     )
     .output(z.any())
     .handler(async ({ input }) => {
@@ -114,10 +116,13 @@ export const expensesRouter = {
 
       const setFields: Record<string, unknown> = {};
       if (updates.category !== undefined) setFields.category = updates.category;
-      if (updates.description !== undefined) setFields.description = updates.description;
-      if (updates.amount !== undefined) setFields.amount = String(updates.amount);
+      if (updates.description !== undefined)
+        setFields.description = updates.description;
+      if (updates.amount !== undefined)
+        setFields.amount = String(updates.amount);
       if (updates.date !== undefined) setFields.date = updates.date;
-      if (updates.paymentMethod !== undefined) setFields.paymentMethod = updates.paymentMethod;
+      if (updates.paymentMethod !== undefined)
+        setFields.paymentMethod = updates.paymentMethod;
       if (updates.paidTo !== undefined) setFields.paidTo = updates.paidTo;
       if (updates.status !== undefined) setFields.status = updates.status;
       setFields.updatedAt = new Date();

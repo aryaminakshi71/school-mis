@@ -27,12 +27,12 @@ import {
   Calculator,
   CreditCard,
   FileText,
+  Loader2,
   PieChart,
   Plus,
   Receipt,
   Search,
 } from "lucide-react";
-import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 

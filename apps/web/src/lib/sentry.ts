@@ -24,4 +24,9 @@ export function initSentry() {
   initialized = true;
 }
 
+// Export individual functions for convenience
+export const captureException = Sentry.captureException;
+export const captureMessage = Sentry.captureMessage;
+export const addBreadcrumb = Sentry.addBreadcrumb;
+
 export { Sentry };

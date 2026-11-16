@@ -14,7 +14,8 @@
     "test:unit": "vitest run",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
-    "test:e2e:install": "playwright install"
+    "test:e2e:install": "playwright install",
+    "test:integration": "vitest run src/integration --passWithNoTests"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -51,7 +52,10 @@
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-hook-form": "^7.71.1",
+    "react-day-picker": "^8.10.1",
     "recharts": "^3.7.0",
+    "chart.js": "^4.4.0",
+    "react-chartjs-2": "^5.2.0",
     "sonner": "^1.7.4",
     "tailwind-merge": "^3.4.0",
     "tailwindcss": "^4.1.18",

@@ -12,7 +12,7 @@ import {
 import { and, desc, eq, sql } from "drizzle-orm";
 import { z } from "zod";
 import { getDb } from "../../lib/db.js";
-import { orgAuthed, pub } from "../../procedures/index.js";
+import { orgAuthed } from "../../procedures/index.js";
 
 export const chatRouter = {
   // List conversations for a user
@@ -68,8 +68,8 @@ export const chatRouter = {
               and(
                 eq(messages.conversationId, conv.id),
                 eq(messages.isRead, false),
-                sql`${messages.senderId} != ${userId}`
-              )
+                sql`${messages.senderId} != ${userId}`,
+              ),
             );
 
           return {
@@ -81,7 +81,7 @@ export const chatRouter = {
             unreadCount: unreadCount[0]?.count ?? 0,
             participants,
           };
-        })
+        }),
       );
 
       return result;
@@ -100,7 +100,7 @@ export const chatRouter = {
         id: z.string().uuid(),
         limit: z.number().optional().default(50),
         offset: z.number().optional().default(0),
-      })
+      }),
     )
     .output(z.any())
     .handler(async ({ input }) => {
@@ -129,7 +129,7 @@ export const chatRouter = {
         conversationId: z.string().uuid(),
         content: z.string().min(1),
         type: z.enum(["text", "image", "file"]).default("text"),
-      })
+      }),
     )
     .output(z.any())
     .handler(async ({ input, context }) => {
@@ -168,7 +168,7 @@ export const chatRouter = {
         type: z.enum(["direct", "group"]).default("direct"),
         name: z.string().optional(),
         participantIds: z.array(z.string().uuid()).min(1),
-      })
+      }),
     )
     .output(z.any())
     .handler(async ({ input, context }) => {
@@ -191,7 +191,7 @@ export const chatRouter = {
         allParticipants.map((pId) => ({
           conversationId: conv.id,
           userId: pId,
-        }))
+        })),
       );
 
       return conv;
@@ -217,8 +217,8 @@ export const chatRouter = {
         .where(
           and(
             eq(messages.conversationId, input.id),
-            sql`${messages.senderId} != ${userId}`
-          )
+            sql`${messages.senderId} != ${userId}`,
+          ),
         );
 
       return true;

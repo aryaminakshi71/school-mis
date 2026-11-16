@@ -22,6 +22,18 @@ export interface WebSiteSchema {
   description?: string;
 }
 
+export interface ArticleSchema {
+  headline: string;
+  description?: string;
+  author?: {
+    name: string;
+  };
+  datePublished?: string;
+  dateModified?: string;
+  image?: string;
+  url?: string;
+}
+
 /**
  * Generate Organization JSON-LD
  */
@@ -65,5 +77,24 @@ export function getSchoolMISOrganizationSchema(): OrganizationSchema {
     url: import.meta.env.VITE_PUBLIC_SITE_URL || "http://localhost:3000",
     description:
       "Complete school administration solution for managing all school operations.",
+  };
+}
+
+export function generateArticleSchema(data: ArticleSchema): object {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: data.headline,
+    ...(data.description && { description: data.description }),
+    ...(data.author && {
+      author: {
+        "@type": "Person",
+        ...data.author,
+      },
+    }),
+    ...(data.datePublished && { datePublished: data.datePublished }),
+    ...(data.dateModified && { dateModified: data.dateModified }),
+    ...(data.image && { image: data.image }),
+    ...(data.url && { url: data.url }),
   };
 }

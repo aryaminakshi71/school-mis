@@ -80,7 +80,7 @@ export const analyticsRouter = {
       z.object({
         startDate: z.string(),
         endDate: z.string(),
-      })
+      }),
     )
     .output(z.any())
     .handler(async ({ input }) => {
@@ -94,7 +94,7 @@ export const analyticsRouter = {
         })
         .from(attendance)
         .where(
-          sql`DATE(${attendance.date}::date) >= ${input.startDate} AND DATE(${attendance.date}::date) <= ${input.endDate}`
+          sql`DATE(${attendance.date}::date) >= ${input.startDate} AND DATE(${attendance.date}::date) <= ${input.endDate}`,
         )
         .groupBy(sql`DATE(${attendance.date}::date)`, attendance.status);
 
@@ -135,7 +135,7 @@ export const analyticsRouter = {
       z.object({
         startDate: z.string(),
         endDate: z.string(),
-      })
+      }),
     )
     .output(z.any())
     .handler(async ({ input }) => {
@@ -151,8 +151,8 @@ export const analyticsRouter = {
         .where(
           and(
             eq(feePayments.status, "paid"),
-            sql`DATE(${feePayments.paymentDate}::date) >= ${input.startDate} AND DATE(${feePayments.paymentDate}::date) <= ${input.endDate}`
-          )
+            sql`DATE(${feePayments.paymentDate}::date) >= ${input.startDate} AND DATE(${feePayments.paymentDate}::date) <= ${input.endDate}`,
+          ),
         )
         .groupBy(sql`DATE(${feePayments.paymentDate}::date)`)
         .orderBy(sql`DATE(${feePayments.paymentDate}::date)`);
@@ -178,7 +178,7 @@ export const analyticsRouter = {
         entityType: z.string().optional(),
         entityId: z.string().uuid().optional(),
         metadata: z.record(z.string(), z.unknown()).optional(),
-      })
+      }),
     )
     .output(z.any())
     .handler(async ({ input }) => {
@@ -209,7 +209,7 @@ export const analyticsRouter = {
       z.object({
         period: z.enum(["daily", "weekly", "monthly", "yearly"]).optional(),
         metric: z.string().optional(),
-      })
+      }),
     )
     .output(z.any())
     .handler(async ({ input }) => {
@@ -218,7 +218,9 @@ export const analyticsRouter = {
       let query = db.select().from(analyticsSummaries);
 
       if (input.period) {
-        query = query.where(eq(analyticsSummaries.period, input.period)) as typeof query;
+        query = query.where(
+          eq(analyticsSummaries.period, input.period),
+        ) as typeof query;
       }
 
       const summaries = await query.orderBy(desc(analyticsSummaries.periodEnd));
@@ -238,6 +240,13 @@ export const analyticsRouter = {
     .handler(async () => {
       const db = getDb();
       const allStudents = await db.select().from(students);
-      return [{ year: new Date().getFullYear(), month: new Date().getMonth() + 1, newStudents: allStudents.length, totalActive: allStudents.length }];
+      return [
+        {
+          year: new Date().getFullYear(),
+          month: new Date().getMonth() + 1,
+          newStudents: allStudents.length,
+          totalActive: allStudents.length,
+        },
+      ];
     }),
 };

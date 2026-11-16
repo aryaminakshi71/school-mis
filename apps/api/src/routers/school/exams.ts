@@ -4,7 +4,10 @@
  * oRPC router for exam/datesheet management.
  */
 
+import { examSchedules } from "@school/storage";
+import { and, eq } from "drizzle-orm";
 import { z } from "zod";
+import { getDb } from "../../lib/db.js";
 import { orgAuthed, pub } from "../../procedures/index.js";
 
 export const examsRouter = {
@@ -22,8 +25,24 @@ export const examsRouter = {
         examType: z.string().optional(),
       }),
     )
-    .output(z.array(z.any()))
-    .handler(async () => []),
+    .output(z.object({ exams: z.array(z.any()) }))
+    .handler(async ({ input }) => {
+      const db = getDb();
+      const { classId, sessionId, examType } = input;
+
+      const conditions = [];
+      if (classId) conditions.push(eq(examSchedules.classId, classId));
+      if (sessionId) conditions.push(eq(examSchedules.sessionId, sessionId));
+      if (examType) conditions.push(eq(examSchedules.examType, examType));
+
+      const exams = await db
+        .select()
+        .from(examSchedules)
+        .where(and(...conditions))
+        .orderBy(examSchedules.examDate);
+
+      return { exams };
+    }),
   get: pub
     .route({
       method: "GET",

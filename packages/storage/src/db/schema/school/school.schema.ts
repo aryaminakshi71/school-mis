@@ -1,8 +1,9 @@
-import { boolean, jsonb, relations, timestamp } from "drizzle-orm";
+import { relations } from "drizzle-orm";
 import {
   boolean,
   date,
   decimal,
+  index,
   integer,
   jsonb,
   pgTable,
@@ -12,6 +13,7 @@ import {
   uuid,
   varchar,
 } from "drizzle-orm/pg-core";
+import { users } from "./auth.schema";
 
 // Enums
 export const SessionStatus = {
@@ -1149,7 +1151,9 @@ export const conversations = pgTable("conversations", {
 
 export const conversationParticipants = pgTable("conversation_participants", {
   id: uuid("id").defaultRandom().primaryKey(),
-  conversationId: uuid("conversation_id").references(() => conversations.id, { onDelete: "cascade" }),
+  conversationId: uuid("conversation_id").references(() => conversations.id, {
+    onDelete: "cascade",
+  }),
   userId: uuid("user_id").notNull(),
   role: varchar("role", { length: 20 }).default("member"), // "admin", "member"
   joinedAt: timestamp("joined_at").defaultNow(),
@@ -1157,7 +1161,9 @@ export const conversationParticipants = pgTable("conversation_participants", {
 
 export const messages = pgTable("messages", {
   id: uuid("id").defaultRandom().primaryKey(),
-  conversationId: uuid("conversation_id").references(() => conversations.id, { onDelete: "cascade" }),
+  conversationId: uuid("conversation_id").references(() => conversations.id, {
+    onDelete: "cascade",
+  }),
   senderId: uuid("sender_id").notNull(),
   content: text("content").notNull(),
   type: varchar("type", { length: 20 }).default("text"), // "text", "image", "file"
@@ -1215,7 +1221,9 @@ export const inventoryItems = pgTable("inventory_items", {
 
 export const inventoryTransactions = pgTable("inventory_transactions", {
   id: uuid("id").defaultRandom().primaryKey(),
-  itemId: uuid("item_id").references(() => inventoryItems.id, { onDelete: "cascade" }),
+  itemId: uuid("item_id").references(() => inventoryItems.id, {
+    onDelete: "cascade",
+  }),
   type: varchar("type", { length: 20 }).notNull(), // "purchase", "usage", "adjustment", "transfer"
   quantity: integer("quantity").notNull(), // Positive for in, negative for out
   unitPrice: decimal("unit_price", { precision: 10, scale: 2 }),
@@ -1238,7 +1246,7 @@ export const conversationParticipantsRelations = relations(
       fields: [conversationParticipants.conversationId],
       references: [conversations.id],
     }),
-  })
+  }),
 );
 
 export const messagesRelations = relations(messages, ({ one }) => ({
@@ -1249,7 +1257,10 @@ export const messagesRelations = relations(messages, ({ one }) => ({
 }));
 
 export const analyticsEventsRelations = relations(analyticsEvents, () => ({}));
-export const analyticsSummariesRelations = relations(analyticsSummaries, () => ({}));
+export const analyticsSummariesRelations = relations(
+  analyticsSummaries,
+  () => ({}),
+);
 
 export const inventoryCategoriesRelations = relations(
   inventoryCategories,
@@ -1259,21 +1270,135 @@ export const inventoryCategoriesRelations = relations(
       references: [inventoryCategories.id],
     }),
     items: many(inventoryItems),
-  })
+  }),
 );
 
-export const inventoryItemsRelations = relations(inventoryItems, ({ one, many }) => ({
-  category: one(inventoryCategories, {
-    fields: [inventoryItems.categoryId],
-    references: [inventoryCategories.id],
+export const inventoryItemsRelations = relations(
+  inventoryItems,
+  ({ one, many }) => ({
+    category: one(inventoryCategories, {
+      fields: [inventoryItems.categoryId],
+      references: [inventoryCategories.id],
+    }),
+    transactions: many(inventoryTransactions),
   }),
-  transactions: many(inventoryTransactions),
-}));
+);
 
-export const inventoryTransactionsRelations = relations(inventoryTransactions, ({ one }) => ({
-  item: one(inventoryItems, {
-    fields: [inventoryTransactions.itemId],
-    references: [inventoryItems.id],
+export const inventoryTransactionsRelations = relations(
+  inventoryTransactions,
+  ({ one }) => ({
+    item: one(inventoryItems, {
+      fields: [inventoryTransactions.itemId],
+      references: [inventoryItems.id],
+    }),
+  }),
+);
+
+// ============================================================================
+// CHAT / MESSAGING TABLES
+// ============================================================================
+
+export const chatConversations = pgTable("chat_conversations", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  type: varchar("type", { length: 20 }).notNull().default("direct"), // direct, group, class
+  title: text("title"), // For group chats
+  createdBy: uuid("created_by").references(() => users.id),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const chatParticipants = pgTable(
+  "chat_participants",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    conversationId: uuid("conversation_id")
+      .references(() => chatConversations.id, { onDelete: "cascade" })
+      .notNull(),
+    userId: uuid("user_id")
+      .references(() => users.id, { onDelete: "cascade" })
+      .notNull(),
+    role: varchar("role", { length: 20 }).default("member").notNull(), // admin, member
+    joinedAt: timestamp("joined_at").defaultNow().notNull(),
+    lastReadAt: timestamp("last_read_at"),
+  },
+  (table) => ({
+    uniqueParticipant: index("unique_participant_idx").on(
+      table.conversationId,
+      table.userId,
+    ),
+  }),
+);
+
+export const chatMessages = pgTable(
+  "chat_messages",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    conversationId: uuid("conversation_id")
+      .references(() => chatConversations.id, { onDelete: "cascade" })
+      .notNull(),
+    senderId: uuid("sender_id")
+      .references(() => users.id)
+      .notNull(),
+    content: text("content").notNull(),
+    messageType: varchar("message_type", { length: 20 })
+      .default("text")
+      .notNull(), // text, image, file
+    attachments: jsonb("attachments"), // Array of file URLs
+    replyToId: uuid("reply_to_id"), // References chatMessages.id - added via migration
+    readAt: timestamp("read_at"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (table) => ({
+    conversationIdx: index("messages_conversation_idx").on(
+      table.conversationId,
+    ),
+    createdAtIdx: index("messages_created_at_idx").on(table.createdAt),
+    replyToIdx: index("messages_reply_to_idx").on(table.replyToId),
+  }),
+);
+
+// ============================================================================
+// CHAT RELATIONS
+// ============================================================================
+
+export const chatConversationsRelations = relations(
+  chatConversations,
+  ({ one, many }) => ({
+    creator: one(users, {
+      fields: [chatConversations.createdBy],
+      references: [users.id],
+    }),
+    participants: many(chatParticipants),
+    messages: many(chatMessages),
+  }),
+);
+
+export const chatParticipantsRelations = relations(
+  chatParticipants,
+  ({ one }) => ({
+    conversation: one(chatConversations, {
+      fields: [chatParticipants.conversationId],
+      references: [chatConversations.id],
+    }),
+    user: one(users, {
+      fields: [chatParticipants.userId],
+      references: [users.id],
+    }),
+  }),
+);
+
+export const chatMessagesRelations = relations(chatMessages, ({ one }) => ({
+  conversation: one(chatConversations, {
+    fields: [chatMessages.conversationId],
+    references: [chatConversations.id],
+  }),
+  sender: one(users, {
+    fields: [chatMessages.senderId],
+    references: [users.id],
+  }),
+  replyTo: one(chatMessages, {
+    fields: [chatMessages.replyToId],
+    references: [chatMessages.id],
   }),
 }));
-

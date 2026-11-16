@@ -9,7 +9,7 @@ import {
   inventoryItems,
   inventoryTransactions,
 } from "@school/storage";
-import { desc, eq, sql } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { z } from "zod";
 import { getDb } from "../../lib/db.js";
 import { orgAuthed, pub } from "../../procedures/index.js";
@@ -46,7 +46,7 @@ export const inventoryRouter = {
         name: z.string().min(1),
         description: z.string().optional(),
         parentId: z.string().uuid().optional(),
-      })
+      }),
     )
     .output(z.any())
     .handler(async ({ input }) => {
@@ -75,7 +75,7 @@ export const inventoryRouter = {
         categoryId: z.string().uuid().optional(),
         status: z.enum(["active", "discontinued"]).optional(),
         lowStock: z.boolean().optional(),
-      })
+      }),
     )
     .output(z.any())
     .handler(async ({ input }) => {
@@ -84,16 +84,22 @@ export const inventoryRouter = {
       let query = db.select().from(inventoryItems);
 
       if (input.categoryId) {
-        query = query.where(eq(inventoryItems.categoryId, input.categoryId)) as typeof query;
+        query = query.where(
+          eq(inventoryItems.categoryId, input.categoryId),
+        ) as typeof query;
       }
       if (input.status) {
-        query = query.where(eq(inventoryItems.status, input.status)) as typeof query;
+        query = query.where(
+          eq(inventoryItems.status, input.status),
+        ) as typeof query;
       }
 
       const items = await query.orderBy(desc(inventoryItems.updatedAt));
 
       if (input.lowStock) {
-        return items.filter((item) => (item.quantity ?? 0) <= (item.minQuantity ?? 0));
+        return items.filter(
+          (item) => (item.quantity ?? 0) <= (item.minQuantity ?? 0),
+        );
       }
 
       return items;
@@ -140,7 +146,7 @@ export const inventoryRouter = {
         location: z.string().optional(),
         supplier: z.string().optional(),
         status: z.enum(["active", "discontinued"]).optional().default("active"),
-      })
+      }),
     )
     .output(z.any())
     .handler(async ({ input }) => {
@@ -186,7 +192,7 @@ export const inventoryRouter = {
         location: z.string().optional(),
         supplier: z.string().optional(),
         status: z.enum(["active", "discontinued"]).optional(),
-      })
+      }),
     )
     .output(z.any())
     .handler(async ({ input }) => {
@@ -194,14 +200,18 @@ export const inventoryRouter = {
       const { id, ...updates } = input;
 
       const setFields: Record<string, unknown> = { updatedAt: new Date() };
-      if (updates.categoryId !== undefined) setFields.categoryId = updates.categoryId;
+      if (updates.categoryId !== undefined)
+        setFields.categoryId = updates.categoryId;
       if (updates.name !== undefined) setFields.name = updates.name;
-      if (updates.description !== undefined) setFields.description = updates.description;
+      if (updates.description !== undefined)
+        setFields.description = updates.description;
       if (updates.sku !== undefined) setFields.sku = updates.sku;
       if (updates.quantity !== undefined) setFields.quantity = updates.quantity;
       if (updates.unit !== undefined) setFields.unit = updates.unit;
-      if (updates.minQuantity !== undefined) setFields.minQuantity = updates.minQuantity;
-      if (updates.unitPrice !== undefined) setFields.unitPrice = String(updates.unitPrice);
+      if (updates.minQuantity !== undefined)
+        setFields.minQuantity = updates.minQuantity;
+      if (updates.unitPrice !== undefined)
+        setFields.unitPrice = String(updates.unitPrice);
       if (updates.location !== undefined) setFields.location = updates.location;
       if (updates.supplier !== undefined) setFields.supplier = updates.supplier;
       if (updates.status !== undefined) setFields.status = updates.status;
@@ -247,7 +257,7 @@ export const inventoryRouter = {
         unitPrice: z.number().positive().optional(),
         reference: z.string().optional(),
         notes: z.string().optional(),
-      })
+      }),
     )
     .output(z.any())
     .handler(async ({ input, context }) => {
@@ -306,7 +316,9 @@ export const inventoryRouter = {
         .from(inventoryItems)
         .where(eq(inventoryItems.status, "active"));
 
-      const lowStock = items.filter((item) => (item.quantity ?? 0) <= (item.minQuantity ?? 0));
+      const lowStock = items.filter(
+        (item) => (item.quantity ?? 0) <= (item.minQuantity ?? 0),
+      );
 
       const categories = await db.select().from(inventoryCategories);
       const categoryMap = new Map(categories.map((c) => [c.id, c.name]));
@@ -318,7 +330,9 @@ export const inventoryRouter = {
         quantity: item.quantity,
         minQuantity: item.minQuantity,
         unit: item.unit,
-        categoryName: item.categoryId ? categoryMap.get(item.categoryId) ?? null : null,
+        categoryName: item.categoryId
+          ? (categoryMap.get(item.categoryId) ?? null)
+          : null,
       }));
     }),
 };

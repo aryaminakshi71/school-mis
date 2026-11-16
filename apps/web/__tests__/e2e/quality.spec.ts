@@ -1,7 +1,7 @@
 import AxeBuilder from "@axe-core/playwright";
+import { type Page, type TestInfo, expect, test } from "@playwright/test";
 import { launch } from "chrome-launcher";
 import lighthouse from "lighthouse";
-import { expect, test, type Page, type TestInfo } from "@playwright/test";
 
 const DCL_BUDGET_MS = Number(process.env.PERF_DCL_BUDGET_MS ?? 5000);
 const LOAD_BUDGET_MS = Number(process.env.PERF_LOAD_BUDGET_MS ?? 9000);
@@ -13,15 +13,16 @@ const LIGHTHOUSE_BEST_PRACTICES_MIN = Number(
   process.env.LH_MIN_BEST_PRACTICES ?? 0.85,
 );
 const LIGHTHOUSE_SEO_MIN = Number(process.env.LH_MIN_SEO ?? 0.55);
-const LIGHTHOUSE_TEST_TIMEOUT_MS = Number(process.env.LH_TEST_TIMEOUT_MS ?? 120000);
+const LIGHTHOUSE_TEST_TIMEOUT_MS = Number(
+  process.env.LH_TEST_TIMEOUT_MS ?? 120000,
+);
 const A11Y_PORTALS_TEST_TIMEOUT_MS = Number(
   process.env.A11Y_PORTALS_TEST_TIMEOUT_MS ?? 120000,
 );
 const A11Y_MAX_SERIOUS_VIOLATIONS = Number(
   process.env.A11Y_MAX_SERIOUS_VIOLATIONS ?? 0,
 );
-const A11Y_CHECK_COLOR_CONTRAST =
-  process.env.A11Y_CHECK_COLOR_CONTRAST === "1";
+const A11Y_CHECK_COLOR_CONTRAST = process.env.A11Y_CHECK_COLOR_CONTRAST === "1";
 
 type PortalRole =
   | "admin"
@@ -91,10 +92,9 @@ async function setAuthenticatedUser(page: Page, role: PortalRole) {
 
 async function assertNoSeriousA11yViolations(page: Page, label: string) {
   const builder = new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa"]);
-  const results = await (
-    A11Y_CHECK_COLOR_CONTRAST
-      ? builder
-      : builder.disableRules(["color-contrast"])
+  const results = await (A11Y_CHECK_COLOR_CONTRAST
+    ? builder
+    : builder.disableRules(["color-contrast"])
   ).analyze();
 
   const seriousViolations = results.violations.filter((violation) =>
@@ -109,7 +109,9 @@ async function assertNoSeriousA11yViolations(page: Page, label: string) {
         return `${v.id}(${v.impact})@${target}`;
       })
       .join(", ");
-    throw new Error(`[a11y] ${label} has serious/critical violations: ${details}`);
+    throw new Error(
+      `[a11y] ${label} has serious/critical violations: ${details}`,
+    );
   }
 }
 
@@ -157,7 +159,9 @@ test.describe("Quality Gates", () => {
     }
   });
 
-  test("login page should keep baseline accessibility semantics", async ({ page }) => {
+  test("login page should keep baseline accessibility semantics", async ({
+    page,
+  }) => {
     const response = await page.goto("/login");
     expect(response?.status() ?? 0).toBeLessThan(500);
 
@@ -184,7 +188,11 @@ test.describe("Quality Gates", () => {
       heading: string;
     }> = [
       { role: "admin", route: "/app", heading: "Dashboard" },
-      { role: "student", route: "/app/student-portal", heading: "Student Portal" },
+      {
+        role: "student",
+        route: "/app/student-portal",
+        heading: "Student Portal",
+      },
       { role: "staff", route: "/app/staff-portal", heading: "Staff Portal" },
     ];
 

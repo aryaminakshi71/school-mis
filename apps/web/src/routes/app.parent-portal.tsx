@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import { Link, createFileRoute } from "@tanstack/react-router";
 import {
   ArrowLeft,
@@ -26,6 +27,7 @@ import {
   CardTitle,
 } from "../components/ui/card";
 import { Input } from "../components/ui/input";
+import { api } from "../lib/api";
 import { useAuth } from "../lib/auth-context";
 
 export const Route = createFileRoute("/app/parent-portal")({
@@ -34,6 +36,15 @@ export const Route = createFileRoute("/app/parent-portal")({
 
 function ParentPortal() {
   const { user, hasRole } = useAuth();
+
+  // Mock data for subject performance (should be replaced with actual API data)
+  const mockSubjectPerformance = [
+    { subject: "Mathematics", teacher: "Mr. Sharma", marks: 85, grade: "A" },
+    { subject: "Science", teacher: "Mrs. Gupta", marks: 78, grade: "B+" },
+    { subject: "English", teacher: "Mr. Kumar", marks: 82, grade: "A" },
+    { subject: "Hindi", teacher: "Mrs. Patel", marks: 75, grade: "B" },
+    { subject: "Social Studies", teacher: "Mr. Singh", marks: 80, grade: "A" },
+  ];
 
   if (!hasRole(["parent", "admin", "student"])) {
     return (
@@ -54,223 +65,182 @@ function ParentPortal() {
   const [selectedChild, setSelectedChild] = useState(0);
   const [showContactForm, setShowContactForm] = useState(false);
 
-  const mockChildren = [
-    {
-      id: "1",
-      name: "John Smith",
-      class: "Class 9-A",
-      rollNumber: "ADM-001",
-      section: "A",
-      admissionDate: "2024-04-15",
-      dateOfBirth: "2010-05-15",
-      bloodGroup: "O+",
-      emergencyContact: "+91 98765 43210",
+  // Fetch children data
+  const { data: childrenData, isLoading: childrenLoading } = useQuery({
+    queryKey: ["parent-children"],
+    queryFn: async () => {
+      const data = await api.students.getMyChildren();
+      return (data as any).children || [];
     },
-    {
-      id: "2",
-      name: "Emma Smith",
-      class: "Class 7-B",
-      rollNumber: "ADM-015",
-      section: "B",
-      admissionDate: "2024-06-20",
-      dateOfBirth: "2012-08-22",
-      bloodGroup: "O+",
-      emergencyContact: "+91 98765 43210",
-    },
-  ];
+  });
 
-  const mockAttendance = [
-    {
-      month: "January 2026",
-      present: 20,
-      absent: 2,
-      total: 22,
-      percentage: 90.9,
-    },
-    {
-      month: "December 2025",
-      present: 21,
-      absent: 1,
-      total: 22,
-      percentage: 95.5,
-    },
-  ];
-
-  const mockFees = {
-    total: 50000,
-    paid: 35000,
-    pending: 15000,
-    dueDate: "2026-02-15",
-    paymentHistory: [
-      { date: "2026-01-15", amount: 10000, receipt: "REC-001" },
-      { date: "2025-10-10", amount: 15000, receipt: "REC-002" },
-      { date: "2025-06-20", amount: 10000, receipt: "REC-003" },
+  // Fetch selected child's attendance
+  const { data: childAttendance, isLoading: attendanceLoading } = useQuery({
+    queryKey: [
+      "child-attendance",
+      selectedChild,
+      childrenData?.[selectedChild]?.id,
     ],
-  };
+    queryFn: async () => {
+      if (!childrenData?.[selectedChild]?.id) return null;
+      const data = await api.students.getChildAttendance(
+        childrenData[selectedChild].id,
+      );
+      return (data as any).attendance || [];
+    },
+    enabled: !!childrenData?.[selectedChild]?.id,
+  });
 
-  const mockExams = [
-    {
-      name: "Mathematics Unit Test",
-      date: "2026-01-25",
-      marks: 85,
-      maxMarks: 100,
-      grade: "A",
-      percentage: 85,
+  // Fetch selected child's grades
+  const { data: childGrades, isLoading: gradesLoading } = useQuery({
+    queryKey: [
+      "child-grades",
+      selectedChild,
+      childrenData?.[selectedChild]?.id,
+    ],
+    queryFn: async () => {
+      if (!childrenData?.[selectedChild]?.id) return null;
+      const data = await api.students.getChildGrades(
+        childrenData[selectedChild].id,
+      );
+      return (data as any).grades || [];
     },
-    {
-      name: "Physics Mid Term",
-      date: "2026-01-20",
-      marks: 78,
-      maxMarks: 100,
-      grade: "B+",
-      percentage: 78,
-    },
-    { name: "Chemistry Quarterly", date: "2026-02-01", status: "Upcoming" },
-    {
-      name: "English Essay",
-      date: "2026-01-10",
-      marks: 92,
-      maxMarks: 100,
-      grade: "A+",
-      percentage: 92,
-    },
-  ];
+    enabled: !!childrenData?.[selectedChild]?.id,
+  });
 
-  const mockHomework = [
-    {
-      id: "1",
-      subject: "Mathematics",
-      title: "Linear Equations Worksheet",
-      dueDate: "2026-01-25",
-      status: "pending",
-      description: "Complete exercises 1-20 from Chapter 5",
-      teacher: "Dr. Rajesh Kumar",
+  // Fetch selected child's fees
+  const { data: childFees, isLoading: feesLoading } = useQuery({
+    queryKey: ["child-fees", selectedChild, childrenData?.[selectedChild]?.id],
+    queryFn: async () => {
+      if (!childrenData?.[selectedChild]?.id) return null;
+      const data = await api.students.getChildFees(
+        childrenData[selectedChild].id,
+      );
+      return (data as any).fees;
     },
-    {
-      id: "2",
-      subject: "Physics",
-      title: "Motion Lab Report",
-      dueDate: "2026-01-22",
-      status: "submitted",
-      description: "Submit lab report on uniformly accelerated motion",
-      teacher: "Mrs. Priya Sharma",
-    },
-    {
-      id: "3",
-      subject: "Chemistry",
-      title: "Periodic Table Memorization",
-      dueDate: "2026-01-28",
-      status: "pending",
-      description: "Memorize first 20 elements with atomic numbers",
-      teacher: "Mr. Vikram Patel",
-    },
-  ];
+    enabled: !!childrenData?.[selectedChild]?.id,
+  });
 
-  const mockLibraryBooks = [
-    {
-      id: "1",
-      title: "The Adventures of Sherlock Holmes",
-      author: "Arthur Conan Doyle",
-      issueDate: "2026-01-10",
-      dueDate: "2026-01-24",
-      status: "Active",
+  // Fetch selected child's exams
+  const { data: childExams, isLoading: examsLoading } = useQuery({
+    queryKey: ["child-exams", selectedChild, childrenData?.[selectedChild]?.id],
+    queryFn: async () => {
+      if (!childrenData?.[selectedChild]?.id) return null;
+      const data = await api.students.getChildExams(
+        childrenData[selectedChild].id,
+      );
+      return (data as any).exams || [];
     },
-    {
-      id: "2",
-      title: "NCERT Mathematics Class 9",
-      author: "NCERT",
-      issueDate: "2026-01-15",
-      dueDate: "2026-01-29",
-      status: "Active",
-    },
-  ];
+    enabled: !!childrenData?.[selectedChild]?.id,
+  });
 
-  const mockTransport = {
-    route: "Route 5 - North Campus",
-    stop: "Main Market, Sector 15",
-    pickupTime: "07:15 AM",
-    dropTime: "04:30 PM",
-    driverName: "Mr. Suresh Kumar",
-    driverPhone: "+91 98765 43220",
-    vehicleNumber: "HR-26-A-1234",
-  };
+  // Fetch selected child's homework
+  const { data: childHomework, isLoading: homeworkLoading } = useQuery({
+    queryKey: [
+      "child-homework",
+      selectedChild,
+      childrenData?.[selectedChild]?.id,
+    ],
+    queryFn: async () => {
+      if (!childrenData?.[selectedChild]?.id) return null;
+      const data = await api.students.getChildHomework(
+        childrenData[selectedChild].id,
+      );
+      return (data as any).homework || [];
+    },
+    enabled: !!childrenData?.[selectedChild]?.id,
+  });
 
-  const mockNotices = [
-    {
-      id: "1",
-      title: "Parent-Teacher Meeting",
-      date: "2026-01-28",
-      message:
-        "PTM scheduled for next Saturday at 10 AM. Please confirm your attendance.",
-      priority: "high",
+  // Fetch selected child's library books
+  const { data: childLibraryBooks, isLoading: libraryLoading } = useQuery({
+    queryKey: [
+      "child-library",
+      selectedChild,
+      childrenData?.[selectedChild]?.id,
+    ],
+    queryFn: async () => {
+      if (!childrenData?.[selectedChild]?.id) return null;
+      const data = await api.students.getChildLibraryBooks(
+        childrenData[selectedChild].id,
+      );
+      return (data as any).books || [];
     },
-    {
-      id: "2",
-      title: "Holiday Notice",
-      date: "2026-01-26",
-      message: "School will remain closed on Republic Day (January 26th).",
-      priority: "normal",
-    },
-    {
-      id: "3",
-      title: "Annual Sports Day",
-      date: "2026-02-05",
-      message:
-        "Annual sports day will be held on February 5th. Parents are cordially invited.",
-      priority: "normal",
-    },
-  ];
+    enabled: !!childrenData?.[selectedChild]?.id,
+  });
 
-  const mockTeachers = [
-    {
-      name: "Dr. Rajesh Kumar",
-      subject: "Mathematics",
-      phone: "+91 98765 43210",
-      email: "rajesh@school.edu",
+  // Fetch selected child's transport details
+  const { data: childTransport, isLoading: transportLoading } = useQuery({
+    queryKey: [
+      "child-transport",
+      selectedChild,
+      childrenData?.[selectedChild]?.id,
+    ],
+    queryFn: async () => {
+      if (!childrenData?.[selectedChild]?.id) return null;
+      const data = await api.students.getChildTransport(
+        childrenData[selectedChild].id,
+      );
+      return (data as any).transport;
     },
-    {
-      name: "Mrs. Priya Sharma",
-      subject: "Physics",
-      phone: "+91 98765 43211",
-      email: "priya@school.edu",
-    },
-    {
-      name: "Mr. Vikram Patel",
-      subject: "Chemistry",
-      phone: "+91 98765 43214",
-      email: "vikram@school.edu",
-    },
-  ];
+    enabled: !!childrenData?.[selectedChild]?.id,
+  });
 
-  const mockSubjectPerformance = [
-    {
-      subject: "Mathematics",
-      marks: 85,
-      grade: "A",
-      teacher: "Dr. Rajesh Kumar",
+  // Fetch notices
+  const { data: notices, isLoading: noticesLoading } = useQuery({
+    queryKey: ["notices"],
+    queryFn: async () => {
+      if (!childrenData?.[selectedChild]?.id) return [];
+      const data = await api.students.getChildNotices(
+        childrenData[selectedChild].id,
+      );
+      return (data as any).notices || [];
     },
-    {
-      subject: "Physics",
-      marks: 78,
-      grade: "B+",
-      teacher: "Mrs. Priya Sharma",
-    },
-    {
-      subject: "Chemistry",
-      marks: 82,
-      grade: "A-",
-      teacher: "Mr. Vikram Patel",
-    },
-    { subject: "English", marks: 88, grade: "A", teacher: "Ms. Ananya Gupta" },
-    {
-      subject: "Biology",
-      marks: 75,
-      grade: "B+",
-      teacher: "Mrs. Priya Sharma",
-    },
-  ];
+    enabled: !!childrenData?.[selectedChild]?.id,
+  });
 
-  const currentChild = mockChildren[selectedChild];
+  // Fetch selected child's teachers
+  const { data: childTeachers, isLoading: teachersLoading } = useQuery({
+    queryKey: [
+      "child-teachers",
+      selectedChild,
+      childrenData?.[selectedChild]?.id,
+    ],
+    queryFn: async () => {
+      if (!childrenData?.[selectedChild]?.id) return null;
+      const data = await api.students.getChildTeachers(
+        childrenData[selectedChild].id,
+      );
+      return (data as any).teachers || [];
+    },
+    enabled: !!childrenData?.[selectedChild]?.id,
+  });
+
+  if (childrenLoading) {
+    return (
+      <div className="flex h-96 items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+      </div>
+    );
+  }
+
+  const children = childrenData || [];
+  const currentChild = children[selectedChild];
+
+  if (!currentChild) {
+    return (
+      <div className="flex h-96 items-center justify-center">
+        <div className="text-center">
+          <User className="mx-auto mb-4 h-16 w-16 text-muted-foreground" />
+          <h2 className="mb-2 font-bold text-foreground text-xl">
+            No Children Found
+          </h2>
+          <p className="text-muted-foreground">
+            Unable to load children information.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -293,10 +263,10 @@ function ParentPortal() {
         </div>
       </div>
 
-      {mockChildren.length > 1 && (
+      {children.length > 1 && (
         <div className="mb-6">
           <div className="flex gap-2 overflow-x-auto pb-2">
-            {mockChildren.map((child, index) => (
+            {children.map((child: any, index: number) => (
               <button
                 key={child.id}
                 onClick={() => setSelectedChild(index)}
@@ -307,14 +277,14 @@ function ParentPortal() {
                 }`}
               >
                 <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary font-bold text-primary-foreground text-sm">
-                  {child.name.charAt(0)}
+                  {child.firstName.charAt(0)}
                 </span>
                 <span className="text-left">
                   <span className="block font-medium text-sm">
-                    {child.name}
+                    {child.firstName} {child.lastName}
                   </span>
                   <span className="block text-muted-foreground text-xs">
-                    {child.class}
+                    {child.className || "Not Assigned"}
                   </span>
                 </span>
               </button>
@@ -334,35 +304,45 @@ function ParentPortal() {
           <CardContent>
             <div className="flex items-start gap-4">
               <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary font-bold text-primary-foreground text-xl">
-                {currentChild.name.charAt(0)}
+                {currentChild.firstName.charAt(0)}
               </div>
               <div className="flex-1">
                 <h3 className="font-bold text-foreground text-lg">
-                  {currentChild.name}
+                  {currentChild.firstName} {currentChild.lastName}
                 </h3>
                 <p className="text-muted-foreground">
-                  {currentChild.class} - Section {currentChild.section}
+                  {currentChild.className || "Not Assigned"}
                 </p>
                 <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-4">
                   <div>
                     <p className="text-muted-foreground text-sm">Roll Number</p>
-                    <p className="font-medium">{currentChild.rollNumber}</p>
+                    <p className="font-medium">
+                      {currentChild.rollNumber || currentChild.admissionNumber}
+                    </p>
                   </div>
                   <div>
                     <p className="text-muted-foreground text-sm">
                       Admission Date
                     </p>
-                    <p className="font-medium">{currentChild.admissionDate}</p>
+                    <p className="font-medium">
+                      {currentChild.createdAt
+                        ? new Date(currentChild.createdAt).toLocaleDateString()
+                        : "N/A"}
+                    </p>
                   </div>
                   <div>
                     <p className="text-muted-foreground text-sm">
-                      Date of Birth
+                      Father&apos;s Name
                     </p>
-                    <p className="font-medium">{currentChild.dateOfBirth}</p>
+                    <p className="font-medium">
+                      {currentChild.fatherName || "N/A"}
+                    </p>
                   </div>
                   <div>
-                    <p className="text-muted-foreground text-sm">Blood Group</p>
-                    <p className="font-medium">{currentChild.bloodGroup}</p>
+                    <p className="text-muted-foreground text-sm">Phone</p>
+                    <p className="font-medium">
+                      {currentChild.fatherPhone || currentChild.phone || "N/A"}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -388,44 +368,70 @@ function ParentPortal() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="mb-4 text-center">
-              <div className="font-bold text-4xl text-primary">93.3%</div>
-              <p className="text-muted-foreground">Overall Attendance</p>
-            </div>
-            <div className="grid grid-cols-3 gap-2 text-center">
-              <div className="rounded-lg bg-success/15 p-2">
-                <div className="font-bold text-success">42</div>
-                <div className="text-success text-xs">Present</div>
+            {attendanceLoading ? (
+              <div className="flex h-24 items-center justify-center">
+                <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
               </div>
-              <div className="rounded-lg bg-destructive/10 p-2">
-                <div className="font-bold text-destructive">3</div>
-                <div className="text-destructive text-xs">Absent</div>
-              </div>
-              <div className="rounded-lg bg-muted p-2">
-                <div className="font-bold text-muted-foreground">45</div>
-                <div className="text-muted-foreground text-xs">Total</div>
-              </div>
-            </div>
-            <div className="mt-4 border-t pt-4">
-              <p className="mb-2 text-muted-foreground text-sm">
-                Monthly Breakdown
-              </p>
-              {mockAttendance.map((month) => (
-                <div
-                  key={month.month}
-                  className="flex items-center justify-between py-1 text-sm"
-                >
-                  <span>{month.month}</span>
-                  <span
-                    className={
-                      month.percentage >= 90 ? "text-success" : "text-warning"
-                    }
-                  >
-                    {month.percentage}%
-                  </span>
+            ) : childAttendance && childAttendance.length > 0 ? (
+              <>
+                <div className="mb-4 text-center">
+                  <div className="font-bold text-4xl text-primary">
+                    {childAttendance[0].percentage || 0}%
+                  </div>
+                  <p className="text-muted-foreground">Overall Attendance</p>
                 </div>
-              ))}
-            </div>
+                <div className="grid grid-cols-3 gap-2 text-center">
+                  <div className="rounded-lg bg-success/15 p-2">
+                    <div className="font-bold text-success">
+                      {childAttendance[0].present || 0}
+                    </div>
+                    <div className="text-success text-xs">Present</div>
+                  </div>
+                  <div className="rounded-lg bg-destructive/10 p-2">
+                    <div className="font-bold text-destructive">
+                      {childAttendance[0].absent || 0}
+                    </div>
+                    <div className="text-destructive text-xs">Absent</div>
+                  </div>
+                  <div className="rounded-lg bg-muted p-2">
+                    <div className="font-bold text-muted-foreground">
+                      {childAttendance[0].total || 0}
+                    </div>
+                    <div className="text-muted-foreground text-xs">Total</div>
+                  </div>
+                </div>
+                <div className="mt-4 border-t pt-4">
+                  <p className="mb-2 text-muted-foreground text-sm">
+                    Recent Records
+                  </p>
+                  {childAttendance
+                    .slice(0, 3)
+                    .map((record: any, index: number) => (
+                      <div
+                        key={index}
+                        className="flex items-center justify-between py-1 text-sm"
+                      >
+                        <span>{record.className || `Record ${index + 1}`}</span>
+                        <span
+                          className={
+                            (record.percentage || 0) >= 90
+                              ? "text-success"
+                              : "text-warning"
+                          }
+                        >
+                          {record.percentage || 0}%
+                        </span>
+                      </div>
+                    ))}
+                </div>
+              </>
+            ) : (
+              <div className="flex h-24 items-center justify-center">
+                <p className="text-muted-foreground text-sm">
+                  No attendance data available
+                </p>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
@@ -449,31 +455,53 @@ function ParentPortal() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Total Fees</span>
-                <span className="font-bold">
-                  ₹{mockFees.total.toLocaleString()}
-                </span>
+            {feesLoading ? (
+              <div className="flex h-24 items-center justify-center">
+                <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
               </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Paid</span>
-                <span className="font-bold text-success">
-                  ₹{mockFees.paid.toLocaleString()}
-                </span>
+            ) : childFees ? (
+              <div className="space-y-3">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Total Fees</span>
+                  <span className="font-bold">
+                    ₹{childFees.total?.toLocaleString() || 0}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Paid</span>
+                  <span className="font-bold text-success">
+                    ₹{childFees.paid?.toLocaleString() || 0}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Pending</span>
+                  <span className="font-bold text-warning">
+                    ₹{childFees.pending?.toLocaleString() || 0}
+                  </span>
+                </div>
+                <div className="border-t pt-3">
+                  <p className="text-muted-foreground text-sm">
+                    Status:{" "}
+                    <span
+                      className={`font-medium ${childFees.status === "paid" ? "text-success" : "text-warning"}`}
+                    >
+                      {childFees.status === "paid" ? "Paid" : "Pending"}
+                    </span>
+                  </p>
+                  {childFees.dueDate && (
+                    <p className="text-muted-foreground text-sm">
+                      Next due date: {childFees.dueDate}
+                    </p>
+                  )}
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Pending</span>
-                <span className="font-bold text-warning">
-                  ₹{mockFees.pending.toLocaleString()}
-                </span>
-              </div>
-              <div className="border-t pt-3">
+            ) : (
+              <div className="flex h-24 items-center justify-center">
                 <p className="text-muted-foreground text-sm">
-                  Next due date: {mockFees.dueDate}
+                  No fee data available
                 </p>
               </div>
-            </div>
+            )}
           </CardContent>
         </Card>
 
@@ -495,30 +523,41 @@ function ParentPortal() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
-              {mockHomework.slice(0, 3).map((hw) => (
-                <div key={hw.id} className="rounded-lg bg-muted p-2">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <p className="font-medium text-sm">{hw.subject}</p>
-                      <p className="text-muted-foreground text-xs">
-                        {hw.title}
-                      </p>
+            {homeworkLoading ? (
+              <div className="flex h-24 items-center justify-center">
+                <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {(childHomework || []).slice(0, 3).map((hw: any) => (
+                  <div key={hw.id} className="rounded-lg bg-muted p-2">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <p className="font-medium text-sm">{hw.subject}</p>
+                        <p className="text-muted-foreground text-xs">
+                          {hw.title}
+                        </p>
+                      </div>
+                      <Badge
+                        variant={
+                          hw.status === "submitted" ? "success" : "warning"
+                        }
+                      >
+                        {hw.status}
+                      </Badge>
                     </div>
-                    <Badge
-                      variant={
-                        hw.status === "submitted" ? "success" : "warning"
-                      }
-                    >
-                      {hw.status}
-                    </Badge>
+                    <p className="mt-1 text-muted-foreground text-xs">
+                      Due: {hw.dueDate}
+                    </p>
                   </div>
-                  <p className="mt-1 text-muted-foreground text-xs">
-                    Due: {hw.dueDate}
+                ))}
+                {(!childHomework || childHomework.length === 0) && (
+                  <p className="text-muted-foreground text-sm">
+                    No homework assigned
                   </p>
-                </div>
-              ))}
-            </div>
+                )}
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -540,22 +579,35 @@ function ParentPortal() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
-              {mockLibraryBooks.map((book) => (
-                <div
-                  key={book.id}
-                  className="rounded-lg border-primary border-l-4 bg-primary/5 p-2"
-                >
-                  <p className="font-medium text-sm">{book.title}</p>
-                  <p className="text-muted-foreground text-xs">{book.author}</p>
-                  <div className="mt-2 flex justify-between">
-                    <span className="text-primary text-xs">
-                      Due: {book.dueDate}
-                    </span>
+            {libraryLoading ? (
+              <div className="flex h-24 items-center justify-center">
+                <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {(childLibraryBooks || []).map((book: any) => (
+                  <div
+                    key={book.id}
+                    className="rounded-lg border-primary border-l-4 bg-primary/5 p-2"
+                  >
+                    <p className="font-medium text-sm">{book.title}</p>
+                    <p className="text-muted-foreground text-xs">
+                      {book.author}
+                    </p>
+                    <div className="mt-2 flex justify-between">
+                      <span className="text-primary text-xs">
+                        Due: {book.dueDate}
+                      </span>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+                {(!childLibraryBooks || childLibraryBooks.length === 0) && (
+                  <p className="text-muted-foreground text-sm">
+                    No books issued
+                  </p>
+                )}
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -567,24 +619,48 @@ function ParentPortal() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Route</span>
-                <span className="font-medium">{mockTransport.route}</span>
+            {transportLoading ? (
+              <div className="flex h-24 items-center justify-center">
+                <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
               </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Stop</span>
-                <span className="font-medium">{mockTransport.stop}</span>
+            ) : childTransport ? (
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Route</span>
+                  <span className="font-medium">{childTransport.route}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Stop</span>
+                  <span className="font-medium">{childTransport.stop}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Pickup</span>
+                  <span className="font-medium">
+                    {childTransport.pickupTime}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Drop</span>
+                  <span className="font-medium">{childTransport.dropTime}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Driver</span>
+                  <span className="font-medium">
+                    {childTransport.driverName}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Vehicle</span>
+                  <span className="font-medium">
+                    {childTransport.vehicleNumber}
+                  </span>
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Pickup</span>
-                <span className="font-medium">{mockTransport.pickupTime}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Drop</span>
-                <span className="font-medium">{mockTransport.dropTime}</span>
-              </div>
-            </div>
+            ) : (
+              <p className="text-muted-foreground text-sm">
+                No transport assigned
+              </p>
+            )}
           </CardContent>
         </Card>
       </div>
@@ -598,52 +674,66 @@ function ParentPortal() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b text-left text-muted-foreground">
-                    <th className="pb-2 font-medium">Exam</th>
-                    <th className="pb-2 font-medium">Date</th>
-                    <th className="pb-2 font-medium">Marks</th>
-                    <th className="pb-2 font-medium">Grade</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {mockExams.map((exam, i) => (
-                    <tr key={i} className="border-b last:border-0">
-                      <td className="py-3 font-medium">{exam.name}</td>
-                      <td className="py-3 text-muted-foreground">
-                        {exam.date}
-                      </td>
-                      <td className="py-3">
-                        {exam.marks !== undefined ? (
-                          <span>
-                            {exam.marks}/{exam.maxMarks} ({exam.percentage}%)
-                          </span>
-                        ) : (
-                          <Badge variant="warning">Upcoming</Badge>
-                        )}
-                      </td>
-                      <td className="py-3">
-                        {exam.grade && (
-                          <Badge
-                            variant={
-                              exam.grade.startsWith("A")
-                                ? "success"
-                                : exam.grade.startsWith("B")
-                                  ? "default"
-                                  : "warning"
-                            }
-                          >
-                            {exam.grade}
-                          </Badge>
-                        )}
-                      </td>
+            {examsLoading ? (
+              <div className="flex h-32 items-center justify-center">
+                <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b text-left text-muted-foreground">
+                      <th className="pb-2 font-medium">Exam</th>
+                      <th className="pb-2 font-medium">Date</th>
+                      <th className="pb-2 font-medium">Marks</th>
+                      <th className="pb-2 font-medium">Grade</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {(childExams || []).map((exam: any) => (
+                      <tr key={exam.id} className="border-b last:border-0">
+                        <td className="py-3 font-medium">{exam.name}</td>
+                        <td className="py-3 text-muted-foreground">
+                          {exam.date}
+                        </td>
+                        <td className="py-3">
+                          {exam.status === "Upcoming" ? (
+                            <Badge variant="warning">Upcoming</Badge>
+                          ) : (
+                            `${exam.marks || 0}/${exam.maxMarks || 100}`
+                          )}
+                        </td>
+                        <td className="py-3">
+                          {exam.grade && (
+                            <Badge
+                              variant={
+                                exam.grade.startsWith("A")
+                                  ? "success"
+                                  : exam.grade.startsWith("B")
+                                    ? "default"
+                                    : "warning"
+                              }
+                            >
+                              {exam.grade}
+                            </Badge>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                    {(!childExams || childExams.length === 0) && (
+                      <tr>
+                        <td
+                          colSpan={4}
+                          className="py-6 text-center text-muted-foreground"
+                        >
+                          No exam results available
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -655,26 +745,37 @@ function ParentPortal() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
-              {mockNotices.map((notice) => (
-                <div
-                  key={notice.id}
-                  className={`rounded-lg border-l-4 p-3 ${
-                    notice.priority === "high"
-                      ? "border-destructive/30 bg-destructive/10"
-                      : "border-primary bg-primary/5"
-                  }`}
-                >
-                  <p className="font-medium text-sm">{notice.title}</p>
-                  <p className="mb-1 text-muted-foreground text-xs">
-                    {notice.date}
-                  </p>
+            {noticesLoading ? (
+              <div className="flex h-24 items-center justify-center">
+                <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {(notices || []).map((notice: any) => (
+                  <div
+                    key={notice.id}
+                    className={`rounded-lg border-l-4 p-3 ${
+                      notice.priority === "high"
+                        ? "border-destructive/30 bg-destructive/10"
+                        : "border-primary bg-primary/5"
+                    }`}
+                  >
+                    <p className="font-medium text-sm">{notice.title}</p>
+                    <p className="mb-1 text-muted-foreground text-xs">
+                      {notice.date}
+                    </p>
+                    <p className="text-muted-foreground text-sm">
+                      {notice.message}
+                    </p>
+                  </div>
+                ))}
+                {(!notices || notices.length === 0) && (
                   <p className="text-muted-foreground text-sm">
-                    {notice.message}
+                    No notices available
                   </p>
-                </div>
-              ))}
-            </div>
+                )}
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
@@ -741,38 +842,49 @@ function ParentPortal() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
-              {mockTeachers.map((teacher) => (
-                <div key={teacher.name} className="rounded-lg bg-muted p-3">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <p className="font-medium">{teacher.name}</p>
-                      <p className="text-muted-foreground text-sm">
-                        {teacher.subject}
-                      </p>
+            {teachersLoading ? (
+              <div className="flex h-24 items-center justify-center">
+                <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {(childTeachers || []).map((teacher: any) => (
+                  <div key={teacher.id} className="rounded-lg bg-muted p-3">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <p className="font-medium">{teacher.name}</p>
+                        <p className="text-muted-foreground text-sm">
+                          {teacher.subject}
+                        </p>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setShowContactForm(true)}
+                      >
+                        <MessageSquare className="mr-1 h-4 w-4" />
+                        Message
+                      </Button>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setShowContactForm(true)}
-                    >
-                      <MessageSquare className="mr-1 h-4 w-4" />
-                      Message
-                    </Button>
+                    <div className="mt-2 flex gap-3 text-muted-foreground text-xs">
+                      <span className="flex items-center gap-1">
+                        <Phone className="h-3 w-3" />
+                        {teacher.phone}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Mail className="h-3 w-3" />
+                        {teacher.email}
+                      </span>
+                    </div>
                   </div>
-                  <div className="mt-2 flex gap-3 text-muted-foreground text-xs">
-                    <span className="flex items-center gap-1">
-                      <Phone className="h-3 w-3" />
-                      {teacher.phone}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Mail className="h-3 w-3" />
-                      {teacher.email}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+                {(!childTeachers || childTeachers.length === 0) && (
+                  <p className="text-muted-foreground text-sm">
+                    No teachers assigned
+                  </p>
+                )}
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
@@ -790,8 +902,8 @@ function ParentPortal() {
               <div>
                 <label className="font-medium text-sm">Select Teacher</label>
                 <select className="mt-1 w-full rounded-lg border p-2">
-                  {mockTeachers.map((teacher) => (
-                    <option key={teacher.name} value={teacher.name}>
+                  {(childTeachers || []).map((teacher: any) => (
+                    <option key={teacher.id} value={teacher.name}>
                       {teacher.name} - {teacher.subject}
                     </option>
                   ))}

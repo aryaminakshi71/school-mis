@@ -158,5 +158,5 @@ function parseCSVLine(line: string): string[] {
   return result;
 }
 
-export { exportToCSV, downloadTemplate, parseCSV };
 export type { ExportOptions };
+export { downloadTemplate, exportToCSV, parseCSV };

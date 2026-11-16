@@ -6,8 +6,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { api } from "@/lib/api";
 import { exportToCSV } from "@/lib/export-utils";
 import { useSearch } from "@/lib/search-utils";
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import {
   Award,
@@ -50,109 +52,25 @@ const subFeatures = [
   { name: "Training", href: "/app/teachers/training", icon: Award },
 ];
 
-// Mock data for job postings
-const jobPostings = [
-  {
-    id: "JOB-001",
-    title: "Mathematics Teacher",
-    department: "Mathematics",
-    positions: 2,
-    type: "Full-time",
-    salary: "₹45,000 - ₹65,000",
-    postedDate: "2026-01-15",
-    closingDate: "2026-02-15",
-    status: "active",
-    applications: 45,
-    shortlisted: 8,
-  },
-  {
-    id: "JOB-002",
-    title: "Science Teacher",
-    department: "Science",
-    positions: 1,
-    type: "Full-time",
-    salary: "₹50,000 - ₹70,000",
-    postedDate: "2026-01-20",
-    closingDate: "2026-02-20",
-    status: "active",
-    applications: 32,
-    shortlisted: 5,
-  },
-  {
-    id: "JOB-003",
-    title: "Physical Education Teacher",
-    department: "Sports",
-    positions: 1,
-    type: "Full-time",
-    salary: "₹35,000 - ₹50,000",
-    postedDate: "2026-01-10",
-    closingDate: "2026-02-10",
-    status: "closed",
-    applications: 28,
-    shortlisted: 3,
-  },
-  {
-    id: "JOB-004",
-    title: "English Teacher",
-    department: "English",
-    positions: 1,
-    type: "Full-time",
-    salary: "₹45,000 - ₹65,000",
-    postedDate: "2026-01-25",
-    closingDate: "2026-02-25",
-    status: "active",
-    applications: 38,
-    shortlisted: 6,
-  },
-];
-
-// Mock data for applications
-const applications = [
-  {
-    id: "APP-001",
-    candidate: "Priya Sharma",
-    jobId: "JOB-001",
-    jobTitle: "Mathematics Teacher",
-    experience: "5 years",
-    qualification: "M.Sc. Mathematics, B.Ed.",
-    appliedDate: "2026-01-18",
-    status: "shortlisted",
-  },
-  {
-    id: "APP-002",
-    candidate: "Rajesh Kumar",
-    jobId: "JOB-001",
-    jobTitle: "Mathematics Teacher",
-    experience: "3 years",
-    qualification: "M.Sc. Mathematics, B.Ed.",
-    appliedDate: "2026-01-19",
-    status: "under_review",
-  },
-  {
-    id: "APP-003",
-    candidate: "Sneha Patel",
-    jobId: "JOB-002",
-    jobTitle: "Science Teacher",
-    experience: "7 years",
-    qualification: "M.Sc. Physics, B.Ed.",
-    appliedDate: "2026-01-21",
-    status: "shortlisted",
-  },
-  {
-    id: "APP-004",
-    candidate: "Amit Singh",
-    jobId: "JOB-004",
-    jobTitle: "English Teacher",
-    experience: "4 years",
-    qualification: "M.A. English, B.Ed.",
-    appliedDate: "2026-01-26",
-    status: "new",
-  },
-];
-
 function RecruitmentPage() {
   const [activeTab, setActiveTab] = useState("jobs");
   const [selectedStatus, setSelectedStatus] = useState("all");
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["teachers", "recruitment"],
+    queryFn: api.teachers.getRecruitment,
+  });
+
+  const jobPostings = data?.jobPostings ?? [];
+  const applications = data?.applications ?? [];
+
+  if (isLoading) {
+    return (
+      <div className="flex h-96 items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+      </div>
+    );
+  }
 
   const {
     searchQuery,

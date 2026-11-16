@@ -1,4 +1,6 @@
-import { Tabs } from "expo/native";
+import { Tabs } from "expo-router";
+import { Text } from "react-native";
+
 export default function TabsLayout() {
   return (
     <Tabs screenOptions={{ tabBarActiveTintColor: "#059669" }}>

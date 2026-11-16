@@ -4,14 +4,18 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./redis": "./src/redis/index.ts"
+    "./redis": "./src/redis/index.ts",
+    "./db/schema": "./src/db/schema/index.ts"
   },
   "scripts": {
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "db:seed": "bun src/seed.ts"
+    "db:seed": "bun src/seed.ts",
+    "test:integration": "vitest run src/integration --passWithNoTests",
+    "test": "vitest run --passWithNoTests",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@school/env": "workspace:*",

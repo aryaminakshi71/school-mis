@@ -4,37 +4,38 @@
  * Re-exports all database schemas, utilities, and database connection.
  */
 
-export * from "./db/schema/school/school.schema";
-export * from "./db/schema/school/auth.schema";
-export * from "./db/schema/audit-logs.schema";
-export { db, type Database } from "./db";
 export {
-  eq,
-  desc,
+  and,
   asc,
   count,
-  or,
-  like,
-  sql,
-  and,
+  desc,
+  eq,
+  gt,
   gte,
-  ne,
+  inArray,
+  like,
   lt,
   lte,
-  gt,
-  inArray,
+  ne,
+  or,
+  sql,
 } from "drizzle-orm";
+export { type Database, db } from "./db";
+export * from "./db/schema/audit-logs.schema";
+export * from "./db/schema/school/auth.schema";
+export * from "./db/schema/school/school.schema";
 
 // Schema exports for Better Auth adapter
-import * as schoolSchema from "./db/schema/school/school.schema";
+import * as authSchema from "./db/schema/school/auth.schema";
 
 // Export auth-related schema for Better Auth
 export const schema = {
   // Better Auth requires these tables
-  user: schoolSchema.directory, // Map directory to user table
-  session: schoolSchema.sessions,
-  account: schoolSchema.staff, // Map staff as account placeholder
-  verification: schoolSchema.smsLogs, // Placeholder for verification
-  organization: schoolSchema.classes, // Classes can serve as organization
-  member: schoolSchema.teachers, // Teachers as members
+  user: authSchema.users,
+  session: authSchema.userSessions,
+  account: authSchema.userAccounts,
+  verification: authSchema.emailVerificationTokens,
+  organization: authSchema.organizations,
+  member: authSchema.members,
+  invitation: authSchema.invitations,
 };

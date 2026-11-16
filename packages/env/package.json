@@ -8,7 +8,10 @@
     "./client": "./src/client.ts"
   },
   "scripts": {
-    "types": "wrangler types src/cloudflare.d.ts --env-interface Env"
+    "types": "wrangler types src/cloudflare.d.ts --env-interface Env",
+    "test:integration": "vitest run src/integration --passWithNoTests",
+    "test": "vitest run --passWithNoTests",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "zod": "^4.3.5"

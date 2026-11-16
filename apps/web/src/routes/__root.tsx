@@ -1,4 +1,5 @@
 import { NotFoundPage } from "@/components/error";
+import { ThemeProvider } from "@/components/theme-provider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   HeadContent,
@@ -100,12 +101,19 @@ function RootDocument() {
         />
       </head>
       <body>
-        <AuthProvider>
-          <QueryClientProvider client={queryClient}>
-            <Outlet />
-            <Scripts />
-          </QueryClientProvider>
-        </AuthProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AuthProvider>
+            <QueryClientProvider client={queryClient}>
+              <Outlet />
+              <Scripts />
+            </QueryClientProvider>
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

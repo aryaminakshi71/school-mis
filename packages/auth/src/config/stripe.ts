@@ -49,7 +49,10 @@ export function createStripePlugin(config: StripeConfig) {
       authorizeReference: async ({
         user,
         referenceId,
-      }: { user: any; referenceId: string }) => {
+      }: {
+        user: any;
+        referenceId: string;
+      }) => {
         // TODO: Implement authorization check based on your member table structure
         // const member = await db.query.members.findFirst({
         //   where: and(
@@ -64,7 +67,9 @@ export function createStripePlugin(config: StripeConfig) {
       // Handle subscription lifecycle events
       onSubscriptionComplete: async ({
         subscription,
-      }: { subscription: any }) => {
+      }: {
+        subscription: any;
+      }) => {
         console.log(
           `[Stripe] Subscription completed for org ${subscription.referenceId}, plan: ${subscription.plan}`,
         );

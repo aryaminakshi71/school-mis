@@ -1,22 +1,22 @@
+export { Avatar, AvatarFallback, AvatarImage } from "./avatar";
 export { Button, buttonVariants } from "./button";
 export {
   Card,
-  CardHeader,
-  CardFooter,
-  CardTitle,
-  CardDescription,
   CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
 } from "./card";
-export { Input } from "./input";
-export { Label } from "./label";
-export { Separator } from "./separator";
-export { Avatar, AvatarImage, AvatarFallback } from "./avatar";
-export { Progress } from "./progress";
 export {
   DropdownMenu,
-  DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "./dropdown-menu";
+export { Input } from "./input";
+export { Label } from "./label";
+export { Progress } from "./progress";
+export { Separator } from "./separator";

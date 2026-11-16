@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { type Page, expect, test } from "@playwright/test";
 
 const PORTAL_TEST_TIMEOUT_MS = Number(
   process.env.PORTAL_TEST_TIMEOUT_MS ?? 120000,
@@ -43,7 +43,10 @@ async function setAuthenticatedUser(page: Page, role: PortalRole = "admin") {
 
 async function expectNoServerErrors(page: Page, action: () => Promise<void>) {
   const serverErrors: string[] = [];
-  const onResponse = (response: { status: () => number; url: () => string }) => {
+  const onResponse = (response: {
+    status: () => number;
+    url: () => string;
+  }) => {
     const status = response.status();
     if (status >= 500 && response.url().includes("/api/")) {
       serverErrors.push(`${status} ${response.url()}`);
@@ -57,9 +60,10 @@ async function expectNoServerErrors(page: Page, action: () => Promise<void>) {
     page.off("response", onResponse);
   }
 
-  expect(serverErrors, `Server errors found:\n${serverErrors.join("\n")}`).toEqual(
-    [],
-  );
+  expect(
+    serverErrors,
+    `Server errors found:\n${serverErrors.join("\n")}`,
+  ).toEqual([]);
 }
 
 async function expectPortalHeading(page: Page, heading: string) {
@@ -186,7 +190,9 @@ test.describe("School MIS Portals", () => {
     });
   });
 
-  test("should access staff management portal card target", async ({ page }) => {
+  test("should access staff management portal card target", async ({
+    page,
+  }) => {
     await setAuthenticatedUser(page, "admin");
     await expectNoServerErrors(page, async () => {
       const response = await page.goto("/app/teachers");
@@ -195,7 +201,9 @@ test.describe("School MIS Portals", () => {
     });
   });
 
-  test("should block student-only user from teacher portal", async ({ page }) => {
+  test("should block student-only user from teacher portal", async ({
+    page,
+  }) => {
     await setAuthenticatedUser(page, "student");
     await page.goto("/app/teacher-portal");
     await expect(page.getByText("Access Denied")).toBeVisible();

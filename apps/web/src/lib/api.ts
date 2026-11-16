@@ -110,6 +110,156 @@ export interface LibraryBookCreateInput {
   availableCopies?: number;
 }
 
+// Student Portal Types
+export interface StudentProfile {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  class?: string;
+  section?: string;
+  rollNumber?: string;
+  admissionNumber?: string;
+  admissionDate?: string;
+  createdAt?: string;
+  house?: string;
+  bloodGroup?: string;
+  dateOfBirth?: string;
+  address?: string;
+  photo?: string;
+  parentName?: string;
+  parentPhone?: string;
+  parentEmail?: string;
+}
+
+export interface StudentAttendance {
+  present: number;
+  absent: number;
+  total: number;
+  percentage: number;
+  monthlyTrend?: Array<{ month: string; days: number }>;
+}
+
+export interface StudentGrade {
+  id: string;
+  subject: string;
+  marks: number;
+  maxMarks: number;
+  grade: string;
+  examType: string;
+  date: string;
+}
+
+export interface StudentFees {
+  total: number;
+  paid: number;
+  pending: number;
+  status: "paid" | "pending" | "overdue" | "unknown";
+  recentPayments?: Array<{ date: string; amount: number; method: string }>;
+}
+
+// Teacher Portal Types
+export interface TeacherProfile {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone?: string;
+  qualification: string;
+  subject: string;
+  experience: number;
+  salary: number;
+  joiningDate?: string;
+  address?: string;
+  photo?: string;
+  attendance?: number;
+}
+
+export interface TeacherClass {
+  id: string;
+  name: string;
+  section: string;
+  subject: string;
+  students: number;
+  schedule?: Array<{ day: string; period: string; time: string }>;
+}
+
+export interface TeacherTask {
+  id: string;
+  title: string;
+  description: string;
+  dueDate: string;
+  status: "pending" | "in_progress" | "completed";
+  priority: "low" | "medium" | "high";
+}
+
+export interface TeacherPerformance {
+  rating: number;
+  studentsFeedback: number;
+  peerReview: number;
+  attendance: number;
+  lastAppraisal: string;
+  nextAppraisal: string;
+  status: "excellent" | "good" | "average" | "needs_improvement";
+}
+
+export interface TeacherPerformanceData {
+  id: string;
+  name: string;
+  designation: string;
+  department: string;
+  rating: number;
+  studentsFeedback: number;
+  peerReview: number;
+  attendance: number;
+  lastAppraisal: string;
+  nextAppraisal: string;
+  status: "excellent" | "good" | "average" | "needs_improvement";
+}
+
+export interface TeacherPerformanceResponse {
+  performance: TeacherPerformanceData[];
+  appraisalCycles: TeacherAppraisalCycle[];
+}
+
+export interface TeacherAppraisalCycle {
+  id: string;
+  name: string;
+  startDate: string;
+  endDate: string;
+  status: "active" | "completed" | "upcoming";
+  completed: number;
+  total: number;
+}
+
+export interface SchoolSettingsUpdateInput {
+  schoolName?: string;
+  shortName?: string;
+  schoolAddress?: string;
+  phoneNumber?: string;
+  supportEmail?: string;
+  websiteUrl?: string;
+  logoUrl?: string;
+  primaryColor?: string;
+  secondaryColor?: string;
+  receiptFooter?: string;
+  mobileAppName?: string;
+}
+
+export interface SchoolBranding {
+  schoolName: string;
+  shortName: string;
+  schoolAddress: string;
+  phoneNumber?: string;
+  supportEmail?: string;
+  websiteUrl?: string;
+  logoUrl?: string;
+  primaryColor?: string;
+  secondaryColor?: string;
+  receiptFooter?: string;
+  mobileAppName?: string;
+}
+
 export interface DashboardStats {
   totalStudents: number;
   totalTeachers: number;
@@ -119,24 +269,91 @@ export interface DashboardStats {
   pendingFeePayments: number;
 }
 
-// Helper to handle API requests
+// Helper to handle API requests with enhanced error handling
 const request = async <T>(
   path: string,
   options: RequestInit = {},
+  retries = 3,
 ): Promise<T> => {
-  const response = await fetch(`/api${path}`, {
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options.headers,
-    },
-  });
+  const url = `/api${path}`;
 
-  if (!response.ok) {
-    throw new Error(`API Error: ${response.statusText}`);
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      const response = await fetch(url, {
+        ...options,
+        headers: {
+          "Content-Type": "application/json",
+          ...options.headers,
+        },
+      });
+
+      if (!response.ok) {
+        let errorMessage = `API Error: ${response.statusText}`;
+        let errorDetails: any = {};
+
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorMessage;
+          errorDetails = errorData;
+        } catch {
+          // If we can't parse error response, use default message
+        }
+
+        // Handle specific HTTP status codes
+        switch (response.status) {
+          case 400:
+            throw new Error(`Bad Request: ${errorMessage}`);
+          case 401:
+            throw new Error("Authentication required. Please log in again.");
+          case 403:
+            throw new Error(
+              "Access denied. You don't have permission for this action.",
+            );
+          case 404:
+            throw new Error("The requested resource was not found.");
+          case 409:
+            throw new Error(`Conflict: ${errorMessage}`);
+          case 422:
+            throw new Error(`Validation Error: ${errorMessage}`);
+          case 429:
+            throw new Error(
+              "Too many requests. Please wait a moment and try again.",
+            );
+          case 500:
+            throw new Error("Server error. Please try again later.");
+          case 503:
+            throw new Error(
+              "Service temporarily unavailable. Please try again later.",
+            );
+          default:
+            throw new Error(errorMessage);
+        }
+      }
+
+      const data = await response.json();
+      return data as T;
+    } catch (error) {
+      // If it's the last attempt, throw the error
+      if (attempt === retries) {
+        if (error instanceof Error) {
+          throw error;
+        }
+        throw new Error("An unexpected error occurred");
+      }
+
+      // For network errors, wait before retrying
+      if (error instanceof TypeError && error.message.includes("fetch")) {
+        console.warn(`Network error on attempt ${attempt}, retrying...`);
+        await new Promise((resolve) => setTimeout(resolve, 1000 * attempt));
+        continue;
+      }
+
+      // For other errors, don't retry
+      throw error;
+    }
   }
 
-  return (await response.json()) as T;
+  throw new Error("Request failed after all retries");
 };
 
 // API Functions
@@ -170,6 +387,50 @@ export const api = {
         method: "DELETE",
       });
     },
+    getMyProfile: async (): Promise<StudentProfile> => {
+      return request(`/students/me`);
+    },
+    getMyAttendance: async (): Promise<{ attendance: StudentAttendance }> => {
+      return request(`/students/me/attendance`);
+    },
+    getMyGrades: async (): Promise<{ grades: StudentGrade[] }> => {
+      return request(`/students/me/grades`);
+    },
+    getMyFees: async (): Promise<{ fees: StudentFees }> => {
+      return request(`/students/me/fees`);
+    },
+
+    // Parent-specific endpoints
+    getMyChildren: async () => {
+      return request("/students/children");
+    },
+    getChildAttendance: async (id: string) => {
+      return request(`/students/child/${id}/attendance`);
+    },
+    getChildGrades: async (id: string) => {
+      return request(`/students/child/${id}/grades`);
+    },
+    getChildFees: async (id: string) => {
+      return request(`/students/child/${id}/fees`);
+    },
+    getChildHomework: async (id: string) => {
+      return request(`/students/child/${id}/homework`);
+    },
+    getChildExams: async (id: string) => {
+      return request(`/students/child/${id}/exams`);
+    },
+    getChildLibraryBooks: async (id: string) => {
+      return request(`/students/child/${id}/library`);
+    },
+    getChildTransport: async (id: string) => {
+      return request(`/students/child/${id}/transport`);
+    },
+    getChildNotices: async (id: string) => {
+      return request(`/students/child/${id}/notices`);
+    },
+    getChildTeachers: async (id: string) => {
+      return request(`/students/child/${id}/teachers`);
+    },
   },
 
   // Teachers
@@ -197,6 +458,175 @@ export const api = {
       return request(`/teachers/${id}`, {
         method: "DELETE",
       });
+    },
+    // Teacher portal endpoints
+    getMyProfile: async (): Promise<TeacherProfile> => {
+      return request("/teachers/me");
+    },
+    getMyClasses: async (): Promise<TeacherClass[]> => {
+      return request("/teachers/me/classes");
+    },
+    getMyStudents: async () => {
+      return request("/teachers/me/students");
+    },
+    getMyTasks: async (): Promise<TeacherTask[]> => {
+      return request("/teachers/me/tasks");
+    },
+    getPerformance: async (): Promise<TeacherPerformanceResponse> => {
+      // Return mock data for now since the backend API is not fully implemented
+      return {
+        performance: [
+          {
+            id: "EMP001",
+            name: "Priya Sharma",
+            designation: "Senior Teacher",
+            department: "Mathematics",
+            rating: 4.8,
+            studentsFeedback: 4.7,
+            peerReview: 4.9,
+            attendance: 98,
+            lastAppraisal: "2024-01-15",
+            nextAppraisal: "2025-01-15",
+            status: "excellent",
+          },
+          {
+            id: "EMP002",
+            name: "Rahul Verma",
+            designation: "Teacher",
+            department: "Science",
+            rating: 4.2,
+            studentsFeedback: 4.1,
+            peerReview: 4.3,
+            attendance: 95,
+            lastAppraisal: "2024-03-20",
+            nextAppraisal: "2025-03-20",
+            status: "good",
+          },
+          {
+            id: "EMP003",
+            name: "Anita Patel",
+            designation: "Teacher",
+            department: "English",
+            rating: 4.5,
+            studentsFeedback: 4.6,
+            peerReview: 4.4,
+            attendance: 97,
+            lastAppraisal: "2024-02-10",
+            nextAppraisal: "2025-02-10",
+            status: "excellent",
+          },
+          {
+            id: "EMP004",
+            name: "Suresh Kumar",
+            designation: "Junior Teacher",
+            department: "Social Studies",
+            rating: 3.6,
+            studentsFeedback: 3.5,
+            peerReview: 3.7,
+            attendance: 92,
+            lastAppraisal: "2024-04-05",
+            nextAppraisal: "2025-04-05",
+            status: "average",
+          },
+          {
+            id: "EMP005",
+            name: "Meera Gupta",
+            designation: "Teacher",
+            department: "Hindi",
+            rating: 3.8,
+            studentsFeedback: 3.9,
+            peerReview: 3.7,
+            attendance: 94,
+            lastAppraisal: "2024-05-12",
+            nextAppraisal: "2025-05-12",
+            status: "average",
+          },
+        ],
+        appraisalCycles: [
+          {
+            id: "1",
+            name: "Annual Appraisal 2024-25",
+            startDate: "2024-04-01",
+            endDate: "2024-06-30",
+            status: "active",
+            completed: 42,
+            total: 45,
+          },
+          {
+            id: "2",
+            name: "Mid-Year Review 2024",
+            startDate: "2024-09-01",
+            endDate: "2024-10-15",
+            status: "upcoming",
+            completed: 0,
+            total: 45,
+          },
+          {
+            id: "3",
+            name: "Annual Appraisal 2023-24",
+            startDate: "2023-04-01",
+            endDate: "2023-06-30",
+            status: "completed",
+            completed: 44,
+            total: 44,
+          },
+        ],
+      };
+    },
+    getRecruitment: async (): Promise<{
+      jobPostings: any[];
+      applications: any[];
+    }> => {
+      return request("/teachers/recruitment");
+    },
+    getTraining: async () => {
+      return request("/teachers/training");
+    },
+    getLeave: async () => {
+      return request("/teachers/leave");
+    },
+    getClassStats: async () => {
+      return request("/teachers/me/class-stats");
+    },
+  },
+
+  // Staff
+  staff: {
+    list: async () => {
+      return request("/staff");
+    },
+    get: async (id: string) => {
+      return request(`/staff/${id}`);
+    },
+    create: async (data: any) => {
+      return request("/staff", {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+    },
+    update: async (id: string, data: any) => {
+      return request(`/staff/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(data),
+      });
+    },
+    delete: async (id: string) => {
+      return request(`/staff/${id}`, {
+        method: "DELETE",
+      });
+    },
+    // Staff portal endpoints
+    getMyProfile: async () => {
+      return request("/staff/me");
+    },
+    getMyTasks: async () => {
+      return request("/staff/me/tasks");
+    },
+    getMyAttendance: async () => {
+      return request("/staff/me/attendance");
+    },
+    getAttendance: async () => {
+      return request("/staff/attendance");
     },
   },
 
@@ -508,6 +938,96 @@ export const api = {
       });
     },
   },
+  schoolSettings: {
+    get: async () => {
+      try {
+        const data = await request<SchoolBranding>("/settings/school");
+        return data;
+      } catch (e) {
+        console.warn("School settings endpoint not ready", e);
+        return defaultSchoolBranding;
+      }
+    },
+    update: async (data: Partial<SchoolSettingsUpdateInput>) => {
+      return request<SchoolBranding>("/settings/school", {
+        method: "PUT",
+        body: JSON.stringify(data),
+      });
+    },
+  },
+
+  // Monitoring
+  monitoring: {
+    dashboard: async () => {
+      return request("/monitoring/dashboard");
+    },
+    metrics: async (days?: string) => {
+      const query = days ? `?days=${days}` : "";
+      return request(`/monitoring/metrics${query}`);
+    },
+    alerts: async () => {
+      return request("/monitoring/alerts");
+    },
+  },
+
+  // Timetable
+  timetable: {
+    list: async (
+      classId?: string,
+    ): Promise<
+      Array<{
+        dayOfWeek: number;
+        dayName: string;
+        periods: Array<{
+          id: string;
+          periodNumber: number;
+          subjectName: string;
+          subjectId?: string;
+          teacherName?: string;
+          teacherId?: string;
+          startTime: string;
+          endTime: string;
+          roomNumber?: string;
+          classId?: string;
+          className?: string;
+        }>;
+      }>
+    > => {
+      const query = classId ? `?classId=${classId}` : "";
+      return request(`/timetable${query}`);
+    },
+    create: async (data: any) => {
+      return request("/timetable", {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+    },
+    update: async (id: string, data: any) => {
+      return request(`/timetable/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(data),
+      });
+    },
+    delete: async (id: string) => {
+      return request(`/timetable/${id}`, {
+        method: "DELETE",
+      });
+    },
+  },
 };
 
-export default api;
+const defaultSchoolBranding: SchoolBranding = {
+  schoolName: "School MIS",
+  shortName: "School",
+  schoolAddress: "",
+  phoneNumber: "",
+  supportEmail: "",
+  websiteUrl: "",
+  logoUrl: "",
+  primaryColor: "#047857",
+  secondaryColor: "#17332a",
+  receiptFooter: "",
+  mobileAppName: "School MIS",
+};
+
+export { defaultSchoolBranding, request };

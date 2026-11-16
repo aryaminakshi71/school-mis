@@ -3874,22 +3874,14 @@ type LoopbackServiceStub<
   T extends Rpc.WorkerEntrypointBranded | undefined = undefined,
 > = Fetcher<T> &
   (T extends CloudflareWorkersModule.WorkerEntrypoint<any, infer Props>
-    ? (opts: {
-        props?: Props;
-      }) => Fetcher<T>
-    : (opts: {
-        props?: any;
-      }) => Fetcher<T>);
+    ? (opts: { props?: Props }) => Fetcher<T>
+    : (opts: { props?: any }) => Fetcher<T>);
 type LoopbackDurableObjectClass<
   T extends Rpc.DurableObjectBranded | undefined = undefined,
 > = DurableObjectClass<T> &
   (T extends CloudflareWorkersModule.DurableObject<any, infer Props>
-    ? (opts: {
-        props?: Props;
-      }) => DurableObjectClass<T>
-    : (opts: {
-        props?: any;
-      }) => DurableObjectClass<T>);
+    ? (opts: { props?: Props }) => DurableObjectClass<T>
+    : (opts: { props?: any }) => DurableObjectClass<T>);
 interface SyncKvStorage {
   get<T = unknown>(key: string): T | undefined;
   list<T = unknown>(options?: SyncKvListOptions): Iterable<[string, T]>;
@@ -10793,9 +10785,7 @@ declare abstract class D1PreparedStatement {
   raw<T = unknown[]>(options: {
     columnNames: true;
   }): Promise<[string[], ...T[]]>;
-  raw<T = unknown[]>(options?: {
-    columnNames?: false;
-  }): Promise<T[]>;
+  raw<T = unknown[]>(options?: { columnNames?: false }): Promise<T[]>;
 }
 // `Disposable` was added to TypeScript's standard lib types in version 5.2.
 // To support older TypeScript versions, define an empty `Disposable` interface.
@@ -11255,9 +11245,7 @@ declare module "cloudflare:node" {
     };
   }
   export function httpServerHandler(port: number): ExportedHandler;
-  export function httpServerHandler(options: {
-    port: number;
-  }): ExportedHandler;
+  export function httpServerHandler(options: { port: number }): ExportedHandler;
   export function httpServerHandler(server: NodeStyleServer): ExportedHandler;
 }
 type Params<P extends string = any> = Record<P, string | string[]>;

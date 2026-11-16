@@ -1,0 +1,21 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "school-mis",
+  "main": "./src/server.ts",
+  "compatibility_date": "2025-01-10",
+  "compatibility_flags": [
+    "nodejs_compat",
+    "nodejs_compat_populate_process_env"
+  ],
+  "assets": {
+    "directory": "./apps/web/dist/client",
+    "binding": "ASSETS"
+  },
+  "vars": {
+    "NODE_ENV": "production",
+    "VITE_PUBLIC_SITE_URL": "https://school-mis.aryaminakshi.workers.dev"
+  },
+  "dev": {
+    "port": 3015
+  }
+}

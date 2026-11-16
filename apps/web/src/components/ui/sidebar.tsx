@@ -173,13 +173,13 @@ SidebarTrigger.displayName = "SidebarTrigger";
 
 export {
   Sidebar,
-  SidebarHeader,
   SidebarContent,
   SidebarFooter,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
-  SidebarSeparator,
+  SidebarHeader,
   SidebarInset,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarSeparator,
   SidebarTrigger,
 };

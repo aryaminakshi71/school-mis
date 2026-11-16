@@ -1,4 +1,5 @@
 import { ScrollView, StyleSheet, Text, View } from "react-native";
+
 const stats = [
   { label: "Total Students", value: "1,234", icon: "👨‍🎓" },
   { label: "Present Today", value: "1,180", icon: "✅" },

@@ -195,5 +195,5 @@ export function useTheme() {
   };
 }
 
-export { themes, loadTheme, saveTheme };
+export { loadTheme, saveTheme, themes };
 export default useTheme;

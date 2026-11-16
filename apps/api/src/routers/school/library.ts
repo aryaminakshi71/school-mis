@@ -4,7 +4,10 @@
  * oRPC router for library management.
  */
 
+import { libraryBooks } from "@school/storage";
+import { and, like } from "drizzle-orm";
 import { z } from "zod";
+import { getDb } from "../../lib/db.js";
 import { orgAuthed, pub } from "../../procedures/index.js";
 
 export const libraryRouter = {
@@ -21,8 +24,27 @@ export const libraryRouter = {
         category: z.string().optional(),
       }),
     )
-    .output(z.array(z.any()))
-    .handler(async () => []),
+    .output(z.object({ books: z.array(z.any()) }))
+    .handler(async ({ input }) => {
+      const db = getDb();
+      const { search, category } = input;
+
+      const conditions = [];
+      if (search) {
+        conditions.push(like(libraryBooks.title, `%${search}%`));
+      }
+      if (category) {
+        conditions.push(like(libraryBooks.category, `%${category}%`));
+      }
+
+      const books = await db
+        .select()
+        .from(libraryBooks)
+        .where(and(...conditions))
+        .orderBy(libraryBooks.title);
+
+      return { books };
+    }),
   getBook: pub
     .route({
       method: "GET",

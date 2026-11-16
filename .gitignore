@@ -8,3 +8,14 @@ dist
 .turbo
 coverage
 .playwright
+*.css
+playwright-report
+dist/
+.wrangler/
+test-results/
+test-reports/
+playwright-report/
+coverage/
+.next/
+build/
+browser_test_results/
