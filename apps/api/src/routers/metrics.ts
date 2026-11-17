@@ -19,7 +19,7 @@ export const metricsRouter = {
     .output(z.any())
     .handler(async ({ context }) => {
       const ctx = context as any
-      const token = ctx.request?.headers?.get?.('x-admin-token') ?? ''
+      const token = ctx.request?.headers?.get?.('x-admin-token') ?? ctx.headers?.get?.('x-admin-token') ?? ''
       const env = ctx.env ?? process.env ?? {}
       if (!env.ADMIN_TOKEN || token !== env.ADMIN_TOKEN) {
         throw new ORPCError('UNAUTHORIZED', { message: 'Invalid admin token' })

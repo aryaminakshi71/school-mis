@@ -4115,7 +4115,19 @@ export function createApp() {
     ],
   });
 
-  app.use("/api/rpc/*", requireAuth, async (c: any, next: any) => {
+  app.use(
+    "/api/rpc/*",
+    async (c: any, next: any) => {
+      // Allow the admin metrics endpoint with x-admin-token (no login).
+      const isMetrics = c.req.path.includes("/metrics");
+      const adminToken = c.req.header("x-admin-token");
+      const expected = c.env?.ADMIN_TOKEN || process.env.ADMIN_TOKEN;
+      if (isMetrics && adminToken && expected && adminToken === expected) {
+        return next();
+      }
+      return requireAuth(c, next);
+    },
+    async (c: any, next: any) => {
     const initialContext: AppContext = {
       env: (c.env || process.env) as unknown as AppContext["env"],
       headers: c.req.raw.headers,
