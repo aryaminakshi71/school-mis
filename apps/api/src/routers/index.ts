@@ -6,10 +6,12 @@
  */
 
 import { healthRouter } from "./health.js";
+import { metricsRouter } from "./metrics.js";
 import * as schoolRouters from "./school/index.js";
 
 export const appRouter = {
   health: healthRouter,
+  metrics: metricsRouter,
   // School Management Routers (22 features)
   students: schoolRouters.studentsRouter,
   attendance: schoolRouters.attendanceRouter,
