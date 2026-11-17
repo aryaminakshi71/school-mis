@@ -2918,6 +2918,54 @@ export function createApp() {
     });
   });
 
+  app.get("/api/dashboard/stats", requireAuth, async (c: any) => {
+    const db = getDb(c);
+    const today = new Date().toISOString().slice(0, 10);
+    const monthStart = new Date();
+    monthStart.setDate(1);
+    monthStart.setHours(0, 0, 0, 0);
+
+    const [studentsRow] = await db
+      .select({ n: sql<number>`count(*)::int` })
+      .from(students);
+    const [teachersRow] = await db
+      .select({ n: sql<number>`count(*)::int` })
+      .from(teachers);
+    const [classesRow] = await db
+      .select({ n: sql<number>`count(*)::int` })
+      .from(classes);
+    const [attendanceRow] = await db
+      .select({ n: sql<number>`count(*)::int` })
+      .from(attendance)
+      .where(and(eq(attendance.date, today), eq(attendance.status, "present")));
+    const [collectionRow] = await db
+      .select({
+        total: sql<number>`coalesce(sum(${feePayments.amount}), 0)::float`,
+      })
+      .from(feePayments)
+      .where(
+        and(
+          eq(feePayments.status, "paid"),
+          gte(feePayments.paymentDate, monthStart),
+        ),
+      );
+    const [pendingRow] = await db
+      .select({
+        total: sql<number>`coalesce(sum(${feePayments.amount}), 0)::float`,
+      })
+      .from(feePayments)
+      .where(eq(feePayments.status, "pending"));
+
+    return c.json({
+      totalStudents: studentsRow?.n ?? 0,
+      totalTeachers: teachersRow?.n ?? 0,
+      totalClasses: classesRow?.n ?? 0,
+      todayAttendance: attendanceRow?.n ?? 0,
+      monthlyFeeCollection: collectionRow?.total ?? 0,
+      pendingFeePayments: pendingRow?.total ?? 0,
+    });
+  });
+
   // Photo Upload API
   app.post("/api/upload/photo", requireAuth, async (c: any) => {
     const body = await c.req.parseBody();

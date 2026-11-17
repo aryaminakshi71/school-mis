@@ -41,16 +41,13 @@ export const RealTimeDashboard = () => {
   } = useQuery({
     queryKey: ["dashboard-stats"],
     queryFn: async (): Promise<DashboardStats> => {
-      // This would be a real API call to get dashboard stats
-      // For now, we'll simulate with some mock data
-      return {
-        totalStudents: 1250,
-        totalTeachers: 45,
-        totalClasses: 32,
-        todayAttendance: 1185, // 94.8% attendance
-        monthlyFeeCollection: 285000,
-        pendingFeePayments: 12500,
-      };
+      const response = await fetch("/api/dashboard/stats", {
+        credentials: "include",
+      });
+      if (!response.ok) {
+        throw new Error("Failed to load dashboard stats");
+      }
+      return response.json();
     },
     refetchInterval: 30000, // Refetch every 30 seconds
     staleTime: 10000, // Consider data stale after 10 seconds

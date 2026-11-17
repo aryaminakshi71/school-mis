@@ -10,7 +10,7 @@ await page.fill('#school-name', 'Login Test School');
 await page.fill('#email', email);
 await page.fill('#password', 'DemoPass123!');
 await page.click('button:has-text("Create Account")');
-await page.waitForTimeout(3500);
+await page.waitForTimeout(9000);
 console.log('after signup:', page.url());
 // logout via localStorage + go to login
 await page.evaluate(() => localStorage.removeItem('school_mis_user'));
@@ -21,7 +21,7 @@ const inputs = page.locator('input');
 await inputs.first().fill(email);
 await inputs.nth(1).fill('DemoPass123!');
 await page.locator('button[type="submit"]').first().click();
-await page.waitForTimeout(3500);
+await page.waitForTimeout(9000);
 console.log('after login:', page.url());
 const text = await page.evaluate(() => document.body.innerText);
 console.log('dash:', text.includes('Total Students') ? 'yes' : text.slice(0, 100));
