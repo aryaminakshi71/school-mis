@@ -47,6 +47,7 @@ import { Route as AppFeesRouteImport } from './routes/app.fees'
 import { Route as AppExamsRouteImport } from './routes/app.exams'
 import { Route as AppClassesRouteImport } from './routes/app.classes'
 import { Route as AppChatRouteImport } from './routes/app.chat'
+import { Route as AppBrandingRouteImport } from './routes/app.branding'
 import { Route as AppBillingRouteImport } from './routes/app/billing'
 import { Route as AppAttendanceRouteImport } from './routes/app.attendance'
 import { Route as AppTransportIndexRouteImport } from './routes/app.transport.index'
@@ -278,6 +279,11 @@ const AppChatRoute = AppChatRouteImport.update({
   path: '/app/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppBrandingRoute = AppBrandingRouteImport.update({
+  id: '/app/branding',
+  path: '/app/branding',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppBillingRoute = AppBillingRouteImport.update({
   id: '/app/billing',
   path: '/app/billing',
@@ -495,6 +501,7 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/app/attendance': typeof AppAttendanceRouteWithChildren
   '/app/billing': typeof AppBillingRoute
+  '/app/branding': typeof AppBrandingRoute
   '/app/chat': typeof AppChatRoute
   '/app/classes': typeof AppClassesRoute
   '/app/exams': typeof AppExamsRouteWithChildren
@@ -574,6 +581,7 @@ export interface FileRoutesByTo {
   '/status': typeof StatusRoute
   '/terms': typeof TermsRoute
   '/app/billing': typeof AppBillingRoute
+  '/app/branding': typeof AppBrandingRoute
   '/app/chat': typeof AppChatRoute
   '/app/classes': typeof AppClassesRoute
   '/app/exams': typeof AppExamsRouteWithChildren
@@ -651,6 +659,7 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/app/attendance': typeof AppAttendanceRouteWithChildren
   '/app/billing': typeof AppBillingRoute
+  '/app/branding': typeof AppBrandingRoute
   '/app/chat': typeof AppChatRoute
   '/app/classes': typeof AppClassesRoute
   '/app/exams': typeof AppExamsRouteWithChildren
@@ -733,6 +742,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/app/attendance'
     | '/app/billing'
+    | '/app/branding'
     | '/app/chat'
     | '/app/classes'
     | '/app/exams'
@@ -812,6 +822,7 @@ export interface FileRouteTypes {
     | '/status'
     | '/terms'
     | '/app/billing'
+    | '/app/branding'
     | '/app/chat'
     | '/app/classes'
     | '/app/exams'
@@ -888,6 +899,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/app/attendance'
     | '/app/billing'
+    | '/app/branding'
     | '/app/chat'
     | '/app/classes'
     | '/app/exams'
@@ -969,6 +981,7 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   AppAttendanceRoute: typeof AppAttendanceRouteWithChildren
   AppBillingRoute: typeof AppBillingRoute
+  AppBrandingRoute: typeof AppBrandingRoute
   AppChatRoute: typeof AppChatRoute
   AppClassesRoute: typeof AppClassesRoute
   AppExamsRoute: typeof AppExamsRouteWithChildren
@@ -1261,6 +1274,13 @@ declare module '@tanstack/react-router' {
       path: '/app/chat'
       fullPath: '/app/chat'
       preLoaderRoute: typeof AppChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app/branding': {
+      id: '/app/branding'
+      path: '/app/branding'
+      fullPath: '/app/branding'
+      preLoaderRoute: typeof AppBrandingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/app/billing': {
@@ -1707,6 +1727,7 @@ const rootRouteChildren: RootRouteChildren = {
   TermsRoute: TermsRoute,
   AppAttendanceRoute: AppAttendanceRouteWithChildren,
   AppBillingRoute: AppBillingRoute,
+  AppBrandingRoute: AppBrandingRoute,
   AppChatRoute: AppChatRoute,
   AppClassesRoute: AppClassesRoute,
   AppExamsRoute: AppExamsRouteWithChildren,

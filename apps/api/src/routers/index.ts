@@ -14,6 +14,7 @@ export const appRouter = {
   metrics: metricsRouter,
   // School Management Routers (22 features)
   students: schoolRouters.studentsRouter,
+  branding: schoolRouters.brandingRouter,
   attendance: schoolRouters.attendanceRouter,
   classes: schoolRouters.classesRouter,
   teachers: schoolRouters.teachersRouter,

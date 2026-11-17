@@ -13,7 +13,7 @@ import {
   uuid,
   varchar,
 } from "drizzle-orm/pg-core";
-import { users } from "./auth.schema";
+import { users, organizations } from "./auth.schema";
 
 // Enums
 export const SessionStatus = {
@@ -1429,5 +1429,27 @@ export const notificationLogs = pgTable(
   (table) => ({
     orgIdx: index("idx_notification_logs_org").on(table.organizationId),
     createdIdx: index("idx_notification_logs_created").on(table.createdAt),
+  }),
+);
+
+// White-label branding per organization
+export const whiteLabelSettings = pgTable(
+  "white_label_settings",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .unique()
+      .references(() => organizations.id, { onDelete: "cascade" }),
+    brandName: varchar("brand_name", { length: 120 }).notNull().default("SchoolAI"),
+    logoUrl: text("logo_url"),
+    primaryColor: varchar("primary_color", { length: 20 }).notNull().default("#6366f1"),
+    supportEmail: varchar("support_email", { length: 180 }),
+    customDomain: varchar("custom_domain", { length: 180 }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => ({
+    orgIdx: index("idx_white_label_org").on(table.organizationId),
   }),
 );

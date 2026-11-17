@@ -33,3 +33,4 @@ export { subjectsRouter } from "./subjects.js";
 export { teachersRouter } from "./teachers.js";
 export { timetableRouter } from "./timetable.js";
 export { transportRouter } from "./transport.js";
+export { brandingRouter } from "./branding.js";
