@@ -1,6 +1,7 @@
 import react from "@vitejs/plugin-react";
 import tsconfigPaths from "vite-tsconfig-paths";
-import { type UserConfig, defineConfig } from "vitest/config";
+import { defineConfig } from "vitest/config";
+import type { UserConfig } from "vite";
 
 const plugins = [react(), tsconfigPaths()] as unknown as UserConfig["plugins"];
 

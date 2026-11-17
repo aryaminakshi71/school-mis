@@ -198,8 +198,6 @@ export function useAuth(): AuthContextType {
 // HOOKS FOR DATA FETCHING
 // ============================================================================
 
-import { useCallback, useEffect, useState } from "react";
-
 export function useStudents(params?: {
   page?: number;
   limit?: number;

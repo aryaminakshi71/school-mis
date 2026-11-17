@@ -5,6 +5,8 @@ import { Platform } from "react-native";
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
+    shouldShowBanner: true,
+    shouldShowList: true,
     shouldPlaySound: true,
     shouldSetBadge: true,
   }),
@@ -45,7 +47,7 @@ export class NotificationService {
         body,
         data,
         sound: "default",
-        priority: Notifications.AndroidImportance.HIGH,
+        priority: Notifications.AndroidNotificationPriority.HIGH,
       },
       trigger: trigger || null,
     });
@@ -127,7 +129,7 @@ export class NotificationService {
       "Fee Payment Reminder",
       `Fee payment of ₹${amount} is due in 3 days`,
       { type: "fee_reminder", studentId, amount },
-      { date: reminderDate },
+      { type: "date", date: reminderDate } as any,
     );
   }
 

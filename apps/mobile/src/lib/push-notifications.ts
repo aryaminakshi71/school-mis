@@ -21,6 +21,8 @@ class PushNotificationService {
     Notifications.setNotificationHandler({
       handleNotification: async () => ({
         shouldShowAlert: true,
+        shouldShowBanner: true,
+        shouldShowList: true,
         shouldPlaySound: true,
         shouldSetBadge: true,
       }),
@@ -237,7 +239,7 @@ class PushNotificationService {
           body: `${eventTitle} starts in ${reminderHours} hours`,
           data: { type: "event", eventTitle, eventDate },
         },
-        { date: reminderTime },
+        { type: "date", date: reminderTime } as any,
       );
     }
   }
