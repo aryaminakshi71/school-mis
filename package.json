@@ -83,7 +83,8 @@
     "socket.io": "^4.8.3",
     "socket.io-client": "^4.8.3",
     "vite": "7.3.7",
-    "web-push": "^3.6.7"
+    "web-push": "^3.6.7",
+    "@platform/billing": "file:../platform/packages/billing"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
