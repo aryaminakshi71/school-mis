@@ -1,154 +1,144 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { amountInWords, calculateGst, formatINR, SAC_EDUCATION } from "@/lib/gst";
 
 export const Route = createFileRoute("/app/fees/receipt/$id")({
   component: ReceiptPage,
 });
 
+interface PaymentData {
+  payment: {
+    id: string;
+    amount: string;
+    paymentDate: string;
+    paymentMethod?: string;
+    receiptNumber?: string;
+    transactionId?: string;
+    gstRate?: string;
+    cgstAmount?: string;
+    sgstAmount?: string;
+    igstAmount?: string;
+    hsnSac?: string;
+    placeOfSupply?: string;
+  } | null;
+  student: { firstName?: string; lastName?: string; admissionNumber?: string; className?: string; fatherName?: string } | null;
+  allocation: { totalAmount?: string; feeStructureId?: string } | null;
+}
+
 function ReceiptPage() {
-  const params = Route.useParams();
-  const [isGenerating, setIsGenerating] = useState(false);
+  const { id } = Route.useParams();
+  const [data, setData] = useState<PaymentData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const receiptData = {
-    receiptNumber: `RCP-${Date.now().toString().slice(-6)}`,
-    date: new Date().toLocaleDateString("en-IN"),
-    studentName: "John Smith",
-    class: "Class 9-A",
-    fatherName: "James Smith",
-    feeType: "Tuition Fee - January 2026",
-    amount: "₹5,000",
-    paymentMethod: "Cash",
-    schoolName: "SchoolAI",
-    schoolAddress: "123 Education Lane, City - 12345",
-  };
+  useEffect(() => {
+    let cancelled = false;
+    fetch(`/api/fees/payments/${id}`, { credentials: "include" })
+      .then(async (res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then((json) => {
+        if (!cancelled) setData(json);
+      })
+      .catch((e) => {
+        if (!cancelled) setError(e.message || "Failed to load receipt");
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [id]);
 
-  const handlePrint = () => {
-    setIsGenerating(true);
-    setTimeout(() => {
-      window.print();
-      setIsGenerating(false);
-    }, 500);
-  };
+  if (loading) return <div className="p-8 text-center">Loading receipt…</div>;
+  if (error || !data?.payment) {
+    return (
+      <div className="mx-auto max-w-2xl p-8">
+        <p className="text-red-600">{error || "Receipt not found"}</p>
+        <Link to="/app/fees" className="text-primary hover:underline">← Back to Fees</Link>
+      </div>
+    );
+  }
+
+  const { payment, student } = data;
+  const base = Number(payment.amount) || 0;
+  const gstRate = Number(payment.gstRate) || 0;
+  const isInterState = (payment.placeOfSupply || "").toUpperCase() !== "HARYANA";
+  const gst = gstRate > 0 ? calculateGst(base, gstRate, isInterState) : null;
 
   return (
     <div className="mx-auto max-w-2xl">
-      <div className="mb-6 flex items-center justify-between">
-        <Link to="/app/fees" className="text-primary hover:underline">
-          ← Back to Fees
-        </Link>
-        <button
-          onClick={handlePrint}
-          disabled={isGenerating}
-          className="rounded-lg bg-primary px-4 py-2 text-primary-foreground transition-colors hover:bg-primary/90"
-        >
-          {isGenerating ? "Generating..." : "🖨️ Print Receipt"}
+      <div className="mb-6 flex items-center justify-between print:hidden">
+        <Link to="/app/fees" className="text-primary hover:underline">← Back to Fees</Link>
+        <button onClick={() => window.print()} className="rounded-lg bg-primary px-4 py-2 text-primary-foreground">
+          Print / Save PDF
         </button>
       </div>
 
-      <div
-        id="receipt"
-        className="rounded-lg border bg-card p-8 shadow-lg print:border-none print:shadow-none"
-      >
-        <div className="mb-6 border-b pb-6 text-center">
-          <h1 className="font-bold text-2xl text-foreground">
-            {receiptData.schoolName}
-          </h1>
-          <p className="text-muted-foreground">{receiptData.schoolAddress}</p>
-          <div className="mt-2 inline-block rounded-full bg-primary/10 px-4 py-1 font-medium text-primary text-sm">
-            Fee Receipt
-          </div>
-        </div>
-
-        <div className="mb-6 grid grid-cols-2 gap-4">
+      <div className="rounded-lg border bg-white p-8">
+        <div className="mb-6 flex items-start justify-between">
           <div>
-            <p className="text-muted-foreground text-sm">Receipt No.</p>
-            <p className="font-medium">{receiptData.receiptNumber}</p>
+            <h1 className="text-2xl font-bold">SchoolAI</h1>
+            <p className="text-sm text-gray-600">Fee Receipt</p>
           </div>
-          <div className="text-right">
-            <p className="text-muted-foreground text-sm">Date</p>
-            <p className="font-medium">{receiptData.date}</p>
-          </div>
-        </div>
-
-        <div className="mb-6 rounded-lg bg-muted p-4">
-          <h3 className="mb-3 font-medium text-foreground">Student Details</h3>
-          <div className="grid grid-cols-2 gap-4 text-sm">
-            <div>
-              <p className="text-muted-foreground">Name</p>
-              <p className="font-medium">{receiptData.studentName}</p>
-            </div>
-            <div>
-              <p className="text-muted-foreground">Class</p>
-              <p className="font-medium">{receiptData.class}</p>
-            </div>
-            <div>
-              <p className="text-muted-foreground">Father Name</p>
-              <p className="font-medium">{receiptData.fatherName}</p>
-            </div>
-            <div>
-              <p className="text-muted-foreground">Payment Method</p>
-              <p className="font-medium">{receiptData.paymentMethod}</p>
-            </div>
+          <div className="text-right text-sm">
+            <div><span className="text-gray-500">Receipt:</span> {payment.receiptNumber || payment.id.slice(0, 8)}</div>
+            <div><span className="text-gray-500">Date:</span> {payment.paymentDate ? new Date(payment.paymentDate).toLocaleDateString("en-IN") : "-"}</div>
           </div>
         </div>
 
-        <table className="mb-6 w-full">
+        <div className="mb-6 grid grid-cols-2 gap-4 text-sm">
+          <div>
+            <div className="text-gray-500">Student</div>
+            <div className="font-medium">{student?.firstName} {student?.lastName}</div>
+            {student?.admissionNumber && <div className="text-gray-500">Adm: {student.admissionNumber}</div>}
+            {student?.fatherName && <div className="text-gray-500">Father: {student.fatherName}</div>}
+          </div>
+          <div>
+            <div className="text-gray-500">Method</div>
+            <div className="font-medium">{payment.paymentMethod || "-"}</div>
+            {payment.transactionId && <div className="text-gray-500">Txn: {payment.transactionId}</div>}
+            {student?.className && <div className="text-gray-500">Class: {student.className}</div>}
+          </div>
+        </div>
+
+        <table className="mb-4 w-full text-sm">
           <thead>
-            <tr className="border-b">
-              <th className="py-2 text-left font-medium text-muted-foreground text-sm">
-                Particulars
-              </th>
-              <th className="py-2 text-right font-medium text-muted-foreground text-sm">
-                Amount
-              </th>
+            <tr className="border-b text-left text-gray-500">
+              <th className="py-2">Description</th>
+              <th className="py-2">SAC</th>
+              <th className="py-2 text-right">Amount</th>
             </tr>
           </thead>
           <tbody>
             <tr className="border-b">
-              <td className="py-3">{receiptData.feeType}</td>
-              <td className="py-3 text-right font-medium">
-                {receiptData.amount}
-              </td>
+              <td className="py-2">Tuition / Fee payment</td>
+              <td className="py-2">{payment.hsnSac || SAC_EDUCATION}</td>
+              <td className="py-2 text-right">{formatINR(base)}</td>
             </tr>
+            {gst && (
+              <>
+                <tr><td className="py-1" /><td className="py-1 text-gray-500">CGST ({(gstRate / 2).toFixed(1)}%)</td><td className="py-1 text-right">{formatINR(gst.cgst)}</td></tr>
+                <tr><td className="py-1" /><td className="py-1 text-gray-500">SGST ({(gstRate / 2).toFixed(1)}%)</td><td className="py-1 text-right">{formatINR(gst.sgst)}</td></tr>
+                {gst.igst > 0 && <tr><td className="py-1" /><td className="py-1 text-gray-500">IGST ({gstRate}%)</td><td className="py-1 text-right">{formatINR(gst.igst)}</td></tr>}
+              </>
+            )}
           </tbody>
           <tfoot>
-            <tr>
-              <td className="py-3 font-bold">Total</td>
-              <td className="py-3 text-right font-bold text-lg">
-                {receiptData.amount}
-              </td>
+            <tr className="border-t font-bold">
+              <td className="py-2" colSpan={2}>Total Paid</td>
+              <td className="py-2 text-right">{formatINR(gst ? gst.total : base)}</td>
             </tr>
           </tfoot>
         </table>
 
-        <div className="border-t pt-6 text-center">
-          <p className="text-muted-foreground text-sm">
-            Thank you for your payment!
-          </p>
-          <p className="mt-2 text-muted-foreground text-xs">
-            This is a computer-generated receipt.
-          </p>
-        </div>
+        <p className="text-sm text-gray-600">{amountInWords(gst ? gst.total : base)}</p>
+        <p className="mt-6 text-xs text-gray-400">
+          This is a computer-generated receipt. GST is shown only where applicable to the fee type.
+        </p>
       </div>
-
-      <style>{`
-        @media print {
-          body * {
-            visibility: hidden;
-          }
-          #receipt, #receipt * {
-            visibility: visible;
-          }
-          #receipt {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-            margin: 0;
-            padding: 20px;
-          }
-        }
-      `}</style>
     </div>
   );
 }

@@ -1344,6 +1344,36 @@ export function createApp() {
     },
   );
 
+  // Get a single fee payment (for receipts)
+  app.get("/api/fees/payments/:id", requireAuth, async (c: any) => {
+    try {
+      const db = getDb(c.env);
+      const id = c.req.param("id");
+      const [payment] = await db
+        .select()
+        .from(feePayments)
+        .where(eq(feePayments.id, id))
+        .limit(1);
+      if (!payment) {
+        return c.json({ error: "Payment not found" }, 404);
+      }
+      const [student] = await db
+        .select()
+        .from(students)
+        .where(eq(students.id, payment.studentId))
+        .limit(1);
+      const [allocation] = await db
+        .select()
+        .from(studentFeeAllocations)
+        .where(eq(studentFeeAllocations.id, payment.allocationId))
+        .limit(1);
+      return c.json({ payment, student: student ?? null, allocation: allocation ?? null });
+    } catch (error) {
+      console.error("Error fetching payment:", error);
+      return c.json({ error: "Failed to fetch payment" }, 500);
+    }
+  });
+
   // ============================================================================
   // EXPENSES API (Protected)
   // ============================================================================

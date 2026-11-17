@@ -8,6 +8,7 @@ import {
   createRootRoute,
 } from "@tanstack/react-router";
 import { AuthProvider } from "../lib/auth-context";
+import { I18nProvider } from "../lib/i18n";
 import { initSentry } from "../lib/sentry";
 import { registerServiceWorker } from "../lib/service-worker";
 import {
@@ -108,10 +109,12 @@ function RootDocument() {
           disableTransitionOnChange
         >
           <AuthProvider>
-            <QueryClientProvider client={queryClient}>
-              <Outlet />
-              <Scripts />
-            </QueryClientProvider>
+            <I18nProvider>
+              <QueryClientProvider client={queryClient}>
+                <Outlet />
+                <Scripts />
+              </QueryClientProvider>
+            </I18nProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>

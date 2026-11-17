@@ -298,6 +298,13 @@ export const feePayments = pgTable("fee_payments", {
   receiptNumber: text("receipt_number").unique(),
   status: varchar("status", { length: 20 }).default(FeePaymentStatus.PENDING),
   notes: text("notes"),
+  // GST (India) — SAC 9992 (education services)
+  gstRate: decimal("gst_rate", { precision: 5, scale: 2 }).default("0"),
+  cgstAmount: decimal("cgst_amount", { precision: 10, scale: 2 }).default("0"),
+  sgstAmount: decimal("sgst_amount", { precision: 10, scale: 2 }).default("0"),
+  igstAmount: decimal("igst_amount", { precision: 10, scale: 2 }).default("0"),
+  hsnSac: text("hsn_sac"),
+  placeOfSupply: text("place_of_supply"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
