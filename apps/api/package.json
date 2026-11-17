@@ -15,7 +15,8 @@
     "test:integration": "bun test --filter integration",
     "test:e2e": "playwright test",
     "test:coverage": "bun test --coverage",
-    "start": "bun src/server.ts"
+    "start": "bun src/server.ts",
+    "db:push": "cd ../../packages/storage && bunx drizzle-kit push --force"
   },
   "dependencies": {
     "@neondatabase/serverless": "^0.9.0",
