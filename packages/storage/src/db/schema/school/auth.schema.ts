@@ -117,17 +117,20 @@ export const emailVerificationTokens = pgTable(
   "email_verification_tokens",
   {
     id: uuid("id").defaultRandom().primaryKey(),
-    userId: uuid("user_id")
-      .references(() => users.id, { onDelete: "cascade" })
-      .notNull(),
-    token: varchar("token", { length: 255 }).unique().notNull(),
+    // Better Auth-compatible columns
+    identifier: varchar("identifier", { length: 255 }),
+    value: text("value"),
+    userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }),
+    token: varchar("token", { length: 255 }).unique(),
     expiresAt: timestamp("expires_at").notNull(),
     verifiedAt: timestamp("verified_at"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
   },
   (table) => ({
     userIdx: index("verify_tokens_user_idx").on(table.userId),
     tokenIdx: index("verify_tokens_token_idx").on(table.token),
+    identifierIdx: index("verify_tokens_identifier_idx").on(table.identifier),
     expiresIdx: index("verify_tokens_expires_idx").on(table.expiresAt),
   }),
 );

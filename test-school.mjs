@@ -1,0 +1,16 @@
+import { chromium } from 'playwright';
+const BASE = 'http://127.0.0.1:3070';
+const browser = await chromium.launch();
+const page = await browser.newPage({ viewport: { width: 1400, height: 900 } });
+page.on('pageerror', (e) => console.log('PAGEERROR', e.message.slice(0, 300)));
+page.on('console', (m) => { if (m.type() === 'error') console.log('CONSOLE', m.text().slice(0, 250)); });
+page.on('response', (r) => { if (r.url().includes('/api/')) console.log('API', r.status(), r.url().replace(BASE, '')); });
+await page.goto(`${BASE}/signup`, { waitUntil: 'networkidle' });
+await page.fill('#school-name', 'Demo High School');
+await page.fill('#email', `school-${Date.now()}@example.com`);
+await page.fill('#password', 'DemoPass123!');
+await page.click('button:has-text("Create Account")');
+await page.waitForTimeout(4000);
+console.log('URL:', page.url());
+console.log('TEXT:', (await page.evaluate(() => document.body.innerText)).slice(0, 250));
+await browser.close();

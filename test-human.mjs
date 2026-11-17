@@ -1,0 +1,17 @@
+import { chromium } from 'playwright';
+const BASE = 'http://127.0.0.1:3000';
+const browser = await chromium.launch();
+const page = await browser.newPage({ viewport: { width: 1400, height: 900 } });
+await page.goto(`${BASE}/auth/signup`, { waitUntil: 'networkidle' });
+await page.fill('input[name="name"]', 'Human Lab');
+await page.fill('input[name="email"]', `human-${Date.now()}@example.com`);
+await page.fill('input[name="password"]', 'DemoPass123!');
+await page.fill('input[name="confirmPassword"]', 'DemoPass123!');
+await page.click('button:has-text("Sign up")');
+await page.waitForURL('**/app/**', { timeout: 20000 }).catch(() => {});
+await page.waitForTimeout(1500);
+const text = await page.evaluate(() => document.body.innerText);
+console.log('REGISTERS PAGE:', text.slice(0, 300));
+console.log('HAS LEGACY:', text.includes('Legacy Registers') ? 'yes' : 'no');
+await page.screenshot({ path: '/tmp/human-registers.png', fullPage: true });
+await browser.close();

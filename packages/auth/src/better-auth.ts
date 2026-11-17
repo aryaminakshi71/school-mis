@@ -10,6 +10,8 @@
 
 import { db } from "@school/storage";
 import * as schema from "@school/storage/db/schema";
+import { betterAuth } from "better-auth";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
 
 // Environment configuration
 const getEnv = () => ({
@@ -17,6 +19,7 @@ const getEnv = () => ({
     process.env.BETTER_AUTH_SECRET ||
     "your-secret-key-here-change-in-production",
   BETTER_AUTH_URL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
+  BETTER_AUTH_TRUSTED_ORIGINS: process.env.BETTER_AUTH_TRUSTED_ORIGINS,
   GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
   GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID,
@@ -65,11 +68,6 @@ export const auth = () => {
 
   // Try to dynamically import better-auth
   try {
-    // @ts-ignore - Will be available when better-auth is installed
-    const { betterAuth } = require("better-auth");
-    // @ts-ignore - Will be available when better-auth is installed
-    const { drizzleAdapter } = require("better-auth/adapters/drizzle");
-
     return betterAuth({
       // Database adapter using Drizzle
       database: drizzleAdapter(db, {
@@ -90,8 +88,17 @@ export const auth = () => {
       baseURL: env.BETTER_AUTH_URL,
       trustedOrigins: [
         env.BETTER_AUTH_URL,
-        "http://localhost:5173", // Vite dev server
-        "http://localhost:3001", // Web app dev server
+        "http://localhost:3000",
+        "http://localhost:3001",
+        "http://localhost:3015",
+        "http://localhost:3070",
+        "http://localhost:5173",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:3015",
+        "http://127.0.0.1:3070",
+        ...(env.BETTER_AUTH_TRUSTED_ORIGINS
+          ? env.BETTER_AUTH_TRUSTED_ORIGINS.split(",")
+          : []),
       ],
 
       // Session configuration
@@ -122,6 +129,11 @@ export const auth = () => {
                 redirectURI: `${env.BETTER_AUTH_URL}/api/auth/callback/github`,
               }
             : undefined,
+      },
+
+      // Email + password auth
+      emailAndPassword: {
+        enabled: true,
       },
 
       // Email verification
@@ -164,15 +176,14 @@ export const auth = () => {
 
       plugins: [],
     });
-  } catch {
-    // better-auth not installed, return mock
-    console.warn("[Auth] better-auth not installed. Using mock auth.");
+  } catch (err) {
+    console.error("[Auth] Failed to initialise better-auth:", err);
     return createMockAuth();
   }
 };
 
-// Create singleton instance - initialized immediately
-let authInstance: Auth = createMockAuth();
+// Create singleton instance - lazily initialized so the real auth is used
+let authInstance: Auth | null = null;
 
 export function getAuth(): Auth {
   if (!authInstance) {

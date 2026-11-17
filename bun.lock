@@ -179,6 +179,7 @@
       "dependencies": {
         "@better-auth/stripe": "^1.4.12",
         "@school/storage": "workspace:*",
+        "better-auth": "^1.4.18",
         "stripe": "^14.25.0",
       },
       "devDependencies": {

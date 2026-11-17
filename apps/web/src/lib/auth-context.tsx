@@ -138,6 +138,7 @@ interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
+  signup: (email: string, password: string, name: string) => Promise<void>;
   logout: () => Promise<void>;
   isAuthenticated: boolean;
   hasPermission: (
@@ -199,44 +200,68 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return ROLE_PERMISSIONS.find((r) => r.role === user.role);
   }, [user]);
 
+  const persistUser = (userData: any, fallbackEmail: string, fallbackName = "User") => {
+    const user: User = {
+      id: userData?.id || userData?.user?.id || "user-id",
+      name: userData?.name || userData?.user?.name || fallbackName,
+      email: userData?.email || userData?.user?.email || fallbackEmail,
+      role: (userData?.role || userData?.user?.role || "admin") as UserRole,
+      avatar:
+        userData?.image ||
+        userData?.user?.image ||
+        `https://api.dicebear.com/7.x/avataaars/svg?seed=${fallbackEmail}`,
+    };
+    setUser(user);
+    localStorage.setItem("school_mis_user", JSON.stringify(user));
+    return user;
+  };
+
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      // Call the real API
-      const response = await fetch("/api/auth/login", {
+      const response = await fetch("/api/auth/sign-in/email", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ email, password }),
       });
 
       if (!response.ok) {
         const error = await response
           .json()
-          .catch(() => ({ error: "Login failed" }));
-        throw new Error(error.error || "Invalid credentials");
+          .catch(() => ({ message: "Login failed" }));
+        throw new Error(error.message || error.error || "Invalid credentials");
       }
 
-      const userData = await response.json();
-
-      const user: User = {
-        id: userData.id || "user-id",
-        name: userData.name || "User",
-        email: userData.email || email,
-        role: userData.role || "admin",
-        avatar:
-          userData.avatar ||
-          `https://api.dicebear.com/7.x/avataaars/svg?seed=${userData.email}`,
-      };
-
-      // Set user state and persist to localStorage
-      setUser(user);
-      localStorage.setItem("school_mis_user", JSON.stringify(user));
-
-      // Wait a bit to ensure state is updated
+      const data = await response.json();
+      persistUser(data, email);
       await new Promise((resolve) => setTimeout(resolve, 50));
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      throw error;
+    }
+  };
 
+  const signup = async (email: string, password: string, name: string) => {
+    setIsLoading(true);
+    try {
+      const response = await fetch("/api/auth/sign-up/email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ email, password, name }),
+      });
+
+      if (!response.ok) {
+        const error = await response
+          .json()
+          .catch(() => ({ message: "Signup failed" }));
+        throw new Error(error.message || error.error || "Signup failed");
+      }
+
+      const data = await response.json();
+      persistUser(data, email, name);
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
@@ -259,6 +284,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         user,
         isLoading,
         login,
+        signup,
         logout,
         isAuthenticated: !!user,
         hasPermission,

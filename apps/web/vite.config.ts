@@ -27,6 +27,9 @@ export default defineConfig(({ mode }) => {
       // Exclude workspace packages so they are compiled as source
       exclude: ["@school/env", "@school/api", "@school/storage"],
     },
+    resolve: {
+      dedupe: ["react", "react-dom"],
+    },
     build: {
       target: "esnext",
       minify: "esbuild",

@@ -86,12 +86,25 @@ const WebSocketContext = createContext<WebSocketContextType | undefined>(
   undefined,
 );
 
+const defaultWebSocketContext: WebSocketContextType = {
+  notifications: [],
+  markAsRead: () => {},
+  markAllAsRead: () => {},
+  isConnected: false,
+  connectionQuality: "offline",
+  lastAttendanceUpdate: null,
+  lastGradeUpdate: null,
+  lastFeeUpdate: null,
+  chatMessages: [],
+  sendChatMessage: () => {},
+  markChatMessageAsRead: () => {},
+  subscribeToUpdates: () => {},
+  unsubscribeFromUpdates: () => {},
+};
+
 export const useWebSocket = () => {
   const context = useContext(WebSocketContext);
-  if (!context) {
-    throw new Error("useWebSocket must be used within a WebSocketProvider");
-  }
-  return context;
+  return context ?? defaultWebSocketContext;
 };
 
 interface WebSocketProviderProps {
