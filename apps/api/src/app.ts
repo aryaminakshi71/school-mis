@@ -34,6 +34,7 @@ import {
   transportRoutes,
   vehicles as transportVehicles,
   users,
+  notificationLogs,
 } from "@school/storage";
 import { and, desc, eq, gte, like, lte, sql } from "drizzle-orm";
 import { Hono } from "hono";
@@ -1907,16 +1908,84 @@ export function createApp() {
     async (c: any) => {
       try {
         const data = await c.req.json();
+        const db = getDb(c.env);
+        const message = data.message || getNotificationMessage(data);
 
-        // Log notification (in production, integrate with SMS/Email providers)
-        console.log("📱 Notification sent:", {
-          type: data.type,
-          studentId: data.studentId,
-          message: getNotificationMessage(data),
-          timestamp: new Date().toISOString(),
+        // Resolve recipient phone
+        let phone: string | undefined = data.phone || data.whatsapp;
+        if (!phone && data.studentId) {
+          const [student] = await db
+            .select()
+            .from(students)
+            .where(eq(students.id, data.studentId))
+            .limit(1);
+          phone =
+            student?.guardianPhone ||
+            student?.fatherPhone ||
+            student?.motherPhone ||
+            student?.phone ||
+            undefined;
+        }
+        if (!phone) {
+          return c.json({ error: "No recipient phone found" }, 400);
+        }
+
+        const channel = data.type === "whatsapp" ? "whatsapp" : "sms";
+        const sid = c.env.TWILIO_ACCOUNT_SID;
+        const token = c.env.TWILIO_AUTH_TOKEN;
+        const from =
+          channel === "whatsapp"
+            ? c.env.TWILIO_WHATSAPP_NUMBER
+            : c.env.TWILIO_PHONE_NUMBER;
+
+        if (!sid || !token || !from) {
+          return c.json({ error: "Twilio not configured" }, 503);
+        }
+
+        const res = await fetch(
+          `https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`,
+          {
+            method: "POST",
+            headers: {
+              Authorization:
+                "Basic " +
+                Buffer.from(`${sid}:${token}`).toString("base64"),
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: new URLSearchParams({
+              From: channel === "whatsapp" ? `whatsapp:${from}` : from,
+              To: channel === "whatsapp" ? `whatsapp:${phone}` : phone,
+              Body: message,
+            }).toString(),
+          },
+        );
+
+        if (!res.ok) {
+          const err = await res.text();
+          return c.json(
+            { error: "Twilio error", detail: err.slice(0, 200) },
+            502,
+          );
+        }
+
+        const twilio = (await res.json()) as { sid?: string };
+
+        await db.insert(notificationLogs).values({
+          type: channel,
+          template: data.template ?? "general",
+          recipients: 1,
+          sent: 1,
+          failed: 0,
+          status: "sent",
+          messagePreview: message.slice(0, 120),
+          providerRefs: [{ recipient: phone, ok: true, id: twilio.sid }],
         });
 
-        return c.json({ success: true, message: "Notification sent" });
+        return c.json({
+          success: true,
+          message: "Notification sent",
+          sid: twilio.sid,
+        });
       } catch (error) {
         console.error("Error sending notification:", error);
         return c.json({ error: "Failed to send notification" }, 500);
@@ -1926,35 +1995,13 @@ export function createApp() {
 
   app.get("/api/notifications", requireAuth, async (c: any) => {
     try {
-      // Return mock notifications - in production, fetch from database
-      return c.json({
-        notifications: [
-          {
-            id: "1",
-            type: "fee",
-            title: "Fee Payment Received",
-            message: "Payment of ₹5,000 received from John Smith",
-            time: "2 hours ago",
-            read: false,
-          },
-          {
-            id: "2",
-            type: "attendance",
-            title: "Low Attendance Alert",
-            message: "James Brown has attendance below 75%",
-            time: "4 hours ago",
-            read: false,
-          },
-          {
-            id: "3",
-            type: "exam",
-            title: "Exam Scheduled",
-            message: "Math exam scheduled for Class 10-A on Jan 25",
-            time: "1 day ago",
-            read: true,
-          },
-        ],
-      });
+      const db = getDb(c.env);
+      const rows = await db
+        .select()
+        .from(notificationLogs)
+        .orderBy(desc(notificationLogs.createdAt))
+        .limit(50);
+      return c.json({ notifications: rows });
     } catch (error) {
       return c.json({ error: "Failed to fetch notifications" }, 500);
     }

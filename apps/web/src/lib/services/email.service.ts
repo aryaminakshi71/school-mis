@@ -18,7 +18,7 @@ const getSMTPConfig = (): SMTPConfig => ({
   user: process.env.SMTP_USER || "",
   pass: process.env.SMTP_PASS || "",
   fromEmail: process.env.FROM_EMAIL || "noreply@school.com",
-  fromName: process.env.FROM_NAME || "School MIS",
+  fromName: process.env.FROM_NAME || "SchoolOS",
 });
 
 export const emailService = {
@@ -41,7 +41,7 @@ export const emailService = {
         {
           from: `${config.fromName} <${config.fromEmail}>`,
           to: payload.to,
-          subject: payload.subject || "Notification from School MIS",
+          subject: payload.subject || "Notification from SchoolOS",
           text: payload.message,
           html: payload.message,
         },
@@ -141,7 +141,7 @@ export const emailService = {
           <body>
             <div class="container">
               <div class="header">
-                <h1>🏫 School MIS</h1>
+                <h1>🏫 SchoolOS</h1>
                 <p>Fee Payment Reminder</p>
               </div>
               <div class="content">

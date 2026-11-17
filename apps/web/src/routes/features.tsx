@@ -44,12 +44,12 @@ export const Route = createFileRoute("/features")({
     return {
       meta: [
         {
-          title: "School MIS Features - Complete Modules For School Operations",
+          title: "SchoolOS Features - Complete Modules For School Operations",
         },
         {
           name: "description",
           content:
-            "Explore School MIS modules for admissions, attendance, academics, fees, communication, transport, and reporting.",
+            "Explore SchoolOS modules for admissions, attendance, academics, fees, communication, transport, and reporting.",
         },
         { name: "robots", content: "index, follow" },
       ],
@@ -69,7 +69,7 @@ function FeaturesPage() {
             Built For Day-To-Day School Depth
           </h1>
           <p className="mt-4 text-muted-foreground">
-            School MIS combines core administration, academics, and finance
+            SchoolOS combines core administration, academics, and finance
             workflows into one platform your teams can actually use.
           </p>
         </div>

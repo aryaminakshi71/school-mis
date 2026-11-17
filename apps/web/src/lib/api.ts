@@ -1017,7 +1017,7 @@ export const api = {
 };
 
 const defaultSchoolBranding: SchoolBranding = {
-  schoolName: "School MIS",
+  schoolName: "SchoolOS",
   shortName: "School",
   schoolAddress: "",
   phoneNumber: "",
@@ -1027,7 +1027,7 @@ const defaultSchoolBranding: SchoolBranding = {
   primaryColor: "#047857",
   secondaryColor: "#17332a",
   receiptFooter: "",
-  mobileAppName: "School MIS",
+  mobileAppName: "SchoolOS",
 };
 
 export { defaultSchoolBranding, request };

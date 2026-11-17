@@ -12,7 +12,7 @@ export const Route = createFileRoute("/blog/$slug")({
     if (!post) {
       return {
         meta: [
-          { title: "Article Not Found - School MIS Blog" },
+          { title: "Article Not Found - SchoolOS Blog" },
           { name: "robots", content: "noindex, nofollow" },
         ],
         links: [{ rel: "canonical", href: canonical }],
@@ -21,7 +21,7 @@ export const Route = createFileRoute("/blog/$slug")({
 
     return {
       meta: [
-        { title: `${post.title} | School MIS Blog` },
+        { title: `${post.title} | SchoolOS Blog` },
         { name: "description", content: post.description },
         { name: "robots", content: "index, follow" },
       ],

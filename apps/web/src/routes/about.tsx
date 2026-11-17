@@ -23,12 +23,12 @@ export const Route = createFileRoute("/about")({
     return {
       meta: [
         {
-          title: "About School MIS - Mission, Approach, And Product Direction",
+          title: "About SchoolOS - Mission, Approach, And Product Direction",
         },
         {
           name: "description",
           content:
-            "Learn how School MIS helps schools simplify administration, improve visibility, and scale operations with confidence.",
+            "Learn how SchoolOS helps schools simplify administration, improve visibility, and scale operations with confidence.",
         },
         { name: "robots", content: "index, follow" },
       ],
@@ -44,7 +44,7 @@ function AboutPage() {
       <main className="public-container py-16">
         <div className="mx-auto max-w-3xl text-center">
           <span className="public-kicker mb-4">About</span>
-          <h1 className="public-section-title font-bold">About School MIS</h1>
+          <h1 className="public-section-title font-bold">About SchoolOS</h1>
           <p className="mt-4 text-muted-foreground">
             We build software for schools that want stronger control over
             academics, finance, and communication without operational chaos.

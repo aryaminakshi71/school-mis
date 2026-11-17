@@ -44,7 +44,7 @@ ${urlset}
 }
 
 /**
- * Get public routes for School MIS app
+ * Get public routes for SchoolOS app
  */
 export function getSchoolMISRoutes(): SitemapRoute[] {
   return [

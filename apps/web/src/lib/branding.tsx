@@ -124,7 +124,7 @@ export function BrandingProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (typeof document !== "undefined") {
-      document.title = `${branding.schoolName} - School Management Information System`;
+      document.title = `${branding.schoolName} - School Operating System`;
     }
   }, [branding.schoolName]);
 

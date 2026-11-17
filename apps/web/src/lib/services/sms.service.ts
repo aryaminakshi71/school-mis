@@ -217,7 +217,7 @@ export const smsService = {
   ): Promise<NotificationResult> {
     return this.send({
       to: phoneNumber,
-      message: `Dear Parent, Fee payment of ₹${amount} for ${studentName} is due on ${dueDate}. Please pay to avoid late charges. -School MIS`,
+      message: `Dear Parent, Fee payment of ₹${amount} for ${studentName} is due on ${dueDate}. Please pay to avoid late charges. -SchoolOS`,
       channel: "sms",
       type: "fee_reminder",
     });
@@ -230,7 +230,7 @@ export const smsService = {
   ): Promise<NotificationResult> {
     return this.send({
       to: phoneNumber,
-      message: `Dear Parent, ${studentName}'s attendance is ${attendance}%. Regular attendance is crucial for academic success. Please ensure ${studentName} attends school regularly. -School MIS`,
+      message: `Dear Parent, ${studentName}'s attendance is ${attendance}%. Regular attendance is crucial for academic success. Please ensure ${studentName} attends school regularly. -SchoolOS`,
       channel: "sms",
       type: "attendance",
     });
@@ -243,7 +243,7 @@ export const smsService = {
   ): Promise<NotificationResult> {
     return this.send({
       to: phoneNumber,
-      message: `Dear Parent, ${studentName} was absent today (${date}). Please ensure regular attendance and contact school if there's any issue. -School MIS`,
+      message: `Dear Parent, ${studentName} was absent today (${date}). Please ensure regular attendance and contact school if there's any issue. -SchoolOS`,
       channel: "sms",
       type: "attendance",
     });
@@ -257,7 +257,7 @@ export const smsService = {
   ): Promise<NotificationResult> {
     return this.send({
       to: phoneNumber,
-      message: `Dear Parent, ${examName} for ${studentName} starts on ${startDate}. Please ensure your ward prepares well and reaches on time. Best wishes! -School MIS`,
+      message: `Dear Parent, ${examName} for ${studentName} starts on ${startDate}. Please ensure your ward prepares well and reaches on time. Best wishes! -SchoolOS`,
       channel: "sms",
       type: "exam_schedule",
     });
@@ -269,7 +269,7 @@ export const smsService = {
   ): Promise<{ success: number; failed: number }> {
     const payloads: NotificationPayload[] = phoneNumbers.map((phone) => ({
       to: phone,
-      message: `EMERGENCY ALERT from School MIS: ${message}. Please respond to confirm receipt.`,
+      message: `EMERGENCY ALERT from SchoolOS: ${message}. Please respond to confirm receipt.`,
       channel: "sms",
       type: "general",
     }));

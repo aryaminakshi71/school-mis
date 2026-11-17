@@ -1,4 +1,4 @@
-// Mock data for the School MIS
+// Mock data for the SchoolOS
 
 export interface Student {
   id: string;

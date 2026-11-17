@@ -36,7 +36,7 @@ export const Route = createFileRoute("/")({
     const canonical = baseUrl.replace(/\/$/, "") + "/";
     return {
       meta: [
-        { title: "School MIS - School Management Information System" },
+        { title: "SchoolOS - School Operating System" },
         {
           name: "description",
           content:
@@ -45,7 +45,7 @@ export const Route = createFileRoute("/")({
         { name: "robots", content: "index, follow" },
         {
           property: "og:title",
-          content: "School MIS - School Management Information System",
+          content: "SchoolOS - School Operating System",
         },
         {
           property: "og:description",
@@ -56,7 +56,7 @@ export const Route = createFileRoute("/")({
         { name: "twitter:card", content: "summary_large_image" },
         {
           name: "twitter:title",
-          content: "School MIS - School Management Information System",
+          content: "SchoolOS - School Operating System",
         },
         {
           name: "twitter:description",
@@ -322,7 +322,7 @@ function HomePage() {
                 to="/"
                 className="font-bold text-primary text-xl transition-colors hover:text-primary-dark"
               >
-                School MIS
+                SchoolOS
               </Link>
               <div className="hidden items-center gap-6 md:flex">
                 <a
@@ -564,7 +564,7 @@ function HomePage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mb-12 text-center">
             <h2 className="mb-4 font-bold text-3xl text-foreground">
-              Why Choose School MIS?
+              Why Choose SchoolOS?
             </h2>
           </div>
 
@@ -622,7 +622,7 @@ function HomePage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-8 md:grid-cols-4">
             <div>
-              <h3 className="mb-4 font-bold text-lg">School MIS</h3>
+              <h3 className="mb-4 font-bold text-lg">SchoolOS</h3>
               <p className="text-muted-foreground text-sm">
                 Complete school management solution for modern educational
                 institutions.
@@ -685,7 +685,7 @@ function HomePage() {
             </div>
           </div>
           <div className="mt-8 border-border border-t pt-8 text-center text-muted-foreground text-sm">
-            © 2026 School MIS. All rights reserved.
+            © 2026 SchoolOS. All rights reserved.
           </div>
         </div>
       </footer>

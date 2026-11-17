@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "School MIS",
+    "name": "SchoolOS",
     "slug": "school-mis",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -47,12 +47,20 @@
           "icon": "./assets/notification-icon.png",
           "color": "#047857",
           "defaultChannel": "default",
-          "sounds": ["./assets/notification-sound.wav"]
+          "sounds": [
+            "./assets/notification-sound.wav"
+          ]
         }
       ],
-      ["expo-camera"],
-      ["expo-image-picker"],
-      ["expo-location"]
+      [
+        "expo-camera"
+      ],
+      [
+        "expo-image-picker"
+      ],
+      [
+        "expo-location"
+      ]
     ],
     "notification": {
       "icon": "./assets/notification-icon.png",

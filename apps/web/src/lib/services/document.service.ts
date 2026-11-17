@@ -433,7 +433,7 @@ class DocumentService {
     // School Info
     doc.setFontSize(10);
     doc.setTextColor(100, 100, 100);
-    doc.text("School MIS", pageWidth / 2, margin + 8, { align: "center" });
+    doc.text("SchoolOS", pageWidth / 2, margin + 8, { align: "center" });
 
     // Receipt Details
     doc.setFontSize(12);

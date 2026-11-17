@@ -69,11 +69,11 @@ export function generateWebSiteSchema(data: WebSiteSchema): object {
 }
 
 /**
- * Get default organization schema for School MIS app
+ * Get default organization schema for SchoolOS app
  */
 export function getSchoolMISOrganizationSchema(): OrganizationSchema {
   return {
-    name: "School MIS",
+    name: "SchoolOS",
     url: import.meta.env.VITE_PUBLIC_SITE_URL || "http://localhost:3000",
     description:
       "Complete school administration solution for managing all school operations.",

@@ -1,5 +1,5 @@
 /**
- * Enhanced UI Components and Hooks for School MIS
+ * Enhanced UI Components and Hooks for SchoolOS
  *
  * Provides:
  * - Dark mode management
@@ -386,7 +386,7 @@ const OnboardingContext = createContext<OnboardingContextType | undefined>(
 const defaultSteps: OnboardingStep[] = [
   {
     id: "welcome",
-    title: "Welcome to School MIS",
+    title: "Welcome to SchoolOS",
     description: "Let's take a quick tour of the system.",
     target: "body",
     position: "bottom",

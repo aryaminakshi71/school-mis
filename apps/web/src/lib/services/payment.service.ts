@@ -138,7 +138,7 @@ class PaymentService {
         key: this.config.razorpayKeyId,
         amount: request.amount * 100,
         currency: request.currency,
-        name: "School MIS",
+        name: "SchoolOS",
         description: request.description,
         order_id: request.orderId,
         prefill: {

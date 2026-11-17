@@ -26,7 +26,7 @@ export const Route = createRootRoute({
       meta: [
         { charSet: "utf-8" },
         { name: "viewport", content: "width=device-width, initial-scale=1" },
-        { title: "School MIS - School Management Information System" },
+        { title: "SchoolOS - School Operating System" },
         {
           name: "description",
           content:
@@ -35,7 +35,7 @@ export const Route = createRootRoute({
         { name: "robots", content: "index, follow" },
         {
           property: "og:title",
-          content: "School MIS - School Management Information System",
+          content: "SchoolOS - School Operating System",
         },
         {
           property: "og:description",
@@ -47,7 +47,7 @@ export const Route = createRootRoute({
         { name: "twitter:card", content: "summary_large_image" },
         {
           name: "twitter:title",
-          content: "School MIS - School Management Information System",
+          content: "SchoolOS - School Operating System",
         },
         {
           name: "twitter:description",

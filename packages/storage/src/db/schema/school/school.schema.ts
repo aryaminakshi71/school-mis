@@ -1402,3 +1402,25 @@ export const chatMessagesRelations = relations(chatMessages, ({ one }) => ({
     references: [chatMessages.id],
   }),
 }));
+
+// Notification delivery log (real, written by /notifications/send)
+export const notificationLogs = pgTable(
+  "notification_logs",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    organizationId: uuid("organization_id"),
+    type: varchar("type", { length: 20 }).notNull(),
+    template: varchar("template", { length: 50 }),
+    recipients: integer("recipients").notNull().default(0),
+    sent: integer("sent").notNull().default(0),
+    failed: integer("failed").notNull().default(0),
+    status: varchar("status", { length: 20 }).notNull().default("sent"),
+    messagePreview: text("message_preview"),
+    providerRefs: jsonb("provider_refs"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => ({
+    orgIdx: index("idx_notification_logs_org").on(table.organizationId),
+    createdIdx: index("idx_notification_logs_created").on(table.createdAt),
+  }),
+);

@@ -18,7 +18,7 @@ export const BLOG_POSTS: BlogPost[] = [
     description:
       "A practical admission workflow for school operators: enquiry capture, document collection, fee steps, and parent communication.",
     publishedAt: "2026-02-18",
-    author: "School MIS Team",
+    author: "SchoolOS Team",
     category: "Admissions",
     readMinutes: 6,
     keywords: [
@@ -40,7 +40,7 @@ export const BLOG_POSTS: BlogPost[] = [
     description:
       "Collection rate improves with better reminders, installments, online payments, and clear overdue workflows.",
     publishedAt: "2026-02-25",
-    author: "School MIS Team",
+    author: "SchoolOS Team",
     category: "Finance",
     readMinutes: 7,
     keywords: [
@@ -63,7 +63,7 @@ export const BLOG_POSTS: BlogPost[] = [
     description:
       "Attendance should not be a compliance dashboard only. It can be used to trigger interventions and reduce academic risk.",
     publishedAt: "2026-03-01",
-    author: "School MIS Team",
+    author: "SchoolOS Team",
     category: "Academics",
     readMinutes: 5,
     keywords: [

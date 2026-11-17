@@ -5,7 +5,7 @@ export const Route = createFileRoute("/status")({
     const baseUrl =
       import.meta.env.VITE_PUBLIC_SITE_URL || "http://localhost:3000";
     const canonical = baseUrl.replace(/\/$/, "") + "/status";
-    const appName = import.meta.env.VITE_PUBLIC_APP_NAME ?? "School MIS";
+    const appName = import.meta.env.VITE_PUBLIC_APP_NAME ?? "SchoolOS";
     return {
       meta: [
         { title: `${appName} - Status` },

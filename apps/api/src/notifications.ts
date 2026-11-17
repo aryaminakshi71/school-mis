@@ -1,5 +1,12 @@
 import { Hono } from "hono";
 import { z } from "zod";
+import { desc } from "drizzle-orm";
+import { db, notificationLogs } from "@school/storage";
+
+/**
+ * Real notification delivery via Twilio (WhatsApp + SMS).
+ * Logs every send to the notification_logs table.
+ */
 
 const notifications = new Hono();
 
@@ -13,119 +20,118 @@ const SendNotificationSchema = z.object({
       whatsapp: z.string().optional(),
     }),
   ),
-  template: z.enum([
-    "fee_reminder",
-    "attendance_alert",
-    "exam_notification",
-    "event_reminder",
-    "general",
-  ]),
+  template: z.string(),
   message: z.string(),
   scheduledAt: z.string().datetime().optional(),
 });
 
-interface NotificationLog {
-  id: string;
-  type: string;
-  template: string;
-  recipients: number;
-  status: "sent" | "failed" | "scheduled";
-  sentAt: string;
-  messagePreview: string;
+async function sendTwilio(to: string, body: string, whatsapp: boolean) {
+  const sid = process.env.TWILIO_ACCOUNT_SID;
+  const token = process.env.TWILIO_AUTH_TOKEN;
+  const from = whatsapp
+    ? process.env.TWILIO_WHATSAPP_NUMBER
+    : process.env.TWILIO_PHONE_NUMBER;
+
+  if (!sid || !token || !from) {
+    return { ok: false as const, error: "Twilio not configured" };
+  }
+
+  const res = await fetch(
+    `https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`,
+    {
+      method: "POST",
+      headers: {
+        Authorization:
+          "Basic " + Buffer.from(`${sid}:${token}`).toString("base64"),
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams({
+        From: whatsapp ? `whatsapp:${from}` : from,
+        To: whatsapp ? `whatsapp:${to}` : to,
+        Body: body,
+      }).toString(),
+    },
+  );
+
+  if (!res.ok) {
+    const err = await res.text();
+    return { ok: false as const, error: err.slice(0, 200) };
+  }
+
+  const data = (await res.json()) as { sid?: string };
+  return { ok: true as const, id: data.sid };
 }
 
-const notificationLogs: NotificationLog[] = [
-  {
-    id: "1",
-    type: "whatsapp",
-    template: "fee_reminder",
-    recipients: 45,
-    status: "sent",
-    sentAt: "2026-01-20 10:30:00",
-    messagePreview: "Dear Parent, Fee payment of ₹15,000 is due...",
-  },
-  {
-    id: "2",
-    type: "sms",
-    template: "attendance_alert",
-    recipients: 12,
-    status: "sent",
-    sentAt: "2026-01-19 14:00:00",
-    messagePreview: "Your ward was absent today. Please inform...",
-  },
-  {
-    id: "3",
-    type: "whatsapp",
-    template: "exam_notification",
-    recipients: 89,
-    status: "scheduled",
-    sentAt: "2026-01-25 09:00:00",
-    messagePreview: "Unit Test scheduled for Mathematics...",
-  },
-];
-
-notifications.get("/notifications", (c) => {
-  return c.json({ notifications: notificationLogs });
+notifications.get("/notifications", async (c) => {
+  try {
+    const rows = await db
+      .select()
+      .from(notificationLogs)
+      .orderBy(desc(notificationLogs.createdAt))
+      .limit(50);
+    return c.json({ notifications: rows });
+  } catch (error) {
+    return c.json({ notifications: [], error: "database unavailable" }, 503);
+  }
 });
 
 notifications.post("/send", async (c) => {
   try {
     const body = await c.req.json();
-    const validated = SendNotificationSchema.parse(body);
+    const input = SendNotificationSchema.parse(body);
 
-    const { type, recipients, template, message } = validated;
+    const results: Array<{
+      recipient: string;
+      ok: boolean;
+      id?: string;
+      error?: string;
+    }> = [];
 
-    const providerResponses = [];
-
-    if (type === "whatsapp") {
-      for (const recipient of recipients) {
-        if (recipient.whatsapp) {
-          providerResponses.push({
-            recipient: recipient.id,
-            status: "delivered",
-            provider: "whatsapp",
-            messageId: `WA-${Date.now()}-${recipient.id}`,
-          });
-        }
+    for (const r of input.recipients) {
+      if (input.type === "whatsapp" && r.whatsapp) {
+        results.push({
+          recipient: r.id,
+          ...(await sendTwilio(r.whatsapp, input.message, true)),
+        });
+      } else if (input.type === "sms" && r.phone) {
+        results.push({
+          recipient: r.id,
+          ...(await sendTwilio(r.phone, input.message, false)),
+        });
+      } else {
+        results.push({
+          recipient: r.id,
+          ok: false,
+          error: "missing contact for channel",
+        });
       }
     }
 
-    if (type === "sms") {
-      for (const recipient of recipients) {
-        if (recipient.phone) {
-          providerResponses.push({
-            recipient: recipient.id,
-            status: "delivered",
-            provider: "sms",
-            messageId: `SMS-${Date.now()}-${recipient.id}`,
-          });
-        }
-      }
+    const sent = results.filter((r) => r.ok).length;
+    const failed = results.length - sent;
+    const status = failed === 0 ? "sent" : sent > 0 ? "partial" : "failed";
+
+    try {
+      await db.insert(notificationLogs).values({
+        type: input.type,
+        template: input.template,
+        recipients: input.recipients.length,
+        sent,
+        failed,
+        status,
+        messagePreview: input.message.slice(0, 120),
+        providerRefs: results,
+      });
+    } catch (err) {
+      console.error("Failed to log notification", err);
     }
 
-    const log: NotificationLog = {
-      id: String(Date.now()),
-      type,
-      template,
-      recipients: recipients.length,
-      status: validated.scheduledAt ? "scheduled" : "sent",
-      sentAt: validated.scheduledAt || new Date().toISOString(),
-      messagePreview: message.substring(0, 50) + "...",
-    };
-
-    notificationLogs.unshift(log);
-
-    return c.json({
-      success: true,
-      sent: providerResponses.length,
-      failed: 0,
-      logId: log.id,
-      message: `${type} sent to ${providerResponses.length} recipients`,
-    });
+    return c.json({ success: failed === 0, sent, failed, status, results });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return c.json({ error: error.issues }, 400);
     }
+    console.error("Notification send failed", error);
     return c.json({ error: "Failed to send notification" }, 500);
   }
 });
@@ -159,49 +165,8 @@ notifications.get("/templates", (c) => {
       preview: "Dear Parents, {eventName} will be held on {date} at {venue}...",
       variables: ["eventName", "date", "venue"],
     },
-    {
-      id: "general",
-      name: "General Message",
-      preview: "{message}",
-      variables: ["message"],
-    },
   ];
-
   return c.json({ templates });
-});
-
-notifications.post("/whatsapp/send", async (c) => {
-  const body = await c.req.json();
-  const { phone, message, templateName } = body;
-
-  if (!phone || !message) {
-    return c.json({ error: "Phone and message required" }, 400);
-  }
-
-  return c.json({
-    success: true,
-    messageId: `WA-${Date.now()}`,
-    status: "sent",
-    provider: "whatsapp",
-    timestamp: new Date().toISOString(),
-  });
-});
-
-notifications.post("/sms/send", async (c) => {
-  const body = await c.req.json();
-  const { phone, message } = body;
-
-  if (!phone || !message) {
-    return c.json({ error: "Phone and message required" }, 400);
-  }
-
-  return c.json({
-    success: true,
-    messageId: `SMS-${Date.now()}`,
-    status: "sent",
-    provider: "sms",
-    timestamp: new Date().toISOString(),
-  });
 });
 
 export default notifications;

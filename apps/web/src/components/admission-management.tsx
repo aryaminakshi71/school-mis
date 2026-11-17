@@ -506,7 +506,7 @@ export function AdmissionManagement({
                 >
                   <div className="mb-6 flex items-center justify-between">
                     <div>
-                      <h3 className="font-bold text-xl">School MIS</h3>
+                      <h3 className="font-bold text-xl">SchoolOS</h3>
                       <p className="text-sm text-white/80">
                         Student Identity Card
                       </p>
