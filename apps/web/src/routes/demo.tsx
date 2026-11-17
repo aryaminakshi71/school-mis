@@ -34,7 +34,7 @@ function DemoPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <CardTitle className="font-bold text-2xl">
-            Try SchoolOS Demo
+            Try SchoolAI Demo
           </CardTitle>
           <CardDescription>
             Experience our school management system without creating an account

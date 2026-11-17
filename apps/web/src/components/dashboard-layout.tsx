@@ -214,7 +214,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             SM
           </div>
           <div className="flex flex-col">
-            <span className="font-bold text-foreground">SchoolOS</span>
+            <span className="font-bold text-foreground">SchoolAI</span>
             <span className="text-muted-foreground text-xs">
               Management System
             </span>

@@ -5,7 +5,7 @@ export const Route = createFileRoute("/privacy")({
     const baseUrl =
       import.meta.env.VITE_PUBLIC_SITE_URL || "http://localhost:3000";
     const canonical = baseUrl.replace(/\/$/, "") + "/privacy";
-    const appName = import.meta.env.VITE_PUBLIC_APP_NAME ?? "SchoolOS";
+    const appName = import.meta.env.VITE_PUBLIC_APP_NAME ?? "SchoolAI";
     return {
       meta: [
         { title: `${appName} - Privacy Policy` },

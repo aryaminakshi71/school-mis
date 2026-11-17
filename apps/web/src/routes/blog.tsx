@@ -10,7 +10,7 @@ export const Route = createFileRoute("/blog")({
       meta: [
         {
           title:
-            "SchoolOS Blog - School Operations, Finance, And Academic Insights",
+            "SchoolAI Blog - School Operations, Finance, And Academic Insights",
         },
         {
           name: "description",
@@ -30,7 +30,7 @@ function BlogPage() {
     <div className="public-page">
       <main className="public-container py-16">
         <span className="public-kicker mb-4">Insights</span>
-        <h1 className="public-section-title font-bold">SchoolOS Blog</h1>
+        <h1 className="public-section-title font-bold">SchoolAI Blog</h1>
         <p className="mt-3 max-w-2xl text-muted-foreground">
           Tactical content for school leaders and operators who want stronger
           systems and better outcomes.

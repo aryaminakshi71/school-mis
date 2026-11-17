@@ -7,14 +7,14 @@ export const Route = createFileRoute("/pricing")({
     const canonical = baseUrl.replace(/\/$/, "") + "/pricing";
     return {
       meta: [
-        { title: "SchoolOS - Pricing" },
+        { title: "SchoolAI - Pricing" },
         {
           name: "description",
           content:
             "All-in-one school management system for students, staff, academics, finance, and operations.",
         },
         { name: "robots", content: "index, follow" },
-        { property: "og:title", content: "SchoolOS - Pricing" },
+        { property: "og:title", content: "SchoolAI - Pricing" },
         {
           property: "og:description",
           content:
@@ -22,7 +22,7 @@ export const Route = createFileRoute("/pricing")({
         },
         { property: "og:type", content: "website" },
         { name: "twitter:card", content: "summary_large_image" },
-        { name: "twitter:title", content: "SchoolOS - Pricing" },
+        { name: "twitter:title", content: "SchoolAI - Pricing" },
         {
           name: "twitter:description",
           content:
@@ -42,7 +42,7 @@ function PricingPage() {
       <header className="fixed top-0 right-0 left-0 z-50 bg-card shadow-sm">
         <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <Link to="/" className="font-bold text-primary text-xl">
-            SchoolOS
+            SchoolAI
           </Link>
           <div className="flex gap-4">
             <a

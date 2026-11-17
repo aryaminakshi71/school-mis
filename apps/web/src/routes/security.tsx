@@ -5,7 +5,7 @@ export const Route = createFileRoute("/security")({
     const baseUrl =
       import.meta.env.VITE_PUBLIC_SITE_URL || "http://localhost:3000";
     const canonical = baseUrl.replace(/\/$/, "") + "/security";
-    const appName = import.meta.env.VITE_PUBLIC_APP_NAME ?? "SchoolOS";
+    const appName = import.meta.env.VITE_PUBLIC_APP_NAME ?? "SchoolAI";
     return {
       meta: [
         { title: `${appName} - Security` },

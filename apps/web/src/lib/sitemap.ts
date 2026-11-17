@@ -44,7 +44,7 @@ ${urlset}
 }
 
 /**
- * Get public routes for SchoolOS app
+ * Get public routes for SchoolAI app
  */
 export function getSchoolMISRoutes(): SitemapRoute[] {
   return [

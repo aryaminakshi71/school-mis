@@ -13,15 +13,15 @@ export const Route = createFileRoute("/login")({
     const canonical = baseUrl.replace(/\/$/, "") + "/login";
     return {
       meta: [
-        { title: "SchoolOS - Login" },
-        { name: "description", content: "Log in to SchoolOS." },
+        { title: "SchoolAI - Login" },
+        { name: "description", content: "Log in to SchoolAI." },
         { name: "robots", content: "noindex, nofollow" },
-        { property: "og:title", content: "SchoolOS - Login" },
-        { property: "og:description", content: "Log in to SchoolOS." },
+        { property: "og:title", content: "SchoolAI - Login" },
+        { property: "og:description", content: "Log in to SchoolAI." },
         { property: "og:type", content: "website" },
         { name: "twitter:card", content: "summary_large_image" },
-        { name: "twitter:title", content: "SchoolOS - Login" },
-        { name: "twitter:description", content: "Log in to SchoolOS." },
+        { name: "twitter:title", content: "SchoolAI - Login" },
+        { name: "twitter:description", content: "Log in to SchoolAI." },
       ],
       links: [{ rel: "canonical", href: canonical }],
     };
@@ -80,7 +80,7 @@ function LoginPage() {
             <div className="flex size-8 items-center justify-center rounded-lg bg-primary-foreground/20">
               <span className="font-bold text-sm">SM</span>
             </div>
-            {"SchoolOS"}
+            {"SchoolAI"}
           </Link>
           <div className="space-y-4">
             <blockquote className="font-medium text-xl">
@@ -103,7 +103,7 @@ function LoginPage() {
                 SM
               </span>
             </div>
-            {"SchoolOS"}
+            {"SchoolAI"}
           </Link>
         </div>
 

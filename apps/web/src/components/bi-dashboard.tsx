@@ -498,7 +498,7 @@ export function BIDashboard({ className }: BIDashboardProps) {
         <div className="flex items-center gap-4">
           <span className="flex items-center gap-1">
             <Database className="h-3 w-3" />
-            Data Source: SchoolOS Database
+            Data Source: SchoolAI Database
           </span>
           <span className="flex items-center gap-1">
             <Calendar className="h-3 w-3" />

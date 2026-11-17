@@ -44,12 +44,12 @@ export const Route = createFileRoute("/features")({
     return {
       meta: [
         {
-          title: "SchoolOS Features - Complete Modules For School Operations",
+          title: "SchoolAI Features - Complete Modules For School Operations",
         },
         {
           name: "description",
           content:
-            "Explore SchoolOS modules for admissions, attendance, academics, fees, communication, transport, and reporting.",
+            "Explore SchoolAI modules for admissions, attendance, academics, fees, communication, transport, and reporting.",
         },
         { name: "robots", content: "index, follow" },
       ],
@@ -69,7 +69,7 @@ function FeaturesPage() {
             Built For Day-To-Day School Depth
           </h1>
           <p className="mt-4 text-muted-foreground">
-            SchoolOS combines core administration, academics, and finance
+            SchoolAI combines core administration, academics, and finance
             workflows into one platform your teams can actually use.
           </p>
         </div>

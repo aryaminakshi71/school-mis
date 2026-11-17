@@ -1,4 +1,4 @@
-// Mock data for the SchoolOS
+// Mock data for the SchoolAI
 
 export interface Student {
   id: string;

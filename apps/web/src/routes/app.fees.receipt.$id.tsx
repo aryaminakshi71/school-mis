@@ -18,7 +18,7 @@ function ReceiptPage() {
     feeType: "Tuition Fee - January 2026",
     amount: "₹5,000",
     paymentMethod: "Cash",
-    schoolName: "SchoolOS",
+    schoolName: "SchoolAI",
     schoolAddress: "123 Education Lane, City - 12345",
   };
 

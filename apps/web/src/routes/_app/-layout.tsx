@@ -219,7 +219,7 @@ export default function AppLayout() {
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-card/20 shadow-md backdrop-blur-sm">
               <span className="font-bold text-sm">SM</span>
             </div>
-            <span className="hidden text-lg sm:inline">SchoolOS</span>
+            <span className="hidden text-lg sm:inline">SchoolAI</span>
           </Link>
           <Link
             to="/app"
