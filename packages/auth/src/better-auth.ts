@@ -177,6 +177,58 @@ export const auth = () => {
       },
 
       // Organization support
+      databaseHooks: {
+        user: {
+          create: {
+            after: async (user: any) => {
+              try {
+                const orgId = crypto.randomUUID();
+                const slug = `school-${String(user.id).slice(0, 8)}`;
+                const name = `${user.name ?? "My"}'s School`;
+                await db.insert(schema.organizations).values({
+                  id: orgId,
+                  name,
+                  slug,
+                  plan: "free",
+                });
+                await db.insert(schema.members).values({
+                  id: crypto.randomUUID(),
+                  organizationId: orgId,
+                  userId: user.id,
+                  role: "owner",
+                });
+                try {
+                  await fetch(
+                    `${process.env.REGISTRY_URL ?? "http://127.0.0.1:4100"}/api/registry/company`,
+                    {
+                      method: "POST",
+                      headers: { "content-type": "application/json" },
+                      body: JSON.stringify({
+                        app: "schoolai",
+                        orgId,
+                        name,
+                        slug,
+                        plan: "free",
+                        status: "active",
+                        email: user.email,
+                        isDemo: false,
+                        mrr: 0,
+                        currency: "INR",
+                      }),
+                      signal: AbortSignal.timeout(3000),
+                    },
+                  );
+                } catch {
+                  // registry is optional
+                }
+              } catch (err) {
+                console.error("[Auth] Failed to create org for new user", err);
+              }
+            },
+          },
+        },
+      },
+
       plugins: [
         organization({
           allowUserToCreateOrganization: true,
