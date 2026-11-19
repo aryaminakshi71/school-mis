@@ -134,6 +134,15 @@ export const auth = () => {
       // Email + password auth
       emailAndPassword: {
         enabled: true,
+        sendResetPassword: async ({
+          user,
+          url,
+        }: {
+          user: { email: string };
+          url: string;
+        }) => {
+          console.log(`[Email] Password reset email to ${user.email}: ${url}`);
+        },
       },
 
       // Email verification
@@ -141,23 +150,14 @@ export const auth = () => {
         required: true,
         autoSignInAfterVerification: true,
         sendOnSignUp: true,
-        sendVerificationEmail: async (
-          user: { email: string },
-          url: string,
-          _token: string,
-        ) => {
+        sendVerificationEmail: async ({
+          user,
+          url,
+        }: {
+          user: { email: string };
+          url: string;
+        }) => {
           console.log(`[Email] Verification email to ${user.email}: ${url}`);
-        },
-      },
-
-      // Password reset
-      forgotPassword: {
-        sendResetEmail: async (
-          user: { email: string },
-          url: string,
-          _token: string,
-        ) => {
-          console.log(`[Email] Password reset email to ${user.email}: ${url}`);
         },
       },
 
@@ -183,19 +183,19 @@ export const auth = () => {
 };
 
 // Create singleton instance - lazily initialized so the real auth is used
-let authInstance: Auth | null = null;
+let authSingleton: Auth | null = null;
 
 export function getAuth(): Auth {
-  if (!authInstance) {
-    authInstance = auth();
+  if (!authSingleton) {
+    authSingleton = auth();
   }
-  return authInstance;
+  return authSingleton;
 }
 
-// Initialize auth immediately
-getAuth();
+// Initialize auth immediately and export from the same instance, so the
+// non-null guarantee from getAuth() carries through to the exports.
+const authInstance = getAuth();
 
-// Export auth utilities - guaranteed to be defined
 export const api = authInstance.api;
 export const handler = authInstance.handler;
 

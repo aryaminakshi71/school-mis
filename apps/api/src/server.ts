@@ -17,7 +17,9 @@ try {
   // .env optional in production (secrets come from the platform)
 }
 
-const PORT = Number(process.env.PORT ?? 3015);
+// The API has its own port so it can run alongside the web dev server,
+// which owns PORT. Falls back to 3016 to match .env / .env.example.
+const PORT = Number(process.env.API_PORT ?? process.env.PORT ?? 3016);
 const app = createApp();
 
 const server = Bun.serve({

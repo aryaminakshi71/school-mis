@@ -7,7 +7,7 @@
 import { describe, expect, it } from "vitest";
 
 describe("Authentication Integration", () => {
-  const API_URL = process.env.API_URL || "http://localhost:3000";
+  const API_URL = process.env.API_URL || "http://localhost:3016";
 
   describe("Better Auth Endpoints", () => {
     it("should have auth endpoints available", async () => {
