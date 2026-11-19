@@ -12,6 +12,7 @@ import { db } from "@school/storage";
 import * as schema from "@school/storage/db/schema";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { organization } from "better-auth/plugins";
 
 // Environment configuration
 const getEnv = () => ({
@@ -169,12 +170,45 @@ export const auth = () => {
       },
 
       // Organization support
-      organization: {
-        enabled: true,
-        allowUserToCreateOrganization: true,
-      },
-
-      plugins: [],
+      plugins: [
+        organization({
+          allowUserToCreateOrganization: true,
+          organizationCreation: {
+            afterCreate: async ({
+              organization,
+              user,
+            }: {
+              organization: any;
+              user: any;
+            }) => {
+              try {
+                await fetch(
+                  `${process.env.REGISTRY_URL ?? "http://127.0.0.1:4100"}/api/registry/company`,
+                  {
+                    method: "POST",
+                    headers: { "content-type": "application/json" },
+                    body: JSON.stringify({
+                      app: "schoolai",
+                      orgId: organization.id,
+                      name: organization.name,
+                      slug: organization.slug,
+                      plan: "free",
+                      status: "active",
+                      email: user.email,
+                      isDemo: false,
+                      mrr: 0,
+                      currency: "INR",
+                    }),
+                    signal: AbortSignal.timeout(3000),
+                  },
+                );
+              } catch {
+                // registry is optional
+              }
+            },
+          },
+        }),
+      ],
     });
   } catch (err) {
     console.error("[Auth] Failed to initialise better-auth:", err);
