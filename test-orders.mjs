@@ -1,27 +1,33 @@
-import { chromium } from 'playwright';
-const BASE = 'http://127.0.0.1:3000';
+import { chromium } from "playwright";
+const BASE = "http://127.0.0.1:3000";
 const browser = await chromium.launch();
 const page = await browser.newPage();
-page.on('response', (r) => { if (r.url().includes('/api/rpc')) console.log('RPC', r.status(), r.url().replace(BASE, '')); });
-await page.goto(`${BASE}/auth/signup`, { waitUntil: 'networkidle' });
-await page.fill('input[name="name"]', 'Ord Demo');
+page.on("response", (r) => {
+  if (r.url().includes("/api/rpc"))
+    console.log("RPC", r.status(), r.url().replace(BASE, ""));
+});
+await page.goto(`${BASE}/auth/signup`, { waitUntil: "networkidle" });
+await page.fill('input[name="name"]', "Ord Demo");
 await page.fill('input[name="email"]', `ord-${Date.now()}@example.com`);
-await page.fill('input[name="password"]', 'DemoPass123!');
-await page.fill('input[name="confirmPassword"]', 'DemoPass123!');
+await page.fill('input[name="password"]', "DemoPass123!");
+await page.fill('input[name="confirmPassword"]', "DemoPass123!");
 await page.click('button:has-text("Sign up")');
-await page.waitForURL('**/app/**', { timeout: 20000 }).catch(() => {});
-await page.goto(`${BASE}/app/lis`, { waitUntil: 'networkidle' });
+await page.waitForURL("**/app/**", { timeout: 20000 }).catch(() => {});
+await page.goto(`${BASE}/app/lis`, { waitUntil: "networkidle" });
 await page.waitForTimeout(1000);
 // create patient
-await page.locator('form input').first().fill('MRN-3001');
-await page.locator('form input').nth(1).fill('Ord');
-await page.locator('form input').nth(2).fill('Test');
+await page.locator("form input").first().fill("MRN-3001");
+await page.locator("form input").nth(1).fill("Ord");
+await page.locator("form input").nth(2).fill("Test");
 await page.click('button:has-text("Add Patient")');
 await page.waitForTimeout(1500);
-console.log('--- click Orders ---');
+console.log("--- click Orders ---");
 await page.click('button:has-text("Orders")');
 await page.waitForTimeout(2500);
 const text = await page.evaluate(() => document.body.innerText);
-console.log('ORDERS TEXT:', text.slice(0, 400));
-console.log('CHECKBOXES:', await page.locator('input[type="checkbox"]').count());
+console.log("ORDERS TEXT:", text.slice(0, 400));
+console.log(
+  "CHECKBOXES:",
+  await page.locator('input[type="checkbox"]').count(),
+);
 await browser.close();

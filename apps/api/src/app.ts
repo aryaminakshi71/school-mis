@@ -23,6 +23,7 @@ import {
   feeStructures,
   libraryBooks,
   bookIssues as libraryTransactions,
+  notificationLogs,
   reportCardDetails,
   reportCards,
   sessions,
@@ -34,7 +35,6 @@ import {
   transportRoutes,
   vehicles as transportVehicles,
   users,
-  notificationLogs,
 } from "@school/storage";
 import { and, desc, eq, gte, like, lte, sql } from "drizzle-orm";
 import { Hono } from "hono";
@@ -1367,7 +1367,11 @@ export function createApp() {
         .from(studentFeeAllocations)
         .where(eq(studentFeeAllocations.id, payment.allocationId))
         .limit(1);
-      return c.json({ payment, student: student ?? null, allocation: allocation ?? null });
+      return c.json({
+        payment,
+        student: student ?? null,
+        allocation: allocation ?? null,
+      });
     } catch (error) {
       console.error("Error fetching payment:", error);
       return c.json({ error: "Failed to fetch payment" }, 500);
@@ -1978,8 +1982,7 @@ export function createApp() {
             method: "POST",
             headers: {
               Authorization:
-                "Basic " +
-                Buffer.from(`${sid}:${token}`).toString("base64"),
+                "Basic " + Buffer.from(`${sid}:${token}`).toString("base64"),
               "Content-Type": "application/x-www-form-urlencoded",
             },
             body: new URLSearchParams({
@@ -4176,25 +4179,26 @@ export function createApp() {
       return requireAuth(c, next);
     },
     async (c: any, next: any) => {
-    const initialContext: AppContext = {
-      env: (c.env || process.env) as unknown as AppContext["env"],
-      headers: c.req.raw.headers,
-      requestId: c.get("requestId") || crypto.randomUUID(),
-      logger: c.get("logger"),
-      db: {} as any,
-    };
+      const initialContext: AppContext = {
+        env: (c.env || process.env) as unknown as AppContext["env"],
+        headers: c.req.raw.headers,
+        requestId: c.get("requestId") || crypto.randomUUID(),
+        logger: c.get("logger"),
+        db: {} as any,
+      };
 
-    const { matched, response } = await rpcHandler.handle(c.req.raw, {
-      prefix: "/api/rpc",
-      context: initialContext,
-    });
+      const { matched, response } = await rpcHandler.handle(c.req.raw, {
+        prefix: "/api/rpc",
+        context: initialContext,
+      });
 
-    if (matched && response) {
-      return c.newResponse(response.body, response);
-    }
+      if (matched && response) {
+        return c.newResponse(response.body, response);
+      }
 
-    await next();
-  });
+      await next();
+    },
+  );
 
   // ============================================================================
   // API DOCUMENTATION

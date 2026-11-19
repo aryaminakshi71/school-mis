@@ -1,7 +1,7 @@
+import { db, notificationLogs } from "@school/storage";
+import { desc } from "drizzle-orm";
 import { Hono } from "hono";
 import { z } from "zod";
-import { desc } from "drizzle-orm";
-import { db, notificationLogs } from "@school/storage";
 
 /**
  * Real notification delivery via Twilio (WhatsApp + SMS).

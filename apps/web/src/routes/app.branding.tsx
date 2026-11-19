@@ -86,7 +86,9 @@ function BrandingPage() {
           <input
             className="mt-1 w-full rounded-md border px-3 py-2"
             value={branding.brandName}
-            onChange={(e) => setBranding({ ...branding, brandName: e.target.value })}
+            onChange={(e) =>
+              setBranding({ ...branding, brandName: e.target.value })
+            }
           />
         </label>
 
@@ -96,7 +98,9 @@ function BrandingPage() {
             className="mt-1 w-full rounded-md border px-3 py-2"
             placeholder="https://your-brand.com/logo.png"
             value={branding.logoUrl}
-            onChange={(e) => setBranding({ ...branding, logoUrl: e.target.value })}
+            onChange={(e) =>
+              setBranding({ ...branding, logoUrl: e.target.value })
+            }
           />
         </label>
 
@@ -106,13 +110,17 @@ function BrandingPage() {
             <input
               type="color"
               value={branding.primaryColor}
-              onChange={(e) => setBranding({ ...branding, primaryColor: e.target.value })}
+              onChange={(e) =>
+                setBranding({ ...branding, primaryColor: e.target.value })
+              }
               className="h-10 w-14 rounded border"
             />
             <input
               className="w-full rounded-md border px-3 py-2"
               value={branding.primaryColor}
-              onChange={(e) => setBranding({ ...branding, primaryColor: e.target.value })}
+              onChange={(e) =>
+                setBranding({ ...branding, primaryColor: e.target.value })
+              }
             />
           </div>
         </label>
@@ -123,7 +131,9 @@ function BrandingPage() {
             className="mt-1 w-full rounded-md border px-3 py-2"
             placeholder="support@your-brand.com"
             value={branding.supportEmail}
-            onChange={(e) => setBranding({ ...branding, supportEmail: e.target.value })}
+            onChange={(e) =>
+              setBranding({ ...branding, supportEmail: e.target.value })
+            }
           />
         </label>
 
@@ -133,7 +143,9 @@ function BrandingPage() {
             className="mt-1 w-full rounded-md border px-3 py-2"
             placeholder="school.your-brand.com"
             value={branding.customDomain}
-            onChange={(e) => setBranding({ ...branding, customDomain: e.target.value })}
+            onChange={(e) =>
+              setBranding({ ...branding, customDomain: e.target.value })
+            }
           />
         </label>
 
@@ -145,7 +157,9 @@ function BrandingPage() {
           >
             {saving ? "Saving…" : "Save branding"}
           </button>
-          {message && <span className="text-sm text-muted-foreground">{message}</span>}
+          {message && (
+            <span className="text-sm text-muted-foreground">{message}</span>
+          )}
         </div>
       </div>
 
@@ -153,7 +167,11 @@ function BrandingPage() {
         <div className="text-sm font-medium">Preview</div>
         <div className="mt-3 flex items-center gap-3">
           {branding.logoUrl ? (
-            <img src={branding.logoUrl} alt="logo" className="h-10 w-10 rounded object-contain" />
+            <img
+              src={branding.logoUrl}
+              alt="logo"
+              className="h-10 w-10 rounded object-contain"
+            />
           ) : (
             <div
               className="flex h-10 w-10 items-center justify-center rounded text-white"
@@ -162,7 +180,10 @@ function BrandingPage() {
               {branding.brandName.slice(0, 1)}
             </div>
           )}
-          <span className="text-lg font-semibold" style={{ color: branding.primaryColor }}>
+          <span
+            className="text-lg font-semibold"
+            style={{ color: branding.primaryColor }}
+          >
             {branding.brandName}
           </span>
         </div>

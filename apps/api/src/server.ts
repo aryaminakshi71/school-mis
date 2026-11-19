@@ -4,8 +4,8 @@
  * Loads .env and serves the Hono app with the real environment.
  */
 
-import { fileURLToPath } from "node:url";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { createApp } from "./app";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));

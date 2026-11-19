@@ -200,7 +200,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return ROLE_PERMISSIONS.find((r) => r.role === user.role);
   }, [user]);
 
-  const persistUser = (userData: any, fallbackEmail: string, fallbackName = "User") => {
+  const persistUser = (
+    userData: any,
+    fallbackEmail: string,
+    fallbackName = "User",
+  ) => {
     const user: User = {
       id: userData?.id || userData?.user?.id || "user-id",
       name: userData?.name || userData?.user?.name || fallbackName,

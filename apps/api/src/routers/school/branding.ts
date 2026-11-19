@@ -2,9 +2,9 @@
  * Branding Router — per-organization white-label settings.
  */
 
-import { z } from "zod";
-import { eq } from "drizzle-orm";
 import { whiteLabelSettings } from "@school/storage";
+import { eq } from "drizzle-orm";
+import { z } from "zod";
 import { getDb } from "../../lib/db.js";
 import { orgAuthed } from "../../procedures/index.js";
 
@@ -17,11 +17,7 @@ const updateSchema = z.object({
 });
 
 function orgIdOf(context: any): string {
-  return (
-    context?.organization?.id ??
-    context?.user?.organizationId ??
-    ""
-  );
+  return context?.organization?.id ?? context?.user?.organizationId ?? "";
 }
 
 export const brandingRouter = {

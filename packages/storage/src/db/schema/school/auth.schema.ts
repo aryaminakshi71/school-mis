@@ -125,7 +125,9 @@ export const emailVerificationTokens = pgTable(
     expiresAt: timestamp("expires_at").notNull(),
     verifiedAt: timestamp("verified_at"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
   },
   (table) => ({
     userIdx: index("verify_tokens_user_idx").on(table.userId),

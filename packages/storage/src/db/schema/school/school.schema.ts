@@ -13,7 +13,7 @@ import {
   uuid,
   varchar,
 } from "drizzle-orm/pg-core";
-import { users, organizations } from "./auth.schema";
+import { organizations, users } from "./auth.schema";
 
 // Enums
 export const SessionStatus = {
@@ -1424,7 +1424,9 @@ export const notificationLogs = pgTable(
     status: varchar("status", { length: 20 }).notNull().default("sent"),
     messagePreview: text("message_preview"),
     providerRefs: jsonb("provider_refs"),
-    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
   },
   (table) => ({
     orgIdx: index("idx_notification_logs_org").on(table.organizationId),
@@ -1441,13 +1443,21 @@ export const whiteLabelSettings = pgTable(
       .notNull()
       .unique()
       .references(() => organizations.id, { onDelete: "cascade" }),
-    brandName: varchar("brand_name", { length: 120 }).notNull().default("SchoolAI"),
+    brandName: varchar("brand_name", { length: 120 })
+      .notNull()
+      .default("SchoolAI"),
     logoUrl: text("logo_url"),
-    primaryColor: varchar("primary_color", { length: 20 }).notNull().default("#6366f1"),
+    primaryColor: varchar("primary_color", { length: 20 })
+      .notNull()
+      .default("#6366f1"),
     supportEmail: varchar("support_email", { length: 180 }),
     customDomain: varchar("custom_domain", { length: 180 }),
-    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
   },
   (table) => ({
     orgIdx: index("idx_white_label_org").on(table.organizationId),

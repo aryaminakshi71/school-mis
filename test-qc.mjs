@@ -1,21 +1,24 @@
-import { chromium } from 'playwright';
-const BASE = 'http://127.0.0.1:3000';
+import { chromium } from "playwright";
+const BASE = "http://127.0.0.1:3000";
 const browser = await chromium.launch();
 const page = await browser.newPage();
-page.on('response', (r) => { if (r.url().includes('/api/rpc')) console.log('RPC', r.status(), r.url().replace(BASE, '')); });
-await page.goto(`${BASE}/auth/signup`, { waitUntil: 'networkidle' });
-await page.fill('input[name="name"]', 'QC Demo');
+page.on("response", (r) => {
+  if (r.url().includes("/api/rpc"))
+    console.log("RPC", r.status(), r.url().replace(BASE, ""));
+});
+await page.goto(`${BASE}/auth/signup`, { waitUntil: "networkidle" });
+await page.fill('input[name="name"]', "QC Demo");
 await page.fill('input[name="email"]', `qc-${Date.now()}@example.com`);
-await page.fill('input[name="password"]', 'DemoPass123!');
-await page.fill('input[name="confirmPassword"]', 'DemoPass123!');
+await page.fill('input[name="password"]', "DemoPass123!");
+await page.fill('input[name="confirmPassword"]', "DemoPass123!");
 await page.click('button:has-text("Sign up")');
-await page.waitForURL('**/app/**', { timeout: 20000 }).catch(() => {});
-await page.goto(`${BASE}/app/lis`, { waitUntil: 'networkidle' });
+await page.waitForURL("**/app/**", { timeout: 20000 }).catch(() => {});
+await page.goto(`${BASE}/app/lis`, { waitUntil: "networkidle" });
 await page.waitForTimeout(1000);
 await page.click('button:has-text("QC")');
 await page.waitForTimeout(2000);
-const opts = await page.locator('select').first().locator('option').count();
-console.log('TEST OPTIONS:', opts);
+const opts = await page.locator("select").first().locator("option").count();
+console.log("TEST OPTIONS:", opts);
 const text = await page.evaluate(() => document.body.innerText);
-console.log('QC TEXT:', text.slice(0, 500));
+console.log("QC TEXT:", text.slice(0, 500));
 await browser.close();
