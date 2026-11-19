@@ -86,6 +86,13 @@ export const auth = () => {
 
       // Security
       secret: env.BETTER_AUTH_SECRET,
+      advanced: {
+        database: {
+          // SchoolAI's auth tables use uuid columns; Better Auth defaults to
+          // 32-char text ids, so force UUIDs.
+          generateId: () => crypto.randomUUID(),
+        },
+      },
       baseURL: env.BETTER_AUTH_URL,
       trustedOrigins: [
         env.BETTER_AUTH_URL,
