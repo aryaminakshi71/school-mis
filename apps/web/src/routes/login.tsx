@@ -52,7 +52,7 @@ function LoginPage() {
       return;
     }
     try {
-      const res = await fetch("/api/auth/parent-lookup", {
+      const res = await fetch("/api/parent-lookup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ admissionNumber }),

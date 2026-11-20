@@ -2951,7 +2951,7 @@ export function createApp() {
   });
 
   // Parent login helper: look up the parent account from a child's admission number.
-  app.post("/api/auth/parent-lookup", async (c: any) => {
+  app.post("/api/parent-lookup", async (c: any) => {
     const db = getDb(c.env);
     const body = await c.req.json().catch(() => ({}));
     const admissionNumber = String(body.admissionNumber || "").trim();

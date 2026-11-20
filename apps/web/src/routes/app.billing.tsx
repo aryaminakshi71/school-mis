@@ -132,7 +132,7 @@ function BillingPage() {
         })}
       </div>
 
-      {current.status === "active" && (
+      {current.status === "active" && current.plan !== "free" && (
         <div className="mt-8">
           <button
             disabled={busy}
