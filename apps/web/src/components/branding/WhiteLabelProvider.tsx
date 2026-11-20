@@ -16,7 +16,7 @@ export function WhiteLabelProvider({ children }: { children: React.ReactNode }) 
         });
         if (!res.ok) return;
         const data: any = await res.json();
-        const b = data?.json ?? data;
+        const b = data?.json?.branding ?? data?.branding ?? data?.json ?? data;
         if (cancelled || !b) return;
         if (b.brandName) {
           document.title = `${b.brandName} - School Operating System`;
