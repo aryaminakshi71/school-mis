@@ -34,11 +34,39 @@ function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [mode, setMode] = useState<"email" | "parent">("email");
+  const [role, setRole] = useState("school_admin");
+  const [admissionNumber, setAdmissionNumber] = useState("");
+  const [lookupMsg, setLookupMsg] = useState("");
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleOAuthLogin = (provider: string) => {
     window.location.href = `/api/auth/sign-in/${provider}`;
+  };
+
+  const lookupParent = async () => {
+    setLookupMsg("");
+    if (!admissionNumber) {
+      setLookupMsg("Enter your child's admission number");
+      return;
+    }
+    try {
+      const res = await fetch("/api/auth/parent-lookup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ admissionNumber }),
+      });
+      const data: any = await res.json();
+      if (!res.ok) {
+        setLookupMsg(data.error || "Parent account not found");
+        return;
+      }
+      setEmail(data.email);
+      setLookupMsg(`Found ${data.name}. Enter your password to continue.`);
+    } catch {
+      setLookupMsg("Lookup failed. Try again.");
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -117,6 +145,59 @@ function LoginPage() {
               </p>
             </div>
             <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="role">I am a</Label>
+                <select
+                  id="role"
+                  value={role}
+                  onChange={(e) => setRole(e.target.value)}
+                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                >
+                  <option value="school_admin">School administrator</option>
+                  <option value="teacher">Teacher</option>
+                  <option value="student">Student</option>
+                  <option value="parent">Parent</option>
+                  <option value="super_admin">App developer</option>
+                </select>
+              </div>
+
+              <div className="flex gap-2 rounded-lg bg-muted p-1 text-sm">
+                <button
+                  type="button"
+                  onClick={() => setMode("email")}
+                  className={`flex-1 rounded-md px-3 py-1.5 font-medium ${mode === "email" ? "bg-background shadow-sm" : "text-muted-foreground"}`}
+                >
+                  Email
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setMode("parent")}
+                  className={`flex-1 rounded-md px-3 py-1.5 font-medium ${mode === "parent" ? "bg-background shadow-sm" : "text-muted-foreground"}`}
+                >
+                  Parent (child ID)
+                </button>
+              </div>
+
+              {mode === "parent" && (
+                <div className="space-y-2">
+                  <Label htmlFor="admission">Child admission number</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      id="admission"
+                      placeholder="STU-123456"
+                      value={admissionNumber}
+                      onChange={(e) => setAdmissionNumber(e.target.value)}
+                    />
+                    <Button type="button" variant="outline" onClick={lookupParent}>
+                      Find
+                    </Button>
+                  </div>
+                  {lookupMsg && (
+                    <p className="text-xs text-muted-foreground">{lookupMsg}</p>
+                  )}
+                </div>
+              )}
+
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input

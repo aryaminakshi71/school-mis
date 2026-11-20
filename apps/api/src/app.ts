@@ -24,6 +24,7 @@ import {
   libraryBooks,
   bookIssues as libraryTransactions,
   notificationLogs,
+  organizations,
   reportCardDetails,
   reportCards,
   sessions,
@@ -36,7 +37,7 @@ import {
   vehicles as transportVehicles,
   users,
 } from "@school/storage";
-import { and, desc, eq, gte, like, lte, sql } from "drizzle-orm";
+import { and, desc, eq, gte, inArray, like, lte, sql } from "drizzle-orm";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { requestId } from "hono/request-id";
@@ -2948,6 +2949,101 @@ export function createApp() {
       widget: { id: crypto.randomUUID(), ...body },
     });
   });
+
+  // Parent login helper: look up the parent account from a child's admission number.
+  app.post("/api/auth/parent-lookup", async (c: any) => {
+    const db = getDb(c.env);
+    const body = await c.req.json().catch(() => ({}));
+    const admissionNumber = String(body.admissionNumber || "").trim();
+    if (!admissionNumber) return c.json({ error: "Admission number required" }, 400);
+    const [student] = await db
+      .select()
+      .from(students)
+      .where(eq(students.admissionNumber, admissionNumber))
+      .limit(1);
+    if (!student) return c.json({ error: "Student not found" }, 404);
+    const phones = [student.fatherPhone, student.motherPhone].filter(Boolean) as string[];
+    if (!phones.length) return c.json({ error: "No parent contact on file" }, 404);
+    const [parent] = await db
+      .select()
+      .from(users)
+      .where(inArray(users.phone, phones))
+      .limit(1);
+    if (!parent) {
+      return c.json(
+        { error: "Parent account not found. Ask the school to create one." },
+        404,
+      );
+    }
+    return c.json({ email: parent.email, name: parent.name });
+  });
+
+  // ── Billing ──────────────────────────────────────────────────────────────
+  const PLANS = [
+    { id: "starter", name: "Starter", price: 999, interval: "month", limits: "Up to 200 students" },
+    { id: "growth", name: "Growth", price: 2999, interval: "month", limits: "Up to 1,000 students" },
+    { id: "pro", name: "Pro", price: 5999, interval: "month", limits: "Unlimited students" },
+    { id: "enterprise", name: "Enterprise", price: 0, interval: "custom", limits: "Custom" },
+  ];
+
+  app.get("/api/billing/plans", (c: any) => c.json({ plans: PLANS }));
+
+  app.get("/api/billing/subscription", requireAuth, async (c: any) => {
+    const db = getDb(c.env);
+    const schoolId = c.get("user")?.schoolId;
+    if (!schoolId) return c.json({ plan: "free", status: "none", expiresAt: null });
+    const [org] = await db
+      .select()
+      .from(organizations)
+      .where(eq(organizations.id, schoolId))
+      .limit(1);
+    return c.json({
+      plan: org?.plan ?? "free",
+      status: org?.subscriptionStatus ?? "none",
+      expiresAt: org?.subscriptionExpiresAt ?? null,
+    });
+  });
+
+  app.post(
+    "/api/billing/subscribe",
+    requireAuth,
+    requireRole(ROLES.SUPER_ADMIN, ROLES.SCHOOL_ADMIN),
+    async (c: any) => {
+      const db = getDb(c.env);
+      const schoolId = c.get("user")?.schoolId;
+      if (!schoolId) return c.json({ error: "No school" }, 400);
+      const body = await c.req.json().catch(() => ({}));
+      const plan = body.plan || "starter";
+      const interval = body.interval === "year" ? "year" : "month";
+      const expires = new Date();
+      expires.setMonth(expires.getMonth() + (interval === "year" ? 12 : 1));
+      await db
+        .update(organizations)
+        .set({
+          plan,
+          subscriptionStatus: "active",
+          subscriptionExpiresAt: expires,
+        })
+        .where(eq(organizations.id, schoolId));
+      return c.json({ ok: true, plan, status: "active", expiresAt: expires });
+    },
+  );
+
+  app.post(
+    "/api/billing/cancel",
+    requireAuth,
+    requireRole(ROLES.SUPER_ADMIN, ROLES.SCHOOL_ADMIN),
+    async (c: any) => {
+      const db = getDb(c.env);
+      const schoolId = c.get("user")?.schoolId;
+      if (!schoolId) return c.json({ error: "No school" }, 400);
+      await db
+        .update(organizations)
+        .set({ subscriptionStatus: "cancelled" })
+        .where(eq(organizations.id, schoolId));
+      return c.json({ ok: true, status: "cancelled" });
+    },
+  );
 
   app.get("/api/dashboard/stats", requireAuth, async (c: any) => {
     const db = getDb(c);
