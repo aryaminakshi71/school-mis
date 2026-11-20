@@ -4391,6 +4391,7 @@ export function createApp() {
         requestId: c.get("requestId") || crypto.randomUUID(),
         logger: c.get("logger"),
         db: {} as any,
+        user: c.get("user"),
       };
 
       const { matched, response } = await rpcHandler.handle(c.req.raw, {

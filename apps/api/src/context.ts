@@ -13,6 +13,14 @@ export interface AppContext {
   requestId: string;
   logger?: Console;
   db: Pool;
+  user?: {
+    id: string;
+    email: string;
+    name: string;
+    role?: string;
+    schoolId?: string;
+    emailVerified?: boolean;
+  } | null;
 }
 
 export interface AuthContext extends AppContext {

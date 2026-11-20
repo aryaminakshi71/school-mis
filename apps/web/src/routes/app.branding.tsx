@@ -27,7 +27,7 @@ function BrandingPage() {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    fetch("/api/rpc/branding", { credentials: "include" })
+    fetch("/api/rpc/branding/get", { credentials: "include" })
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => {
         if (d?.branding) {
@@ -47,16 +47,18 @@ function BrandingPage() {
     setSaving(true);
     setMessage("");
     try {
-      const res = await fetch("/api/rpc/branding", {
+      const res = await fetch("/api/rpc/branding/update", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({
-          brandName: branding.brandName,
-          logoUrl: branding.logoUrl || null,
-          primaryColor: branding.primaryColor,
-          supportEmail: branding.supportEmail || null,
-          customDomain: branding.customDomain || null,
+          json: {
+            brandName: branding.brandName,
+            logoUrl: branding.logoUrl || null,
+            primaryColor: branding.primaryColor,
+            supportEmail: branding.supportEmail || null,
+            customDomain: branding.customDomain || null,
+          },
         }),
       });
       const d = await res.json().catch(() => null);

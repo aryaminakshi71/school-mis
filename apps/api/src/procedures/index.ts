@@ -27,10 +27,11 @@ export const authed = base.use(async ({ context, next }) => {
     });
   }
 
-  // Get user info from headers (set by auth middleware)
-  const userId = context.headers.get("x-user-id");
-  const userEmail = context.headers.get("x-user-email");
-  const userName = context.headers.get("x-user-name");
+  // Prefer the user set by the Hono auth middleware; fall back to headers.
+  const ctxUser = (context as any).user;
+  const userId = ctxUser?.id ?? context.headers.get("x-user-id");
+  const userEmail = ctxUser?.email ?? context.headers.get("x-user-email");
+  const userName = ctxUser?.name ?? context.headers.get("x-user-name");
 
   if (!userId) {
     throw new ORPCError("UNAUTHORIZED", {
@@ -45,6 +46,8 @@ export const authed = base.use(async ({ context, next }) => {
         id: userId,
         email: userEmail || "",
         name: userName || "",
+        role: ctxUser?.role,
+        schoolId: ctxUser?.schoolId,
       },
     },
   });
@@ -55,7 +58,9 @@ export const authed = base.use(async ({ context, next }) => {
  */
 export const orgAuthed = authed.use(async ({ context, next }) => {
   const orgSlug = context.headers.get("x-organization-slug");
-  const orgId = context.headers.get("x-organization-id");
+  const orgId =
+    context.headers.get("x-organization-id") ||
+    (context as any).user?.schoolId;
 
   if (!orgSlug && !orgId) {
     throw new ORPCError("BAD_REQUEST", {
