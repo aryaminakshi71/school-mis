@@ -12,7 +12,8 @@
     "@better-auth/stripe": "^1.4.12",
     "stripe": "^14.25.0",
     "@school/storage": "workspace:*",
-    "better-auth": "^1.4.18"
+    "better-auth": "^1.4.18",
+    "drizzle-orm": "^0.45.4"
   },
   "devDependencies": {
     "typescript": "^5.9.3"

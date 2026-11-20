@@ -64,6 +64,7 @@ export const sessions = pgTable("sessions", {
 // Classes Table
 export const classes = pgTable("classes", {
   id: uuid("id").defaultRandom().primaryKey(),
+  organizationId: uuid("organization_id"),
   name: text("name").notNull(),
   section: text("section"),
   sessionId: uuid("session_id").references(() => sessions.id),
@@ -76,6 +77,7 @@ export const classes = pgTable("classes", {
 // Students Table
 export const students = pgTable("students", {
   id: uuid("id").defaultRandom().primaryKey(),
+  organizationId: uuid("organization_id"),
   admissionNumber: text("admission_number").unique(),
   firstName: text("first_name").notNull(),
   lastName: text("last_name").notNull(),
@@ -107,6 +109,7 @@ export const students = pgTable("students", {
 // Teachers Table
 export const teachers = pgTable("teachers", {
   id: uuid("id").defaultRandom().primaryKey(),
+  organizationId: uuid("organization_id"),
   employeeId: text("employee_id").unique(),
   firstName: text("first_name").notNull(),
   lastName: text("last_name").notNull(),
@@ -268,6 +271,7 @@ export const feeStructures = pgTable("fee_structures", {
 // Student Fee Allocations
 export const studentFeeAllocations = pgTable("student_fee_allocations", {
   id: uuid("id").defaultRandom().primaryKey(),
+  organizationId: uuid("organization_id"),
   studentId: uuid("student_id")
     .references(() => students.id)
     .notNull(),
@@ -285,6 +289,7 @@ export const studentFeeAllocations = pgTable("student_fee_allocations", {
 // Fee Payments Table
 export const feePayments = pgTable("fee_payments", {
   id: uuid("id").defaultRandom().primaryKey(),
+  organizationId: uuid("organization_id"),
   studentId: uuid("student_id")
     .references(() => students.id)
     .notNull(),
@@ -338,6 +343,7 @@ export const holidays = pgTable("holidays", {
 // Attendance Table
 export const attendance = pgTable("attendance", {
   id: uuid("id").defaultRandom().primaryKey(),
+  organizationId: uuid("organization_id"),
   studentId: uuid("student_id")
     .references(() => students.id)
     .notNull(),

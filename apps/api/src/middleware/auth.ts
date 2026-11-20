@@ -1,6 +1,9 @@
 import { api } from "@school/auth";
 import type { Role } from "@school/auth";
 import type { Context, MiddlewareHandler, Next } from "hono";
+import { eq } from "drizzle-orm";
+import { users } from "@school/storage";
+import { getDb } from "../lib/db";
 
 /**
  * Extend Hono context with auth types
@@ -36,12 +39,30 @@ export const authMiddleware: MiddlewareHandler = async (
   });
 
   if (session) {
+    // Better Auth's session user only exposes its core fields, so load the
+    // app-specific role + school from the users table.
+    let role = (session.user as any).role ?? "student";
+    let schoolId = (session.user as any).schoolId ?? undefined;
+    try {
+      const db = getDb(c.env);
+      const [dbUser] = await db
+        .select()
+        .from(users)
+        .where(eq(users.id, session.user.id))
+        .limit(1);
+      if (dbUser) {
+        role = dbUser.role ?? role;
+        schoolId = dbUser.schoolId ?? schoolId;
+      }
+    } catch (err) {
+      console.error("Failed to load user role/school", err);
+    }
     c.set("user", {
       id: session.user.id,
       email: session.user.email,
       name: session.user.name,
-      role: session.user.role,
-      schoolId: session.user.schoolId,
+      role,
+      schoolId,
       emailVerified: session.user.emailVerified,
     });
     c.set("session", {

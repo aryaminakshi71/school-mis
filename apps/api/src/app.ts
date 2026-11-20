@@ -347,6 +347,7 @@ export function createApp() {
           .insert(students)
           .values({
             id,
+            organizationId: c.get("user")?.schoolId || null,
             admissionNumber,
             firstName: data.firstName,
             lastName: data.lastName,
@@ -597,6 +598,7 @@ export function createApp() {
           .insert(teachers)
           .values({
             id,
+            organizationId: c.get("user")?.schoolId || null,
             employeeId,
             firstName: data.firstName,
             lastName: data.lastName,
@@ -814,6 +816,7 @@ export function createApp() {
           .insert(classes)
           .values({
             id,
+            organizationId: c.get("user")?.schoolId || null,
             name: data.name,
             section: data.section,
             capacity: data.capacity ? parseInt(data.capacity) : 40,
@@ -1049,6 +1052,7 @@ export function createApp() {
           const [saved] = await db
             .insert(attendance)
             .values({
+              organizationId: c.get("user")?.schoolId || null,
               studentId: record.studentId,
               classId: record.classId || data.classId,
               sessionId: sessionId,
@@ -1272,6 +1276,7 @@ export function createApp() {
           .insert(studentFeeAllocations)
           .values({
             id,
+            organizationId: c.get("user")?.schoolId || null,
             studentId: data.studentId,
             feeStructureId: data.feeStructureId || null,
             amount: data.amount,
@@ -1305,6 +1310,7 @@ export function createApp() {
           .insert(feePayments)
           .values({
             id,
+            organizationId: c.get("user")?.schoolId || null,
             studentId: data.studentId,
             allocationId,
             amount: data.amount,

@@ -13,6 +13,7 @@ import * as schema from "@school/storage/db/schema";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { organization } from "better-auth/plugins";
+import { eq } from "drizzle-orm";
 
 // Environment configuration
 const getEnv = () => ({
@@ -114,8 +115,9 @@ export const auth = () => {
         expiresIn: 60 * 60 * 24 * 7, // 7 days
         updateAge: 60 * 60 * 24, // Update session every 24 hours
         cookieCache: {
-          enabled: true,
-          maxAge: 5 * 60, // 5 minutes
+          // Disabled so role/school changes (e.g. on signup) are visible
+          // immediately instead of after the 5-minute cache.
+          enabled: false,
         },
       },
 
@@ -197,6 +199,16 @@ export const auth = () => {
                   userId: user.id,
                   role: "owner",
                 });
+                await db
+                  .update(schema.users)
+                  .set({
+                    schoolId: orgId,
+                    role: "school_admin",
+                    // No email provider is configured, so treat signups as
+                    // verified to avoid blocking the demo.
+                    emailVerified: true,
+                  })
+                  .where(eq(schema.users.id, user.id));
                 try {
                   await fetch(
                     `${process.env.REGISTRY_URL ?? "http://127.0.0.1:4100"}/api/registry/company`,
