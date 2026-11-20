@@ -79,6 +79,14 @@ function getNotificationMessage(data: Record<string, unknown>): string {
 /**
  * Create Hono app with all routes and middleware
  */
+/** Scope a by-id lookup to the caller's school (super admins see all). */
+function orgWhere(c: any, table: any, id: string) {
+  const schoolId = c.get("user")?.schoolId;
+  return schoolId
+    ? and(eq(table.id, id), eq(table.organizationId, schoolId))
+    : eq(table.id, id);
+}
+
 export function createApp() {
   const app = new Hono();
 
@@ -279,6 +287,8 @@ export function createApp() {
         const offset = (page - 1) * limit;
 
         const conditions = [];
+        const schoolId = c.get("user")?.schoolId;
+        if (schoolId) conditions.push(eq(students.organizationId, schoolId));
         if (search) {
           conditions.push(like(students.firstName, `%${search}%`));
         }
@@ -457,7 +467,7 @@ export function createApp() {
           })
           .from(students)
           .leftJoin(classes, eq(students.classId, classes.id))
-          .where(eq(students.id, id))
+          .where(orgWhere(c, students, id))
           .limit(1);
 
         if (!student) {
@@ -486,7 +496,7 @@ export function createApp() {
         const [student] = await db
           .update(students)
           .set(data)
-          .where(eq(students.id, id))
+          .where(orgWhere(c, students, id))
           .returning();
 
         return c.json(student);
@@ -522,7 +532,7 @@ export function createApp() {
           );
         }
 
-        await db.delete(students).where(eq(students.id, id));
+        await db.delete(students).where(orgWhere(c, students, id));
 
         return c.json({ success: true, id });
       } catch (error) {
@@ -551,6 +561,8 @@ export function createApp() {
         const search = c.req.query("search") || "";
 
         const conditions = [];
+        const schoolId = c.get("user")?.schoolId;
+        if (schoolId) conditions.push(eq(teachers.organizationId, schoolId));
         if (search) {
           conditions.push(
             sql`(${teachers.firstName} ILIKE ${`%${search}%`} OR ${teachers.lastName} ILIKE ${`%${search}%`} OR ${teachers.email} ILIKE ${`%${search}%`})`,
@@ -635,7 +647,7 @@ export function createApp() {
         const [teacher] = await db
           .select()
           .from(teachers)
-          .where(eq(teachers.id, id))
+          .where(orgWhere(c, teachers, id))
           .limit(1);
 
         if (!teacher) {
@@ -673,7 +685,7 @@ export function createApp() {
             status: data.status,
             updatedAt: new Date(),
           })
-          .where(eq(teachers.id, id))
+          .where(orgWhere(c, teachers, id))
           .returning();
 
         return c.json(teacher);
@@ -709,7 +721,7 @@ export function createApp() {
           );
         }
 
-        await db.delete(teachers).where(eq(teachers.id, id));
+        await db.delete(teachers).where(orgWhere(c, teachers, id));
 
         return c.json({ success: true, id });
       } catch (error) {
@@ -745,6 +757,11 @@ export function createApp() {
             createdAt: classes.createdAt,
           })
           .from(classes)
+          .where(
+            c.get("user")?.schoolId
+              ? eq(classes.organizationId, c.get("user").schoolId)
+              : undefined,
+          )
           .orderBy(classes.name);
 
         const classesWithCounts = await Promise.all(
@@ -850,7 +867,7 @@ export function createApp() {
             capacity: data.capacity ? parseInt(data.capacity) : 40,
             updatedAt: new Date(),
           })
-          .where(eq(classes.id, id))
+          .where(orgWhere(c, classes, id))
           .returning();
 
         return c.json(cls);
@@ -886,7 +903,7 @@ export function createApp() {
           );
         }
 
-        await db.delete(classes).where(eq(classes.id, id));
+        await db.delete(classes).where(orgWhere(c, classes, id));
 
         return c.json({ success: true, id });
       } catch (error) {
@@ -1205,6 +1222,11 @@ export function createApp() {
           .leftJoin(
             feeStructures,
             eq(studentFeeAllocations.feeStructureId, feeStructures.id),
+          )
+          .where(
+            c.get("user")?.schoolId
+              ? eq(studentFeeAllocations.organizationId, c.get("user").schoolId)
+              : undefined,
           );
 
         const feesWithDetails = await Promise.all(
