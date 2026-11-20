@@ -148,6 +148,23 @@ export function createApp() {
   // BETTER AUTH ROUTES
   // ============================================================================
 
+  // Backward-compatible login alias → Better Auth email sign-in.
+  // Returns { token, user } so older clients and integration tests keep working.
+  app.post("/api/auth/login", async (c: any) => {
+    const body = await c.req.json().catch(() => ({}));
+    const url = new URL(c.req.url);
+    url.pathname = "/api/auth/sign-in/email";
+    const forwarded = new Request(url.toString(), {
+      method: "POST",
+      headers: c.req.raw.headers,
+      body: JSON.stringify(body),
+    });
+    const response = await handler(forwarded);
+    if (!response.ok) return response;
+    const data: any = await response.json().catch(() => ({}));
+    return c.json({ token: data.token, user: data.user });
+  });
+
   // Mount Better Auth handler on /api/auth/*
   app.use("/api/auth/*", async (c: any) => {
     // Better Auth handles its own rate limiting

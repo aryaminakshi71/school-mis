@@ -12,7 +12,7 @@ import { db } from "@school/storage";
 import * as schema from "@school/storage/db/schema";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { organization } from "better-auth/plugins";
+import { bearer, organization } from "better-auth/plugins";
 import { eq } from "drizzle-orm";
 import {
   isEmailConfigured,
@@ -272,6 +272,7 @@ export const auth = () => {
       },
 
       plugins: [
+        bearer(),
         organization({
           allowUserToCreateOrganization: true,
           organizationCreation: {
