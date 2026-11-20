@@ -4375,6 +4375,10 @@ export function createApp() {
   app.use(
     "/api/rpc/*",
     async (c: any, next: any) => {
+      // Public branding lookup (used by the login page).
+      if (c.req.path.includes("/branding/getPublic")) {
+        return next();
+      }
       // Allow the admin metrics endpoint with x-admin-token (no login).
       const isMetrics = c.req.path.includes("/metrics");
       const adminToken = c.req.header("x-admin-token");

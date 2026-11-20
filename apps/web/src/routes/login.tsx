@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/lib/auth-context";
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/login")({
@@ -38,8 +38,24 @@ function LoginPage() {
   const [role, setRole] = useState("school_admin");
   const [admissionNumber, setAdmissionNumber] = useState("");
   const [lookupMsg, setLookupMsg] = useState("");
+  const [brandName, setBrandName] = useState("SchoolAI");
+  const [brandColor, setBrandColor] = useState("#6366f1");
   const { login } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    fetch("/api/rpc/branding/getPublic")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d: any) => {
+        const b = d?.json?.branding ?? d?.branding;
+        if (b?.brandName) setBrandName(b.brandName);
+        if (b?.primaryColor) {
+          setBrandColor(b.primaryColor);
+          document.documentElement.style.setProperty("--brand-primary", b.primaryColor);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const handleOAuthLogin = (provider: string) => {
     window.location.href = `/api/auth/sign-in/${provider}`;
@@ -108,7 +124,7 @@ function LoginPage() {
             <div className="flex size-8 items-center justify-center rounded-lg bg-primary-foreground/20">
               <span className="font-bold text-sm">SM</span>
             </div>
-            {"SchoolAI"}
+            {brandName}
           </Link>
           <div className="space-y-4">
             <blockquote className="font-medium text-xl">
@@ -131,7 +147,7 @@ function LoginPage() {
                 SM
               </span>
             </div>
-            {"SchoolAI"}
+            {brandName}
           </Link>
         </div>
 
