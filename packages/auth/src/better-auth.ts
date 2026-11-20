@@ -14,6 +14,12 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { organization } from "better-auth/plugins";
 import { eq } from "drizzle-orm";
+import {
+  isEmailConfigured,
+  passwordResetEmail,
+  sendEmail,
+  verificationEmail,
+} from "@platform/email";
 
 // Environment configuration
 const getEnv = () => ({
@@ -26,7 +32,15 @@ const getEnv = () => ({
   GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
   GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID,
   GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET,
+  RESEND_API_KEY: process.env.RESEND_API_KEY,
+  EMAIL_FROM: process.env.EMAIL_FROM,
 });
+
+const emailBrand = {
+  name: process.env.BRAND_NAME || "SchoolAI",
+  primaryColor: process.env.BRAND_PRIMARY_COLOR || "#6366f1",
+  supportEmail: process.env.SUPPORT_EMAIL || "support@schoolai.app",
+};
 
 // Mock auth for when better-auth is not installed
 const createMockAuth = () => ({
@@ -151,7 +165,15 @@ export const auth = () => {
           user: { email: string };
           url: string;
         }) => {
-          console.log(`[Email] Password reset email to ${user.email}: ${url}`);
+          const env = getEnv();
+          if (!isEmailConfigured(env)) {
+            console.log(`[Email] Password reset email to ${user.email}: ${url}`);
+            return;
+          }
+          await sendEmail(
+            env,
+            passwordResetEmail({ brand: emailBrand, to: user.email, url }),
+          );
         },
       },
 
@@ -167,7 +189,15 @@ export const auth = () => {
           user: { email: string };
           url: string;
         }) => {
-          console.log(`[Email] Verification email to ${user.email}: ${url}`);
+          const env = getEnv();
+          if (!isEmailConfigured(env)) {
+            console.log(`[Email] Verification email to ${user.email}: ${url}`);
+            return;
+          }
+          await sendEmail(
+            env,
+            verificationEmail({ brand: emailBrand, to: user.email, url }),
+          );
         },
       },
 

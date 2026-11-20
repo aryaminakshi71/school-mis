@@ -5,7 +5,10 @@
   "private": true,
   "type": "module",
   "packageManager": "bun@1.3.5",
-  "workspaces": ["apps/*", "packages/*"],
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "resolutions": {
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -81,7 +84,8 @@
     "socket.io-client": "^4.8.3",
     "vite": "7.3.7",
     "web-push": "^3.6.7",
-    "@platform/billing": "file:../platform/packages/billing"
+    "@platform/billing": "file:../platform/packages/billing",
+    "@platform/email": "file:../platform/packages/email"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
