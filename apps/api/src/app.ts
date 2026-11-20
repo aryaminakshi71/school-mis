@@ -9,7 +9,7 @@ import { OpenAPIGenerator } from "@orpc/openapi";
 import { onError } from "@orpc/server";
 import { RPCHandler } from "@orpc/server/fetch";
 import { ZodToJsonSchemaConverter } from "@orpc/zod";
-import { ROLES, handler } from "@school/auth";
+import { ROLES, handler, createStripeClient } from "@school/auth";
 import {
   attendance,
   auditLogs,
@@ -3028,6 +3028,88 @@ export function createApp() {
       return c.json({ ok: true, plan, status: "active", expiresAt: expires });
     },
   );
+
+  app.post(
+    "/api/billing/checkout",
+    requireAuth,
+    requireRole(ROLES.SUPER_ADMIN, ROLES.SCHOOL_ADMIN),
+    async (c: any) => {
+      const secret = process.env.STRIPE_SECRET_KEY;
+      if (!secret) return c.json({ error: "Stripe not configured" }, 503);
+      const stripe = createStripeClient(secret);
+      const schoolId = c.get("user")?.schoolId;
+      if (!schoolId) return c.json({ error: "No school" }, 400);
+      const body = await c.req.json().catch(() => ({}));
+      const plan = PLANS.find((p) => p.id === body.plan);
+      if (!plan || plan.price === 0) {
+        return c.json({ error: "Invalid plan" }, 400);
+      }
+      const interval = body.interval === "year" ? "year" : "month";
+      const base = process.env.VITE_PUBLIC_SITE_URL || "http://localhost:3070";
+      const session = await stripe.checkout.sessions.create({
+        mode: "subscription",
+        line_items: [
+          {
+            price_data: {
+              currency: "inr",
+              unit_amount: plan.price * 100,
+              recurring: { interval },
+              product_data: { name: `SchoolAI ${plan.name}` },
+            },
+            quantity: 1,
+          },
+        ],
+        success_url: `${base}/app/billing?success=1`,
+        cancel_url: `${base}/app/billing?cancelled=1`,
+        metadata: { orgId: schoolId, plan: plan.id, interval },
+      });
+      return c.json({ url: session.url });
+    },
+  );
+
+  app.post("/api/billing/webhook", async (c: any) => {
+    const secret = process.env.STRIPE_SECRET_KEY;
+    const whSecret = process.env.STRIPE_WEBHOOK_SECRET;
+    if (!secret || !whSecret) return c.json({ error: "Stripe not configured" }, 503);
+    const stripe = createStripeClient(secret);
+    const sig = c.req.header("stripe-signature");
+    const raw = await c.req.text();
+    let event: any;
+    try {
+      event = stripe.webhooks.constructEvent(raw, sig, whSecret);
+    } catch {
+      return c.json({ error: "Invalid signature" }, 400);
+    }
+    const db = getDb(c.env);
+    if (event.type === "checkout.session.completed") {
+      const s = event.data.object as any;
+      const orgId = s.metadata?.orgId;
+      const plan = s.metadata?.plan;
+      const interval = s.metadata?.interval;
+      if (orgId && plan) {
+        const expires = new Date();
+        expires.setMonth(expires.getMonth() + (interval === "year" ? 12 : 1));
+        await db
+          .update(organizations)
+          .set({
+            plan,
+            subscriptionStatus: "active",
+            subscriptionExpiresAt: expires,
+            stripeCustomerId: s.customer ?? null,
+            stripeSubscriptionId: s.subscription ?? null,
+          })
+          .where(eq(organizations.id, orgId));
+      }
+    }
+    if (event.type === "customer.subscription.deleted") {
+      const sub = event.data.object as any;
+      await db
+        .update(organizations)
+        .set({ subscriptionStatus: "cancelled" })
+        .where(eq(organizations.stripeSubscriptionId, sub.id));
+    }
+    return c.json({ received: true });
+  });
 
   app.post(
     "/api/billing/cancel",

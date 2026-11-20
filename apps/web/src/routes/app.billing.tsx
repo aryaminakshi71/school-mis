@@ -43,6 +43,21 @@ function BillingPage() {
     setBusy(true);
     setMessage("");
     try {
+      // Prefer Stripe Checkout; fall back to direct activation if Stripe
+      // isn't configured (local demo).
+      const checkout = await fetch("/api/billing/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ plan, interval }),
+      });
+      if (checkout.ok) {
+        const data: any = await checkout.json();
+        if (data.url) {
+          window.location.href = data.url;
+          return;
+        }
+      }
       const res = await fetch("/api/billing/subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
