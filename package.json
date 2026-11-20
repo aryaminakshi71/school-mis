@@ -58,7 +58,8 @@
     "dev:api": "bun run --cwd apps/api dev",
     "mobile:start": "bun run --cwd apps/mobile start",
     "mobile:android": "bun run --cwd apps/mobile android",
-    "mobile:ios": "bun run --cwd apps/mobile ios"
+    "mobile:ios": "bun run --cwd apps/mobile ios",
+    "postinstall": "bash scripts/dedupe-react.sh"
   },
   "dependencies": {
     "@hookform/devtools": "^4.4.0",
