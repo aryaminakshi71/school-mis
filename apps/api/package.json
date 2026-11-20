@@ -10,13 +10,14 @@
     "dev": "bun run --hot src/server.ts",
     "build": "tsc --noEmit",
     "typecheck": "tsc --noEmit",
-    "test": "bun test",
-    "test:unit": "bun test --filter unit",
-    "test:integration": "bun test --filter integration",
+    "test": "bun test __tests__/unit",
+    "test:unit": "bun test __tests__/unit",
+    "test:integration": "bun test __tests__/integration --timeout 60000",
     "test:e2e": "playwright test",
     "test:coverage": "bun test --coverage",
     "start": "bun src/server.ts",
-    "db:push": "cd ../../packages/storage && bunx drizzle-kit push --force"
+    "db:push": "cd ../../packages/storage && bunx drizzle-kit push --force",
+    "test:e2e:setup": "bun run scripts/setup-e2e-schema.ts"
   },
   "dependencies": {
     "@neondatabase/serverless": "^0.9.0",

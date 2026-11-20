@@ -136,11 +136,18 @@ function shouldUseSsl(connectionString: string): boolean {
   }
 }
 
+const TEST_USER_ID = "00000000-0000-4000-8000-000000000001";
+
 export async function apiRequest(
   path: string,
-  init?: RequestInit,
+  init?: RequestInit & { auth?: boolean },
 ): Promise<Response> {
-  const req = new Request(`http://localhost${path}`, init);
+  const { auth = true, ...rest } = init ?? {};
+  const headers = new Headers(rest.headers);
+  if (auth && !headers.has("x-test-user-id")) {
+    headers.set("x-test-user-id", TEST_USER_ID);
+  }
+  const req = new Request(`http://localhost${path}`, { ...rest, headers });
   return app.fetch(req, testEnv, undefined);
 }
 

@@ -33,6 +33,40 @@ export const authMiddleware: MiddlewareHandler = async (
   c: Context,
   next: Next,
 ) => {
+  // E2E test bypass: only active when E2E_TEST=1 and an explicit test user
+  // header is present. Never enabled in production.
+  if (process.env.E2E_TEST === "1") {
+    const testUserId = c.req.header("x-test-user-id");
+    if (testUserId) {
+      try {
+        const db = getDb(c.env);
+        const [dbUser] = await db
+          .select()
+          .from(users)
+          .where(eq(users.id, testUserId))
+          .limit(1);
+        if (dbUser) {
+          c.set("user", {
+            id: dbUser.id,
+            email: dbUser.email,
+            name: dbUser.name,
+            role: dbUser.role ?? "student",
+            schoolId: dbUser.schoolId ?? undefined,
+            emailVerified: dbUser.emailVerified ?? true,
+          });
+          c.set("session", {
+            id: `e2e-${dbUser.id}`,
+            expiresAt: new Date(Date.now() + 60 * 60 * 1000),
+          });
+          await next();
+          return;
+        }
+      } catch (err) {
+        console.error("E2E auth bypass failed", err);
+      }
+    }
+  }
+
   // Get session from request
   const session = await api.getSession({
     headers: c.req.raw.headers,

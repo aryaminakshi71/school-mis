@@ -1,68 +1,34 @@
 /**
  * Students API Integration Tests
  *
- * E2E tests for student management endpoints
+ * In-process tests against the Hono app using the e2e schema.
  */
 
-import { beforeAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "bun:test";
+import { apiRequest } from "./test-helpers";
 
 describe("Students API Integration", () => {
-  const API_URL = process.env.API_URL || "http://localhost:3016";
-  let authToken: string;
-
-  beforeAll(async () => {
-    // Get auth token for tests
-    const loginRes = await fetch(`${API_URL}/api/auth/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: "admin@school.edu",
-        password: "admin123",
-      }),
-    });
-
-    if (loginRes.ok) {
-      const data = await loginRes.json();
-      authToken = data.token;
-    }
-  });
-
   describe("GET /api/students", () => {
     it("should return list of students", async () => {
-      const res = await fetch(`${API_URL}/api/students`, {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
-      });
-
+      const res = await apiRequest("/api/students");
       expect(res.status).toBe(200);
-      const data = await res.json();
+      const data = (await res.json()) as any;
       expect(data.students).toBeDefined();
       expect(Array.isArray(data.students)).toBe(true);
       expect(data.pagination).toBeDefined();
     });
 
     it("should support pagination", async () => {
-      const res = await fetch(`${API_URL}/api/students?page=1&limit=10`, {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
-      });
-
-      const data = await res.json();
+      const res = await apiRequest("/api/students?page=1&limit=10");
+      const data = (await res.json()) as any;
       expect(data.pagination.page).toBe(1);
       expect(data.pagination.limit).toBe(10);
     });
 
     it("should support search", async () => {
-      const res = await fetch(`${API_URL}/api/students?search=john`, {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
-      });
-
+      const res = await apiRequest("/api/students?search=john");
       expect(res.status).toBe(200);
-      const data = await res.json();
+      const data = (await res.json()) as any;
       expect(data.students).toBeDefined();
     });
   });
@@ -72,30 +38,28 @@ describe("Students API Integration", () => {
       const newStudent = {
         firstName: "Test",
         lastName: "Student",
-        email: "test@example.com",
+        email: `test-${Date.now()}@example.com`,
         phone: "1234567890",
         gender: "male",
         address: "123 Test St",
       };
 
-      const res = await fetch(`${API_URL}/api/students`, {
+      const res = await apiRequest("/api/students", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${authToken}`,
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newStudent),
       });
 
       expect(res.status).toBe(200);
-      const data = await res.json();
+      const data = (await res.json()) as any;
       expect(data.id).toBeDefined();
       expect(data.firstName).toBe(newStudent.firstName);
     });
 
     it("should require authentication", async () => {
-      const res = await fetch(`${API_URL}/api/students`, {
+      const res = await apiRequest("/api/students", {
         method: "POST",
+        auth: false,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ firstName: "Test" }),
       });
@@ -106,73 +70,41 @@ describe("Students API Integration", () => {
 
   describe("PUT /api/students/:id", () => {
     it("should update student", async () => {
-      // First create a student
-      const createRes = await fetch(`${API_URL}/api/students`, {
+      const createRes = await apiRequest("/api/students", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${authToken}`,
-        },
-        body: JSON.stringify({
-          firstName: "Update",
-          lastName: "Test",
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ firstName: "Update", lastName: "Test" }),
       });
+      const student = (await createRes.json()) as any;
 
-      const student = await createRes.json();
-
-      // Then update
-      const res = await fetch(`${API_URL}/api/students/${student.id}`, {
+      const res = await apiRequest(`/api/students/${student.id}`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${authToken}`,
-        },
-        body: JSON.stringify({
-          firstName: "Updated",
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ firstName: "Updated" }),
       });
 
       expect(res.status).toBe(200);
-      const data = await res.json();
+      const data = (await res.json()) as any;
       expect(data.firstName).toBe("Updated");
     });
   });
 
   describe("DELETE /api/students/:id", () => {
     it("should delete student", async () => {
-      // Create a student
-      const createRes = await fetch(`${API_URL}/api/students`, {
+      const createRes = await apiRequest("/api/students", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${authToken}`,
-        },
-        body: JSON.stringify({
-          firstName: "Delete",
-          lastName: "Test",
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ firstName: "Delete", lastName: "Test" }),
       });
+      const student = (await createRes.json()) as any;
 
-      const student = await createRes.json();
-
-      // Delete
-      const res = await fetch(`${API_URL}/api/students/${student.id}`, {
+      const res = await apiRequest(`/api/students/${student.id}`, {
         method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
       });
 
       expect(res.status).toBe(200);
-      const data = await res.json();
+      const data = (await res.json()) as any;
       expect(data.success).toBe(true);
-    });
-
-    it("should not delete student with dependencies", async () => {
-      // This would require a student with attendance records
-      // Simplified test - would need actual data setup
-      expect(true).toBe(true);
     });
   });
 });
