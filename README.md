@@ -1,6 +1,24 @@
-# School Management Information System (MIS)
+# SchoolAI — School Management Information System
 
-A comprehensive school management system for managing students, staff, academics, and administrative tasks.
+[![CI](https://github.com/aryaminakshi71/school-mis/actions/workflows/ci.yml/badge.svg)](https://github.com/aryaminakshi71/school-mis/actions/workflows/ci.yml)
+
+A complete school operating system: students, staff, academics, fees, transport, library, exams, and parent/teacher portals — with native AI.
+
+## AI features
+
+- Role-aware AI assistant (student / teacher / parent / admin)
+- Student performance prediction with reasoning + recommendations
+- Attendance pattern analysis with risk scoring
+- Essay auto-grading, study plans, homework help
+- AI content generator, meeting summariser, peer review, anti-cheating, emotional support bot
+
+## Quick start
+
+```bash
+bun install
+cp .env.example .env   # fill DATABASE_URL, BETTER_AUTH_SECRET, OPENAI_API_KEY
+bun run dev            # web on :3070, API in-process
+```
 
 ## ✨ Features
 
