@@ -47,7 +47,7 @@ import {
   predictStudentPerformance,
 } from "./lib/ai-features.js";
 import { initDatadog } from "./lib/datadog.js";
-import { getDb } from "./lib/db.js";
+import { getDb, getReadDb } from "./lib/db.js";
 import { setSecurityHeaders } from "./lib/security.js";
 import { initSentry } from "./lib/sentry.js";
 import { auditLogMiddleware } from "./middleware/audit.js";
@@ -3145,7 +3145,7 @@ export function createApp() {
   );
 
   app.get("/api/dashboard/stats", requireAuth, async (c: any) => {
-    const db = getDb(c);
+    const db = getReadDb(c);
     const today = new Date().toISOString().slice(0, 10);
     const monthStart = new Date();
     monthStart.setDate(1);

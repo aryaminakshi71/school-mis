@@ -138,4 +138,19 @@ export function getDb(env?: {
   return dbInstance;
 }
 
+/**
+ * Read-only database client.
+ *
+ * Uses DATABASE_READ_URL when set (e.g. a Neon read replica) so analytics and
+ * dashboard queries don't compete with writes. Falls back to the primary.
+ */
+export function getReadDb(env?: {
+  DATABASE?: { connectionString: string };
+  DATABASE_URL?: string;
+}) {
+  const readUrl = process.env.DATABASE_READ_URL;
+  if (!readUrl) return getDb(env);
+  return getDb({ ...env, DATABASE_URL: readUrl });
+}
+
 export { schema };
