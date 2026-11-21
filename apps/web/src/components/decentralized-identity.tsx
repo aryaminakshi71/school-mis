@@ -211,7 +211,7 @@ const itemVariants: Variants = {
   },
 };
 
-const cardHover = {
+const cardHover: Variants = {
   rest: { scale: 1, y: 0 },
   hover: {
     scale: 1.02,
