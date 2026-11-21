@@ -1,4 +1,4 @@
-import { AnimatePresence, motion, useAnimation } from "framer-motion";
+import { type Variants, AnimatePresence, motion, useAnimation  } from "framer-motion";
 import {
   BookOpen,
   Brain,
@@ -226,7 +226,7 @@ const culturalContexts: Record<string, string[]> = {
 };
 
 // Animation variants
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -237,7 +237,7 @@ const containerVariants = {
   },
 };
 
-const itemVariants = {
+const itemVariants: Variants = {
   hidden: { opacity: 0, y: 20, scale: 0.95 },
   visible: {
     opacity: 1,
@@ -251,7 +251,7 @@ const itemVariants = {
   },
 };
 
-const pulseVariants = {
+const pulseVariants: Variants = {
   animate: {
     scale: [1, 1.2, 1],
     opacity: [0.5, 1, 0.5],
@@ -263,7 +263,7 @@ const pulseVariants = {
   },
 };
 
-const waveVariants = {
+const waveVariants: Variants = {
   animate: (i: number) => ({
     scaleY: [1, 2, 1],
     transition: {

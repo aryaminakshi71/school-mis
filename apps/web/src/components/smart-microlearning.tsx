@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from "framer-motion";
+import { type Variants, AnimatePresence, motion  } from "framer-motion";
 import {
   Award,
   Bell,
@@ -391,7 +391,7 @@ const subjects = [
 ];
 
 // Animation variants
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -402,7 +402,7 @@ const containerVariants = {
   },
 };
 
-const itemVariants = {
+const itemVariants: Variants = {
   hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
@@ -415,7 +415,7 @@ const itemVariants = {
   },
 };
 
-const cardVariants = {
+const cardVariants: Variants = {
   initial: { scale: 1 },
   hover: {
     scale: 1.02,
@@ -424,7 +424,7 @@ const cardVariants = {
   tap: { scale: 0.98 },
 };
 
-const pulseVariants = {
+const pulseVariants: Variants = {
   initial: { scale: 1, opacity: 0.6 },
   animate: {
     scale: [1, 1.05, 1],
