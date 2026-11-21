@@ -6,8 +6,8 @@
       "name": "@company/school-mis",
       "dependencies": {
         "@hookform/devtools": "^4.4.0",
-        "@platform/billing": "file:../platform/packages/billing",
-        "@platform/email": "file:../platform/packages/email",
+        "@platform/billing": "workspace:*",
+        "@platform/email": "workspace:*",
         "@radix-ui/react-dialog": "^1.1.15",
         "@radix-ui/react-label": "^2.1.8",
         "@radix-ui/react-scroll-area": "^1.2.10",
@@ -196,6 +196,14 @@
       "devDependencies": {
         "@cloudflare/workers-types": "^4.20250109.0",
       },
+    },
+    "packages/platform-billing": {
+      "name": "@platform/billing",
+      "version": "1.0.0",
+    },
+    "packages/platform-email": {
+      "name": "@platform/email",
+      "version": "1.0.0",
     },
     "packages/storage": {
       "name": "@school/storage",
@@ -910,9 +918,9 @@
 
     "@pkgjs/parseargs": ["@pkgjs/parseargs@0.11.0", "", {}, "sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg=="],
 
-    "@platform/billing": ["@platform/billing@file:../platform/packages/billing", {}],
+    "@platform/billing": ["@platform/billing@workspace:packages/platform-billing"],
 
-    "@platform/email": ["@platform/email@file:../platform/packages/email", {}],
+    "@platform/email": ["@platform/email@workspace:packages/platform-email"],
 
     "@playwright/test": ["@playwright/test@1.58.2", "", { "dependencies": { "playwright": "1.58.2" }, "bin": { "playwright": "cli.js" } }, "sha512-akea+6bHYBBfA9uQqSYmlJXn61cTa+jbO87xVLCWbTqbWadRVmhxlXATaOjOgcBaWU4ePo0wB41KMFv3o35IXA=="],
 
