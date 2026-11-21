@@ -35,4 +35,8 @@ jobs:
       - name: Build
         run: |
           bun run --cwd apps/api build
-          bun run --cwd apps/web build
+          cd apps/web
+          pwd
+          ls -la | head -20
+          ls src/start.tsx src/server.ts vite.config.ts
+          bun run build
