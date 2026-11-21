@@ -60,7 +60,8 @@
     "mobile:android": "bun run --cwd apps/mobile android",
     "mobile:ios": "bun run --cwd apps/mobile ios",
     "postinstall": "bash scripts/dedupe-react.sh",
-    "db:optimize": "bash scripts/db-indexes.sh --apply && bash scripts/db-trigram.sh --apply && bash scripts/db-triggers.sh --apply"
+    "db:optimize": "bash scripts/db-indexes.sh --apply && bash scripts/db-trigram.sh --apply && bash scripts/db-triggers.sh --apply",
+    "db:health": "bash scripts/db-health.sh"
   },
   "dependencies": {
     "@hookform/devtools": "^4.4.0",
