@@ -3151,36 +3151,40 @@ export function createApp() {
     monthStart.setDate(1);
     monthStart.setHours(0, 0, 0, 0);
 
-    const [studentsRow] = await db
-      .select({ n: sql<number>`count(*)::int` })
-      .from(students);
-    const [teachersRow] = await db
-      .select({ n: sql<number>`count(*)::int` })
-      .from(teachers);
-    const [classesRow] = await db
-      .select({ n: sql<number>`count(*)::int` })
-      .from(classes);
-    const [attendanceRow] = await db
-      .select({ n: sql<number>`count(*)::int` })
-      .from(attendance)
-      .where(and(eq(attendance.date, today), eq(attendance.status, "present")));
-    const [collectionRow] = await db
-      .select({
-        total: sql<number>`coalesce(sum(${feePayments.amount}), 0)::float`,
-      })
-      .from(feePayments)
-      .where(
-        and(
-          eq(feePayments.status, "paid"),
-          gte(feePayments.paymentDate, monthStart),
+    // Run the independent counts in parallel (one round trip instead of six).
+    const [
+      [studentsRow],
+      [teachersRow],
+      [classesRow],
+      [attendanceRow],
+      [collectionRow],
+      [pendingRow],
+    ] = await Promise.all([
+      db.select({ n: sql<number>`count(*)::int` }).from(students),
+      db.select({ n: sql<number>`count(*)::int` }).from(teachers),
+      db.select({ n: sql<number>`count(*)::int` }).from(classes),
+      db
+        .select({ n: sql<number>`count(*)::int` })
+        .from(attendance)
+        .where(and(eq(attendance.date, today), eq(attendance.status, "present"))),
+      db
+        .select({
+          total: sql<number>`coalesce(sum(${feePayments.amount}), 0)::float`,
+        })
+        .from(feePayments)
+        .where(
+          and(
+            eq(feePayments.status, "paid"),
+            gte(feePayments.paymentDate, monthStart),
+          ),
         ),
-      );
-    const [pendingRow] = await db
-      .select({
-        total: sql<number>`coalesce(sum(${feePayments.amount}), 0)::float`,
-      })
-      .from(feePayments)
-      .where(eq(feePayments.status, "pending"));
+      db
+        .select({
+          total: sql<number>`coalesce(sum(${feePayments.amount}), 0)::float`,
+        })
+        .from(feePayments)
+        .where(eq(feePayments.status, "pending")),
+    ]);
 
     return c.json({
       totalStudents: studentsRow?.n ?? 0,
