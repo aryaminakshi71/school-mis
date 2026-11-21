@@ -1,4 +1,4 @@
-import { AnimatePresence, motion, useAnimation } from "framer-motion";
+import { type Variants, AnimatePresence, motion, useAnimation  } from "framer-motion";
 import {
   Activity,
   Activity as ActivityIcon,
@@ -102,7 +102,7 @@ interface ForensicReport {
   summary: string;
 }
 
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -113,7 +113,7 @@ const containerVariants = {
   },
 };
 
-const itemVariants = {
+const itemVariants: Variants = {
   hidden: { opacity: 0, y: 20, scale: 0.95 },
   visible: {
     opacity: 1,
@@ -127,7 +127,7 @@ const itemVariants = {
   },
 };
 
-const cardVariants = {
+const cardVariants: Variants = {
   hidden: { opacity: 0, y: 30 },
   visible: {
     opacity: 1,
@@ -140,7 +140,7 @@ const cardVariants = {
   },
 };
 
-const pulseVariants = {
+const pulseVariants: Variants = {
   animate: {
     scale: [1, 1.1, 1],
     opacity: [0.5, 1, 0.5],
@@ -152,7 +152,7 @@ const pulseVariants = {
   },
 };
 
-const radarVariants = {
+const radarVariants: Variants = {
   animate: {
     rotate: 360,
     transition: {
@@ -163,7 +163,7 @@ const radarVariants = {
   },
 };
 
-const scanLineVariants = {
+const scanLineVariants: Variants = {
   animate: {
     y: ["0%", "100%", "0%"],
     transition: {
